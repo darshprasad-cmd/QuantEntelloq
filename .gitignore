@@ -1,0 +1,11 @@
+# Node scripts used during development
+*.js
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.swp
