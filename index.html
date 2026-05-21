@@ -7402,7 +7402,7 @@ function _lp3Enter(user) {
       <div class="nav-item" id="nav-galaxy" onclick="showPage('galaxy',this)">
         <span class="nav-icon">🌌</span><span class="nav-label">Galaxy View</span>
       </div>
-      <div class="nav-item" id="nav-portfolio" onclick="showPage('portfolio',this)">
+      <div class="nav-item" id="nav-pi-report" onclick="showPage('pi-report',this)">
         <span class="nav-icon">📋</span><span class="nav-label">Portfolio Report</span>
         <span style="margin-left:auto;font-size:7.5px;padding:1px 5px;border-radius:4px;background:rgba(34,211,238,0.12);border:1px solid rgba(34,211,238,0.25);color:#22D3EE;font-family:var(--font-mono);">AI</span>
       </div>
@@ -9608,7 +9608,7 @@ function _lp3Enter(user) {
     </div>
 
     <!-- ═══ PORTFOLIO INTELLIGENCE REPORT ══════════════════════════════════ -->
-    <div id="page-portfolio" class="page-anim hidden">
+    <div id="page-pi-report" class="page-anim hidden">
       <div class="pi-wrap">
         <div class="pi-hero">
           <div class="pi-hero-eyebrow">AI Portfolio Analysis</div>
@@ -9696,7 +9696,7 @@ function _lp3Enter(user) {
           </div>
         </div><!-- end #pi-results -->
       </div><!-- end .pi-wrap -->
-    </div><!-- end #page-portfolio -->
+    </div><!-- end #page-pi-report -->
 
     <!-- ═══ GALAXY VIEW PAGE ════════════════════════════════════════════════ -->
     <div id="page-galaxy" class="page-anim hidden">
@@ -10523,7 +10523,7 @@ function showPage(page, navEl) {
     journey:    { main:'Quant Journey',    sub:'10-level progression from Novice to Master Quant' },
     arena:      { main:'Quant Arena',      sub:'Institutional-grade paper trading · Rankings · AI coaching' },
     galaxy:     { main:'Galaxy View',      sub:'Navigate the financial universe — visualize market relationships' },
-    portfolio:  { main:'Portfolio Intelligence Report', sub:'AI-powered risk, diversification & growth analysis for your holdings' },
+    'pi-report':{ main:'Portfolio Intelligence Report', sub:'AI-powered risk, diversification & growth analysis for your holdings' },
   };
   const t = titles[page] || { main: page, sub: 'Quant Intelligence Platform' };
   const titleEl = document.getElementById('page-title');
@@ -10575,12 +10575,12 @@ function showPage(page, navEl) {
   }
   if(page === 'journey')   setTimeout(() => { if(typeof renderJourneyPage === 'function') renderJourneyPage(); }, 60);
   if(page === 'arena')     setTimeout(() => { if(typeof renderArenaPage === 'function') renderArenaPage(); }, 60);
-  if(page === 'portfolio') setTimeout(() => { if(typeof renderPortfolioPage === 'function') renderPortfolioPage(); }, 60);
+  if(page === 'pi-report') setTimeout(() => { if(typeof renderPortfolioPage === 'function') renderPortfolioPage(); }, 60);
   if(page === 'galaxy')    setTimeout(() => { if(typeof initGalaxyView === 'function') initGalaxyView(); }, 80);
   // Stop galaxy animation loop when navigating away
   if(page !== 'galaxy' && window.GalaxyState && GalaxyState.raf) { cancelAnimationFrame(GalaxyState.raf); GalaxyState.raf = null; }
   // Award XP for exploration
-  if(window.QzXP && ['signals','intel','quantlab','scenario','backtest','reports','arena','journey','galaxy','portfolio'].includes(page)) {
+  if(window.QzXP && ['signals','intel','quantlab','scenario','backtest','reports','arena','journey','galaxy','pi-report'].includes(page)) {
     var _xpKey = 'qze_visited_' + page;
     if (!sessionStorage.getItem(_xpKey)) {
       sessionStorage.setItem(_xpKey, '1');
@@ -25638,13 +25638,25 @@ setTimeout(() => {
 
 // ── Null-guard all chart containers to prevent crashes ──────────
 (function() {
-  var _origCreateChart = window.LightweightCharts?.createChart;
-  if (_origCreateChart) {
-    window.LightweightCharts.createChart = function(container, opts) {
-      if (!container || !document.body.contains(container)) return null;
-      try { return _origCreateChart.call(window.LightweightCharts, container, opts); }
-      catch(e) { console.warn('[Quant Entelloq] chart error:', e); return null; }
-    };
+  var _lc = window.LightweightCharts;
+  if (!_lc || typeof _lc.createChart !== 'function') return;
+  var _origCreateChart = _lc.createChart;
+  function _safeCreate(container, opts) {
+    if (!container || !document.body.contains(container)) return null;
+    try { return _origCreateChart.call(_lc, container, opts); }
+    catch(e) { console.warn('[Quant Entelloq] chart error:', e); return null; }
+  }
+  // Try direct assignment first; fall back to Proxy if the object is frozen
+  try {
+    window.LightweightCharts.createChart = _safeCreate;
+  } catch(e) {
+    window.LightweightCharts = new Proxy(_lc, {
+      get: function(target, prop) {
+        if (prop === 'createChart') return _safeCreate;
+        var val = target[prop];
+        return typeof val === 'function' ? val.bind(target) : val;
+      }
+    });
   }
 })();
 
@@ -30020,12 +30032,72 @@ function renderJourneyPage() {
   container.innerHTML = html;
 }
 
+// Level lesson content (key concepts + AI study prompt per level)
+var JOURNEY_CONTENT = [
+  { concepts:['Bid/ask spread & order flow','Market makers vs liquidity takers','Price discovery mechanisms','Pre-market & after-hours trading','How institutional orders move prices'],
+    prompt:'Explain the key market microstructure concept of price discovery. How do buyers and sellers actually agree on a price? Include a practical example.' },
+  { concepts:['Price-to-Earnings (P/E) ratio','EPS growth rate analysis','Free cash flow vs net income','Debt-to-equity ratio','Return on equity (ROE)'],
+    prompt:'Walk me through how to analyze a stock using fundamental analysis. What are the 3 most important metrics to check first, and why?' },
+  { concepts:['Expense ratio impact on returns','Index weighting methodologies','ETF vs mutual fund structure','Sector ETF rotation strategies','Smart beta factor investing'],
+    prompt:'What is the real cost of a 1% expense ratio over 30 years, and why do index ETFs with low expense ratios outperform most active managers?' },
+  { concepts:['Standard deviation & volatility','Maximum drawdown calculation','Sharpe ratio interpretation','Kelly Criterion for position sizing','VaR (Value at Risk) basics'],
+    prompt:'Explain the Sharpe ratio: what it measures, how to calculate it, and what a Sharpe ratio of 1.0 vs 2.0 means for a portfolio in practice.' },
+  { concepts:['Modern Portfolio Theory (MPT)','Efficient frontier & risk/return','Asset correlation matrix','Factor investing: value, momentum, quality','Rebalancing frequency & tax efficiency'],
+    prompt:'How does correlation between assets affect portfolio volatility? Give me a concrete example showing why two assets with negative correlation reduce portfolio risk.' },
+  { concepts:['Federal Reserve policy & interest rates','Yield curve inversion as recession signal','CPI, PCE & inflation measurement','GDP growth decomposition','Currency & carry trade mechanics'],
+    prompt:'Explain yield curve inversion: what it means, why it predicts recessions, and what specific actions investors typically take when they see it.' },
+  { concepts:['Backtesting methodology & pitfalls','Overfitting & out-of-sample testing','Alpha vs beta decomposition','Statistical significance in strategy returns','Walk-forward optimization'],
+    prompt:'What is overfitting in quantitative strategy development, and how do walk-forward testing and out-of-sample validation help prevent it?' },
+  { concepts:['Options: calls, puts, Greeks','Delta hedging mechanics','Implied vs historical volatility','Alternative data: satellite, credit card, weather','Institutional order flow signals'],
+    prompt:'Explain the options Greeks (delta, gamma, theta, vega) and how a market maker uses delta hedging to remain directionally neutral.' },
+  { concepts:['Mosaic theory & information synthesis','Probabilistic scenario analysis','Earnings surprise prediction models','Sentiment analysis from SEC filings','Catalyst-driven vs macro-driven trades'],
+    prompt:'What is mosaic theory in investing? How do professional analysts legally synthesize multiple public data sources to form an information edge?' },
+  { concepts:['Full market cycle navigation','Cross-asset signal synthesis','Portfolio construction at scale','Risk-parity & all-weather strategies','Systematic vs discretionary approach'],
+    prompt:'What does it mean to navigate a full market cycle (bull → peak → bear → recovery)? What key adjustments should a portfolio manager make at each phase?' },
+];
+
 function journeyStartLevel(idx) {
   var lvl = JOURNEY_LEVELS[idx];
   if (!lvl || lvl.status === 'locked') return;
-  qzToast({ title: 'Level ' + lvl.num + ': ' + lvl.title, msg: 'Opening AI Studio for guided learning', type: 'info', icon: '🎯', duration: 3500 });
+  var content = JOURNEY_CONTENT[idx];
   if (window.QzXP) QzXP.addXP(25, 'Started Level ' + lvl.num + ': ' + lvl.title);
-  setTimeout(function() { showPage('ai', document.getElementById('nav-ai-studio')); }, 800);
+  // Build lesson modal
+  var modal = document.getElementById('journey-lesson-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'journey-lesson-modal';
+    modal.style.cssText = 'position:fixed;inset:0;z-index:var(--z-modal,500);display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.72);backdrop-filter:blur(12px);animation:pgSceneIn .35s ease;';
+    document.body.appendChild(modal);
+  }
+  var conceptsHtml = (content ? content.concepts : []).map(function(c) {
+    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;"><span style="color:#22D3EE;font-size:12px;">▶</span><span style="font-size:13px;color:rgba(255,255,255,.75);">'+c+'</span></div>';
+  }).join('');
+  modal.innerHTML = '<div style="background:#0E0C1A;border:1px solid rgba(167,139,250,.25);border-radius:18px;padding:32px 36px;max-width:560px;width:90%;position:relative;max-height:85vh;overflow-y:auto;">' +
+    '<button onclick="document.getElementById(\'journey-lesson-modal\').remove()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:rgba(255,255,255,.4);font-size:20px;cursor:pointer;transition:color .15s;" onmouseover="this.style.color=\'#fff\'" onmouseout="this.style.color=\'rgba(255,255,255,.4)\'">×</button>' +
+    '<div style="font-family:var(--font-mono);font-size:10px;color:rgba(167,139,250,.6);letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px;">Level '+lvl.num+'</div>' +
+    '<div style="font-family:var(--font-display);font-size:22px;font-weight:800;color:#fff;margin-bottom:8px;">'+lvl.title+'</div>' +
+    '<div style="font-size:13px;color:rgba(255,255,255,.45);line-height:1.7;margin-bottom:22px;">'+lvl.desc+'</div>' +
+    '<div style="font-size:11px;font-weight:700;color:rgba(167,139,250,.7);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;">Key Concepts</div>' +
+    conceptsHtml +
+    '<div style="margin-top:22px;border-top:1px solid rgba(255,255,255,.07);padding-top:18px;">' +
+      '<div style="font-size:11px;font-weight:700;color:rgba(34,211,238,.7);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">Study with AI →</div>' +
+      '<div style="font-size:12.5px;color:rgba(255,255,255,.5);line-height:1.7;font-style:italic;margin-bottom:16px;">"'+(content?content.prompt:'')+'"</div>' +
+      '<button onclick="journeyOpenAI('+idx+')" style="background:linear-gradient(135deg,rgba(34,211,238,.18),rgba(124,58,237,.18));border:1px solid rgba(34,211,238,.35);border-radius:10px;color:#22D3EE;font-size:13px;font-weight:700;padding:11px 22px;cursor:pointer;width:100%;transition:background .2s;">Open in AI Studio →</button>' +
+    '</div>' +
+  '</div>';
+  modal.onclick = function(e){ if(e.target===modal) modal.remove(); };
+}
+
+function journeyOpenAI(idx) {
+  var content = JOURNEY_CONTENT[idx];
+  var modal = document.getElementById('journey-lesson-modal');
+  if (modal) modal.remove();
+  showPage('ai', document.getElementById('nav-ai-studio'));
+  // Pre-fill the AI studio prompt after a short delay
+  setTimeout(function() {
+    var inp = document.getElementById('ai-input') || document.querySelector('.chat-input') || document.querySelector('[data-ai-input]');
+    if (inp && content) { inp.value = content.prompt; inp.focus(); }
+  }, 600);
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
