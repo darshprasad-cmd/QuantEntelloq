@@ -10418,7 +10418,7 @@ async function _fetchNewsAnalysis(id, el) {
   }
   // Otherwise call AI
   try {
-    const res = await fetch('/api/ai/call', {
+    const res = await fetch('https://groq-proxy.physicsedge.workers.dev', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ messages: [
         { role: 'system', content: 'You are a concise financial analyst. For the news headline given, reply ONLY with JSON: {"impact":"...","assets":"...","risks":"...","opportunities":"..."}. Keep each field under 15 words.' },
@@ -13192,7 +13192,7 @@ async function devhubDispatch() {
     let planText = '';
 
     if (provider === 'server') {
-      const r = await fetch('/api/ai/call', {
+      const r = await fetch('https://groq-proxy.physicsedge.workers.dev', {
         method:'POST', credentials:'include',
         headers:{'Content-Type':'application/json'},
         body: JSON.stringify({ messages: msgs, model: 'llama-3.1-8b-instant' })
@@ -21712,7 +21712,7 @@ async function qzAICall(systemPrompt, userMessage, maxTokens) {
 
   if (provider === 'server') {
     // ── Server mode: secure backend proxy ──────────────────────
-    response = await fetch('/api/ai/call', {
+    response = await fetch('https://groq-proxy.physicsedge.workers.dev', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'same-origin',
@@ -28682,7 +28682,7 @@ const IntelEngine = (() => {
     }
     bodyEl.innerHTML = '<div class="intel-skeleton-line" style="width:90%"></div><div class="intel-skeleton-line" style="width:76%"></div><div class="intel-skeleton-line" style="width:82%"></div>';
     try {
-      const res = await fetch('/api/ai/call', {
+      const res = await fetch('https://groq-proxy.physicsedge.workers.dev', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -28757,7 +28757,7 @@ const IntelEngine = (() => {
     const rows = COUNTRY_DATA[_activeCountry] || [];
     const dataStr = rows.map(r => r.k + ': ' + r.v).join(', ');
     try {
-      const res = await fetch('/api/ai/call', {
+      const res = await fetch('https://groq-proxy.physicsedge.workers.dev', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -28837,7 +28837,7 @@ const IntelEngine = (() => {
     if (!paper) return;
     btn.textContent = '⧡ Loading…';
     try {
-      const res = await fetch('/api/ai/call', {
+      const res = await fetch('https://groq-proxy.physicsedge.workers.dev', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
