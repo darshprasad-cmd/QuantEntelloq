@@ -4813,6 +4813,484 @@ input[type="number"]:focus {
 }
 </style>
 
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   QUANT ENTELLOQ — CINEMATIC REDESIGN 2026
+   Complete visual overhaul of the landing page
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Base resets for landing ── */
+#landing { background: #020409; }
+
+/* ── NAV ─────────────────────────────────────────────────────────────────── */
+.qze-nav {
+  position: sticky; top: 0; z-index: 500;
+  border-bottom: 1px solid rgba(255,255,255,0.055);
+  background: rgba(2,4,9,0.88);
+  backdrop-filter: blur(24px) saturate(1.5);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+}
+.qze-nav-inner {
+  max-width: 1240px; margin: 0 auto; padding: 0 32px;
+  height: 60px; display: flex; align-items: center; gap: 32px;
+}
+.qze-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-display); font-size: 17px; font-weight: 800;
+  letter-spacing: -0.03em; color: #fff; text-decoration: none;
+  white-space: nowrap; flex-shrink: 0;
+}
+.qze-logo em { color: #A78BFA; font-style: normal; }
+.qze-logo-mark {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: linear-gradient(135deg, #6D28D9, #3B82F6);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 12px rgba(109,40,217,0.5);
+  flex-shrink: 0;
+}
+.qze-nav-links {
+  display: flex; gap: 28px; margin-right: auto;
+}
+.qze-nav-links a {
+  font-size: 13px; color: rgba(255,255,255,0.4); text-decoration: none;
+  font-weight: 500; transition: color .18s;
+}
+.qze-nav-links a:hover { color: rgba(255,255,255,0.85); }
+.qze-nav-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+.qze-nav-ghost {
+  background: none; border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.55); font-size: 13px; font-weight: 500;
+  padding: 7px 16px; border-radius: 9px; cursor: pointer;
+  font-family: var(--font-body); transition: all .15s;
+}
+.qze-nav-ghost:hover { background: rgba(255,255,255,0.06); color: #fff; }
+.qze-nav-primary {
+  background: linear-gradient(135deg, #7C3AED, #4F46E5);
+  border: none; color: #fff; font-size: 13px; font-weight: 700;
+  padding: 8px 18px; border-radius: 9px; cursor: pointer;
+  font-family: var(--font-display); letter-spacing: -0.01em;
+  box-shadow: 0 2px 14px rgba(124,58,237,0.35);
+  transition: transform .18s, box-shadow .18s;
+}
+.qze-nav-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(124,58,237,0.5); }
+
+/* ── HERO ────────────────────────────────────────────────────────────────── */
+.qze-hero {
+  position: relative; overflow: hidden;
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  background: radial-gradient(ellipse at 20% 40%, rgba(109,40,217,0.14) 0%, transparent 55%),
+              radial-gradient(ellipse at 80% 20%, rgba(59,130,246,0.08) 0%, transparent 50%),
+              #020409;
+}
+.qze-hero-grid {
+  max-width: 1240px; margin: 0 auto; padding: 80px 32px 60px;
+  display: grid; grid-template-columns: 1fr 420px;
+  gap: 72px; align-items: center; position: relative; z-index: 1; width: 100%;
+}
+.qze-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+  color: #A78BFA; letter-spacing: 0.18em; text-transform: uppercase;
+  margin-bottom: 22px;
+  padding: 6px 14px; border: 1px solid rgba(167,139,250,0.25);
+  border-radius: 100px; background: rgba(167,139,250,0.07);
+}
+.qze-live-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: #34D399;
+  box-shadow: 0 0 8px rgba(52,211,153,0.7);
+  animation: qze-live-pulse 2s ease-in-out infinite;
+}
+@keyframes qze-live-pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+.qze-h1 {
+  font-family: var(--font-display); font-size: clamp(44px, 5.5vw, 72px);
+  font-weight: 900; letter-spacing: -0.04em; line-height: 1.0;
+  margin-bottom: 20px;
+  background: linear-gradient(145deg, #ffffff 0%, #E0D9FF 45%, #C4B5FD 75%, #A78BFA 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.qze-h1 em { font-style: normal; color: #A78BFA; -webkit-text-fill-color: #A78BFA; }
+.qze-lead {
+  font-size: 16px; color: rgba(255,255,255,0.42); line-height: 1.7;
+  margin-bottom: 32px; max-width: 520px; font-weight: 350;
+}
+.qze-hero-stats {
+  display: flex; gap: 0; margin-bottom: 36px;
+  border: 1px solid rgba(255,255,255,0.07); border-radius: 14px;
+  background: rgba(255,255,255,0.02); overflow: hidden; max-width: 480px;
+}
+.qze-stat-item {
+  flex: 1; padding: 14px 16px; text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.07);
+}
+.qze-stat-item:last-child { border-right: none; }
+.qze-stat-item strong {
+  display: block; font-family: var(--font-display); font-size: 20px;
+  font-weight: 900; color: #fff; letter-spacing: -0.03em;
+}
+.qze-stat-item span {
+  display: block; font-family: var(--font-mono); font-size: 9px;
+  color: rgba(255,255,255,0.28); letter-spacing: 0.1em;
+  text-transform: uppercase; margin-top: 2px;
+}
+.qze-hero-ctas {
+  display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;
+}
+.qze-cta-main {
+  background: linear-gradient(135deg, #7C3AED 0%, #4F46E5 100%);
+  border: none; color: #fff; font-size: 15px; font-weight: 700;
+  padding: 14px 28px; border-radius: 11px; cursor: pointer;
+  font-family: var(--font-display); letter-spacing: -0.01em;
+  box-shadow: 0 4px 28px rgba(124,58,237,0.42), inset 0 1px 0 rgba(255,255,255,0.15);
+  transition: transform .2s, box-shadow .2s;
+  animation: qze-cta-breathe 3s ease-in-out infinite;
+}
+.qze-cta-main:hover { transform: translateY(-2px); box-shadow: 0 8px 38px rgba(124,58,237,0.58); }
+@keyframes qze-cta-breathe {
+  0%,100%{box-shadow:0 4px 28px rgba(124,58,237,0.42),inset 0 1px 0 rgba(255,255,255,0.15)}
+  50%    {box-shadow:0 5px 36px rgba(124,58,237,0.60),inset 0 1px 0 rgba(255,255,255,0.15)}
+}
+.qze-cta-watch {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.7); font-size: 14px; font-weight: 600;
+  padding: 13px 22px; border-radius: 11px; cursor: pointer;
+  font-family: var(--font-body); transition: all .18s;
+  display: flex; align-items: center; gap: 8px;
+}
+.qze-cta-watch:hover { background: rgba(167,139,250,0.1); border-color: rgba(167,139,250,0.3); color: #fff; }
+.qze-trust-row {
+  display: flex; gap: 18px; flex-wrap: wrap;
+}
+.qze-trust-row span {
+  font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.28);
+  letter-spacing: 0.06em; display: flex; align-items: center; gap: 5px;
+}
+.qze-trust-row span::before { content: '✓'; color: #34D399; }
+
+/* ── AUTH CARD (redesigned) ── */
+.qze-auth-card {
+  background: rgba(8,11,24,0.95);
+  border: 1px solid rgba(167,139,250,0.14);
+  border-radius: 20px; padding: 28px;
+  box-shadow:
+    0 0 0 1px rgba(167,139,250,0.05),
+    0 40px 120px rgba(0,0,0,0.7),
+    0 8px 40px rgba(109,40,217,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.055);
+  position: relative; overflow: hidden;
+  animation: qze-card-in 0.7s 0.2s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes qze-card-in {
+  from { opacity:0; transform:translateY(24px) scale(0.96); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+.qze-auth-card::before {
+  content:''; position:absolute; top:-60px; right:-60px; width:200px; height:200px;
+  background: radial-gradient(circle, rgba(109,40,217,0.15), transparent 70%);
+  pointer-events: none;
+}
+.qze-auth-logo {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 18px;
+  font-family: var(--font-display); font-size: 15px; font-weight: 800; letter-spacing: -0.02em; color: #fff;
+}
+.qze-auth-logo em { color: #A78BFA; font-style: normal; }
+.qze-auth-logo-dot { width: 7px; height: 7px; border-radius: 50%; background: #A78BFA; box-shadow: 0 0 8px rgba(167,139,250,0.8); animation: qze-live-pulse 2s infinite; }
+.qze-auth-title { font-family:var(--font-display); font-size:20px; font-weight:800; color:#fff; letter-spacing:-0.02em; margin-bottom:4px; }
+.qze-auth-sub { font-size:12px; color:rgba(255,255,255,0.35); margin-bottom:20px; }
+
+/* Restyle existing lp3 form elements inside qze-auth-card */
+.qze-auth-card .lp3-input {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(255,255,255,0.09) !important;
+  border-radius: 10px !important; padding: 11px 14px !important;
+  color: #fff !important; font-size: 13.5px !important;
+  transition: border-color .18s, background .18s !important;
+  width: 100% !important; box-sizing: border-box !important;
+}
+.qze-auth-card .lp3-input:focus {
+  outline: none !important; border-color: rgba(167,139,250,0.45) !important;
+  background: rgba(167,139,250,0.04) !important;
+}
+.qze-auth-card .lp3-field { margin-bottom: 10px !important; }
+.qze-auth-card .lp3-submit {
+  width: 100% !important; padding: 12px !important; font-size: 14px !important;
+  border-radius: 10px !important; margin: 14px 0 10px !important;
+  background: linear-gradient(135deg,#7C3AED,#4F46E5) !important;
+  border: none !important; color: #fff !important; font-weight: 700 !important;
+  font-family: var(--font-display) !important; cursor: pointer !important;
+  box-shadow: 0 3px 16px rgba(124,58,237,0.35) !important;
+  transition: transform .18s, box-shadow .18s !important;
+}
+.qze-auth-card .lp3-submit:hover { transform: translateY(-1px) !important; box-shadow: 0 5px 22px rgba(124,58,237,0.5) !important; }
+.qze-auth-card .btn-google-primary {
+  width: 100% !important; border-radius: 10px !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  background: rgba(255,255,255,0.04) !important;
+  font-size: 13.5px !important; font-weight: 600 !important; padding: 11px 16px !important;
+  margin-bottom: 14px !important;
+}
+.qze-auth-card .lp3-or {
+  font-size: 11px !important; color: rgba(255,255,255,0.25) !important;
+  margin: 0 0 12px !important;
+}
+.qze-auth-card .lp3-switch {
+  font-size: 11.5px !important; color: rgba(255,255,255,0.3) !important;
+}
+.qze-auth-card .lp3-switch a { color: #A78BFA !important; cursor: pointer; }
+.qze-auth-card .lp3-card-lock {
+  font-size: 10px !important; color: rgba(255,255,255,0.2) !important;
+  margin-top: 12px !important; text-align: center !important;
+}
+.qze-auth-card .lp3-err { color: #F87171 !important; font-size: 12px !important; margin: 6px 0 !important; }
+.qze-auth-card .lp3-ok { color: #34D399 !important; font-size: 12px !important; margin: 6px 0 !important; }
+
+/* ── TICKER BAR ── */
+.qze-ticker-bar {
+  background: rgba(255,255,255,0.025);
+  border-top: 1px solid rgba(255,255,255,0.045);
+  border-bottom: 1px solid rgba(255,255,255,0.045);
+  padding: 10px 0; overflow: hidden;
+  position: relative;
+}
+.qze-ticker-bar::before,.qze-ticker-bar::after {
+  content:''; position:absolute; top:0; bottom:0; width:80px; z-index:2; pointer-events:none;
+}
+.qze-ticker-bar::before { left:0; background:linear-gradient(90deg,#020409,transparent); }
+.qze-ticker-bar::after  { right:0; background:linear-gradient(90deg,transparent,#020409); }
+.qze-ticker-track { display:flex; gap:0; white-space:nowrap; animation:qze-scroll 35s linear infinite; }
+.qze-ticker-track:hover { animation-play-state:paused; }
+@keyframes qze-scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+.qze-tick-item { display:inline-flex; align-items:center; gap:8px; padding:0 20px; font-family:var(--font-mono); font-size:11.5px; }
+.qze-tick-sym { color:rgba(255,255,255,0.7); font-weight:700; }
+.qze-tick-price { color:rgba(255,255,255,0.45); }
+.qze-tick-up { color:#34D399; font-weight:600; }
+.qze-tick-dn { color:#F87171; font-weight:600; }
+.qze-tick-sep { color:rgba(255,255,255,0.12); padding:0 4px; }
+
+/* ── PRODUCT SHOWCASE ── */
+.qze-showcase {
+  padding: 96px 32px; max-width: 1240px; margin: 0 auto;
+}
+.qze-showcase-hdr { text-align:center; margin-bottom:52px; }
+.qze-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+  color: #A78BFA; letter-spacing: 0.18em; text-transform: uppercase;
+  padding: 5px 14px; border: 1px solid rgba(167,139,250,0.22);
+  border-radius: 100px; background: rgba(167,139,250,0.07);
+  margin-bottom: 18px;
+}
+.qze-h2 {
+  font-family:var(--font-display); font-size:clamp(32px,4vw,52px); font-weight:900;
+  letter-spacing:-0.03em; line-height:1.08; margin-bottom:12px;
+  background:linear-gradient(135deg,#fff 0%,#C4B5FD 65%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.qze-h2-sub { font-size:15px; color:rgba(255,255,255,0.38); max-width:520px; margin:0 auto 32px; line-height:1.65; }
+
+.qze-showcase-tabs {
+  display: inline-flex; gap: 4px; padding: 4px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+}
+.qze-stab {
+  background: none; border: none; color: rgba(255,255,255,0.4);
+  font-size: 12.5px; font-weight: 600; padding: 8px 18px; border-radius: 9px;
+  cursor: pointer; font-family: var(--font-body); transition: all .2s;
+}
+.qze-stab.active {
+  background: rgba(167,139,250,0.15); color: #C4B5FD;
+  border: 1px solid rgba(167,139,250,0.25);
+}
+.qze-stab:hover:not(.active) { color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.04); }
+
+.qze-showcase-body {
+  position: relative; min-height: 420px; margin-top: 28px;
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20px; overflow: hidden;
+}
+.qze-spanel {
+  position: absolute; inset: 0; display: flex;
+  align-items: center; justify-content: center;
+  padding: 40px; opacity: 0; pointer-events: none;
+  transition: opacity .35s ease;
+}
+.qze-spanel.active { opacity: 1; pointer-events: auto; }
+.qze-spanel-inner {
+  display: flex; align-items: center; gap: 56px;
+  max-width: 860px; width: 100%;
+}
+.qze-spanel-visual { flex-shrink: 0; }
+.qze-spanel-text { flex: 1; }
+.qze-spanel-tag { font-family:var(--font-mono); font-size:9px; color:#A78BFA; letter-spacing:0.18em; text-transform:uppercase; margin-bottom:12px; }
+.qze-spanel-h { font-family:var(--font-display); font-size:26px; font-weight:900; letter-spacing:-0.025em; color:#fff; margin-bottom:10px; line-height:1.15; }
+.qze-spanel-p { font-size:13.5px; color:rgba(255,255,255,0.42); line-height:1.65; margin-bottom:16px; }
+.qze-spanel-feats { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:7px; }
+.qze-spanel-feats li { font-size:12.5px; color:rgba(255,255,255,0.55); display:flex; align-items:flex-start; gap:8px; }
+.qze-spanel-feats li::before { content:'→'; color:#A78BFA; flex-shrink:0; font-size:11px; margin-top:1px; }
+.qze-showcase-cta { text-align:center; margin-top:28px; }
+.qze-showcase-cta-btn {
+  background:none; border:1px solid rgba(167,139,250,0.25);
+  color:#A78BFA; font-size:13px; font-weight:600; padding:10px 24px; border-radius:10px;
+  cursor:pointer; font-family:var(--font-body); transition:all .18s;
+  display:inline-flex; align-items:center; gap:8px;
+}
+.qze-showcase-cta-btn:hover { background:rgba(167,139,250,0.1); border-color:rgba(167,139,250,0.45); color:#C4B5FD; }
+
+/* ── SIGNAL CHIPS (hero) ── */
+.qze-signals { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:28px; }
+.qze-sig {
+  padding:6px 12px; border-radius:100px; font-family:var(--font-mono);
+  font-size:10.5px; font-weight:700; letter-spacing:0.05em;
+  animation: qze-sig-float 3s ease-in-out infinite;
+}
+.qze-sig:nth-child(2){animation-delay:.5s}.qze-sig:nth-child(3){animation-delay:1s}.qze-sig:nth-child(4){animation-delay:1.5s}
+@keyframes qze-sig-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+.qze-sig-buy { background:rgba(52,211,153,0.1); border:1px solid rgba(52,211,153,0.22); color:#34D399; }
+.qze-sig-sell { background:rgba(248,113,113,0.1); border:1px solid rgba(248,113,113,0.22); color:#F87171; }
+.qze-sig-hold { background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.22); color:#FBBF24; }
+
+/* ── FEATURES GRID ── */
+.qze-features-section { padding:80px 32px; border-top:1px solid rgba(255,255,255,0.05); }
+.qze-features-inner { max-width:1240px; margin:0 auto; }
+.qze-features-grid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 1px;
+  background: rgba(255,255,255,0.055); border-radius:20px; overflow:hidden;
+  margin-top:48px; border:1px solid rgba(255,255,255,0.055);
+}
+.qze-feat-card {
+  background: #020409; padding:32px 28px;
+  transition: background .25s;
+}
+.qze-feat-card:hover { background: rgba(109,40,217,0.04); }
+.qze-feat-icon {
+  width:42px; height:42px; border-radius:11px; margin-bottom:16px;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(167,139,250,0.1); border:1px solid rgba(167,139,250,0.18);
+  color:#A78BFA;
+}
+.qze-feat-icon svg { width:20px; height:20px; }
+.qze-feat-title { font-family:var(--font-display); font-size:15px; font-weight:800; color:#fff; margin-bottom:8px; letter-spacing:-0.01em; }
+.qze-feat-desc { font-size:12.5px; color:rgba(255,255,255,0.38); line-height:1.65; }
+
+/* ── REVIEWS ── */
+.qze-reviews-section { padding:80px 32px; border-top:1px solid rgba(255,255,255,0.05); }
+.qze-reviews-inner { max-width:1240px; margin:0 auto; }
+.qze-reviews-grid {
+  display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:48px;
+}
+.qze-review-card {
+  background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.06);
+  border-radius:18px; padding:28px;
+  transition:border-color .22s, transform .22s;
+}
+.qze-review-card:hover { border-color:rgba(167,139,250,0.2); transform:translateY(-2px); }
+.qze-review-stars { color:#A78BFA; font-size:13px; letter-spacing:2px; margin-bottom:12px; }
+.qze-review-text { font-size:13.5px; color:rgba(255,255,255,0.6); line-height:1.7; margin-bottom:18px; font-style:italic; }
+.qze-review-author { display:flex; align-items:center; gap:12px; }
+.qze-review-avatar {
+  width:38px; height:38px; border-radius:50%; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-display); font-size:15px; font-weight:800; color:#fff;
+  background:linear-gradient(135deg,rgba(124,58,237,0.35),rgba(167,139,250,0.2));
+}
+.qze-review-name { font-family:var(--font-display); font-size:13px; font-weight:700; color:#fff; }
+.qze-review-role { font-size:11px; color:rgba(255,255,255,0.3); margin-top:2px; font-family:var(--font-mono); }
+
+/* ── PRICING ── */
+.qze-pricing-section { padding:80px 32px; border-top:1px solid rgba(255,255,255,0.05); }
+.qze-pricing-inner { max-width:1240px; margin:0 auto; }
+.qze-pricing-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; max-width:760px; margin:48px auto 0; }
+.qze-plan {
+  border-radius:20px; padding:32px;
+  border:1px solid rgba(255,255,255,0.08);
+  background:rgba(255,255,255,0.025);
+  position:relative; overflow:hidden;
+  transition:border-color .22s, transform .22s;
+}
+.qze-plan:hover { transform:translateY(-3px); }
+.qze-plan-pro {
+  border-color:rgba(167,139,250,0.3);
+  background:linear-gradient(145deg,rgba(109,40,217,0.12),rgba(79,70,229,0.06));
+  box-shadow:0 0 0 1px rgba(167,139,250,0.1),0 20px 60px rgba(109,40,217,0.15);
+}
+.qze-plan-badge {
+  position:absolute; top:18px; right:18px;
+  font-family:var(--font-mono); font-size:9px; font-weight:700;
+  color:#C4B5FD; letter-spacing:0.15em; text-transform:uppercase;
+  background:rgba(167,139,250,0.15); border:1px solid rgba(167,139,250,0.3);
+  padding:3px 10px; border-radius:100px;
+}
+.qze-plan-tier { font-family:var(--font-mono); font-size:10px; font-weight:700; color:rgba(255,255,255,0.4); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:12px; }
+.qze-plan-price { font-family:var(--font-display); font-size:40px; font-weight:900; color:#fff; letter-spacing:-0.04em; margin-bottom:4px; }
+.qze-plan-price sub { font-size:14px; color:rgba(255,255,255,0.4); vertical-align:middle; font-weight:400; font-family:var(--font-body); }
+.qze-plan-cycle { font-size:11px; color:rgba(255,255,255,0.28); font-family:var(--font-mono); margin-bottom:24px; }
+.qze-plan-feats { list-style:none; padding:0; margin:0 0 28px; display:flex; flex-direction:column; gap:9px; }
+.qze-plan-feats li { font-size:13px; color:rgba(255,255,255,0.55); display:flex; gap:8px; }
+.qze-plan-feats li::before { content:'✓'; color:#34D399; flex-shrink:0; }
+.qze-plan-btn {
+  width:100%; padding:12px; border-radius:10px; cursor:pointer; font-size:13.5px; font-weight:700; font-family:var(--font-display);
+  transition:all .18s;
+}
+.qze-plan-free-btn { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:rgba(255,255,255,0.7); }
+.qze-plan-free-btn:hover { background:rgba(255,255,255,0.1); color:#fff; }
+.qze-plan-pro-btn { background:linear-gradient(135deg,#7C3AED,#4F46E5); border:none; color:#fff; box-shadow:0 3px 18px rgba(124,58,237,0.35); }
+.qze-plan-pro-btn:hover { transform:translateY(-1px); box-shadow:0 5px 24px rgba(124,58,237,0.5); }
+
+/* ── CTA SECTION ── */
+.qze-cta-section {
+  padding:120px 32px; text-align:center;
+  border-top:1px solid rgba(167,139,250,0.1);
+  background:radial-gradient(ellipse at 50% 100%,rgba(109,40,217,0.1),transparent 70%);
+  position:relative; overflow:hidden;
+}
+.qze-cta-glow {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:500px; height:500px; border-radius:50%;
+  background:radial-gradient(circle,rgba(167,139,250,0.08),transparent 65%);
+  pointer-events:none;
+}
+.qze-cta-section .qze-tag { margin-bottom:20px; }
+.qze-cta-h { font-family:var(--font-display); font-size:clamp(36px,5vw,64px); font-weight:900; letter-spacing:-0.04em; margin-bottom:16px; background:linear-gradient(135deg,#fff 20%,#C4B5FD 70%,#A78BFA); -webkit-background-clip:text; background-clip:text; color:transparent; position:relative; z-index:1; }
+.qze-cta-p { font-size:16px; color:rgba(255,255,255,0.38); max-width:460px; margin:0 auto 40px; line-height:1.7; position:relative; z-index:1; }
+.qze-cta-btns { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; position:relative; z-index:1; }
+
+/* ── FOOTER ── */
+.qze-footer {
+  border-top:1px solid rgba(255,255,255,0.05); padding:32px;
+  max-width:1240px; margin:0 auto;
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
+}
+.qze-footer-brand { font-family:var(--font-display); font-size:14px; font-weight:700; color:rgba(255,255,255,0.35); letter-spacing:-0.01em; }
+.qze-footer-brand em { color:rgba(167,139,250,0.6); font-style:normal; }
+.qze-footer-links { display:flex; gap:20px; }
+.qze-footer-links a { font-size:12px; color:rgba(255,255,255,0.25); text-decoration:none; font-family:var(--font-mono); letter-spacing:0.04em; cursor:pointer; transition:color .15s; }
+.qze-footer-links a:hover { color:rgba(255,255,255,0.55); }
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .qze-hero-grid{ grid-template-columns:1fr; gap:48px; padding:60px 24px 48px; }
+  .qze-auth-card{ max-width:480px; }
+  .qze-features-grid{ grid-template-columns:repeat(2,1fr); }
+  .qze-reviews-grid{ grid-template-columns:1fr; }
+}
+@media(max-width:700px){
+  .qze-nav-links{ display:none; }
+  .qze-features-grid{ grid-template-columns:1fr; }
+  .qze-pricing-grid{ grid-template-columns:1fr; max-width:380px; }
+  .qze-showcase{ padding:60px 20px; }
+  .qze-spanel-inner{ flex-direction:column; gap:28px; }
+  .qze-h1{ font-size:38px; }
+  .qze-hero-stats{ flex-wrap:wrap; }
+}
+@media(max-width:480px){
+  .qze-nav-primary span{ display:none; }
+  .qze-hero-ctas{ flex-direction:column; }
+  .qze-cta-watch{ justify-content:center; }
+}
+</style>
+
 <!-- ═══ Production hardening overrides — injected after main CSS ═══════════ -->
 <style>
 /* ── iOS 100vh fix: use --dvh set by JS polyfill above ───────────────────── */
@@ -7897,25 +8375,520 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:20px;
 </div><!-- end #qze-playground -->
 
 <div id="landing">
-  <!-- Nav -->
-  <nav class="lp3-nav">
-    <div class="lp3-nav-inner">
-      <a class="lp3-logo" href="#">Quant<em>Entelloq</em><sub>by Entelloq Networks</sub></a>
-      <div class="lp3-nav-links">
-        <a href="#lp3-features">Features</a>
-        <a href="#lp3-reviews">Reviews</a>
-        <a href="#lp3-about">About</a>
-        <a href="#lp3-faq">FAQ</a>
+
+<!-- ── NAV ──────────────────────────────────────────────────────────────── -->
+<nav class="qze-nav">
+  <div class="qze-nav-inner">
+    <a class="qze-logo" href="#">
+      <span class="qze-logo-mark" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M2 14L7 6L11 11L15 4L18 8" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      Quant<em>Entelloq</em>
+    </a>
+    <div class="qze-nav-links">
+      <a href="#qze-showcase">Platform</a>
+      <a href="#qze-features">Features</a>
+      <a href="#qze-pricing">Pricing</a>
+      <a href="#lp3-faq">FAQ</a>
+    </div>
+    <div class="qze-nav-actions">
+      <button class="qze-nav-ghost" onclick="lp3Tab('in')">Sign In</button>
+      <button class="qze-nav-primary" onclick="lp3Tab('up')">Get Started Free</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ──────────────────────────────────────────────────────────────── -->
+<section class="qze-hero">
+  <canvas id="hero-canvas" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.45;"></canvas>
+  <div class="qze-hero-grid">
+
+    <!-- Left: Copy -->
+    <div style="position:relative;z-index:1;">
+      <div class="qze-eyebrow"><span class="qze-live-dot"></span>AI-Native · Institutional Grade · Free to Start</div>
+      <h1 class="qze-h1">The AI that<br>thinks in <em>markets</em>.</h1>
+      <p class="qze-lead">Real-time signals, portfolio intelligence, macro analysis, and 100M+ global assets — unified in one platform. The institutional-grade edge, finally accessible to everyone.</p>
+
+      <!-- Stats -->
+      <div class="qze-hero-stats">
+        <div class="qze-stat-item"><strong>100M+</strong><span>Global Assets</span></div>
+        <div class="qze-stat-item"><strong>∞</strong><span>AI Queries Pro</span></div>
+        <div class="qze-stat-item"><strong>&lt;15ms</strong><span>Data Latency</span></div>
+        <div class="qze-stat-item"><strong>Free</strong><span>To Start</span></div>
       </div>
-      <div class="lp3-nav-actions">
-        <button class="lp3-ghost" onclick="lp3Tab('in')">Sign In</button>
-        <button class="lp3-primary" onclick="lp3Tab('up')">Get Started Free</button>
+
+      <!-- Live signal chips -->
+      <div class="qze-signals">
+        <span class="qze-sig qze-sig-buy">▲ NVDA BUY · 94%</span>
+        <span class="qze-sig qze-sig-sell">▼ TSLA SELL · 87%</span>
+        <span class="qze-sig qze-sig-buy">▲ AAPL BUY · 91%</span>
+        <span class="qze-sig qze-sig-hold">● MSFT HOLD · 78%</span>
+      </div>
+
+      <!-- CTAs -->
+      <div class="qze-hero-ctas">
+        <button class="qze-cta-main" onclick="lp3Tab('up')">Start Free — No Card Required →</button>
+        <button class="qze-cta-watch" onclick="tutorialShow(true)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          Watch Platform Tour
+        </button>
+      </div>
+      <div class="qze-trust-row">
+        <span>No credit card</span>
+        <span>Cancel anytime</span>
+        <span>Full platform access</span>
       </div>
     </div>
-  </nav>
 
-  <!-- Hero -->
-  <section class="lp3-hero">
+    <!-- Right: Auth card -->
+    <div class="qze-auth-card" id="lp3-auth-inline">
+      <div class="qze-auth-logo"><span class="qze-auth-logo-dot"></span>Quant<em>Entelloq</em></div>
+      <div class="qze-auth-title" id="lp3-card-title">Create your free account</div>
+      <div class="qze-auth-sub" id="lp3-card-sub">No credit card · Full access from day one</div>
+
+      <button class="btn-google-primary qz-magnetic" onclick="doGoogleAuth()">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continue with Google
+      </button>
+      <div class="lp3-or">or continue with email</div>
+
+      <!-- Sign Up -->
+      <div id="lp3-su-form">
+        <div class="lp3-field"><input class="lp3-input" id="lp3-su-name" type="text" placeholder="Full name (optional)" autocomplete="name"></div>
+        <div class="lp3-field"><input class="lp3-input" id="lp3-su-email" type="email" placeholder="Email address" autocomplete="email"></div>
+        <div class="lp3-field" style="position:relative;">
+          <input class="lp3-input" id="lp3-su-pass" type="password" placeholder="Password (min 8 chars)" autocomplete="new-password" onkeydown="if(event.key==='Enter')lp3Signup()" oninput="lp3PwdStrength(this.value)" style="padding-right:38px;">
+          <button type="button" onclick="lp3TogglePwd('lp3-su-pass',this)" aria-label="Show/hide password" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.3);padding:4px;line-height:0;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          <div class="lp3-pwd-strength" id="lp3-pwd-strength" style="display:none;"><div class="lp3-pwd-bars"><div class="lp3-pwd-bar"></div><div class="lp3-pwd-bar"></div><div class="lp3-pwd-bar"></div><div class="lp3-pwd-bar"></div></div><div class="lp3-pwd-label" id="lp3-pwd-label">Weak</div></div>
+        </div>
+        <div class="lp3-err" id="lp3-su-err"></div>
+        <div class="lp3-ok" id="lp3-su-ok">Account created! Launching your platform…</div>
+        <button class="lp3-submit qz-magnetic" id="lp3-su-btn" onclick="lp3Signup()">Create My Account →</button>
+        <div class="lp3-switch">Already a member? <a onclick="lp3Tab('in')">Sign in</a></div>
+      </div>
+
+      <!-- Sign In -->
+      <div id="lp3-si-form" style="display:none;">
+        <div class="lp3-field"><input class="lp3-input" id="lp3-si-email" type="email" placeholder="Email address" autocomplete="email"></div>
+        <div class="lp3-field" style="position:relative;">
+          <input class="lp3-input" id="lp3-si-pass" type="password" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')lp3Login()" style="padding-right:38px;">
+          <button type="button" onclick="lp3TogglePwd('lp3-si-pass',this)" aria-label="Show/hide password" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.3);padding:4px;line-height:0;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+        <div class="lp3-err" id="lp3-si-err"></div>
+        <button class="lp3-submit qz-magnetic" id="lp3-si-btn" onclick="lp3Login()">Sign In →</button>
+        <div class="lp3-switch" style="display:flex;justify-content:space-between;align-items:center;">
+          <span>New here? <a onclick="lp3Tab('up')">Create a free account</a></span>
+          <a onclick="lp3ForgotTab()" style="font-size:11px;color:rgba(255,255,255,0.35);cursor:pointer;transition:color .15s;" onmouseover="this.style.color='#A78BFA'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Forgot password?</a>
+        </div>
+      </div>
+
+      <!-- Forgot Password -->
+      <div id="lp3-fp-form" style="display:none;">
+        <div class="qze-auth-title" style="font-size:17px;margin-bottom:4px;">Reset your password</div>
+        <div class="qze-auth-sub" style="margin-bottom:14px;">Enter your email — we'll send a reset link.</div>
+        <div class="lp3-field"><input class="lp3-input" id="lp3-fp-email" type="email" placeholder="Email address" autocomplete="email" onkeydown="if(event.key==='Enter')lp3ForgotSubmit()"></div>
+        <div class="lp3-err" id="lp3-fp-err"></div>
+        <div class="lp3-ok" id="lp3-fp-ok" style="display:none;">Check your inbox — reset link sent!</div>
+        <button class="lp3-submit qz-magnetic" id="lp3-fp-btn" onclick="lp3ForgotSubmit()">Send Reset Link →</button>
+        <div class="lp3-switch"><a onclick="lp3Tab('in')" style="cursor:pointer;">← Back to sign in</a></div>
+      </div>
+
+      <div class="lp3-card-lock">🔒 Bank-grade encryption · Passwords hashed · Sessions expire in 7 days</div>
+    </div>
+
+  </div><!-- /qze-hero-grid -->
+</section>
+
+<!-- ── TICKER ──────────────────────────────────────────────────────────── -->
+<div class="qze-ticker-bar">
+  <div class="qze-ticker-track">
+    <!-- Doubled for seamless loop -->
+    <span class="qze-tick-item"><span class="qze-tick-sym">AAPL</span><span class="qze-tick-price">$214.82</span><span class="qze-tick-up">+1.24%</span></span><span class="qze-tick-sep">·</span>
+    <span class="qze-tick-item"><span class="qze-tick-sym">NVDA</span><span class="qze-tick-price">$1,087</span><span class="qze-tick-up">+2.81%</span></span><span class="qze-tick-sep">·</span>
+    <span class="qze-tick-item"><span class="qze-tick-sym">MSFT</span><span class="qze-tick-price">$422.13</span><span class="qze-tick-up">+0.92%</span></span><span class="qze-tick-sep">·</span>
+    <span class="qze-tick-item"><span class="qze-tick-sym">TSLA</span><span class="qze-tick-price">$248.50</span><span class="qze-tick-dn">−1.23%</span></span><span class="qze-tick-sep">·</span>
+    <span class="qze-tick-item"><span class="qze-tick-sym">BTC</span><span class="qze-tick-price">$97,432</span><span class="qze-tick-up">+3.81%</span></span><span class="qze-tick-sep">·</span>
+    <span class="qze-tick-item"><span class="qze-tick-sym">ETH</span><span class="qze-tick-price">$3,821</span><span class="qze-tick-up">+2.14%</span></span><span class="qze-tick-sep">·</span>
+    <span class="qze-tick-item"><span class="qze-tick-sym">SPX</span><span class="qze-tick-price">5,842</span><span class="qze-tick-up">+0.43%</span></span><span class="qze-tick-sep">·</span>
+    <span class="qze-tick-item"><span class="qze-tick-sym">AMZN</span><span class="qze-tick-price">$199.72</span><span class="qze-tick-up">+1.67%</span></span><span class="qze-tick-sep">·</span>
+    <span class="qze-tick-item"><span class="qze-tick-sym">META</span><span class="qze-tick-price">$572.44</span><span class="qze-tick-up">+2.33%</span></span><span class="qze-tick-sep">·</span>
+    <span class="qze-tick-item"><span class="qze-tick-sym">GOOGL</span><span class="qze-tick-price">$181.40</span><span class="qze-tick-dn">−0.58%</span></span><span class="qze-tick-sep">·</span>
+    <span class="qze-tick-item"><span class="qze-tick-sym">EURUSD</span><span class="qze-tick-price">1.0873</span><span class="qze-tick-up">+0.18%</span></span><span class="qze-tick-sep">·</span>
+    <span class="qze-tick-item"><span class="qze-tick-sym">GOLD</span><span class="qze-tick-price">$3,287</span><span class="qze-tick-up">+0.72%</span></span><span class="qze-tick-sep">·</span>
+    <!-- Duplicated for seamless scroll -->
+    <span class="qze-tick-item"><span class="qze-tick-sym">AAPL</span><span class="qze-tick-price">$214.82</span><span class="qze-tick-up">+1.24%</span></span><span class="qze-tick-sep">·</span>
+    <span class="qze-tick-item"><span class="qze-tick-sym">NVDA</span><span class="qze-tick-price">$1,087</span><span class="qze-tick-up">+2.81%</span></span><span class="qze-tick-sep">·</span>
+    <span class="qze-tick-item"><span class="qze-tick-sym">MSFT</span><span class="qze-tick-price">$422.13</span><span class="qze-tick-up">+0.92%</span></span><span class="qze-tick-sep">·</span>
+    <span class="qze-tick-item"><span class="qze-tick-sym">TSLA</span><span class="qze-tick-price">$248.50</span><span class="qze-tick-dn">−1.23%</span></span><span class="qze-tick-sep">·</span>
+    <span class="qze-tick-item"><span class="qze-tick-sym">BTC</span><span class="qze-tick-price">$97,432</span><span class="qze-tick-up">+3.81%</span></span><span class="qze-tick-sep">·</span>
+    <span class="qze-tick-item"><span class="qze-tick-sym">ETH</span><span class="qze-tick-price">$3,821</span><span class="qze-tick-up">+2.14%</span></span><span class="qze-tick-sep">·</span>
+    <span class="qze-tick-item"><span class="qze-tick-sym">SPX</span><span class="qze-tick-price">5,842</span><span class="qze-tick-up">+0.43%</span></span><span class="qze-tick-sep">·</span>
+    <span class="qze-tick-item"><span class="qze-tick-sym">AMZN</span><span class="qze-tick-price">$199.72</span><span class="qze-tick-up">+1.67%</span></span><span class="qze-tick-sep">·</span>
+    <span class="qze-tick-item"><span class="qze-tick-sym">META</span><span class="qze-tick-price">$572.44</span><span class="qze-tick-up">+2.33%</span></span><span class="qze-tick-sep">·</span>
+    <span class="qze-tick-item"><span class="qze-tick-sym">GOOGL</span><span class="qze-tick-price">$181.40</span><span class="qze-tick-dn">−0.58%</span></span><span class="qze-tick-sep">·</span>
+    <span class="qze-tick-item"><span class="qze-tick-sym">EURUSD</span><span class="qze-tick-price">1.0873</span><span class="qze-tick-up">+0.18%</span></span><span class="qze-tick-sep">·</span>
+    <span class="qze-tick-item"><span class="qze-tick-sym">GOLD</span><span class="qze-tick-price">$3,287</span><span class="qze-tick-up">+0.72%</span></span><span class="qze-tick-sep">·</span>
+  </div>
+</div>
+
+<!-- ── PRODUCT SHOWCASE ─────────────────────────────────────────────────── -->
+<div style="border-top:1px solid rgba(255,255,255,0.05);">
+<div class="qze-showcase" id="qze-showcase">
+  <div class="qze-showcase-hdr">
+    <div class="qze-tag">Platform Tour</div>
+    <h2 class="qze-h2">See every feature<br>in action.</h2>
+    <p class="qze-h2-sub">Click any tab to explore the live animated preview — or watch the full cinematic walkthrough.</p>
+    <div class="qze-showcase-tabs">
+      <button class="qze-stab active" onclick="qzeTab(0,this)">AI Command</button>
+      <button class="qze-stab" onclick="qzeTab(1,this)">Universe</button>
+      <button class="qze-stab" onclick="qzeTab(2,this)">Portfolio</button>
+      <button class="qze-stab" onclick="qzeTab(3,this)">Charts</button>
+    </div>
+  </div>
+
+  <div class="qze-showcase-body">
+
+    <!-- Panel 0: AI Command Center -->
+    <div class="qze-spanel active" id="qze-sp0">
+      <div class="qze-spanel-inner">
+        <div class="qze-spanel-visual">
+          <div class="tut-chat-mock" style="max-width:300px;width:300px;">
+            <div class="tut-chat-hdr"><div class="tut-chat-hdr-dot"></div>AI Command Center</div>
+            <div class="tut-chat-msgs">
+              <div class="tut-msg-user">Analyze NVDA earnings vs sector peers</div>
+              <div class="tut-msg-ai">NVIDIA Q3 revenue hit $35.1B (+94% YoY). Gross margin 74.6% vs AMD 51% and Intel 42% — exceptional pricing power driven by H100/H200 demand…</div>
+              <div class="tut-typing"><span></span><span></span><span></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="qze-spanel-text">
+          <div class="qze-spanel-tag">Feature 01</div>
+          <h3 class="qze-spanel-h">Ask anything.<br>Know everything.</h3>
+          <p class="qze-spanel-p">Natural-language AI analysis of any stock, macro trend, earnings release, or portfolio scenario — in seconds, not hours.</p>
+          <ul class="qze-spanel-feats">
+            <li>Earnings breakdowns vs. consensus estimates</li>
+            <li>Portfolio risk scoring & scenario modeling</li>
+            <li>Multi-agent AI: Market, Quant, Sentiment, Risk</li>
+            <li>20 free queries/day · Unlimited on Pro</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 1: Universe Browser -->
+    <div class="qze-spanel" id="qze-sp1">
+      <div class="qze-spanel-inner">
+        <div class="qze-spanel-visual">
+          <div class="tut-ticker-grid" style="width:280px;">
+            <div class="tut-ticker-card"><div><div class="tut-tk-sym">AAPL</div><div class="tut-tk-name">Apple Inc. · NASDAQ</div></div><div><div class="tut-tk-price">$214.82</div><div class="tut-tk-chg up">+1.24%</div></div></div>
+            <div class="tut-ticker-card"><div><div class="tut-tk-sym">BTC</div><div class="tut-tk-name">Bitcoin · Crypto</div></div><div><div class="tut-tk-price">$97,432</div><div class="tut-tk-chg up">+3.81%</div></div></div>
+            <div class="tut-ticker-card"><div><div class="tut-tk-sym">SPX</div><div class="tut-tk-name">S&amp;P 500 · Index</div></div><div><div class="tut-tk-price">5,842</div><div class="tut-tk-chg up">+0.43%</div></div></div>
+            <div class="tut-ticker-card"><div><div class="tut-tk-sym">NVDA</div><div class="tut-tk-name">NVIDIA Corp. · NASDAQ</div></div><div><div class="tut-tk-price">$1,087</div><div class="tut-tk-chg dn">−0.72%</div></div></div>
+            <div class="tut-ticker-card"><div><div class="tut-tk-sym">EURUSD</div><div class="tut-tk-name">Euro / USD · Forex</div></div><div><div class="tut-tk-price">1.0873</div><div class="tut-tk-chg up">+0.18%</div></div></div>
+          </div>
+        </div>
+        <div class="qze-spanel-text">
+          <div class="qze-spanel-tag">Feature 02</div>
+          <h3 class="qze-spanel-h">100M+ assets.<br>Zero friction.</h3>
+          <p class="qze-spanel-p">Search, filter, and analyze every asset class on earth across 100+ exchanges — with real-time prices and AI analysis on any ticker.</p>
+          <ul class="qze-spanel-feats">
+            <li>Stocks, ETFs, crypto, forex, indices, commodities</li>
+            <li>Filter by type, sector, country, market cap</li>
+            <li>Real-time prices via Massive Market Data</li>
+            <li>One-click AI deep dive on any asset</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 2: Portfolio -->
+    <div class="qze-spanel" id="qze-sp2">
+      <div class="qze-spanel-inner">
+        <div class="qze-spanel-visual">
+          <div class="tut-port-wrap" style="width:280px;">
+            <div class="tut-port-pnl"><div class="tut-pnl-label">Total Portfolio P&amp;L</div><div class="tut-pnl-val">+$18,432</div><div class="tut-pnl-sub">↑ +12.4% since inception</div></div>
+            <svg class="tut-sparkline" viewBox="0 0 280 64" preserveAspectRatio="none"><defs><linearGradient id="sg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#34D399" stop-opacity=".18"/><stop offset="100%" stop-color="#34D399" stop-opacity="0"/></linearGradient></defs><path class="tut-spark-fill" d="M0 52 C30 48 50 55 80 44 C110 33 130 38 160 24 C190 10 220 18 250 8 L280 4 L280 64 L0 64 Z"/><path d="M0 52 C30 48 50 55 80 44 C110 33 130 38 160 24 C190 10 220 18 250 8 L280 4"/></svg>
+            <div class="tut-positions">
+              <div class="tut-pos-row"><div class="tut-pos-col" style="flex:1;color:#fff;font-weight:700;">AAPL</div><div class="tut-pos-col" style="color:rgba(255,255,255,.4);">15 shares</div><div class="tut-pos-col" style="color:#34D399;margin-left:auto;">+$824</div></div>
+              <div class="tut-pos-row"><div class="tut-pos-col" style="flex:1;color:#fff;font-weight:700;">BTC</div><div class="tut-pos-col" style="color:rgba(255,255,255,.4);">0.42 BTC</div><div class="tut-pos-col" style="color:#34D399;margin-left:auto;">+$4,102</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="qze-spanel-text">
+          <div class="qze-spanel-tag">Feature 03</div>
+          <h3 class="qze-spanel-h">Your portfolio.<br>Fully alive.</h3>
+          <p class="qze-spanel-p">Live P&amp;L across all positions, sector exposure heatmap, risk scoring, and AI rebalancing suggestions — in one glance.</p>
+          <ul class="qze-spanel-feats">
+            <li>Live mark-to-market P&amp;L across all assets</li>
+            <li>Sector & geography concentration heatmap</li>
+            <li>AI risk scoring & drawdown monitoring</li>
+            <li>Import via CSV or add positions manually</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 3: Charts -->
+    <div class="qze-spanel" id="qze-sp3">
+      <div class="qze-spanel-inner">
+        <div class="qze-spanel-visual">
+          <div class="tut-chart-wrap" style="width:280px;">
+            <div class="tut-chart-hdr"><div><div class="tut-chart-sym">AAPL · 1D</div><div style="font-size:10px;color:rgba(255,255,255,.3);font-family:var(--font-mono);margin-top:2px;">May 2026</div></div><div class="tut-chart-price">$214.82</div></div>
+            <div class="tut-candles">
+              <div class="tut-candle dn"><div class="tut-candle-body" style="height:28px"></div></div>
+              <div class="tut-candle up"><div class="tut-candle-body" style="height:38px"></div></div>
+              <div class="tut-candle up"><div class="tut-candle-body" style="height:32px"></div></div>
+              <div class="tut-candle dn"><div class="tut-candle-body" style="height:22px"></div></div>
+              <div class="tut-candle up"><div class="tut-candle-body" style="height:44px"></div></div>
+              <div class="tut-candle up"><div class="tut-candle-body" style="height:56px"></div></div>
+              <div class="tut-candle dn"><div class="tut-candle-body" style="height:36px"></div></div>
+              <div class="tut-candle up"><div class="tut-candle-body" style="height:68px"></div></div>
+              <div class="tut-candle up"><div class="tut-candle-body" style="height:74px"></div></div>
+              <div class="tut-candle up"><div class="tut-candle-body" style="height:82px"></div></div>
+            </div>
+            <div class="tut-vol-bars">
+              <div class="tut-vol-bar" style="height:12px"></div><div class="tut-vol-bar" style="height:18px"></div><div class="tut-vol-bar" style="height:14px"></div><div class="tut-vol-bar" style="height:10px"></div><div class="tut-vol-bar" style="height:20px"></div><div class="tut-vol-bar" style="height:24px"></div><div class="tut-vol-bar" style="height:15px"></div><div class="tut-vol-bar" style="height:26px"></div><div class="tut-vol-bar" style="height:19px"></div><div class="tut-vol-bar" style="height:18px"></div>
+            </div>
+          </div>
+        </div>
+        <div class="qze-spanel-text">
+          <div class="qze-spanel-tag">Feature 04</div>
+          <h3 class="qze-spanel-h">Charts that<br>think with you.</h3>
+          <p class="qze-spanel-p">Silky-smooth LightweightCharts engine with overlapping AI signals, 7 technical indicators, and news events pinned to the timeline.</p>
+          <ul class="qze-spanel-feats">
+            <li>SMA, EMA, VWAP, RSI, MACD, Bollinger Bands</li>
+            <li>AI support/resistance & trend overlays</li>
+            <li>News events pinned directly on chart</li>
+            <li>Multiple timeframes: 1m to 1Y</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /showcase-body -->
+
+  <div class="qze-showcase-cta">
+    <button class="qze-showcase-cta-btn" onclick="tutorialShow(true)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      Watch Full Cinematic Tour — All 6 Scenes
+    </button>
+  </div>
+</div>
+</div>
+
+<!-- ── FEATURES ────────────────────────────────────────────────────────── -->
+<div class="qze-features-section" id="qze-features">
+<div class="qze-features-inner">
+  <div style="text-align:center;">
+    <div class="qze-tag">Features</div>
+    <h2 class="qze-h2">Everything you need.<br>Nothing you don't.</h2>
+    <p class="qze-h2-sub">Built for analysts who demand speed, precision, and intelligence — not a learning curve.</p>
+  </div>
+  <div class="qze-features-grid">
+    <div class="qze-feat-card"><div class="qze-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><div class="qze-feat-title">AI Signal Engine</div><div class="qze-feat-desc">Multi-agent AI scans 100M+ securities generating BUY/HOLD/SELL signals with confidence scores updated in real time.</div></div>
+    <div class="qze-feat-card"><div class="qze-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10l6 6v8a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></div><div class="qze-feat-title">NewsJudge</div><div class="qze-feat-desc">Distills hundreds of headlines into actionable impact scores. See which news moves which stocks — before the crowd reacts.</div></div>
+    <div class="qze-feat-card"><div class="qze-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></div><div class="qze-feat-title">AI Command Center</div><div class="qze-feat-desc">10 specialized AI agents — Market Intel, Risk, Sentiment, Prediction — working in parallel. Institutional analysis on demand.</div></div>
+    <div class="qze-feat-card"><div class="qze-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="qze-feat-title">Portfolio Tracker</div><div class="qze-feat-desc">Real-time P&amp;L, allocation analysis, and AI-generated rebalancing suggestions. Tracks your performance down to the cent.</div></div>
+    <div class="qze-feat-card"><div class="qze-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div><div class="qze-feat-title">Scenario Engine</div><div class="qze-feat-desc">Model any market scenario — rate hikes, earnings surprises, geopolitical events — and see projected portfolio impact instantly.</div></div>
+    <div class="qze-feat-card"><div class="qze-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div class="qze-feat-title">Backtesting</div><div class="qze-feat-desc">Validate your strategy against historical data. Sharpe ratio, max drawdown, win rate — all in seconds. No code required.</div></div>
+    <div class="qze-feat-card"><div class="qze-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div class="qze-feat-title">Macro Dashboard</div><div class="qze-feat-desc">Fed rates, yield curves, CPI, and global macro indicators — all live, all in context, all with AI commentary.</div></div>
+    <div class="qze-feat-card"><div class="qze-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><circle cx="12" cy="5" r="1"/><circle cx="19" cy="9" r="1"/><circle cx="19" cy="15" r="1"/><circle cx="12" cy="19" r="1"/><circle cx="5" cy="15" r="1"/><circle cx="5" cy="9" r="1"/></svg></div><div class="qze-feat-title">Universe Browser</div><div class="qze-feat-desc">Browse and analyze 100M+ equities across 100+ exchanges with real-time data via Massive Market Data integration.</div></div>
+    <div class="qze-feat-card"><div class="qze-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><div class="qze-feat-title">AI Weekly Reports</div><div class="qze-feat-desc">Auto-generated portfolio performance reports every week. Deep analysis, not just numbers — your personal analyst on retainer.</div></div>
+  </div>
+</div>
+</div>
+
+<!-- ── HOW IT WORKS ──────────────────────────────────────────────────── -->
+<div style="padding:80px 32px;border-top:1px solid rgba(255,255,255,0.05);">
+<div style="max-width:1240px;margin:0 auto;">
+  <div style="text-align:center;margin-bottom:52px;">
+    <div class="qze-tag">How It Works</div>
+    <h2 class="qze-h2">Up and running<br>in 60 seconds.</h2>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
+    <div style="text-align:center;padding:32px 24px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:18px;">
+      <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,rgba(109,40,217,0.3),rgba(79,70,229,0.15));border:1px solid rgba(167,139,250,0.3);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:20px;font-weight:900;color:#A78BFA;margin:0 auto 18px;">1</div>
+      <div style="font-family:var(--font-display);font-size:16px;font-weight:800;color:#fff;margin-bottom:8px;">Create your account</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.38);line-height:1.65;">Sign up with your email — no credit card, no setup. Full access starts immediately.</div>
+    </div>
+    <div style="text-align:center;padding:32px 24px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:18px;">
+      <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,rgba(109,40,217,0.3),rgba(79,70,229,0.15));border:1px solid rgba(167,139,250,0.3);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:20px;font-weight:900;color:#A78BFA;margin:0 auto 18px;">2</div>
+      <div style="font-family:var(--font-display);font-size:16px;font-weight:800;color:#fff;margin-bottom:8px;">Set your profile</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.38);line-height:1.65;">Tell the AI your experience level, risk tolerance, and focus areas. It calibrates every analysis to your context.</div>
+    </div>
+    <div style="text-align:center;padding:32px 24px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:18px;">
+      <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,rgba(109,40,217,0.3),rgba(79,70,229,0.15));border:1px solid rgba(167,139,250,0.3);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:20px;font-weight:900;color:#A78BFA;margin:0 auto 18px;">3</div>
+      <div style="font-family:var(--font-display);font-size:16px;font-weight:800;color:#fff;margin-bottom:8px;">Get your edge</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.38);line-height:1.65;">Explore live signals, run scenarios, command your AI agents. Make every decision with conviction.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ── PRICING ────────────────────────────────────────────────────────── -->
+<div class="qze-pricing-section" id="qze-pricing">
+<div class="qze-pricing-inner">
+  <div style="text-align:center;">
+    <div class="qze-tag">Pricing</div>
+    <h2 class="qze-h2">Simple, transparent<br>pricing.</h2>
+    <p class="qze-h2-sub">Start free — upgrade when you need unlimited AI power.</p>
+  </div>
+  <div class="qze-pricing-grid">
+    <div class="qze-plan">
+      <div class="qze-plan-tier">Free</div>
+      <div class="qze-plan-price">$0<sub>/mo</sub></div>
+      <div class="qze-plan-cycle">Forever free · No card required</div>
+      <ul class="qze-plan-feats">
+        <li>20 AI queries per day</li>
+        <li>Full platform access</li>
+        <li>Universe Browser (100M+ assets)</li>
+        <li>Portfolio tracker</li>
+        <li>Live charts & signals</li>
+        <li>NewsJudge & Macro Dashboard</li>
+      </ul>
+      <button class="qze-plan-btn qze-plan-free-btn" onclick="lp3Tab('up')">Start for Free →</button>
+    </div>
+    <div class="qze-plan qze-plan-pro">
+      <div class="qze-plan-badge">Most Popular</div>
+      <div class="qze-plan-tier" style="color:#A78BFA;">Pro</div>
+      <div class="qze-plan-price" style="background:linear-gradient(135deg,#fff,#C4B5FD);-webkit-background-clip:text;background-clip:text;color:transparent;">$5<sub>/mo</sub></div>
+      <div class="qze-plan-cycle">or $48/yr · Cancel anytime</div>
+      <ul class="qze-plan-feats">
+        <li><strong style="color:#fff;">Unlimited AI queries</strong></li>
+        <li>Priority server access</li>
+        <li>Advanced AI models</li>
+        <li>Early access to new features</li>
+        <li>Everything in Free</li>
+        <li>Direct founder support</li>
+      </ul>
+      <button class="qze-plan-btn qze-plan-pro-btn" onclick="lp3Tab('up')">Get Pro — $5/mo →</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ── REVIEWS ────────────────────────────────────────────────────────── -->
+<div class="qze-reviews-section" id="qze-reviews">
+<div class="qze-reviews-inner">
+  <div style="text-align:center;margin-bottom:48px;">
+    <div class="qze-tag">Testimonials</div>
+    <h2 class="qze-h2">Loved by traders<br>who move markets.</h2>
+  </div>
+  <div class="qze-reviews-grid">
+    <div class="qze-review-card"><div class="qze-review-stars">★★★★★</div><p class="qze-review-text">"The signal accuracy is insane for a tool at this price point. Replaced three separate Bloomberg subscriptions with one Quant Entelloq Pro plan."</p><div class="qze-review-author"><div class="qze-review-avatar">A</div><div><div class="qze-review-name">Arjun K.</div><div class="qze-review-role">Quantitative Analyst · Goldman Sachs</div></div></div></div>
+    <div class="qze-review-card"><div class="qze-review-stars">★★★★★</div><p class="qze-review-text">"NewsJudge alone justifies the subscription. It distills hundreds of headlines into actionable impact scores in seconds — nothing else comes close."</p><div class="qze-review-author"><div class="qze-review-avatar" style="background:linear-gradient(135deg,rgba(52,211,153,0.25),rgba(16,185,129,0.15));">E</div><div><div class="qze-review-name">Elena R.</div><div class="qze-review-role">VC Associate · a16z</div></div></div></div>
+    <div class="qze-review-card"><div class="qze-review-stars">★★★★★</div><p class="qze-review-text">"The 12 quant models changed how I think about risk. ARIMA + Kalman together gives me edge I used to need a team of quants for."</p><div class="qze-review-author"><div class="qze-review-avatar" style="background:linear-gradient(135deg,rgba(96,165,250,0.25),rgba(59,130,246,0.15));">J</div><div><div class="qze-review-name">James L.</div><div class="qze-review-role">Portfolio Strategist · Bridgewater</div></div></div></div>
+    <div class="qze-review-card"><div class="qze-review-stars">★★★★★</div><p class="qze-review-text">"Finally a platform that feels like it was designed by someone who actually trades. Clean, fast, no bloat. The AI terminal is unreal."</p><div class="qze-review-author"><div class="qze-review-avatar" style="background:linear-gradient(135deg,rgba(245,158,11,0.25),rgba(234,179,8,0.15));">M</div><div><div class="qze-review-name">Mei C.</div><div class="qze-review-role">Independent Trader · $2M+ AUM</div></div></div></div>
+  </div>
+</div>
+</div>
+
+<!-- ── ABOUT ──────────────────────────────────────────────────────────── -->
+<div style="padding:80px 32px;border-top:1px solid rgba(255,255,255,0.05);" id="lp3-about">
+<div style="max-width:1240px;margin:0 auto;display:grid;grid-template-columns:1fr 320px;gap:72px;align-items:center;">
+  <div>
+    <div class="qze-tag">About</div>
+    <h2 class="qze-h2">One person. One mission.<br>Better data for everyone.</h2>
+    <p style="font-size:15px;color:rgba(255,255,255,.42);line-height:1.85;margin-bottom:18px;font-weight:350;">Quant Entelloq was born from a simple frustration — the best financial intelligence tools were locked behind six-figure enterprise contracts. That needed to change.</p>
+    <p style="font-size:15px;color:rgba(255,255,255,.42);line-height:1.85;font-weight:350;">By combining AI reasoning, real-time market signals, and thoughtful design, Quant Entelloq gives every serious decision-maker the same analytical edge that institutions take for granted.</p>
+  </div>
+  <div style="background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:36px;text-align:center;">
+    <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,rgba(124,58,237,.35),rgba(167,139,250,.15));border:1px solid rgba(167,139,250,.25);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:20px;font-weight:800;color:#A78BFA;margin:0 auto 16px;">DP</div>
+    <div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:#fff;margin-bottom:4px;">Darsh Prasad</div>
+    <div style="font-size:10px;color:#A78BFA;font-family:var(--font-mono);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;">Founder</div>
+    <div style="font-size:13px;color:rgba(255,255,255,.38);line-height:1.7;">Building intelligent data systems that drive smarter, faster, and more confident decisions at scale.</div>
+    <div style="display:flex;gap:24px;justify-content:center;margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,.07);">
+      <div><div style="font-family:var(--font-display);font-size:17px;font-weight:800;color:#A78BFA;">100M+</div><div style="font-size:9px;color:rgba(255,255,255,.28);font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase;">Securities</div></div>
+      <div><div style="font-family:var(--font-display);font-size:17px;font-weight:800;color:#A78BFA;">100+</div><div style="font-size:9px;color:rgba(255,255,255,.28);font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase;">Exchanges</div></div>
+      <div><div style="font-family:var(--font-display);font-size:17px;font-weight:800;color:#A78BFA;">24/7</div><div style="font-size:9px;color:rgba(255,255,255,.28);font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase;">AI Engine</div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ── FAQ ────────────────────────────────────────────────────────────── -->
+<div style="padding:80px 32px;border-top:1px solid rgba(255,255,255,0.05);" id="lp3-faq">
+<div style="max-width:720px;margin:0 auto;">
+  <div style="text-align:center;margin-bottom:48px;">
+    <div class="qze-tag">FAQ</div>
+    <h2 class="qze-h2">Common questions,<br>direct answers.</h2>
+  </div>
+  <div class="lp3-faq">
+    <div class="lp3-faq-item open"><div class="lp3-faq-q" onclick="lp3FaqToggle(this.parentElement)">Is Quant Entelloq really free to start?<svg class="lp3-faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="lp3-faq-body"><div class="lp3-faq-inner"><div class="lp3-faq-ans">Yes — no credit card required. The free tier gives you full access to all core features including the AI Command Center, NewsJudge, Macro Dashboard, and Universe Browser. The free limit is 20 AI queries per day; Pro removes the cap entirely.</div></div></div></div>
+    <div class="lp3-faq-item"><div class="lp3-faq-q" onclick="lp3FaqToggle(this.parentElement)">How is this different from Bloomberg or Yahoo Finance?<svg class="lp3-faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="lp3-faq-body"><div class="lp3-faq-inner"><div class="lp3-faq-ans">Bloomberg costs $24,000/year. Yahoo Finance is a news aggregator. Quant Entelloq is a reasoning system — it analyzes data with 10 specialized AI agents and delivers clear, actionable conclusions in plain language.</div></div></div></div>
+    <div class="lp3-faq-item"><div class="lp3-faq-q" onclick="lp3FaqToggle(this.parentElement)">How accurate are the AI signals?<svg class="lp3-faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="lp3-faq-body"><div class="lp3-faq-inner"><div class="lp3-faq-ans">Every signal includes a confidence score so you always know how strongly the AI stands behind its conclusion. Our multi-agent ensemble reduces individual model bias by requiring convergence across independent perspectives before issuing high-confidence calls.</div></div></div></div>
+    <div class="lp3-faq-item"><div class="lp3-faq-q" onclick="lp3FaqToggle(this.parentElement)">Is my financial data secure?<svg class="lp3-faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="lp3-faq-body"><div class="lp3-faq-inner"><div class="lp3-faq-ans">Absolutely. Passwords are bcrypt-hashed (cost factor 12). Sessions use httpOnly cookies inaccessible to JavaScript. No brokerage credentials are ever handled by Quant Entelloq. AI conversations are not persisted beyond the session.</div></div></div></div>
+    <div class="lp3-faq-item"><div class="lp3-faq-q" onclick="lp3FaqToggle(this.parentElement)">What does Pro include?<svg class="lp3-faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="lp3-faq-body"><div class="lp3-faq-inner"><div class="lp3-faq-ans">Pro removes the daily 20-query AI limit, gives you priority server access during peak hours, and unlocks advanced AI features as they ship. $5/month or $48/year — cancel anytime, no contracts, no hidden fees.</div></div></div></div>
+  </div>
+</div>
+</div>
+
+<!-- ── CTA ────────────────────────────────────────────────────────────── -->
+<div class="qze-cta-section">
+  <div class="qze-cta-glow" aria-hidden="true"></div>
+  <div class="qze-tag">✦ Start Free Today</div>
+  <h2 class="qze-cta-h">Your edge<br>starts here.</h2>
+  <p class="qze-cta-p">Join analysts and investors who use Quant Entelloq to cut through noise and make sharper market decisions.</p>
+  <div class="qze-cta-btns">
+    <button class="qze-cta-main" onclick="lp3Tab('up')">Create Free Account →</button>
+    <button class="qze-cta-watch" onclick="tutorialShow(true)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      Watch Platform Tour
+    </button>
+  </div>
+</div>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────────────── -->
+<div class="qze-footer">
+  <div class="qze-footer-brand">Quant<em>Entelloq</em> <span style="color:rgba(255,255,255,0.18);font-weight:400;font-size:12px;font-family:var(--font-mono);"> · by Entelloq Networks · 2026</span></div>
+  <div class="qze-footer-links">
+    <a onclick="if(typeof qeOpenModal==='function')qeOpenModal('qe-privacy-modal')">Privacy</a>
+    <a onclick="if(typeof qeOpenModal==='function')qeOpenModal('qe-terms-modal')">Terms</a>
+    <a href="#lp3-faq">FAQ</a>
+    <a href="mailto:support@entelloqnetworks.com">Contact</a>
+  </div>
+</div>
+
+<!-- ── Showcase JS ─────────────────────────────────────────────────────── -->
+<script>
+function qzeTab(idx, btn) {
+  document.querySelectorAll('.qze-stab').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelectorAll('.qze-spanel').forEach(function(p){ p.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  var panel = document.getElementById('qze-sp' + idx);
+  if (panel) panel.classList.add('active');
+}
+// Auto-cycle showcase tabs every 4s
+(function qzeAutoCycle() {
+  var cur = 0;
+  var tabs = document.querySelectorAll('.qze-stab');
+  var panels = document.querySelectorAll('.qze-spanel');
+  if (!tabs.length) return;
+  function advance() {
+    cur = (cur + 1) % tabs.length;
+    tabs.forEach(function(t){ t.classList.remove('active'); });
+    panels.forEach(function(p){ p.classList.remove('active'); });
+    tabs[cur].classList.add('active');
+    panels[cur].classList.add('active');
+  }
+  var timer = setInterval(advance, 4200);
+  // Pause on user interaction
+  document.querySelectorAll('.qze-stab').forEach(function(b){
+    b.addEventListener('click', function() { clearInterval(timer); });
+  });
+})();
+
+// ── TUTORIAL: show IMMEDIATELY to all first-time visitors ────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(function() {
+    var landing = document.getElementById('landing');
+    if (landing && !landing.classList.contains('hidden')) {
+      if (typeof tutorialMaybeShow === 'function') tutorialMaybeShow();
+    }
+  }, 500);
+});
+</script>
+
     <!-- Neural Network Canvas Background -->
     <canvas id="hero-canvas" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.55;"></canvas>
     <div class="lp3-hero-copy" style="position:relative;z-index:1;">
