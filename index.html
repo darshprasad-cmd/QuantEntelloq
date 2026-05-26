@@ -21,7 +21,7 @@
      ============================================================================ -->
 <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
-  script-src 'self' 'unsafe-inline' https://unpkg.com;
+  script-src 'self' 'unsafe-inline' https://unpkg.com https://elevenlabs.io;
   style-src  'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src   'self' https://fonts.gstatic.com data:;
   img-src    'self' data: blob: https:;
@@ -49,7 +49,11 @@
     https://api.massive.com
     https://api.polygon.io
     wss://socket.polygon.io
-    wss://delayed.polygon.io;
+    wss://delayed.polygon.io
+    https://elevenlabs.io
+    https://*.elevenlabs.io
+    wss://*.elevenlabs.io;
+  frame-src https://elevenlabs.io https://*.elevenlabs.io;
   frame-ancestors 'none';
   form-action  'self';
   base-uri     'self';
@@ -4417,198 +4421,360 @@ input[type="number"]:focus {
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* Backdrop + wrapper */
+/* ═══════════════════════════════════════════════════════════════════
+   CINEMATIC TUTORIAL — 6-scene interactive tour (no video required)
+   ═══════════════════════════════════════════════════════════════════ */
 #tutorial-modal {
   position: fixed; inset: 0; z-index: 99999;
   display: flex; align-items: center; justify-content: center;
-  padding: 12px;
+  padding: 16px;
 }
 #tutorial-modal.tut-hidden { display: none !important; }
 
 .tut-backdrop {
   position: absolute; inset: 0;
-  background: rgba(3, 5, 14, 0.92);
-  backdrop-filter: blur(22px) saturate(1.2);
-  -webkit-backdrop-filter: blur(22px) saturate(1.2);
+  background: rgba(2, 4, 12, 0.96);
+  backdrop-filter: blur(28px) saturate(1.4);
+  -webkit-backdrop-filter: blur(28px) saturate(1.4);
 }
 
-/* Container card */
-.tut-container {
+/* ── Main card ── */
+.tut-card {
   position: relative; z-index: 1;
-  width: 100%; max-width: 880px;
-  background: rgba(10, 13, 26, 0.97);
-  border: 1px solid rgba(167, 139, 250, 0.16);
-  border-radius: 22px;
-  overflow: hidden;
+  width: 100%; max-width: 940px;
+  background: rgba(7, 10, 22, 0.99);
+  border: 1px solid rgba(167,139,250,0.14);
+  border-radius: 24px; overflow: hidden;
   box-shadow:
-    0 0 0 1px rgba(167,139,250,0.06),
-    0 40px 120px rgba(0,0,0,0.75),
-    0 8px 32px rgba(124,58,237,0.15),
-    inset 0 1px 0 rgba(255,255,255,0.06);
-  animation: tut-enter 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    0 0 0 1px rgba(167,139,250,0.05),
+    0 60px 180px rgba(0,0,0,0.85),
+    0 12px 48px rgba(109,40,217,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.055);
+  animation: tut-rise 0.52s cubic-bezier(0.34,1.56,0.64,1) both;
+  display: flex; flex-direction: column;
+  max-height: 90vh;
 }
-@keyframes tut-enter {
-  from { opacity: 0; transform: scale(0.92) translateY(24px); }
-  to   { opacity: 1; transform: scale(1)    translateY(0);    }
+@keyframes tut-rise {
+  from { opacity:0; transform:scale(0.90) translateY(32px); }
+  to   { opacity:1; transform:scale(1) translateY(0); }
 }
 
-/* Header */
-.tut-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 20px 13px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  background: linear-gradient(180deg, rgba(124,58,237,0.07) 0%, transparent 100%);
+/* ── Close X ── */
+.tut-x {
+  position: absolute; top: 14px; right: 16px; z-index: 20;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09);
+  color: rgba(255,255,255,0.4); width: 30px; height: 30px; border-radius: 8px;
+  font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background .15s, color .15s;
 }
-.tut-brand {
-  display: flex; align-items: center; gap: 9px;
-  font-family: var(--font-display); font-size: 14.5px; font-weight: 700;
-  color: var(--text-primary); letter-spacing: -0.01em;
-}
-.tut-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: #A78BFA;
-  box-shadow: 0 0 10px rgba(167,139,250,0.9);
-  animation: tut-dot-pulse 2.2s ease-in-out infinite;
-}
-@keyframes tut-dot-pulse {
-  0%,100% { opacity:1; transform:scale(1); }
-  50%      { opacity:.5; transform:scale(.7); }
-}
-.tut-pill {
-  padding: 3px 10px; border-radius: 100px;
-  background: rgba(167,139,250,0.13); border: 1px solid rgba(167,139,250,0.26);
-  font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
-  letter-spacing: 0.07em; text-transform: uppercase; color: #C4B5FD;
-}
-.tut-skip-x {
-  background: none; border: none; cursor: pointer;
-  color: var(--text-muted); font-size: 13px;
-  padding: 5px 10px; border-radius: 7px;
-  font-family: var(--font-body); font-weight: 500;
-  transition: color .15s, background .15s;
-}
-.tut-skip-x:hover { color: var(--text-primary); background: rgba(255,255,255,.07); }
+.tut-x:hover { background: rgba(255,255,255,0.1); color: #fff; }
 
-/* Video zone */
-.tut-video-zone {
+/* ── Scenes container ── */
+.tut-scenes {
+  flex: 1; overflow: hidden; position: relative;
+  min-height: 480px;
+}
+
+/* ── Individual scene ── */
+.tut-scene {
+  position: absolute; inset: 0;
+  display: flex;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.38s ease, transform 0.38s cubic-bezier(0.4,0,0.2,1);
+  transform: translateX(48px);
+}
+.tut-scene.active {
+  opacity: 1; pointer-events: auto;
+  transform: translateX(0);
+}
+.tut-scene.exit-left {
+  opacity: 0;
+  transform: translateX(-48px);
+}
+
+/* ── Scene: full-bleed (steps 1 & 6) ── */
+.tut-scene-full {
+  flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 56px 48px;
   position: relative;
-  background: #000;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  /* Subtle vignette around edges */
-  box-shadow: inset 0 0 80px rgba(0,0,0,0.5);
-}
-.tut-video {
-  width: 100%; height: 100%;
-  display: block;
-  object-fit: contain;
-}
-/* ── Supademo watermark eraser ──────────────────────────────────────────
-   Supademo places its badge bottom-left (160×36px). We layer an opaque
-   dark cover + a branded Quant Entelloq bar that looks intentional.    */
-.tut-wm-cover {
-  position: absolute; pointer-events: none; z-index: 8;
-}
-/* Bottom-left badge cover (primary Supademo position) */
-.tut-wm-bl {
-  bottom: 0; left: 0;
-  width: 220px; height: 44px;
-  background: #000;
-}
-/* Bottom-right cover (secondary position used by some Supademo plans) */
-.tut-wm-br {
-  bottom: 0; right: 0;
-  width: 180px; height: 44px;
-  background: #000;
-}
-/* Full-width branded bar that covers any remaining bottom watermarks
-   AND serves as a visible brand element */
-.tut-brand-bar {
-  position: absolute; bottom: 0; left: 0; right: 0;
-  height: 38px; z-index: 9; pointer-events: none;
-  background: linear-gradient(180deg, transparent 0%, rgba(3,5,14,0.96) 55%, #030610 100%);
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 16px;
-}
-.tut-bar-brand {
-  font-family: var(--font-display); font-size: 11px; font-weight: 700;
-  color: rgba(167,139,250,0.7); letter-spacing: 0.04em;
-  display: flex; align-items: center; gap: 6px;
-}
-.tut-bar-brand::before {
-  content: ''; display: inline-block;
-  width: 5px; height: 5px; border-radius: 50%;
-  background: #A78BFA; box-shadow: 0 0 6px rgba(167,139,250,0.8);
-}
-.tut-bar-tag {
-  font-family: var(--font-mono); font-size: 9px; font-weight: 600;
-  color: rgba(255,255,255,0.22); letter-spacing: 0.08em; text-transform: uppercase;
 }
 
-/* Progress bar */
-.tut-progress-track {
-  height: 3px;
-  background: rgba(255,255,255,0.06);
+/* ── Scene: split (steps 2–5) ── */
+.tut-scene-split {
+  flex-direction: row;
+}
+.tut-vis {
+  width: 48%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 36px 28px;
+  background: rgba(255,255,255,0.018);
+  border-right: 1px solid rgba(255,255,255,0.05);
   position: relative; overflow: hidden;
 }
-.tut-progress-fill {
-  height: 100%; width: 0%;
-  background: linear-gradient(90deg, #7C3AED 0%, #A78BFA 50%, #22D3EE 100%);
-  transition: width 0.25s linear;
-  position: relative;
+.tut-txt {
+  flex: 1; padding: 48px 40px;
+  display: flex; flex-direction: column; justify-content: center;
 }
-.tut-progress-fill::after {
-  content: ''; position: absolute; right: 0; top: 0; bottom: 0;
-  width: 40px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4));
-  border-radius: 0 2px 2px 0;
+.tut-txt-step {
+  font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+  color: #A78BFA; letter-spacing: 0.2em; text-transform: uppercase;
+  margin-bottom: 14px;
+  display: inline-flex; align-items: center; gap: 7px;
+}
+.tut-txt-step::before {
+  content:''; width:18px; height:1.5px; background:linear-gradient(90deg,#7C3AED,#A78BFA);
+  display:inline-block; border-radius:2px;
+}
+.tut-txt-h {
+  font-family: var(--font-display); font-size: 28px; font-weight: 900;
+  letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 14px;
+  background: linear-gradient(135deg, #fff 0%, #C4B5FD 70%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.tut-txt-sub {
+  font-size: 13.5px; color: rgba(255,255,255,0.42); line-height: 1.65;
+  margin-bottom: 24px; font-weight: 400;
+}
+.tut-feat-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 9px;
+}
+.tut-feat-list li {
+  display: flex; align-items: flex-start; gap: 9px;
+  font-size: 12.5px; color: rgba(255,255,255,0.6); line-height: 1.45;
+}
+.tut-feat-list li::before {
+  content: '→'; color: #A78BFA; flex-shrink: 0; font-size: 11px; margin-top: 1px;
 }
 
-/* Footer */
-.tut-footer {
+/* ── Step 1: hero content ── */
+.tut-hero-logo {
+  width: 68px; height: 68px; border-radius: 18px; margin: 0 auto 20px;
+  background: linear-gradient(135deg, #6D28D9, #3B82F6);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 0 1px rgba(167,139,250,0.25), 0 20px 60px rgba(109,40,217,0.5);
+  animation: tut-logo-float 4s ease-in-out infinite;
+}
+@keyframes tut-logo-float {
+  0%,100% { transform: translateY(0) scale(1); box-shadow: 0 0 0 1px rgba(167,139,250,0.25), 0 20px 60px rgba(109,40,217,0.5); }
+  50%      { transform: translateY(-6px) scale(1.03); box-shadow: 0 0 0 1px rgba(167,139,250,0.35), 0 28px 80px rgba(109,40,217,0.65); }
+}
+.tut-hero-tag {
+  font-family: var(--font-mono); font-size: 10px; color: #A78BFA;
+  letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 16px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.tut-hero-tag::before,.tut-hero-tag::after {
+  content:''; flex:1; max-width:40px; height:1px;
+  background: linear-gradient(90deg, transparent, rgba(167,139,250,0.45));
+}
+.tut-hero-tag::after { background: linear-gradient(90deg, rgba(167,139,250,0.45), transparent); }
+.tut-hero-h {
+  font-family: var(--font-display); font-size: 42px; font-weight: 900;
+  letter-spacing: -0.04em; line-height: 1.08; margin-bottom: 14px;
+  background: linear-gradient(145deg,#fff 0%,#C4B5FD 55%,#60A5FA 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.tut-hero-sub {
+  font-size: 15px; color: rgba(255,255,255,0.38); max-width: 420px;
+  margin: 0 auto 36px; line-height: 1.6;
+}
+.tut-stats-row {
+  display: flex; align-items: center; justify-content: center; gap: 0;
+  margin-bottom: 40px;
+  border: 1px solid rgba(255,255,255,0.07); border-radius: 14px;
+  background: rgba(255,255,255,0.025); overflow: hidden;
+}
+.tut-stat-item {
+  flex: 1; padding: 14px 20px; text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.07);
+}
+.tut-stat-item:last-child { border-right: none; }
+.tut-stat-n { display: block; font-family: var(--font-display); font-size: 20px; font-weight: 900; color: #fff; letter-spacing: -0.03em; }
+.tut-stat-l { display: block; font-family: var(--font-mono); font-size: 9px; color: rgba(255,255,255,0.3); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 3px; }
+.tut-btn-begin {
+  background: linear-gradient(135deg, #7C3AED 0%, #4F46E5 100%);
+  border: none; color: #fff; font-size: 15px; font-weight: 700;
+  padding: 14px 36px; border-radius: 12px; cursor: pointer;
+  font-family: var(--font-display); letter-spacing: -0.01em;
+  box-shadow: 0 4px 28px rgba(124,58,237,0.45), inset 0 1px 0 rgba(255,255,255,0.15);
+  transition: transform .2s, box-shadow .2s;
+  animation: tut-begin-pulse 2.8s ease-in-out infinite;
+}
+.tut-btn-begin:hover { transform: translateY(-2px); box-shadow: 0 8px 36px rgba(124,58,237,0.6); }
+@keyframes tut-begin-pulse {
+  0%,100% { box-shadow: 0 4px 28px rgba(124,58,237,0.45), inset 0 1px 0 rgba(255,255,255,0.15); }
+  50%      { box-shadow: 0 6px 40px rgba(124,58,237,0.65), inset 0 1px 0 rgba(255,255,255,0.15); }
+}
+
+/* ── Step 6: ready content ── */
+.tut-ready-check {
+  width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 20px;
+  background: linear-gradient(135deg,rgba(52,211,153,0.18),rgba(52,211,153,0.06));
+  border: 1.5px solid rgba(52,211,153,0.35);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 40px rgba(52,211,153,0.2);
+  animation: tut-check-pop 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes tut-check-pop { from { transform:scale(0); opacity:0; } to { transform:scale(1); opacity:1; } }
+.tut-ready-h { font-family:var(--font-display); font-size:38px; font-weight:900; letter-spacing:-0.03em; margin-bottom:10px; background:linear-gradient(135deg,#fff 0%,#6EE7B7 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.tut-ready-sub { font-size:14px; color:rgba(255,255,255,0.38); max-width:380px; margin:0 auto 32px; line-height:1.6; }
+.tut-ready-actions { display:flex; align-items:center; justify-content:center; gap:12px; }
+
+/* ── Visual panel animations ── */
+/* Chat mockup (Step 2) */
+.tut-chat-mock {
+  width: 100%; max-width: 280px;
+  background: rgba(255,255,255,0.03); border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.07); overflow: hidden;
+  font-family: var(--font-body); font-size: 12px;
+}
+.tut-chat-hdr {
+  padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.06);
+  font-family: var(--font-mono); font-size: 9px; color: rgba(255,255,255,0.25);
+  letter-spacing: 0.1em; text-transform: uppercase; display: flex; align-items: center; gap: 6px;
+}
+.tut-chat-hdr-dot { width:6px; height:6px; border-radius:50%; background:#A78BFA; box-shadow:0 0 6px rgba(167,139,250,0.8); animation:tut-dot-pulse 2s infinite; }
+@keyframes tut-dot-pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+.tut-chat-msgs { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.tut-msg-user {
+  align-self: flex-end; max-width: 80%;
+  background: linear-gradient(135deg,#7C3AED,#4F46E5);
+  color: #fff; padding: 9px 13px; border-radius: 12px 12px 2px 12px;
+  font-size: 11.5px; line-height: 1.45;
+  animation: tut-msg-in 0.4s ease both;
+}
+.tut-msg-ai {
+  align-self: flex-start; max-width: 88%;
+  background: rgba(255,255,255,0.055); border: 1px solid rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.75); padding: 10px 13px; border-radius: 2px 12px 12px 12px;
+  font-size: 11.5px; line-height: 1.5;
+  animation: tut-msg-in 0.4s 0.6s ease both;
+}
+@keyframes tut-msg-in { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.tut-typing { display: flex; gap: 4px; padding: 10px 13px; align-items: center; }
+.tut-typing span {
+  width: 5px; height: 5px; border-radius: 50%; background: rgba(167,139,250,0.6);
+  animation: tut-typing-bounce 1.2s ease-in-out infinite;
+}
+.tut-typing span:nth-child(2) { animation-delay: .15s; }
+.tut-typing span:nth-child(3) { animation-delay: .3s; }
+@keyframes tut-typing-bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }
+
+/* Universe ticker cards (Step 3) */
+.tut-ticker-grid { display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 270px; }
+.tut-ticker-card {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 13px 20px;
-  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 10px 14px; border-radius: 10px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+  animation: tut-card-in 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
 }
-.tut-foot-left { display: flex; align-items: center; gap: 16px; }
-.tut-time {
-  font-family: var(--font-mono); font-size: 11.5px;
-  color: var(--text-muted); min-width: 90px;
-}
-.tut-hint {
-  font-size: 11.5px; color: rgba(255,255,255,0.24);
-  display: none;
-}
-.tut-foot-right { display: flex; align-items: center; gap: 10px; }
+.tut-ticker-card:nth-child(1){animation-delay:.05s}
+.tut-ticker-card:nth-child(2){animation-delay:.15s}
+.tut-ticker-card:nth-child(3){animation-delay:.25s}
+.tut-ticker-card:nth-child(4){animation-delay:.35s}
+.tut-ticker-card:nth-child(5){animation-delay:.45s}
+@keyframes tut-card-in { from{opacity:0;transform:translateX(-12px)} to{opacity:1;transform:translateX(0)} }
+.tut-tk-sym { font-family:var(--font-mono); font-size:12px; font-weight:700; color:#fff; }
+.tut-tk-name { font-size:10px; color:rgba(255,255,255,0.28); margin-top:1px; }
+.tut-tk-price { font-family:var(--font-mono); font-size:11.5px; color:#fff; font-weight:600; text-align:right; }
+.tut-tk-chg { font-family:var(--font-mono); font-size:10px; font-weight:700; text-align:right; margin-top:1px; }
+.tut-tk-chg.up { color:#34D399; } .tut-tk-chg.dn { color:#F87171; }
 
-/* Buttons */
+/* Portfolio sparkline (Step 4) */
+.tut-port-wrap {
+  width: 100%; max-width: 280px; display: flex; flex-direction: column; gap: 12px;
+}
+.tut-port-pnl {
+  padding: 14px 18px; border-radius: 12px;
+  background: linear-gradient(135deg,rgba(52,211,153,0.1),rgba(52,211,153,0.04));
+  border: 1px solid rgba(52,211,153,0.2);
+}
+.tut-pnl-label { font-family:var(--font-mono); font-size:9px; color:rgba(255,255,255,0.3); letter-spacing:0.12em; text-transform:uppercase; margin-bottom:4px; }
+.tut-pnl-val { font-family:var(--font-display); font-size:28px; font-weight:900; color:#34D399; letter-spacing:-0.03em; }
+.tut-pnl-sub { font-size:11px; color:rgba(52,211,153,0.6); margin-top:2px; }
+.tut-sparkline { width:100%; height:64px; }
+.tut-sparkline path { stroke:#34D399; stroke-width:2; fill:none; stroke-linecap:round; stroke-linejoin:round;
+  stroke-dasharray:300; stroke-dashoffset:300; animation:tut-draw-line 1.8s cubic-bezier(0.4,0,0.2,1) 0.2s forwards; }
+@keyframes tut-draw-line { to{stroke-dashoffset:0} }
+.tut-sparkline .tut-spark-fill { fill:url(#tut-spark-grad); stroke:none; opacity:0; animation:tut-fill-in 0.8s ease 1.8s forwards; }
+@keyframes tut-fill-in { to{opacity:1} }
+.tut-positions { display:flex; flex-direction:column; gap:7px; }
+.tut-pos-row {
+  display:flex; align-items:center; gap:8px; padding:9px 12px; border-radius:9px;
+  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06);
+  animation: tut-card-in 0.4s ease both;
+}
+.tut-pos-row:nth-child(1){animation-delay:.4s} .tut-pos-row:nth-child(2){animation-delay:.55s} .tut-pos-row:nth-child(3){animation-delay:.7s}
+.tut-pos-col { font-family:var(--font-mono); font-size:11px; }
+
+/* Candlestick chart (Step 5) */
+.tut-chart-wrap { width:100%; max-width:280px; }
+.tut-chart-hdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.tut-chart-sym { font-family:var(--font-mono); font-size:13px; font-weight:700; color:#fff; }
+.tut-chart-price { font-family:var(--font-display); font-size:22px; font-weight:900; color:#34D399; }
+.tut-candles { display:flex; align-items:flex-end; gap:4px; height:100px; }
+.tut-candle { display:flex; flex-direction:column; align-items:center; gap:0; flex:1; animation:tut-candle-rise 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
+.tut-candle:nth-child(1){animation-delay:.05s}.tut-candle:nth-child(2){animation-delay:.12s}.tut-candle:nth-child(3){animation-delay:.19s}.tut-candle:nth-child(4){animation-delay:.26s}.tut-candle:nth-child(5){animation-delay:.33s}.tut-candle:nth-child(6){animation-delay:.40s}.tut-candle:nth-child(7){animation-delay:.47s}.tut-candle:nth-child(8){animation-delay:.54s}.tut-candle:nth-child(9){animation-delay:.61s}.tut-candle:nth-child(10){animation-delay:.68s}
+@keyframes tut-candle-rise { from{opacity:0;transform:scaleY(0)} to{opacity:1;transform:scaleY(1)} }
+.tut-candle-body { width:10px; border-radius:2px; transform-origin:bottom; }
+.tut-candle.up .tut-candle-body { background:linear-gradient(180deg,#34D399,#059669); }
+.tut-candle.dn .tut-candle-body { background:linear-gradient(180deg,#F87171,#DC2626); }
+.tut-vol-bars { display:flex; align-items:flex-end; gap:4px; height:24px; margin-top:8px; }
+.tut-vol-bar { flex:1; border-radius:2px 2px 0 0; background:rgba(255,255,255,0.08); animation:tut-candle-rise 0.4s ease both; }
+
+/* ── Bottom footer (dots + nav) ── */
+.tut-footer {
+  padding: 14px 22px;
+  border-top: 1px solid rgba(255,255,255,0.055);
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(255,255,255,0.012);
+  flex-shrink: 0;
+}
+.tut-dots { display:flex; gap:6px; align-items:center; }
+.tut-dot-btn {
+  width: 7px; height: 7px; border-radius: 50%; cursor: pointer;
+  background: rgba(255,255,255,0.15); border: none; padding: 0;
+  transition: background .2s, transform .2s, width .25s;
+}
+.tut-dot-btn.active { background: #A78BFA; width: 20px; border-radius: 4px; box-shadow: 0 0 8px rgba(167,139,250,0.6); }
+.tut-nav { display:flex; align-items:center; gap:8px; }
 .tut-btn-ghost {
   background: none; border: 1px solid rgba(255,255,255,0.1);
-  color: var(--text-muted); font-size: 12.5px; font-weight: 500;
+  color: rgba(255,255,255,0.35); font-size: 12.5px; font-weight: 500;
   padding: 8px 16px; border-radius: 9px; cursor: pointer;
   font-family: var(--font-body); transition: all .15s;
 }
-.tut-btn-ghost:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.18); color: var(--text-primary); }
-
-.tut-btn-cta {
-  background: linear-gradient(135deg, #7C3AED 0%, #6366F1 100%);
+.tut-btn-ghost:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.65); }
+.tut-btn-prev {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09);
+  color: rgba(255,255,255,0.55); font-size: 13px; font-weight: 500;
+  padding: 8px 18px; border-radius: 9px; cursor: pointer;
+  font-family: var(--font-body); transition: all .15s;
+}
+.tut-btn-prev:hover { background: rgba(255,255,255,0.09); color: #fff; }
+.tut-btn-next {
+  background: linear-gradient(135deg,#7C3AED,#4F46E5);
+  border: none; color: #fff; font-size: 13.5px; font-weight: 700;
+  padding: 9px 22px; border-radius: 10px; cursor: pointer;
+  font-family: var(--font-display); letter-spacing: -0.01em;
+  box-shadow: 0 3px 16px rgba(124,58,237,0.38);
+  transition: transform .18s, box-shadow .18s;
+}
+.tut-btn-next:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(124,58,237,0.55); }
+.tut-btn-done {
+  background: linear-gradient(135deg,#059669,#10B981);
   border: none; color: #fff; font-size: 13.5px; font-weight: 700;
   padding: 9px 24px; border-radius: 10px; cursor: pointer;
   font-family: var(--font-display); letter-spacing: -0.01em;
-  box-shadow: 0 4px 18px rgba(124,58,237,0.4);
-  transition: opacity .15s, transform .18s, box-shadow .18s;
-  display: flex; align-items: center; gap: 7px;
+  box-shadow: 0 3px 16px rgba(16,185,129,0.35);
+  transition: transform .18s, box-shadow .18s;
+  animation: tut-done-pulse 2.5s ease-in-out infinite;
 }
-.tut-btn-cta:hover:not(:disabled) {
-  opacity: 0.92; transform: translateY(-1px);
-  box-shadow: 0 7px 24px rgba(124,58,237,0.5);
-}
-.tut-btn-cta:active:not(:disabled) { transform: translateY(0); transition-duration: .08s; }
-.tut-btn-cta:disabled { opacity: 0.38; cursor: not-allowed; }
-.tut-btn-cta:not(:disabled) { animation: tut-cta-breathe 2.5s ease-in-out infinite; }
-@keyframes tut-cta-breathe {
-  0%,100% { box-shadow: 0 4px 18px rgba(124,58,237,0.4); }
-  50%      { box-shadow: 0 6px 28px rgba(124,58,237,0.62); }
-}
+.tut-btn-done:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(16,185,129,0.5); }
+@keyframes tut-done-pulse { 0%,100%{box-shadow:0 3px 16px rgba(16,185,129,0.35)} 50%{box-shadow:0 5px 28px rgba(16,185,129,0.55)} }
 
 /* Topbar tutorial button */
 .tut-topbar-btn {
@@ -4622,13 +4788,28 @@ input[type="number"]:focus {
 .tut-topbar-btn:hover { background: rgba(167,139,250,0.16); border-color: rgba(167,139,250,0.4); transform: translateY(-1px); }
 .tut-topbar-btn svg { width: 12px; height: 12px; }
 
+/* Ambient glow orbs inside card */
+.tut-orb {
+  position: absolute; border-radius: 50%; pointer-events: none; z-index: 0;
+  animation: tut-orb-drift 8s ease-in-out infinite;
+}
+.tut-orb-1 { width:320px; height:320px; top:-80px; left:-60px; background:radial-gradient(circle,rgba(109,40,217,0.18),transparent 70%); }
+.tut-orb-2 { width:260px; height:260px; bottom:-60px; right:-40px; background:radial-gradient(circle,rgba(59,130,246,0.12),transparent 70%); animation-delay:-4s; animation-direction:alternate; }
+@keyframes tut-orb-drift { 0%,100%{transform:translate(0,0)} 50%{transform:translate(20px,-15px)} }
+
 /* Mobile */
-@media (max-width: 640px) {
-  .tut-container { border-radius: 16px; }
-  .tut-hint { display: none !important; }
-  .tut-btn-ghost span { display: none; }
-  .tut-footer { padding: 10px 14px; }
-  .tut-header { padding: 11px 14px; }
+@media (max-width: 700px) {
+  .tut-card { border-radius: 18px; }
+  .tut-scenes { min-height: 440px; }
+  .tut-scene-split { flex-direction: column; }
+  .tut-vis { width: 100%; height: 200px; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 20px; }
+  .tut-txt { padding: 24px 22px; }
+  .tut-txt-h { font-size: 22px; }
+  .tut-hero-h { font-size: 30px; }
+  .tut-stats-row { gap: 0; }
+}
+@media (max-width: 400px) {
+  .tut-btn-ghost { display: none; }
 }
 </style>
 
@@ -35064,249 +35245,389 @@ window.qzAnimateNumber = function(el, from, to, durationMs, prefix, suffix) {
      Shows automatically on first login; re-accessible via topbar "Tour" btn.
      Supademo watermark is fully erased by .tut-brand-bar + .tut-wm-bl/br.
      ═══════════════════════════════════════════════════════════════════════ -->
-<div id="tutorial-modal" class="tut-hidden" role="dialog" aria-modal="true" aria-label="Platform Tour">
+<!-- ═══════════════════════════════════════════════════════════════════════
+     CINEMATIC TUTORIAL — 6-scene interactive tour · ElevenLabs Guide
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div id="tutorial-modal" class="tut-hidden" role="dialog" aria-modal="true" aria-label="Platform Tour" tabindex="-1">
 
-  <!-- Clickable backdrop -->
   <div class="tut-backdrop" id="tut-backdrop"></div>
 
-  <div class="tut-container">
+  <div class="tut-card">
+    <!-- Ambient orbs -->
+    <div class="tut-orb tut-orb-1" aria-hidden="true"></div>
+    <div class="tut-orb tut-orb-2" aria-hidden="true"></div>
+    <!-- Close -->
+    <button class="tut-x" onclick="tutorialDismiss()" aria-label="Close tour">✕</button>
 
-    <!-- Header -->
-    <div class="tut-header">
-      <div class="tut-brand">
-        <div class="tut-dot"></div>
-        Quant Entelloq
-        <span class="tut-pill">Platform Tour</span>
+    <!-- ─── Scenes ─────────────────────────────────────────────── -->
+    <div class="tut-scenes">
+
+      <!-- SCENE 1 · Welcome -->
+      <div class="tut-scene tut-scene-full active" id="tut-s1" role="tabpanel">
+        <div class="tut-hero-logo" aria-hidden="true">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none"><path d="M5 22L12 10L18 18L24 7L29 14" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="tut-hero-tag">Platform Tour · 6 Steps</div>
+        <h1 class="tut-hero-h">Welcome to<br>Quant Entelloq</h1>
+        <p class="tut-hero-sub">Institutional-grade AI financial intelligence — built for traders who demand precision and speed.</p>
+        <div class="tut-stats-row">
+          <div class="tut-stat-item"><span class="tut-stat-n">100M+</span><span class="tut-stat-l">Global Assets</span></div>
+          <div class="tut-stat-item"><span class="tut-stat-n">∞</span><span class="tut-stat-l">AI Queries (Pro)</span></div>
+          <div class="tut-stat-item"><span class="tut-stat-n">Real-time</span><span class="tut-stat-l">Market Data</span></div>
+        </div>
+        <button class="tut-btn-begin" onclick="tutStep(2)">Begin the Tour →</button>
       </div>
-      <button class="tut-skip-x" onclick="tutorialDismiss()" aria-label="Close tutorial">
-        Skip for now ✕
-      </button>
-    </div>
 
-    <!-- Video player -->
-    <div class="tut-video-zone">
-      <video
-        id="tut-video"
-        class="tut-video"
-        src="/tutorial.mp4"
-        preload="metadata"
-        playsinline
-        controls
-        controlsList="nodownload"
-        onended="tutorialOnEnded()"
-        ontimeupdate="tutorialOnProgress()"
-        onloadedmetadata="tutorialOnMeta()"
-        onerror="tutorialOnError()"
-      ></video>
-
-      <!-- ── Supademo watermark elimination ───────────────────────────────
-           Supademo injects its badge bottom-left (≈160×34px). We cover
-           every possible position with opaque black divs, then overlay a
-           branded bar that looks intentional. pointer-events:none so the
-           native video controls remain fully clickable.               ── -->
-      <div class="tut-wm-cover tut-wm-bl" aria-hidden="true"></div>
-      <div class="tut-wm-cover tut-wm-br" aria-hidden="true"></div>
-
-      <!-- Branded bottom bar — the polished replacement for the watermark -->
-      <div class="tut-brand-bar" aria-hidden="true">
-        <div class="tut-bar-brand">Quant Entelloq</div>
-        <div class="tut-bar-tag">Platform Walkthrough</div>
+      <!-- SCENE 2 · AI Command Center -->
+      <div class="tut-scene tut-scene-split" id="tut-s2" role="tabpanel">
+        <div class="tut-vis">
+          <div class="tut-chat-mock">
+            <div class="tut-chat-hdr"><div class="tut-chat-hdr-dot"></div>AI Command Center</div>
+            <div class="tut-chat-msgs">
+              <div class="tut-msg-user">Analyze NVDA's earnings trajectory vs sector peers</div>
+              <div class="tut-msg-ai" style="animation-delay:.8s">
+                NVIDIA's Q3 revenue hit $35.1B — +94% YoY, driven by H100/H200 Data Center demand. Gross margin at 74.6% signals exceptional pricing power compared to AMD (51%) and Intel (42%)…
+              </div>
+              <div class="tut-typing" style="animation:tut-msg-in 0.4s 1.6s ease both;opacity:0">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tut-txt">
+          <div class="tut-txt-step">Step 2 of 6</div>
+          <h2 class="tut-txt-h">Ask anything.<br>Know everything.</h2>
+          <p class="tut-txt-sub">The AI Command Center gives you institutional-grade research on demand — earnings, technicals, macro, risk — in seconds.</p>
+          <ul class="tut-feat-list">
+            <li>Natural-language stock & macro analysis</li>
+            <li>Earnings breakdowns vs. consensus estimates</li>
+            <li>Portfolio risk scoring & scenario modeling</li>
+            <li>20 free queries/day · Unlimited on Pro</li>
+          </ul>
+        </div>
       </div>
-    </div>
 
-    <!-- Progress bar -->
-    <div class="tut-progress-track">
-      <div class="tut-progress-fill" id="tut-progress-fill"></div>
-    </div>
+      <!-- SCENE 3 · Universe Browser -->
+      <div class="tut-scene tut-scene-split" id="tut-s3" role="tabpanel">
+        <div class="tut-vis">
+          <div class="tut-ticker-grid">
+            <div class="tut-ticker-card">
+              <div><div class="tut-tk-sym">AAPL</div><div class="tut-tk-name">Apple Inc.</div></div>
+              <div><div class="tut-tk-price">$214.82</div><div class="tut-tk-chg up">+1.24%</div></div>
+            </div>
+            <div class="tut-ticker-card">
+              <div><div class="tut-tk-sym">BTC</div><div class="tut-tk-name">Bitcoin</div></div>
+              <div><div class="tut-tk-price">$97,432</div><div class="tut-tk-chg up">+3.81%</div></div>
+            </div>
+            <div class="tut-ticker-card">
+              <div><div class="tut-tk-sym">SPX</div><div class="tut-tk-name">S&amp;P 500</div></div>
+              <div><div class="tut-tk-price">5,842</div><div class="tut-tk-chg up">+0.43%</div></div>
+            </div>
+            <div class="tut-ticker-card">
+              <div><div class="tut-tk-sym">NVDA</div><div class="tut-tk-name">NVIDIA Corp.</div></div>
+              <div><div class="tut-tk-price">$1,087</div><div class="tut-tk-chg dn">−0.72%</div></div>
+            </div>
+            <div class="tut-ticker-card">
+              <div><div class="tut-tk-sym">EURUSD</div><div class="tut-tk-name">Euro / USD</div></div>
+              <div><div class="tut-tk-price">1.0873</div><div class="tut-tk-chg up">+0.18%</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="tut-txt">
+          <div class="tut-txt-step">Step 3 of 6</div>
+          <h2 class="tut-txt-h">100M+ assets.<br>Zero friction.</h2>
+          <p class="tut-txt-sub">Search, filter, and analyze every asset class on earth — stocks, ETFs, crypto, forex, indices, and commodities across 100+ exchanges.</p>
+          <ul class="tut-feat-list">
+            <li>Full-text search with instant results</li>
+            <li>Filter by type, sector, country, market cap</li>
+            <li>Real-time prices via Massive Market Data</li>
+            <li>Click any asset to open its AI analysis panel</li>
+          </ul>
+        </div>
+      </div>
 
-    <!-- Footer -->
+      <!-- SCENE 4 · Portfolio Intelligence -->
+      <div class="tut-scene tut-scene-split" id="tut-s4" role="tabpanel">
+        <div class="tut-vis">
+          <div class="tut-port-wrap">
+            <div class="tut-port-pnl">
+              <div class="tut-pnl-label">Total Portfolio P&amp;L</div>
+              <div class="tut-pnl-val">+$18,432</div>
+              <div class="tut-pnl-sub">↑ +12.4% since inception</div>
+            </div>
+            <svg class="tut-sparkline" viewBox="0 0 280 64" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="tut-spark-grad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#34D399" stop-opacity=".18"/>
+                  <stop offset="100%" stop-color="#34D399" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path class="tut-spark-fill" d="M0 52 C30 48 50 55 80 44 C110 33 130 38 160 24 C190 10 220 18 250 8 L280 4 L280 64 L0 64 Z"/>
+              <path d="M0 52 C30 48 50 55 80 44 C110 33 130 38 160 24 C190 10 220 18 250 8 L280 4"/>
+            </svg>
+            <div class="tut-positions">
+              <div class="tut-pos-row">
+                <div class="tut-pos-col" style="flex:1;color:#fff;font-weight:700;">AAPL</div>
+                <div class="tut-pos-col" style="color:rgba(255,255,255,.4);">15 shares</div>
+                <div class="tut-pos-col" style="color:#34D399;margin-left:auto;">+$824</div>
+              </div>
+              <div class="tut-pos-row">
+                <div class="tut-pos-col" style="flex:1;color:#fff;font-weight:700;">NVDA</div>
+                <div class="tut-pos-col" style="color:rgba(255,255,255,.4);">8 shares</div>
+                <div class="tut-pos-col" style="color:#F87171;margin-left:auto;">−$212</div>
+              </div>
+              <div class="tut-pos-row">
+                <div class="tut-pos-col" style="flex:1;color:#fff;font-weight:700;">BTC</div>
+                <div class="tut-pos-col" style="color:rgba(255,255,255,.4);">0.42 BTC</div>
+                <div class="tut-pos-col" style="color:#34D399;margin-left:auto;">+$4,102</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tut-txt">
+          <div class="tut-txt-step">Step 4 of 6</div>
+          <h2 class="tut-txt-h">Your portfolio.<br>Fully alive.</h2>
+          <p class="tut-txt-sub">Track every position with live P&amp;L, sector exposure, drawdown, and risk metrics — all in one glance.</p>
+          <ul class="tut-feat-list">
+            <li>Live mark-to-market P&amp;L across all assets</li>
+            <li>Sector & geography concentration heatmap</li>
+            <li>AI risk scoring & drawdown alerts</li>
+            <li>Add positions manually or import via CSV</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SCENE 5 · Live Charts -->
+      <div class="tut-scene tut-scene-split" id="tut-s5" role="tabpanel">
+        <div class="tut-vis">
+          <div class="tut-chart-wrap">
+            <div class="tut-chart-hdr">
+              <div><div class="tut-chart-sym">AAPL · 1D</div><div style="font-size:10px;color:rgba(255,255,255,.3);font-family:var(--font-mono);margin-top:2px;">Apr 2026</div></div>
+              <div class="tut-chart-price">$214.82</div>
+            </div>
+            <div class="tut-candles">
+              <div class="tut-candle dn"><div class="tut-candle-body" style="height:28px"></div></div>
+              <div class="tut-candle up"><div class="tut-candle-body" style="height:38px"></div></div>
+              <div class="tut-candle up"><div class="tut-candle-body" style="height:32px"></div></div>
+              <div class="tut-candle dn"><div class="tut-candle-body" style="height:22px"></div></div>
+              <div class="tut-candle up"><div class="tut-candle-body" style="height:44px"></div></div>
+              <div class="tut-candle up"><div class="tut-candle-body" style="height:56px"></div></div>
+              <div class="tut-candle dn"><div class="tut-candle-body" style="height:36px"></div></div>
+              <div class="tut-candle up"><div class="tut-candle-body" style="height:62px"></div></div>
+              <div class="tut-candle up"><div class="tut-candle-body" style="height:70px"></div></div>
+              <div class="tut-candle up"><div class="tut-candle-body" style="height:78px"></div></div>
+            </div>
+            <div class="tut-vol-bars">
+              <div class="tut-vol-bar" style="height:12px;animation-delay:.08s"></div>
+              <div class="tut-vol-bar" style="height:18px;animation-delay:.14s"></div>
+              <div class="tut-vol-bar" style="height:14px;animation-delay:.20s"></div>
+              <div class="tut-vol-bar" style="height:10px;animation-delay:.26s"></div>
+              <div class="tut-vol-bar" style="height:20px;animation-delay:.32s"></div>
+              <div class="tut-vol-bar" style="height:22px;animation-delay:.38s"></div>
+              <div class="tut-vol-bar" style="height:15px;animation-delay:.44s"></div>
+              <div class="tut-vol-bar" style="height:24px;animation-delay:.50s"></div>
+              <div class="tut-vol-bar" style="height:19px;animation-delay:.56s"></div>
+              <div class="tut-vol-bar" style="height:16px;animation-delay:.62s"></div>
+            </div>
+          </div>
+        </div>
+        <div class="tut-txt">
+          <div class="tut-txt-step">Step 5 of 6</div>
+          <h2 class="tut-txt-h">Charts that<br>think with you.</h2>
+          <p class="tut-txt-sub">Interactive OHLCV charts with overlapping AI signals, technical indicators, and one-click analysis on any timeframe.</p>
+          <ul class="tut-feat-list">
+            <li>LightweightCharts engine — silky 60fps</li>
+            <li>SMA, EMA, VWAP, RSI, MACD, Bollinger Bands</li>
+            <li>AI overlay: support/resistance, trend calls</li>
+            <li>News events pinned directly on chart timeline</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SCENE 6 · Ready -->
+      <div class="tut-scene tut-scene-full" id="tut-s6" role="tabpanel">
+        <div class="tut-ready-check" aria-hidden="true">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#34D399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="tut-hero-tag" style="color:#34D399;">You're all set</div>
+        <h2 class="tut-ready-h">The markets<br>are waiting.</h2>
+        <p class="tut-ready-sub">Start with the AI Command Center — ask anything about a stock, macro trend, or your portfolio. Your edge begins now.</p>
+        <div class="tut-ready-actions">
+          <button class="tut-btn-done" onclick="tutorialComplete()">
+            Enter the Platform →
+          </button>
+        </div>
+        <p style="font-size:11px;color:rgba(255,255,255,.2);margin-top:18px;font-family:var(--font-mono);">
+          Need help later? Click the <strong style="color:rgba(167,139,250,.5);">Tour</strong> button in the topbar anytime.
+        </p>
+      </div>
+
+    </div><!-- /tut-scenes -->
+
+    <!-- ─── Footer: dots + navigation ────────────────────────── -->
     <div class="tut-footer">
-      <div class="tut-foot-left">
-        <span class="tut-time" id="tut-time">0:00 / ···</span>
-        <span class="tut-hint" id="tut-hint">Watch 80% to unlock the "I'm Ready" button</span>
+      <div class="tut-dots" role="tablist" aria-label="Tour steps">
+        <button class="tut-dot-btn active" id="td1" onclick="tutStep(1)" aria-label="Step 1"></button>
+        <button class="tut-dot-btn" id="td2" onclick="tutStep(2)" aria-label="Step 2"></button>
+        <button class="tut-dot-btn" id="td3" onclick="tutStep(3)" aria-label="Step 3"></button>
+        <button class="tut-dot-btn" id="td4" onclick="tutStep(4)" aria-label="Step 4"></button>
+        <button class="tut-dot-btn" id="td5" onclick="tutStep(5)" aria-label="Step 5"></button>
+        <button class="tut-dot-btn" id="td6" onclick="tutStep(6)" aria-label="Step 6"></button>
       </div>
-      <div class="tut-foot-right">
-        <button class="tut-btn-ghost" onclick="tutorialDismiss()">
-          <span>Skip tour</span>
-        </button>
-        <button class="tut-btn-cta" id="tut-cta" onclick="tutorialComplete()" disabled>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-          I'm Ready →
-        </button>
+      <div class="tut-nav">
+        <button class="tut-btn-ghost" onclick="tutorialDismiss()">Skip tour</button>
+        <button class="tut-btn-prev" id="tut-prev-btn" onclick="tutStep(window._tutStep-1)" style="display:none;">← Back</button>
+        <button class="tut-btn-next" id="tut-next-btn" onclick="tutStep(window._tutStep+1)">Next →</button>
       </div>
     </div>
 
-  </div>
+  </div><!-- /tut-card -->
 </div>
 
 <script>
 // =============================================================================
-// TUTORIAL SYSTEM
-// Auto-shows on first login · Re-watchable from topbar "Tour" button
+// CINEMATIC TUTORIAL SYSTEM — 6-scene interactive tour
+// No video required · Works on GitHub Pages & server mode
 // =============================================================================
 (function() {
   'use strict';
 
-  var TUT_KEY     = 'qz_tutorial_v2';   // bump version to force re-show after updates
-  var TUT_SRC     = '/tutorial.mp4';
-  var _tutForced  = false;              // true when opened manually via topbar button
-  var _tutUnlockPct = 80;              // % watched before "I'm Ready" unlocks
+  var TUT_KEY   = 'qz_tutorial_v3';  // v3 — cinematic rebuild
+  var TUT_TOTAL = 6;
+  window._tutStep = 1;
 
   // ── Public API ──────────────────────────────────────────────────────────────
   window.tutorialMaybeShow = function() {
     try { if (localStorage.getItem(TUT_KEY)) return; } catch(_) {}
     _open(false);
   };
+  window.tutorialShow = function(forced) { _open(!!forced); };
+  window.tutorialDismiss = function() { _close(false); };
+  window.tutorialComplete = function() { _close(true); };
 
-  window.tutorialShow = function(forced) {
-    _open(!!forced);
-  };
+  // ── Step navigation ─────────────────────────────────────────────────────────
+  window.tutStep = function(n) {
+    n = Math.max(1, Math.min(TUT_TOTAL, n));
+    var prev = window._tutStep;
+    if (n === prev) return;
 
-  window.tutorialDismiss = function() {
-    _close(false);
-  };
-
-  window.tutorialComplete = function() {
-    _close(true);
-  };
-
-  // ── Video event handlers (called from HTML attributes) ──────────────────────
-  window.tutorialOnEnded = function() {
-    var cta = document.getElementById('tut-cta');
-    if (cta) cta.disabled = false;
-    _updateHint();
-  };
-
-  window.tutorialOnProgress = function() {
-    var vid  = document.getElementById('tut-video');
-    var fill = document.getElementById('tut-progress-fill');
-    var time = document.getElementById('tut-time');
-    var cta  = document.getElementById('tut-cta');
-    if (!vid) return;
-
-    var pct = vid.duration ? (vid.currentTime / vid.duration) * 100 : 0;
-
-    if (fill) fill.style.width = pct + '%';
-
-    if (time && vid.duration) {
-      time.textContent = _fmtTime(vid.currentTime) + ' / ' + _fmtTime(vid.duration);
+    // Animate out current
+    var cur = document.getElementById('tut-s' + prev);
+    if (cur) {
+      cur.classList.add(n > prev ? 'exit-left' : '');
+      cur.classList.remove('active');
+      // reset exit class after transition
+      setTimeout(function() { if (cur) cur.classList.remove('exit-left'); }, 400);
     }
 
-    if (cta && pct >= _tutUnlockPct) {
-      cta.disabled = false;
-      _updateHint();
-    }
-  };
-
-  window.tutorialOnMeta = function() {
-    var vid  = document.getElementById('tut-video');
-    var time = document.getElementById('tut-time');
-    if (vid && time && vid.duration) {
-      time.textContent = '0:00 / ' + _fmtTime(vid.duration);
-    }
-    _updateHint();
-  };
-
-  window.tutorialOnError = function() {
-    var vid = document.getElementById('tut-video');
-    if (!vid) return;
-    // Server-mode: /tutorial.mp4 requires auth cookie — should work.
-    // File-mode: video not available — just show a friendly message.
-    var zone = document.querySelector('.tut-video-zone');
-    if (zone) {
-      zone.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;padding:40px;text-align:center;">'
-        + '<div style="font-size:42px;opacity:.35;">🎬</div>'
-        + '<div style="font-size:15px;font-weight:700;color:var(--text-primary);">Tutorial Video</div>'
-        + '<div style="font-size:13px;color:var(--text-muted);max-width:320px;line-height:1.6;">The walkthrough video is available when running the server. Start with <code style="font-family:var(--font-mono);background:rgba(255,255,255,.07);padding:2px 6px;border-radius:4px;">npm run dev</code> and log in.</div>'
-        + '</div>';
-    }
-    // Enable CTA immediately so user isn't stuck
-    var cta = document.getElementById('tut-cta');
-    if (cta) cta.disabled = false;
-  };
-
-  // ── Internal ─────────────────────────────────────────────────────────────────
-  function _open(forced) {
-    _tutForced = !!forced;
-    var modal = document.getElementById('tutorial-modal');
-    if (!modal) return;
-    modal.classList.remove('tut-hidden');
-
-    // Set video src dynamically (avoids loading on page boot)
-    var vid = document.getElementById('tut-video');
-    if (vid && vid.getAttribute('src') !== TUT_SRC) vid.setAttribute('src', TUT_SRC);
-
-    // Auto-play
-    if (vid) {
-      vid.currentTime = forced ? 0 : (vid.currentTime || 0);
-      vid.play().catch(function() {
-        // Autoplay blocked by browser — user must click play
+    // Animate in next
+    window._tutStep = n;
+    var next = document.getElementById('tut-s' + n);
+    if (next) {
+      // set starting position based on direction
+      next.style.transform = n > prev ? 'translateX(48px)' : 'translateX(-48px)';
+      next.style.opacity = '0';
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          next.style.transition = 'opacity 0.35s ease, transform 0.35s cubic-bezier(0.4,0,0.2,1)';
+          next.style.transform = 'translateX(0)';
+          next.style.opacity = '1';
+          next.classList.add('active');
+          setTimeout(function() {
+            next.style.transition = '';
+            next.style.transform = '';
+            next.style.opacity = '';
+          }, 380);
+        });
       });
     }
 
-    // Trap focus inside modal
-    modal.focus();
+    _updateNav(n);
+    _updateDots(n);
+  };
 
-    _updateHint();
+  function _updateNav(n) {
+    var prevBtn = document.getElementById('tut-prev-btn');
+    var nextBtn = document.getElementById('tut-next-btn');
+    if (prevBtn) prevBtn.style.display = n > 1 ? '' : 'none';
+    if (nextBtn) {
+      if (n >= TUT_TOTAL) {
+        nextBtn.style.display = 'none';
+      } else {
+        nextBtn.style.display = '';
+        nextBtn.textContent = n === 1 ? 'Next →' : 'Next →';
+      }
+    }
+  }
+
+  function _updateDots(n) {
+    for (var i = 1; i <= TUT_TOTAL; i++) {
+      var d = document.getElementById('td' + i);
+      if (d) d.classList.toggle('active', i === n);
+    }
+  }
+
+  // ── Open / Close ────────────────────────────────────────────────────────────
+  function _open(forced) {
+    var modal = document.getElementById('tutorial-modal');
+    if (!modal) return;
+
+    // Reset to step 1
+    window._tutStep = 1;
+    for (var i = 1; i <= TUT_TOTAL; i++) {
+      var s = document.getElementById('tut-s' + i);
+      if (s) {
+        s.classList.remove('active', 'exit-left');
+        s.style.transform = s.style.opacity = s.style.transition = '';
+      }
+    }
+    var s1 = document.getElementById('tut-s1');
+    if (s1) s1.classList.add('active');
+    _updateNav(1);
+    _updateDots(1);
+
+    modal.classList.remove('tut-hidden');
+    modal.focus();
   }
 
   function _close(completed) {
     var modal = document.getElementById('tutorial-modal');
-    var vid   = document.getElementById('tut-video');
-    if (vid) { vid.pause(); }
-
-    if (modal) {
-      modal.style.opacity    = '0';
-      modal.style.transition = 'opacity 0.28s ease';
-      setTimeout(function() {
-        modal.classList.add('tut-hidden');
-        modal.style.opacity    = '';
-        modal.style.transition = '';
-      }, 280);
-    }
-
-    if (completed || !_tutForced) {
-      // Mark as seen — won't auto-show again
+    if (!modal) return;
+    modal.style.opacity = '0';
+    modal.style.transition = 'opacity 0.28s ease';
+    setTimeout(function() {
+      modal.classList.add('tut-hidden');
+      modal.style.opacity = modal.style.transition = '';
+    }, 290);
+    if (completed) {
       try { localStorage.setItem(TUT_KEY, '1'); } catch(_) {}
     }
   }
 
-  function _fmtTime(s) {
-    s = Math.floor(s || 0);
-    var m = Math.floor(s / 60);
-    var sec = s % 60;
-    return m + ':' + (sec < 10 ? '0' : '') + sec;
-  }
-
-  function _updateHint() {
-    var vid  = document.getElementById('tut-video');
-    var hint = document.getElementById('tut-hint');
-    var cta  = document.getElementById('tut-cta');
-    if (!hint) return;
-    var pct  = (vid && vid.duration) ? (vid.currentTime / vid.duration) * 100 : 0;
-    if (cta && !cta.disabled) {
-      hint.style.display = 'none'; // already unlocked, no need for hint
-    } else {
-      hint.style.display = 'inline';
-      hint.textContent   = 'Watch to ' + _tutUnlockPct + '% to unlock "I\'m Ready"';
-    }
-  }
-
-  // ── Keyboard: Escape to dismiss ──────────────────────────────────────────────
+  // ── Keyboard ────────────────────────────────────────────────────────────────
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      var modal = document.getElementById('tutorial-modal');
-      if (modal && !modal.classList.contains('tut-hidden')) {
-        tutorialDismiss();
-      }
-    }
+    var modal = document.getElementById('tutorial-modal');
+    if (!modal || modal.classList.contains('tut-hidden')) return;
+    if (e.key === 'Escape') tutorialDismiss();
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') tutStep(window._tutStep + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   tutStep(window._tutStep - 1);
   });
 
-  // ── Backdrop click to dismiss ────────────────────────────────────────────────
+  // ── Backdrop click ───────────────────────────────────────────────────────────
   var bd = document.getElementById('tut-backdrop');
-  if (bd) bd.addEventListener('click', tutorialDismiss);
+  if (bd) bd.addEventListener('click', function(e) {
+    if (e.target === bd) tutorialDismiss();
+  });
 
 })();
 </script>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     ElevenLabs Conversational AI Guide Widget
+     Agent: Quant Entelloq — Platform Guide (George · British storyteller)
+     ═══════════════════════════════════════════════════════════════════════ -->
+<elevenlabs-convai agent-id="agent_0501ksj7b896e93vzq4xbj1xzk5h"></elevenlabs-convai>
+<script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
+
 </body>
 </html>
