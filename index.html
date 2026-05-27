@@ -13142,19 +13142,37 @@ function _qzHandleGoogleCredential(resp) {
   if (typeof _lp3Enter === 'function') _lp3Enter(user); else loginUser(user);
 }
 
-// Loads the GIS script once, returns a Promise that resolves when google.accounts.id is ready
+// Loads the GIS script. Caches only the SUCCESS promise so a transient
+// failure (CSP change, network blip, ad blocker toggled off) self-heals on retry.
 function _qzLoadGIS() {
-  if (window._qzGISPromise) return window._qzGISPromise;
-  window._qzGISPromise = new Promise(function(resolve, reject) {
-    if (window.google && window.google.accounts && window.google.accounts.id) return resolve();
+  // Already loaded — instant resolve
+  if (window.google && window.google.accounts && window.google.accounts.id) {
+    return Promise.resolve();
+  }
+  // In-flight load — share the promise
+  if (window._qzGISInflight) return window._qzGISInflight;
+  // Remove any stale <script> tag from a previous failed attempt so the
+  // browser re-fetches under the updated CSP
+  var prev = document.querySelector('script[data-qz-gis]');
+  if (prev) prev.remove();
+
+  window._qzGISInflight = new Promise(function(resolve, reject) {
     var s = document.createElement('script');
     s.src = 'https://accounts.google.com/gsi/client';
     s.async = true; s.defer = true;
-    s.onload = function() { resolve(); };
-    s.onerror = function() { reject(new Error('Failed to load Google Identity Services')); };
+    s.setAttribute('data-qz-gis', '1');
+    s.onload = function() {
+      window._qzGISInflight = null;
+      if (window.google && window.google.accounts && window.google.accounts.id) resolve();
+      else reject(new Error('GIS loaded but google.accounts.id is missing'));
+    };
+    s.onerror = function() {
+      window._qzGISInflight = null;   // ← do NOT cache the failure; allow retry
+      reject(new Error('Failed to load Google Identity Services (check CSP / network / ad blocker)'));
+    };
     document.head.appendChild(s);
   });
-  return window._qzGISPromise;
+  return window._qzGISInflight;
 }
 
 function doGoogleAuth() {
