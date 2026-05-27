@@ -13086,28 +13086,157 @@ async function doSignup() {
     if (btn) { btn.textContent = origText; btn.disabled = false; }
   }
 }
-function doGoogleAuth() {
-  if (!window._QZ_SERVER_MODE) {
-    loginUser({ name: 'Demo User', email: 'demo@quantedge.ai' });
+// ── Google Sign-In: real OAuth via Google Identity Services (no backend needed)
+// To enable: replace the empty string below with your OAuth 2.0 Web Client ID
+// from https://console.cloud.google.com/apis/credentials
+// Add quant.entelloq.com to "Authorized JavaScript origins" in the OAuth client.
+window._QZ_GOOGLE_CLIENT_ID = ''; // ← paste your Client ID here (e.g. "1234-abc.apps.googleusercontent.com")
+
+function _qzDecodeJWT(t) {
+  try {
+    var p = t.split('.')[1];
+    var b = p.replace(/-/g,'+').replace(/_/g,'/');
+    var pad = b.length % 4; if (pad) b += '='.repeat(4 - pad);
+    return JSON.parse(decodeURIComponent(atob(b).split('').map(function(c){
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join('')));
+  } catch(_) { return null; }
+}
+
+function _qzHandleGoogleCredential(resp) {
+  if (!resp || !resp.credential) {
+    _qzShowAuthNotice('Google sign-in was cancelled or failed. Please try again.');
     return;
   }
-  // Probe backend first — if it returns HTML instead of JSON we're on a static host
-  fetch('/api/auth/config', { credentials: 'include' })
-    .then(function(r) {
-      var ct = (r.headers && r.headers.get('content-type')) || '';
-      if (!ct.includes('application/json')) throw new Error('no-backend');
-      return r.json();
-    })
-    .then(function(cfg) {
-      if (cfg && cfg.googleEnabled) {
-        window.location.href = '/api/auth/google';
-      } else {
-        _qzShowAuthNotice('Google sign-in is not yet configured. Add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET to your .env file.');
-      }
-    })
-    .catch(function() {
-      _qzShowAuthNotice('Sign-in requires the Node.js backend server. Netlify only serves static files — deploy to Railway or Render, or run "node server.js" locally.');
-    });
+  var claims = _qzDecodeJWT(resp.credential);
+  if (!claims || !claims.email) {
+    _qzShowAuthNotice('Could not read Google account info. Please try again.');
+    return;
+  }
+  var user = {
+    name:    claims.name || claims.given_name || claims.email.split('@')[0],
+    email:   claims.email,
+    picture: claims.picture || '',
+    googleId: claims.sub || ''
+  };
+  // Reset double-init guard so re-login after logout works
+  window._qzAppStarted = false;
+  // Server-mode path
+  if (window._QZ_SERVER_MODE) {
+    fetch('/api/auth/google/idtoken', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ credential: resp.credential })
+    }).then(function(r) { return r.ok ? r.json() : Promise.reject(); })
+      .then(function(d) { if (typeof _lp3Enter === 'function') _lp3Enter(d.user || user); else loginUser(d.user || user); })
+      .catch(function() {
+        // Backend not wired — fall back to client-side login with real Google identity
+        if (typeof _lp3Enter === 'function') _lp3Enter(user); else loginUser(user);
+      });
+    return;
+  }
+  // Static deployment — log the user in with their real Google identity
+  if (typeof _lp3Enter === 'function') _lp3Enter(user); else loginUser(user);
+}
+
+// Loads the GIS script once, returns a Promise that resolves when google.accounts.id is ready
+function _qzLoadGIS() {
+  if (window._qzGISPromise) return window._qzGISPromise;
+  window._qzGISPromise = new Promise(function(resolve, reject) {
+    if (window.google && window.google.accounts && window.google.accounts.id) return resolve();
+    var s = document.createElement('script');
+    s.src = 'https://accounts.google.com/gsi/client';
+    s.async = true; s.defer = true;
+    s.onload = function() { resolve(); };
+    s.onerror = function() { reject(new Error('Failed to load Google Identity Services')); };
+    document.head.appendChild(s);
+  });
+  return window._qzGISPromise;
+}
+
+function doGoogleAuth() {
+  // If user is already in the app, just go to dashboard instead of re-logging in
+  if (window._qzAppStarted) {
+    var landing = document.getElementById('landing');
+    var app = document.getElementById('app');
+    if (landing) landing.classList.add('hidden');
+    if (app && app.style.display === 'none') app.style.display = 'flex';
+    if (typeof showPage === 'function') {
+      try { showPage('dashboard', document.getElementById('nav-dashboard')); } catch(_) {}
+    }
+    return;
+  }
+
+  var clientId = (window._QZ_GOOGLE_CLIENT_ID || '').trim();
+
+  // No Client ID configured — fall back gracefully
+  if (!clientId) {
+    if (window._QZ_SERVER_MODE) {
+      // Maybe the server has Google OAuth configured server-side
+      fetch('/api/auth/config', { credentials: 'include' })
+        .then(function(r) {
+          var ct = (r.headers && r.headers.get('content-type')) || '';
+          if (!ct.includes('application/json')) throw new Error('no-backend');
+          return r.json();
+        })
+        .then(function(cfg) {
+          if (cfg && cfg.googleEnabled) { window.location.href = '/api/auth/google'; }
+          else { _qzShowAuthNotice('Google sign-in is not yet configured. Use email signup below.'); }
+        })
+        .catch(function() {
+          _qzShowAuthNotice('Google sign-in is not yet configured on this deployment. Use email signup below.');
+        });
+      return;
+    }
+    _qzShowAuthNotice('Google sign-in is not yet configured for this site. Use email signup below — your data is saved locally in your browser.');
+    return;
+  }
+
+  // Real Google Identity Services flow
+  _qzLoadGIS().then(function() {
+    try {
+      google.accounts.id.initialize({
+        client_id: clientId,
+        callback:  _qzHandleGoogleCredential,
+        auto_select: false,
+        cancel_on_tap_outside: true,
+        ux_mode: 'popup'
+      });
+      google.accounts.id.prompt(function(notification) {
+        // If one-tap is blocked/skipped, fall back to OAuth code popup
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          try {
+            var tokenClient = google.accounts.oauth2.initTokenClient({
+              client_id: clientId,
+              scope: 'openid email profile',
+              callback: function(tokenResp) {
+                if (!tokenResp || !tokenResp.access_token) {
+                  _qzShowAuthNotice('Google sign-in was cancelled.'); return;
+                }
+                // Fetch user info using the access token
+                fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                  headers: { Authorization: 'Bearer ' + tokenResp.access_token }
+                }).then(function(r){return r.json();}).then(function(info){
+                  window._qzAppStarted = false;
+                  var user = { name: info.name || info.email.split('@')[0], email: info.email, picture: info.picture || '', googleId: info.sub || '' };
+                  if (typeof _lp3Enter === 'function') _lp3Enter(user); else loginUser(user);
+                }).catch(function(){
+                  _qzShowAuthNotice('Could not retrieve Google profile. Please try again.');
+                });
+              }
+            });
+            tokenClient.requestAccessToken({ prompt: 'consent' });
+          } catch(e) {
+            _qzShowAuthNotice('Google sign-in popup was blocked. Please allow popups for this site and try again.');
+          }
+        }
+      });
+    } catch(e) {
+      _qzShowAuthNotice('Google sign-in failed: ' + (e.message || 'unknown error') + '. Try email signup instead.');
+    }
+  }).catch(function() {
+    _qzShowAuthNotice('Could not reach Google sign-in service. Check your internet connection or try email signup.');
+  });
 }
 
 function _qzShowAuthNotice(msg) {
