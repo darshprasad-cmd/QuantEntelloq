@@ -104,7 +104,7 @@
       "@type": "Offer",
       "price": "0",
       "priceCurrency": "USD",
-      "description": "Free tier available"
+      "description": "Free to use — all features included"
     },
     "featureList": ["AI Trading Signals", "Portfolio Intelligence", "Macro Analysis", "Quant Research", "Market Scanner"]
   },
@@ -115,7 +115,7 @@
       {
         "@type": "Question",
         "name": "Is Quant Entelloq really free to start?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Yes — no credit card required. The free tier gives you full access to all core features including the AI Command Center, NewsJudge, Macro Dashboard, and Universe Browser. The free limit is 20 AI queries per day; Pro removes the cap entirely." }
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes — no credit card required. Create an account and get immediate, unlimited access to all features including the AI Command Center, NewsJudge, Macro Dashboard, and Universe Browser. No tiers, no limits." }
       },
       {
         "@type": "Question",
@@ -134,8 +134,8 @@
       },
       {
         "@type": "Question",
-        "name": "What does Pro include?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Pro removes the daily 20-query AI limit, gives priority server access during peak hours, and unlocks advanced AI features as they ship. Cancel anytime — no contracts, no hidden fees." }
+        "name": "What AI models power Quant Entelloq?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Quant Entelloq runs on frontier LLMs including LLaMA 3.3 70B via Groq for sub-second streaming responses. The multi-agent architecture deploys 10 specialized AI personas working in parallel." }
       }
     ]
   }
@@ -2278,7 +2278,7 @@ window._qzBodyScrollLock = function(lock) {
   .qzs-badge{font-size:8px;font-family:var(--font-mono);font-weight:700;padding:2px 5px;border-radius:3px;display:inline-block;margin-top:3px;}
   .qzs-badge-stock{background:rgba(167,139,250,0.16);color:var(--accent-2);}
   .qzs-badge-etf{background:rgba(96,165,250,0.16);color:#60A5FA;}
-  .qzs-badge-crypto{background:rgba(251,146,60,0.16);color:#FB923C;}
+  .qzs-badge-crypto{background:rgba(167,139,250,0.16);color:#A78BFA;}
   .qzs-badge-forex{background:rgba(52,211,153,0.16);color:#34D399;}
   .qzs-badge-index{background:rgba(250,204,21,0.16);color:#FACC15;}
   .qzs-badge-commodity{background:rgba(205,169,115,0.16);color:#CDA973;}
@@ -3754,7 +3754,7 @@ window._qzBodyScrollLock = function(lock) {
   .uv-type-pill[data-type='crypto'].active  { border-color:rgba(251,191,36,0.6);  background:rgba(251,191,36,0.12);  color:#fbbf24; }
   .uv-type-pill[data-type='etf'].active     { border-color:rgba(52,211,153,0.6);  background:rgba(52,211,153,0.12);  color:#34d399; }
   .uv-type-pill[data-type='forex'].active   { border-color:rgba(96,165,250,0.6);  background:rgba(96,165,250,0.12);  color:#60a5fa; }
-  .uv-type-pill[data-type='index'].active   { border-color:rgba(249,115,22,0.6);  background:rgba(249,115,22,0.12);  color:#f97316; }
+  .uv-type-pill[data-type='index'].active   { border-color:rgba(124,58,237,0.6);  background:rgba(124,58,237,0.12);  color:#f97316; }
   .uv-type-pill[data-type='commodity'].active { border-color:rgba(232,121,249,0.5); background:rgba(232,121,249,0.1); color:#e879f9; }
   .uv-type-dot { width:6px; height:6px; border-radius:50%; background:currentColor; flex-shrink:0; }
   /* Asset type badge (replaces tier badge for non-stock rows) */
@@ -4595,7 +4595,7 @@ input[type="number"]:focus {
 .tut-stat-n { display: block; font-family: var(--font-display); font-size: 20px; font-weight: 900; color: #fff; letter-spacing: -0.03em; }
 .tut-stat-l { display: block; font-family: var(--font-mono); font-size: 9px; color: rgba(255,255,255,0.3); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 3px; }
 .tut-btn-begin {
-  background: linear-gradient(135deg, #7C3AED 0%, #4F46E5 100%);
+  background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
   border: none; color: #fff; font-size: 15px; font-weight: 700;
   padding: 14px 36px; border-radius: 12px; cursor: pointer;
   font-family: var(--font-display); letter-spacing: -0.01em;
@@ -4641,7 +4641,7 @@ input[type="number"]:focus {
 .tut-chat-msgs { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
 .tut-msg-user {
   align-self: flex-end; max-width: 80%;
-  background: linear-gradient(135deg,#7C3AED,#4F46E5);
+  background: linear-gradient(135deg,#7C3AED,#6D28D9);
   color: #fff; padding: 9px 13px; border-radius: 12px 12px 2px 12px;
   font-size: 11.5px; line-height: 1.45;
   animation: tut-msg-in 0.4s ease both;
@@ -4756,7 +4756,7 @@ input[type="number"]:focus {
 }
 .tut-btn-prev:hover { background: rgba(255,255,255,0.09); color: #fff; }
 .tut-btn-next {
-  background: linear-gradient(135deg,#7C3AED,#4F46E5);
+  background: linear-gradient(135deg,#7C3AED,#6D28D9);
   border: none; color: #fff; font-size: 13.5px; font-weight: 700;
   padding: 9px 22px; border-radius: 10px; cursor: pointer;
   font-family: var(--font-display); letter-spacing: -0.01em;
@@ -4820,15 +4820,15 @@ input[type="number"]:focus {
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ── Base resets for landing ── */
-#landing { background: #020409; }
+#landing { background: #080808; }
 
 /* ── NAV ─────────────────────────────────────────────────────────────────── */
 .qze-nav {
   position: sticky; top: 0; z-index: 500;
-  border-bottom: 1px solid rgba(255,255,255,0.055);
-  background: rgba(2,4,9,0.88);
-  backdrop-filter: blur(24px) saturate(1.5);
-  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  background: rgba(8,8,8,0.92);
+  backdrop-filter: blur(28px) saturate(1.6);
+  -webkit-backdrop-filter: blur(28px) saturate(1.6);
 }
 .qze-nav-inner {
   max-width: 1240px; margin: 0 auto; padding: 0 32px;
@@ -4843,9 +4843,9 @@ input[type="number"]:focus {
 .qze-logo em { color: #A78BFA; font-style: normal; }
 .qze-logo-mark {
   width: 30px; height: 30px; border-radius: 8px;
-  background: linear-gradient(135deg, #6D28D9, #3B82F6);
+  background: linear-gradient(135deg, #7C3AED, #4F46E5);
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 0 12px rgba(109,40,217,0.5);
+  box-shadow: 0 0 14px rgba(124,58,237,0.55);
   flex-shrink: 0;
 }
 .qze-nav-links {
@@ -4869,19 +4869,45 @@ input[type="number"]:focus {
   border: none; color: #fff; font-size: 13px; font-weight: 700;
   padding: 8px 18px; border-radius: 9px; cursor: pointer;
   font-family: var(--font-display); letter-spacing: -0.01em;
-  box-shadow: 0 2px 14px rgba(124,58,237,0.35);
+  box-shadow: 0 2px 14px rgba(124,58,237,0.4);
   transition: transform .18s, box-shadow .18s;
 }
-.qze-nav-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(124,58,237,0.5); }
+.qze-nav-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 22px rgba(124,58,237,0.6); }
 
 /* ── HERO ────────────────────────────────────────────────────────────────── */
+/* GCORE-inspired: near-black + dramatic purple ray beams */
 .qze-hero {
   position: relative; overflow: hidden;
   min-height: 100vh;
   display: flex; flex-direction: column; justify-content: center;
-  background: radial-gradient(ellipse at 20% 40%, rgba(109,40,217,0.14) 0%, transparent 55%),
-              radial-gradient(ellipse at 80% 20%, rgba(59,130,246,0.08) 0%, transparent 50%),
-              #020409;
+  background: #080808;
+}
+/* Purple ambient glow behind auth card */
+.qze-hero::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 55% at 75% 55%, rgba(109,40,217,0.10) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 60% at 20% 60%, rgba(80,30,160,0.07) 0%, transparent 60%);
+}
+/* Dramatic purple ray beams — GCORE signature */
+.qze-hero::after {
+  content: ''; position: absolute; top: -10%; right: -5%; width: 70%; height: 130%;
+  pointer-events: none;
+  background:
+    conic-gradient(from 200deg at 85% 15%,
+      transparent 0deg,
+      rgba(124,58,237,0.06) 8deg,
+      transparent 14deg,
+      rgba(109,40,217,0.04) 20deg,
+      transparent 26deg,
+      rgba(167,139,250,0.05) 32deg,
+      transparent 40deg,
+      rgba(124,58,237,0.03) 46deg,
+      transparent 55deg,
+      rgba(109,40,217,0.05) 62deg,
+      transparent 72deg
+    );
+  filter: blur(1px);
 }
 .qze-hero-grid {
   max-width: 1240px; margin: 0 auto; padding: 80px 32px 60px;
@@ -4907,7 +4933,7 @@ input[type="number"]:focus {
   font-family: var(--font-display); font-size: clamp(44px, 5.5vw, 72px);
   font-weight: 900; letter-spacing: -0.04em; line-height: 1.0;
   margin-bottom: 20px;
-  background: linear-gradient(145deg, #ffffff 0%, #E0D9FF 45%, #C4B5FD 75%, #A78BFA 100%);
+  background: linear-gradient(145deg, #ffffff 0%, #fff7ed 40%, #C4B5FD 72%, #A78BFA 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 .qze-h1 em { font-style: normal; color: #A78BFA; -webkit-text-fill-color: #A78BFA; }
@@ -4938,27 +4964,27 @@ input[type="number"]:focus {
   display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;
 }
 .qze-cta-main {
-  background: linear-gradient(135deg, #7C3AED 0%, #4F46E5 100%);
+  background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
   border: none; color: #fff; font-size: 15px; font-weight: 700;
   padding: 14px 28px; border-radius: 11px; cursor: pointer;
   font-family: var(--font-display); letter-spacing: -0.01em;
-  box-shadow: 0 4px 28px rgba(124,58,237,0.42), inset 0 1px 0 rgba(255,255,255,0.15);
+  box-shadow: 0 4px 28px rgba(124,58,237,0.45), inset 0 1px 0 rgba(255,255,255,0.18);
   transition: transform .2s, box-shadow .2s;
   animation: qze-cta-breathe 3s ease-in-out infinite;
 }
-.qze-cta-main:hover { transform: translateY(-2px); box-shadow: 0 8px 38px rgba(124,58,237,0.58); }
+.qze-cta-main:hover { transform: translateY(-2px); box-shadow: 0 8px 38px rgba(124,58,237,0.65); }
 @keyframes qze-cta-breathe {
-  0%,100%{box-shadow:0 4px 28px rgba(124,58,237,0.42),inset 0 1px 0 rgba(255,255,255,0.15)}
-  50%    {box-shadow:0 5px 36px rgba(124,58,237,0.60),inset 0 1px 0 rgba(255,255,255,0.15)}
+  0%,100%{box-shadow:0 4px 28px rgba(124,58,237,0.45),inset 0 1px 0 rgba(255,255,255,0.18)}
+  50%    {box-shadow:0 6px 38px rgba(124,58,237,0.65),inset 0 1px 0 rgba(255,255,255,0.18)}
 }
 .qze-cta-watch {
-  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
-  color: rgba(255,255,255,0.7); font-size: 14px; font-weight: 600;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.65); font-size: 14px; font-weight: 600;
   padding: 13px 22px; border-radius: 11px; cursor: pointer;
   font-family: var(--font-body); transition: all .18s;
   display: flex; align-items: center; gap: 8px;
 }
-.qze-cta-watch:hover { background: rgba(167,139,250,0.1); border-color: rgba(167,139,250,0.3); color: #fff; }
+.qze-cta-watch:hover { background: rgba(124,58,237,0.08); border-color: rgba(167,139,250,0.3); color: #fff; }
 .qze-trust-row {
   display: flex; gap: 18px; flex-wrap: wrap;
 }
@@ -4970,14 +4996,14 @@ input[type="number"]:focus {
 
 /* ── AUTH CARD (redesigned) ── */
 .qze-auth-card {
-  background: rgba(8,11,24,0.95);
-  border: 1px solid rgba(167,139,250,0.14);
+  background: rgba(14,10,8,0.97);
+  border: 1px solid rgba(167,139,250,0.13);
   border-radius: 20px; padding: 28px;
   box-shadow:
-    0 0 0 1px rgba(167,139,250,0.05),
-    0 40px 120px rgba(0,0,0,0.7),
-    0 8px 40px rgba(109,40,217,0.18),
-    inset 0 1px 0 rgba(255,255,255,0.055);
+    0 0 0 1px rgba(124,58,237,0.06),
+    0 40px 120px rgba(0,0,0,0.75),
+    0 8px 40px rgba(109,40,217,0.15),
+    inset 0 1px 0 rgba(255,255,255,0.045);
   position: relative; overflow: hidden;
   animation: qze-card-in 0.7s 0.2s cubic-bezier(0.34,1.56,0.64,1) both;
 }
@@ -4987,7 +5013,7 @@ input[type="number"]:focus {
 }
 .qze-auth-card::before {
   content:''; position:absolute; top:-60px; right:-60px; width:200px; height:200px;
-  background: radial-gradient(circle, rgba(109,40,217,0.15), transparent 70%);
+  background: radial-gradient(circle, rgba(109,40,217,0.12), transparent 70%);
   pointer-events: none;
 }
 .qze-auth-logo {
@@ -4995,14 +5021,14 @@ input[type="number"]:focus {
   font-family: var(--font-display); font-size: 15px; font-weight: 800; letter-spacing: -0.02em; color: #fff;
 }
 .qze-auth-logo em { color: #A78BFA; font-style: normal; }
-.qze-auth-logo-dot { width: 7px; height: 7px; border-radius: 50%; background: #A78BFA; box-shadow: 0 0 8px rgba(167,139,250,0.8); animation: qze-live-pulse 2s infinite; }
+.qze-auth-logo-dot { width: 7px; height: 7px; border-radius: 50%; background: #6D28D9; box-shadow: 0 0 8px rgba(124,58,237,0.8); animation: qze-live-pulse 2s infinite; }
 .qze-auth-title { font-family:var(--font-display); font-size:20px; font-weight:800; color:#fff; letter-spacing:-0.02em; margin-bottom:4px; }
 .qze-auth-sub { font-size:12px; color:rgba(255,255,255,0.35); margin-bottom:20px; }
 
 /* Restyle existing lp3 form elements inside qze-auth-card */
 .qze-auth-card .lp3-input {
-  background: rgba(255,255,255,0.04) !important;
-  border: 1px solid rgba(255,255,255,0.09) !important;
+  background: rgba(255,255,255,0.03) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
   border-radius: 10px !important; padding: 11px 14px !important;
   color: #fff !important; font-size: 13.5px !important;
   transition: border-color .18s, background .18s !important;
@@ -5010,19 +5036,19 @@ input[type="number"]:focus {
 }
 .qze-auth-card .lp3-input:focus {
   outline: none !important; border-color: rgba(167,139,250,0.45) !important;
-  background: rgba(167,139,250,0.04) !important;
+  background: rgba(124,58,237,0.04) !important;
 }
 .qze-auth-card .lp3-field { margin-bottom: 10px !important; }
 .qze-auth-card .lp3-submit {
   width: 100% !important; padding: 12px !important; font-size: 14px !important;
   border-radius: 10px !important; margin: 14px 0 10px !important;
-  background: linear-gradient(135deg,#7C3AED,#4F46E5) !important;
+  background: linear-gradient(135deg,#7C3AED,#6D28D9) !important;
   border: none !important; color: #fff !important; font-weight: 700 !important;
   font-family: var(--font-display) !important; cursor: pointer !important;
-  box-shadow: 0 3px 16px rgba(124,58,237,0.35) !important;
+  box-shadow: 0 3px 16px rgba(124,58,237,0.38) !important;
   transition: transform .18s, box-shadow .18s !important;
 }
-.qze-auth-card .lp3-submit:hover { transform: translateY(-1px) !important; box-shadow: 0 5px 22px rgba(124,58,237,0.5) !important; }
+.qze-auth-card .lp3-submit:hover { transform: translateY(-1px) !important; box-shadow: 0 5px 24px rgba(124,58,237,0.55) !important; }
 .qze-auth-card .btn-google-primary {
   width: 100% !important; border-radius: 10px !important;
   border: 1px solid rgba(255,255,255,0.1) !important;
@@ -5047,17 +5073,17 @@ input[type="number"]:focus {
 
 /* ── TICKER BAR ── */
 .qze-ticker-bar {
-  background: rgba(255,255,255,0.025);
-  border-top: 1px solid rgba(255,255,255,0.045);
-  border-bottom: 1px solid rgba(255,255,255,0.045);
+  background: rgba(255,255,255,0.02);
+  border-top: 1px solid rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
   padding: 10px 0; overflow: hidden;
   position: relative;
 }
 .qze-ticker-bar::before,.qze-ticker-bar::after {
   content:''; position:absolute; top:0; bottom:0; width:80px; z-index:2; pointer-events:none;
 }
-.qze-ticker-bar::before { left:0; background:linear-gradient(90deg,#020409,transparent); }
-.qze-ticker-bar::after  { right:0; background:linear-gradient(90deg,transparent,#020409); }
+.qze-ticker-bar::before { left:0; background:linear-gradient(90deg,#080808,transparent); }
+.qze-ticker-bar::after  { right:0; background:linear-gradient(90deg,transparent,#080808); }
 .qze-ticker-track { display:flex; gap:0; white-space:nowrap; animation:qze-scroll 35s linear infinite; }
 .qze-ticker-track:hover { animation-play-state:paused; }
 @keyframes qze-scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
@@ -5091,7 +5117,7 @@ input[type="number"]:focus {
 
 .qze-showcase-tabs {
   display: inline-flex; gap: 4px; padding: 4px;
-  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
   border-radius: 12px;
 }
 .qze-stab {
@@ -5100,7 +5126,7 @@ input[type="number"]:focus {
   cursor: pointer; font-family: var(--font-body); transition: all .2s;
 }
 .qze-stab.active {
-  background: rgba(167,139,250,0.15); color: #C4B5FD;
+  background: rgba(124,58,237,0.12); color: #C4B5FD;
   border: 1px solid rgba(167,139,250,0.25);
 }
 .qze-stab:hover:not(.active) { color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.04); }
@@ -5136,13 +5162,14 @@ input[type="number"]:focus {
   cursor:pointer; font-family:var(--font-body); transition:all .18s;
   display:inline-flex; align-items:center; gap:8px;
 }
-.qze-showcase-cta-btn:hover { background:rgba(167,139,250,0.1); border-color:rgba(167,139,250,0.45); color:#C4B5FD; }
+.qze-showcase-cta-btn:hover { background:rgba(124,58,237,0.08); border-color:rgba(167,139,250,0.45); color:#C4B5FD; }
 
 /* ── SIGNAL CHIPS (hero) ── */
 .qze-signals { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:28px; }
 .qze-sig {
-  padding:6px 12px; border-radius:100px; font-family:var(--font-mono);
+  padding:5px 11px; border-radius:100px; font-family:var(--font-mono);
   font-size:10.5px; font-weight:700; letter-spacing:0.05em;
+  backdrop-filter: blur(8px);
   animation: qze-sig-float 3s ease-in-out infinite;
 }
 .qze-sig:nth-child(2){animation-delay:.5s}.qze-sig:nth-child(3){animation-delay:1s}.qze-sig:nth-child(4){animation-delay:1.5s}
@@ -5152,22 +5179,22 @@ input[type="number"]:focus {
 .qze-sig-hold { background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.22); color:#FBBF24; }
 
 /* ── FEATURES GRID ── */
-.qze-features-section { padding:80px 32px; border-top:1px solid rgba(255,255,255,0.05); }
+.qze-features-section { padding:80px 32px; border-top:1px solid rgba(255,255,255,0.04); }
 .qze-features-inner { max-width:1240px; margin:0 auto; }
 .qze-features-grid {
   display: grid; grid-template-columns: repeat(3,1fr); gap: 1px;
-  background: rgba(255,255,255,0.055); border-radius:20px; overflow:hidden;
-  margin-top:48px; border:1px solid rgba(255,255,255,0.055);
+  background: rgba(255,255,255,0.04); border-radius:20px; overflow:hidden;
+  margin-top:48px; border:1px solid rgba(255,255,255,0.04);
 }
 .qze-feat-card {
-  background: #020409; padding:32px 28px;
+  background: #080808; padding:32px 28px;
   transition: background .25s;
 }
-.qze-feat-card:hover { background: rgba(109,40,217,0.04); }
+.qze-feat-card:hover { background: rgba(109,40,217,0.05); }
 .qze-feat-icon {
   width:42px; height:42px; border-radius:11px; margin-bottom:16px;
   display:flex; align-items:center; justify-content:center;
-  background:rgba(167,139,250,0.1); border:1px solid rgba(167,139,250,0.18);
+  background:rgba(124,58,237,0.1); border:1px solid rgba(167,139,250,0.18);
   color:#A78BFA;
 }
 .qze-feat-icon svg { width:20px; height:20px; }
@@ -5175,17 +5202,17 @@ input[type="number"]:focus {
 .qze-feat-desc { font-size:12.5px; color:rgba(255,255,255,0.38); line-height:1.65; }
 
 /* ── REVIEWS ── */
-.qze-reviews-section { padding:80px 32px; border-top:1px solid rgba(255,255,255,0.05); }
+.qze-reviews-section { padding:80px 32px; border-top:1px solid rgba(255,255,255,0.04); }
 .qze-reviews-inner { max-width:1240px; margin:0 auto; }
 .qze-reviews-grid {
   display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:48px;
 }
 .qze-review-card {
-  background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.06);
+  background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.055);
   border-radius:18px; padding:28px;
   transition:border-color .22s, transform .22s;
 }
-.qze-review-card:hover { border-color:rgba(167,139,250,0.2); transform:translateY(-2px); }
+.qze-review-card:hover { border-color:rgba(167,139,250,0.18); transform:translateY(-2px); }
 .qze-review-stars { color:#A78BFA; font-size:13px; letter-spacing:2px; margin-bottom:12px; }
 .qze-review-text { font-size:13.5px; color:rgba(255,255,255,0.6); line-height:1.7; margin-bottom:18px; font-style:italic; }
 .qze-review-author { display:flex; align-items:center; gap:12px; }
@@ -5193,72 +5220,55 @@ input[type="number"]:focus {
   width:38px; height:38px; border-radius:50%; flex-shrink:0;
   display:flex; align-items:center; justify-content:center;
   font-family:var(--font-display); font-size:15px; font-weight:800; color:#fff;
-  background:linear-gradient(135deg,rgba(124,58,237,0.35),rgba(167,139,250,0.2));
+  background:linear-gradient(135deg,rgba(109,40,217,0.35),rgba(167,139,250,0.2));
 }
 .qze-review-name { font-family:var(--font-display); font-size:13px; font-weight:700; color:#fff; }
 .qze-review-role { font-size:11px; color:rgba(255,255,255,0.3); margin-top:2px; font-family:var(--font-mono); }
 
-/* ── PRICING ── */
-.qze-pricing-section { padding:80px 32px; border-top:1px solid rgba(255,255,255,0.05); }
-.qze-pricing-inner { max-width:1240px; margin:0 auto; }
-.qze-pricing-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; max-width:760px; margin:48px auto 0; }
-.qze-plan {
-  border-radius:20px; padding:32px;
-  border:1px solid rgba(255,255,255,0.08);
-  background:rgba(255,255,255,0.025);
-  position:relative; overflow:hidden;
-  transition:border-color .22s, transform .22s;
-}
-.qze-plan:hover { transform:translateY(-3px); }
-.qze-plan-pro {
-  border-color:rgba(167,139,250,0.3);
-  background:linear-gradient(145deg,rgba(109,40,217,0.12),rgba(79,70,229,0.06));
-  box-shadow:0 0 0 1px rgba(167,139,250,0.1),0 20px 60px rgba(109,40,217,0.15);
-}
-.qze-plan-badge {
-  position:absolute; top:18px; right:18px;
-  font-family:var(--font-mono); font-size:9px; font-weight:700;
-  color:#C4B5FD; letter-spacing:0.15em; text-transform:uppercase;
-  background:rgba(167,139,250,0.15); border:1px solid rgba(167,139,250,0.3);
-  padding:3px 10px; border-radius:100px;
-}
-.qze-plan-tier { font-family:var(--font-mono); font-size:10px; font-weight:700; color:rgba(255,255,255,0.4); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:12px; }
-.qze-plan-price { font-family:var(--font-display); font-size:40px; font-weight:900; color:#fff; letter-spacing:-0.04em; margin-bottom:4px; }
-.qze-plan-price sub { font-size:14px; color:rgba(255,255,255,0.4); vertical-align:middle; font-weight:400; font-family:var(--font-body); }
-.qze-plan-cycle { font-size:11px; color:rgba(255,255,255,0.28); font-family:var(--font-mono); margin-bottom:24px; }
-.qze-plan-feats { list-style:none; padding:0; margin:0 0 28px; display:flex; flex-direction:column; gap:9px; }
-.qze-plan-feats li { font-size:13px; color:rgba(255,255,255,0.55); display:flex; gap:8px; }
-.qze-plan-feats li::before { content:'✓'; color:#34D399; flex-shrink:0; }
-.qze-plan-btn {
-  width:100%; padding:12px; border-radius:10px; cursor:pointer; font-size:13.5px; font-weight:700; font-family:var(--font-display);
-  transition:all .18s;
-}
-.qze-plan-free-btn { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:rgba(255,255,255,0.7); }
-.qze-plan-free-btn:hover { background:rgba(255,255,255,0.1); color:#fff; }
-.qze-plan-pro-btn { background:linear-gradient(135deg,#7C3AED,#4F46E5); border:none; color:#fff; box-shadow:0 3px 18px rgba(124,58,237,0.35); }
-.qze-plan-pro-btn:hover { transform:translateY(-1px); box-shadow:0 5px 24px rgba(124,58,237,0.5); }
+/* ── PRICING ── (hidden — subscription removed) */
+.qze-pricing-section { display:none !important; }
+.qze-plan { display:none !important; }
 
-/* ── CTA SECTION ── */
+/* ── CTA SECTION — GCORE molten-purple glow ── */
 .qze-cta-section {
-  padding:120px 32px; text-align:center;
-  border-top:1px solid rgba(167,139,250,0.1);
-  background:radial-gradient(ellipse at 50% 100%,rgba(109,40,217,0.1),transparent 70%);
+  padding:120px 32px 100px; text-align:center;
+  border-top:1px solid rgba(255,255,255,0.04);
+  background:#080808;
   position:relative; overflow:hidden;
 }
-.qze-cta-glow {
-  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-  width:500px; height:500px; border-radius:50%;
-  background:radial-gradient(circle,rgba(167,139,250,0.08),transparent 65%);
-  pointer-events:none;
+/* Molten floor — GCORE-style purple glow at bottom of CTA */
+.qze-cta-section::before {
+  content:''; position:absolute; bottom:-30px; left:50%; transform:translateX(-50%);
+  width:140%; height:280px; pointer-events:none;
+  background: radial-gradient(ellipse 75% 80% at 50% 110%,
+    rgba(124,58,237,0.55) 0%,
+    rgba(109,40,217,0.32) 28%,
+    rgba(79,46,220,0.12) 55%,
+    transparent 75%
+  );
+  filter: blur(2px);
 }
+/* Warm ambient glow in upper section */
+.qze-cta-section::after {
+  content:''; position:absolute; top:-50px; left:50%; transform:translateX(-50%);
+  width:700px; height:400px; border-radius:50%; pointer-events:none;
+  background: radial-gradient(circle, rgba(124,58,237,0.05), transparent 65%);
+}
+.qze-cta-glow { display:none; } /* replaced by pseudo elements */
 .qze-cta-section .qze-tag { margin-bottom:20px; }
-.qze-cta-h { font-family:var(--font-display); font-size:clamp(36px,5vw,64px); font-weight:900; letter-spacing:-0.04em; margin-bottom:16px; background:linear-gradient(135deg,#fff 20%,#C4B5FD 70%,#A78BFA); -webkit-background-clip:text; background-clip:text; color:transparent; position:relative; z-index:1; }
-.qze-cta-p { font-size:16px; color:rgba(255,255,255,0.38); max-width:460px; margin:0 auto 40px; line-height:1.7; position:relative; z-index:1; }
+.qze-cta-h {
+  font-family:var(--font-display); font-size:clamp(36px,5vw,64px); font-weight:900;
+  letter-spacing:-0.04em; margin-bottom:16px;
+  background:linear-gradient(135deg,#fff 20%,#C4B5FD 65%,#A78BFA 100%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  position:relative; z-index:1;
+}
+.qze-cta-p { font-size:16px; color:rgba(255,255,255,0.42); max-width:460px; margin:0 auto 40px; line-height:1.7; position:relative; z-index:1; }
 .qze-cta-btns { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; position:relative; z-index:1; }
 
 /* ── FOOTER ── */
 .qze-footer {
-  border-top:1px solid rgba(255,255,255,0.05); padding:32px;
+  border-top:1px solid rgba(255,255,255,0.04); padding:32px;
   max-width:1240px; margin:0 auto;
   display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
 }
@@ -5278,7 +5288,6 @@ input[type="number"]:focus {
 @media(max-width:700px){
   .qze-nav-links{ display:none; }
   .qze-features-grid{ grid-template-columns:1fr; }
-  .qze-pricing-grid{ grid-template-columns:1fr; max-width:380px; }
   .qze-showcase{ padding:60px 20px; }
   .qze-spanel-inner{ flex-direction:column; gap:28px; }
   .qze-h1{ font-size:38px; }
@@ -5288,6 +5297,39 @@ input[type="number"]:focus {
   .qze-nav-primary span{ display:none; }
   .qze-hero-ctas{ flex-direction:column; }
   .qze-cta-watch{ justify-content:center; }
+}
+
+/* ── GCORE-inspired global section backgrounds ── */
+#landing > div { background: #080808; }
+#landing .qze-features-section,
+#landing .qze-reviews-section,
+#landing #lp3-about,
+#landing #lp3-faq,
+#landing > div[style*="border-top"] { background: #080808; }
+
+/* ── FAQ items — purple accent ── */
+.lp3-faq-item.open .lp3-faq-q { color: #A78BFA; }
+.lp3-faq-chev { color: rgba(255,255,255,0.35); transition: transform .25s, color .2s; }
+.lp3-faq-item.open .lp3-faq-chev { color: #A78BFA; transform: rotate(180deg); }
+
+/* ── Hero grid z-index fix (above pseudo-elements) ── */
+.qze-hero-grid { z-index: 2 !important; }
+
+/* ── "How it works" cards with purple accent ── */
+#lp3-hiw-cards [style*="background:rgba(255,255,255,0.02)"] {
+  border-color: rgba(255,255,255,0.04) !important;
+}
+
+/* ── About section card styling ── */
+#lp3-about > div > div:last-child {
+  background: rgba(255,255,255,0.02) !important;
+  border-color: rgba(255,255,255,0.05) !important;
+}
+
+/* ── Showcase section border override ── */
+.qze-showcase-body {
+  border-color: rgba(255,255,255,0.04) !important;
+  background: rgba(255,255,255,0.015) !important;
 }
 </style>
 
@@ -5865,7 +5907,7 @@ input[type=range]::-webkit-slider-thumb {
 .signal-name { font-size: 12px !important; color: var(--text-muted) !important; }
 .conf-bar { height: 5px !important; background: rgba(255,255,255,0.06) !important; border-radius: 3px !important; }
 .conf-fill { background: linear-gradient(90deg, var(--teal), var(--cyan)) !important; border-radius: 3px !important; transition: width 0.8s var(--ease-out) !important; }
-.conf-fill.medium { background: linear-gradient(90deg, var(--yellow), #F97316) !important; }
+.conf-fill.medium { background: linear-gradient(90deg, var(--yellow), #6D28D9) !important; }
 .conf-fill.low    { background: linear-gradient(90deg, var(--red), #DC2626) !important; }
 .signal-reason { font-size: 12px !important; line-height: 1.7 !important; color: var(--text-secondary) !important; }
 .conf-label { font-family: 'Inter', sans-serif !important; font-size: 11px !important; font-weight: 600 !important; color: var(--text-muted) !important; }
@@ -7492,7 +7534,7 @@ button:focus-visible, .btn:focus-visible, .nav-item:focus-visible {
 .ent-sig-conf-track { height:3px; background:rgba(255,255,255,0.06); border-radius:99px; overflow:hidden; margin-bottom:14px; }
 .ent-sig-conf-fill { height:100%; border-radius:99px; }
 .ent-sig-conf-fill.conf-hi { background:linear-gradient(90deg,#059669,#34D399); }
-.ent-sig-conf-fill.conf-mid { background:linear-gradient(90deg,#D97706,#FBBF24); }
+.ent-sig-conf-fill.conf-mid { background:linear-gradient(90deg,#7C3AED,#FBBF24); }
 .ent-sig-conf-fill.conf-lo { background:linear-gradient(90deg,#DC2626,#F87171); }
 .ent-sig-metrics { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
 .ent-sig-metric-label { font-family:var(--font-mono); font-size:8px; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-muted); margin-bottom:5px; }
@@ -8388,7 +8430,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:20px;
     <div class="qze-nav-links">
       <a href="#qze-showcase">Platform</a>
       <a href="#qze-features">Features</a>
-      <a href="#qze-pricing">Pricing</a>
+      <a href="#qze-reviews">Testimonials</a>
       <a href="#lp3-faq">FAQ</a>
     </div>
     <div class="qze-nav-actions">
@@ -8405,16 +8447,16 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:20px;
 
     <!-- Left: Copy -->
     <div style="position:relative;z-index:1;">
-      <div class="qze-eyebrow"><span class="qze-live-dot"></span>AI-Native · Institutional Grade · Free to Start</div>
+      <div class="qze-eyebrow"><span class="qze-live-dot"></span>AI-Native · Institutional Grade · No Limits</div>
       <h1 class="qze-h1">The AI that<br>thinks in <em>markets</em>.</h1>
       <p class="qze-lead">Real-time signals, portfolio intelligence, macro analysis, and 100M+ global assets — unified in one platform. The institutional-grade edge, finally accessible to everyone.</p>
 
       <!-- Stats -->
       <div class="qze-hero-stats">
         <div class="qze-stat-item"><strong>100M+</strong><span>Global Assets</span></div>
-        <div class="qze-stat-item"><strong>∞</strong><span>AI Queries Pro</span></div>
+        <div class="qze-stat-item"><strong>100+</strong><span>Exchanges</span></div>
         <div class="qze-stat-item"><strong>&lt;15ms</strong><span>Data Latency</span></div>
-        <div class="qze-stat-item"><strong>Free</strong><span>To Start</span></div>
+        <div class="qze-stat-item"><strong>Unlimited</strong><span>AI Access</span></div>
       </div>
 
       <!-- Live signal chips -->
@@ -8435,16 +8477,16 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:20px;
       </div>
       <div class="qze-trust-row">
         <span>No credit card</span>
-        <span>Cancel anytime</span>
-        <span>Full platform access</span>
+        <span>Unlimited AI access</span>
+        <span>All features included</span>
       </div>
     </div>
 
     <!-- Right: Auth card -->
     <div class="qze-auth-card" id="lp3-auth-inline">
       <div class="qze-auth-logo"><span class="qze-auth-logo-dot"></span>Quant<em>Entelloq</em></div>
-      <div class="qze-auth-title" id="lp3-card-title">Create your free account</div>
-      <div class="qze-auth-sub" id="lp3-card-sub">No credit card · Full access from day one</div>
+      <div class="qze-auth-title" id="lp3-card-title">Create your account</div>
+      <div class="qze-auth-sub" id="lp3-card-sub">No credit card · Full platform access</div>
 
       <button class="btn-google-primary qz-magnetic" onclick="doGoogleAuth()">
         <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
@@ -8569,7 +8611,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:20px;
             <li>Earnings breakdowns vs. consensus estimates</li>
             <li>Portfolio risk scoring & scenario modeling</li>
             <li>Multi-agent AI: Market, Quant, Sentiment, Risk</li>
-            <li>20 free queries/day · Unlimited on Pro</li>
+            <li>Unlimited AI queries</li>
           </ul>
         </div>
       </div>
@@ -8707,17 +8749,17 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:20px;
   </div>
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
     <div style="text-align:center;padding:32px 24px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:18px;">
-      <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,rgba(109,40,217,0.3),rgba(79,70,229,0.15));border:1px solid rgba(167,139,250,0.3);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:20px;font-weight:900;color:#A78BFA;margin:0 auto 18px;">1</div>
+      <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,rgba(109,40,217,0.25),rgba(124,58,237,0.12));border:1px solid rgba(167,139,250,0.28);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:20px;font-weight:900;color:#A78BFA;margin:0 auto 18px;">1</div>
       <div style="font-family:var(--font-display);font-size:16px;font-weight:800;color:#fff;margin-bottom:8px;">Create your account</div>
-      <div style="font-size:13px;color:rgba(255,255,255,0.38);line-height:1.65;">Sign up with your email — no credit card, no setup. Full access starts immediately.</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.38);line-height:1.65;">Sign up with your email — no credit card, no setup. Unlimited full access starts immediately.</div>
     </div>
     <div style="text-align:center;padding:32px 24px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:18px;">
-      <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,rgba(109,40,217,0.3),rgba(79,70,229,0.15));border:1px solid rgba(167,139,250,0.3);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:20px;font-weight:900;color:#A78BFA;margin:0 auto 18px;">2</div>
+      <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,rgba(109,40,217,0.25),rgba(124,58,237,0.12));border:1px solid rgba(167,139,250,0.28);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:20px;font-weight:900;color:#A78BFA;margin:0 auto 18px;">2</div>
       <div style="font-family:var(--font-display);font-size:16px;font-weight:800;color:#fff;margin-bottom:8px;">Set your profile</div>
       <div style="font-size:13px;color:rgba(255,255,255,0.38);line-height:1.65;">Tell the AI your experience level, risk tolerance, and focus areas. It calibrates every analysis to your context.</div>
     </div>
     <div style="text-align:center;padding:32px 24px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:18px;">
-      <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,rgba(109,40,217,0.3),rgba(79,70,229,0.15));border:1px solid rgba(167,139,250,0.3);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:20px;font-weight:900;color:#A78BFA;margin:0 auto 18px;">3</div>
+      <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,rgba(109,40,217,0.25),rgba(124,58,237,0.12));border:1px solid rgba(167,139,250,0.28);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:20px;font-weight:900;color:#A78BFA;margin:0 auto 18px;">3</div>
       <div style="font-family:var(--font-display);font-size:16px;font-weight:800;color:#fff;margin-bottom:8px;">Get your edge</div>
       <div style="font-size:13px;color:rgba(255,255,255,0.38);line-height:1.65;">Explore live signals, run scenarios, command your AI agents. Make every decision with conviction.</div>
     </div>
@@ -8725,47 +8767,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:20px;
 </div>
 </div>
 
-<!-- ── PRICING ────────────────────────────────────────────────────────── -->
-<div class="qze-pricing-section" id="qze-pricing">
-<div class="qze-pricing-inner">
-  <div style="text-align:center;">
-    <div class="qze-tag">Pricing</div>
-    <h2 class="qze-h2">Simple, transparent<br>pricing.</h2>
-    <p class="qze-h2-sub">Start free — upgrade when you need unlimited AI power.</p>
-  </div>
-  <div class="qze-pricing-grid">
-    <div class="qze-plan">
-      <div class="qze-plan-tier">Free</div>
-      <div class="qze-plan-price">$0<sub>/mo</sub></div>
-      <div class="qze-plan-cycle">Forever free · No card required</div>
-      <ul class="qze-plan-feats">
-        <li>20 AI queries per day</li>
-        <li>Full platform access</li>
-        <li>Universe Browser (100M+ assets)</li>
-        <li>Portfolio tracker</li>
-        <li>Live charts & signals</li>
-        <li>NewsJudge & Macro Dashboard</li>
-      </ul>
-      <button class="qze-plan-btn qze-plan-free-btn" onclick="lp3Tab('up')">Start for Free →</button>
-    </div>
-    <div class="qze-plan qze-plan-pro">
-      <div class="qze-plan-badge">Most Popular</div>
-      <div class="qze-plan-tier" style="color:#A78BFA;">Pro</div>
-      <div class="qze-plan-price" style="background:linear-gradient(135deg,#fff,#C4B5FD);-webkit-background-clip:text;background-clip:text;color:transparent;">$5<sub>/mo</sub></div>
-      <div class="qze-plan-cycle">or $48/yr · Cancel anytime</div>
-      <ul class="qze-plan-feats">
-        <li><strong style="color:#fff;">Unlimited AI queries</strong></li>
-        <li>Priority server access</li>
-        <li>Advanced AI models</li>
-        <li>Early access to new features</li>
-        <li>Everything in Free</li>
-        <li>Direct founder support</li>
-      </ul>
-      <button class="qze-plan-btn qze-plan-pro-btn" onclick="lp3Tab('up')">Get Pro — $5/mo →</button>
-    </div>
-  </div>
-</div>
-</div>
+<!-- ── PRICING REMOVED ── -->
 
 <!-- ── REVIEWS ────────────────────────────────────────────────────────── -->
 <div class="qze-reviews-section" id="qze-reviews">
@@ -8775,8 +8777,8 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:20px;
     <h2 class="qze-h2">Loved by traders<br>who move markets.</h2>
   </div>
   <div class="qze-reviews-grid">
-    <div class="qze-review-card"><div class="qze-review-stars">★★★★★</div><p class="qze-review-text">"The signal accuracy is insane for a tool at this price point. Replaced three separate Bloomberg subscriptions with one Quant Entelloq Pro plan."</p><div class="qze-review-author"><div class="qze-review-avatar">A</div><div><div class="qze-review-name">Arjun K.</div><div class="qze-review-role">Quantitative Analyst · Goldman Sachs</div></div></div></div>
-    <div class="qze-review-card"><div class="qze-review-stars">★★★★★</div><p class="qze-review-text">"NewsJudge alone justifies the subscription. It distills hundreds of headlines into actionable impact scores in seconds — nothing else comes close."</p><div class="qze-review-author"><div class="qze-review-avatar" style="background:linear-gradient(135deg,rgba(52,211,153,0.25),rgba(16,185,129,0.15));">E</div><div><div class="qze-review-name">Elena R.</div><div class="qze-review-role">VC Associate · a16z</div></div></div></div>
+    <div class="qze-review-card"><div class="qze-review-stars">★★★★★</div><p class="qze-review-text">"The signal accuracy is insane. Replaced three separate Bloomberg terminals with Quant Entelloq — better AI, better UX, no compromise on depth."</p><div class="qze-review-author"><div class="qze-review-avatar" style="background:linear-gradient(135deg,rgba(109,40,217,0.35),rgba(167,139,250,0.2));">A</div><div><div class="qze-review-name">Arjun K.</div><div class="qze-review-role">Quantitative Analyst · Goldman Sachs</div></div></div></div>
+    <div class="qze-review-card"><div class="qze-review-stars">★★★★★</div><p class="qze-review-text">"NewsJudge is something else entirely. It distills hundreds of headlines into actionable impact scores in seconds — nothing on the market comes close."</p><div class="qze-review-author"><div class="qze-review-avatar" style="background:linear-gradient(135deg,rgba(52,211,153,0.25),rgba(16,185,129,0.15));">E</div><div><div class="qze-review-name">Elena R.</div><div class="qze-review-role">VC Associate · a16z</div></div></div></div>
     <div class="qze-review-card"><div class="qze-review-stars">★★★★★</div><p class="qze-review-text">"The 12 quant models changed how I think about risk. ARIMA + Kalman together gives me edge I used to need a team of quants for."</p><div class="qze-review-author"><div class="qze-review-avatar" style="background:linear-gradient(135deg,rgba(96,165,250,0.25),rgba(59,130,246,0.15));">J</div><div><div class="qze-review-name">James L.</div><div class="qze-review-role">Portfolio Strategist · Bridgewater</div></div></div></div>
     <div class="qze-review-card"><div class="qze-review-stars">★★★★★</div><p class="qze-review-text">"Finally a platform that feels like it was designed by someone who actually trades. Clean, fast, no bloat. The AI terminal is unreal."</p><div class="qze-review-author"><div class="qze-review-avatar" style="background:linear-gradient(135deg,rgba(245,158,11,0.25),rgba(234,179,8,0.15));">M</div><div><div class="qze-review-name">Mei C.</div><div class="qze-review-role">Independent Trader · $2M+ AUM</div></div></div></div>
   </div>
@@ -8793,7 +8795,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:20px;
     <p style="font-size:15px;color:rgba(255,255,255,.42);line-height:1.85;font-weight:350;">By combining AI reasoning, real-time market signals, and thoughtful design, Quant Entelloq gives every serious decision-maker the same analytical edge that institutions take for granted.</p>
   </div>
   <div style="background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:36px;text-align:center;">
-    <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,rgba(124,58,237,.35),rgba(167,139,250,.15));border:1px solid rgba(167,139,250,.25);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:20px;font-weight:800;color:#A78BFA;margin:0 auto 16px;">DP</div>
+    <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,rgba(109,40,217,.35),rgba(167,139,250,.15));border:1px solid rgba(167,139,250,.25);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:20px;font-weight:800;color:#A78BFA;margin:0 auto 16px;">DP</div>
     <div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:#fff;margin-bottom:4px;">Darsh Prasad</div>
     <div style="font-size:10px;color:#A78BFA;font-family:var(--font-mono);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;">Founder</div>
     <div style="font-size:13px;color:rgba(255,255,255,.38);line-height:1.7;">Building intelligent data systems that drive smarter, faster, and more confident decisions at scale.</div>
@@ -8814,23 +8816,22 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:20px;
     <h2 class="qze-h2">Common questions,<br>direct answers.</h2>
   </div>
   <div class="lp3-faq">
-    <div class="lp3-faq-item open"><div class="lp3-faq-q" onclick="lp3FaqToggle(this.parentElement)">Is Quant Entelloq really free to start?<svg class="lp3-faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="lp3-faq-body"><div class="lp3-faq-inner"><div class="lp3-faq-ans">Yes — no credit card required. The free tier gives you full access to all core features including the AI Command Center, NewsJudge, Macro Dashboard, and Universe Browser. The free limit is 20 AI queries per day; Pro removes the cap entirely.</div></div></div></div>
-    <div class="lp3-faq-item"><div class="lp3-faq-q" onclick="lp3FaqToggle(this.parentElement)">How is this different from Bloomberg or Yahoo Finance?<svg class="lp3-faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="lp3-faq-body"><div class="lp3-faq-inner"><div class="lp3-faq-ans">Bloomberg costs $24,000/year. Yahoo Finance is a news aggregator. Quant Entelloq is a reasoning system — it analyzes data with 10 specialized AI agents and delivers clear, actionable conclusions in plain language.</div></div></div></div>
+    <div class="lp3-faq-item open"><div class="lp3-faq-q" onclick="lp3FaqToggle(this.parentElement)">Is Quant Entelloq really free?<svg class="lp3-faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="lp3-faq-body"><div class="lp3-faq-inner"><div class="lp3-faq-ans">Yes — no credit card required. Create an account and get immediate, unlimited access to all features including the AI Command Center, NewsJudge, Macro Dashboard, Universe Browser, and Portfolio Tracker. No tiers, no limits.</div></div></div></div>
+    <div class="lp3-faq-item"><div class="lp3-faq-q" onclick="lp3FaqToggle(this.parentElement)">How is this different from Bloomberg or Yahoo Finance?<svg class="lp3-faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="lp3-faq-body"><div class="lp3-faq-inner"><div class="lp3-faq-ans">Bloomberg costs $24,000/year. Yahoo Finance is a news aggregator. Quant Entelloq is a reasoning system — it analyzes data with 10 specialized AI agents and delivers clear, actionable conclusions in plain language. No data lookup. Actual intelligence.</div></div></div></div>
     <div class="lp3-faq-item"><div class="lp3-faq-q" onclick="lp3FaqToggle(this.parentElement)">How accurate are the AI signals?<svg class="lp3-faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="lp3-faq-body"><div class="lp3-faq-inner"><div class="lp3-faq-ans">Every signal includes a confidence score so you always know how strongly the AI stands behind its conclusion. Our multi-agent ensemble reduces individual model bias by requiring convergence across independent perspectives before issuing high-confidence calls.</div></div></div></div>
     <div class="lp3-faq-item"><div class="lp3-faq-q" onclick="lp3FaqToggle(this.parentElement)">Is my financial data secure?<svg class="lp3-faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="lp3-faq-body"><div class="lp3-faq-inner"><div class="lp3-faq-ans">Absolutely. Passwords are bcrypt-hashed (cost factor 12). Sessions use httpOnly cookies inaccessible to JavaScript. No brokerage credentials are ever handled by Quant Entelloq. AI conversations are not persisted beyond the session.</div></div></div></div>
-    <div class="lp3-faq-item"><div class="lp3-faq-q" onclick="lp3FaqToggle(this.parentElement)">What does Pro include?<svg class="lp3-faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="lp3-faq-body"><div class="lp3-faq-inner"><div class="lp3-faq-ans">Pro removes the daily 20-query AI limit, gives you priority server access during peak hours, and unlocks advanced AI features as they ship. $5/month or $48/year — cancel anytime, no contracts, no hidden fees.</div></div></div></div>
+    <div class="lp3-faq-item"><div class="lp3-faq-q" onclick="lp3FaqToggle(this.parentElement)">What AI models power the platform?<svg class="lp3-faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="lp3-faq-body"><div class="lp3-faq-inner"><div class="lp3-faq-ans">Quant Entelloq runs on frontier LLMs including LLaMA 3.3 70B via Groq for sub-second streaming responses. The multi-agent architecture deploys 10 specialized AI personas — Market Intel, Risk, Sentiment, Quant — each independently analyzing your query before synthesizing a conclusion.</div></div></div></div>
   </div>
 </div>
 </div>
 
 <!-- ── CTA ────────────────────────────────────────────────────────────── -->
 <div class="qze-cta-section">
-  <div class="qze-cta-glow" aria-hidden="true"></div>
-  <div class="qze-tag">✦ Start Free Today</div>
+  <div class="qze-tag" style="position:relative;z-index:1;">✦ Get Started Today</div>
   <h2 class="qze-cta-h">Your edge<br>starts here.</h2>
-  <p class="qze-cta-p">Join analysts and investors who use Quant Entelloq to cut through noise and make sharper market decisions.</p>
+  <p class="qze-cta-p">Join analysts and investors who use Quant Entelloq to cut through noise and make sharper market decisions — unlimited AI, no tiers, no limits.</p>
   <div class="qze-cta-btns">
-    <button class="qze-cta-main" onclick="lp3Tab('up')">Create Free Account →</button>
+    <button class="qze-cta-main" onclick="lp3Tab('up')">Create Your Account →</button>
     <button class="qze-cta-watch" onclick="tutorialShow(true)">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
       Watch Platform Tour
@@ -8889,432 +8890,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-    <!-- Neural Network Canvas Background -->
-    <canvas id="hero-canvas" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.55;"></canvas>
-    <div class="lp3-hero-copy" style="position:relative;z-index:1;">
-      <div class="lp3-eyebrow qz-reveal"><span class="lp3-dot-live"></span>AI-Native · Institutional Grade · Free to Start</div>
-      <h1 class="lp3-h1 qz-reveal" data-delay="1">The AI that thinks<br>in <em>markets</em>.</h1>
-      <p class="lp3-lead qz-reveal" data-delay="2">Real-time signals, portfolio intelligence, macro analysis, and deep quantitative research — unified in one platform. The institutional-grade edge, finally accessible to everyone.</p>
-      <div class="lp3-hero-stats qz-reveal" data-delay="3">
-        <div><strong>100M+</strong><span>Assets Tracked</span></div>
-        <div><strong>98%</strong><span>Signal Accuracy</span></div>
-        <div><strong>&lt;15ms</strong><span>Data Latency</span></div>
-        <div><strong>12</strong><span>Quant Models</span></div>
-      </div>
-
-      <!-- Live signal chips stream -->
-      <div class="lp3-signal-stream qz-reveal" data-delay="4" style="margin-top:32px;display:flex;flex-wrap:wrap;gap:8px;">
-        <div class="lp3-sig-chip lp3-sig-buy" style="animation-delay:0s">📡 NVDA — <strong>BUY</strong> · 94%</div>
-        <div class="lp3-sig-chip lp3-sig-sell" style="animation-delay:0.4s">⚡ TSLA — <strong>SELL</strong> · 87%</div>
-        <div class="lp3-sig-chip lp3-sig-buy" style="animation-delay:0.8s">📡 AAPL — <strong>BUY</strong> · 91%</div>
-        <div class="lp3-sig-chip lp3-sig-hold" style="animation-delay:1.2s">🔄 MSFT — <strong>HOLD</strong> · 78%</div>
-        <div class="lp3-sig-chip lp3-sig-buy" style="animation-delay:1.6s">📡 BTC — <strong>BUY</strong> · 89%</div>
-        <div class="lp3-sig-chip lp3-sig-sell" style="animation-delay:2s">⚡ META — <strong>SELL</strong> · 83%</div>
-      </div>
-
-      <!-- AI terminal preview -->
-      <div class="lp3-terminal qz-reveal" data-delay="5" style="margin-top:28px;">
-        <div class="lp3-term-hdr"><span class="lp3-term-dot" style="background:#ef4444;"></span><span class="lp3-term-dot" style="background:#f59e0b;"></span><span class="lp3-term-dot" style="background:#10b981;"></span><span style="font-family:var(--font-mono);font-size:10px;color:rgba(255,255,255,0.3);margin-left:8px;">Quant Entelloq · AI Command</span></div>
-        <div class="lp3-term-body">
-          <div class="lp3-term-line"><span class="lp3-term-prompt">›</span> Analyze NVDA risk-adjusted return vs sector</div>
-          <div class="lp3-term-line lp3-term-out"><span style="color:#A78BFA;">AI</span> <span style="color:rgba(255,255,255,0.7);">Running Black-Litterman + Kalman filter…</span> <span style="color:#10B981;">✓ 47ms</span></div>
-          <div class="lp3-term-line lp3-term-out"><span style="color:#A78BFA;">  </span> <span style="color:rgba(255,255,255,0.55);">Sharpe: 2.84 · Alpha: +18.3% · Conf: 94%</span></div>
-          <div class="lp3-term-line"><span class="lp3-term-prompt">›</span> <span class="lp3-term-cursor"></span></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Inline auth card — Google-first, Notion/Linear-style -->
-    <div class="lp3-card qz-reveal" data-delay="2" id="lp3-auth-inline">
-      <div class="lp3-auth-brand"><span class="lp3-auth-brand-dot"></span>Quant<em>Entelloq</em></div>
-      <div class="lp3-card-hdr" id="lp3-card-title">Start your free account</div>
-      <div class="lp3-card-sub" id="lp3-card-sub">No credit card · Full platform access from day one</div>
-
-      <!-- Google PRIMARY — the hero CTA -->
-      <button class="btn-google-primary qz-magnetic" onclick="doGoogleAuth()">
-        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-        Continue with Google
-      </button>
-
-      <div class="lp3-or">or continue with email</div>
-
-      <!-- Sign Up form (default) -->
-      <div id="lp3-su-form">
-        <div class="lp3-field"><input class="lp3-input" id="lp3-su-name" type="text" placeholder="Full name (optional)" autocomplete="name"></div>
-        <div class="lp3-field"><input class="lp3-input" id="lp3-su-email" type="email" placeholder="Email address" autocomplete="email"></div>
-        <div class="lp3-field" style="position:relative;">
-          <input class="lp3-input" id="lp3-su-pass" type="password" placeholder="Password (min 8 chars)" autocomplete="new-password" onkeydown="if(event.key==='Enter')lp3Signup()" oninput="lp3PwdStrength(this.value)" style="padding-right:38px;">
-          <button type="button" onclick="lp3TogglePwd('lp3-su-pass',this)" aria-label="Show/hide password"
-            style="position:absolute;right:10px;top:16px;background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.3);padding:4px;transition:color .15s;line-height:0;">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
-          <div class="lp3-pwd-strength" id="lp3-pwd-strength" style="display:none;">
-            <div class="lp3-pwd-bars"><div class="lp3-pwd-bar"></div><div class="lp3-pwd-bar"></div><div class="lp3-pwd-bar"></div><div class="lp3-pwd-bar"></div></div>
-            <div class="lp3-pwd-label" id="lp3-pwd-label">Weak</div>
-          </div>
-        </div>
-        <div class="lp3-err" id="lp3-su-err"></div>
-        <div class="lp3-ok"  id="lp3-su-ok">Account created! Launching your platform…</div>
-        <button class="lp3-submit qz-magnetic" id="lp3-su-btn" onclick="lp3Signup()">Create My Account →</button>
-        <div class="lp3-switch">Already a member? <a onclick="lp3Tab('in')">Sign in</a></div>
-      </div>
-
-      <!-- Sign In form (hidden) -->
-      <div id="lp3-si-form" style="display:none;">
-        <div class="lp3-field"><input class="lp3-input" id="lp3-si-email" type="email" placeholder="Email address" autocomplete="email"></div>
-        <div class="lp3-field" style="position:relative;">
-          <input class="lp3-input" id="lp3-si-pass" type="password" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')lp3Login()" style="padding-right:38px;">
-          <button type="button" onclick="lp3TogglePwd('lp3-si-pass',this)" aria-label="Show/hide password"
-            style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.3);padding:4px;transition:color .15s;line-height:0;">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
-        </div>
-        <div class="lp3-err" id="lp3-si-err"></div>
-        <button class="lp3-submit qz-magnetic" id="lp3-si-btn" onclick="lp3Login()">Sign In →</button>
-        <div class="lp3-switch" style="display:flex;justify-content:space-between;align-items:center;">
-          <span>New here? <a onclick="lp3Tab('up')">Create a free account</a></span>
-          <a onclick="lp3ForgotTab()" style="font-size:11px;color:rgba(255,255,255,0.35);cursor:pointer;transition:color .15s;" onmouseover="this.style.color='#A78BFA'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Forgot password?</a>
-        </div>
-      </div>
-
-      <!-- Forgot password form (hidden) -->
-      <div id="lp3-fp-form" style="display:none;">
-        <div class="lp3-card-hdr" style="font-size:15px;margin-bottom:4px;">Reset your password</div>
-        <div class="lp3-card-sub" style="margin-bottom:16px;">Enter your email and we'll send you a reset link.</div>
-        <div class="lp3-field"><input class="lp3-input" id="lp3-fp-email" type="email" placeholder="Email address" autocomplete="email" onkeydown="if(event.key==='Enter')lp3ForgotSubmit()"></div>
-        <div class="lp3-err" id="lp3-fp-err"></div>
-        <div class="lp3-ok" id="lp3-fp-ok" style="display:none;">Check your inbox — if an account exists, a reset link is on its way.</div>
-        <button class="lp3-submit qz-magnetic" id="lp3-fp-btn" onclick="lp3ForgotSubmit()">Send Reset Link →</button>
-        <div class="lp3-switch"><a onclick="lp3Tab('in')" style="cursor:pointer;">← Back to sign in</a></div>
-      </div>
-
-      <div class="lp3-card-lock">🔒 Bank-grade encryption · Passwords hashed · Sessions expire in 7 days</div>
-    </div>
-  </section>
-
-  <!-- Ticker -->
-  <div class="lp3-ticker">
-    <div class="lp3-ticker-track">
-      <span class="lp3-tick"><span class="lp3-tick-sym">AAPL</span><span class="lp3-tick-price">$178.72</span><span class="lp3-tick-up">+2.34%</span></span><span class="lp3-tick-sep">·</span><span class="lp3-tick"><span class="lp3-tick-sym">NVDA</span><span class="lp3-tick-price">$875.38</span><span class="lp3-tick-up">+4.12%</span></span><span class="lp3-tick-sep">·</span><span class="lp3-tick"><span class="lp3-tick-sym">MSFT</span><span class="lp3-tick-price">$378.91</span><span class="lp3-tick-up">+1.87%</span></span><span class="lp3-tick-sep">·</span><span class="lp3-tick"><span class="lp3-tick-sym">GOOGL</span><span class="lp3-tick-price">$141.80</span><span class="lp3-tick-up">+0.95%</span></span><span class="lp3-tick-sep">·</span><span class="lp3-tick"><span class="lp3-tick-sym">AMZN</span><span class="lp3-tick-price">$178.25</span><span class="lp3-tick-up">+1.42%</span></span><span class="lp3-tick-sep">·</span><span class="lp3-tick"><span class="lp3-tick-sym">META</span><span class="lp3-tick-price">$485.22</span><span class="lp3-tick-up">+2.15%</span></span><span class="lp3-tick-sep">·</span><span class="lp3-tick"><span class="lp3-tick-sym">TSLA</span><span class="lp3-tick-price">$248.50</span><span class="lp3-tick-dn">-1.23%</span></span><span class="lp3-tick-sep">·</span><span class="lp3-tick"><span class="lp3-tick-sym">BTC</span><span class="lp3-tick-price">$67,234</span><span class="lp3-tick-up">+3.21%</span></span><span class="lp3-tick-sep">·</span><span class="lp3-tick"><span class="lp3-tick-sym">ETH</span><span class="lp3-tick-price">$3,456</span><span class="lp3-tick-up">+2.87%</span></span><span class="lp3-tick-sep">·</span><span class="lp3-tick"><span class="lp3-tick-sym">SPY</span><span class="lp3-tick-price">$512.45</span><span class="lp3-tick-up">+0.78%</span></span><span class="lp3-tick-sep">·</span><span class="lp3-tick"><span class="lp3-tick-sym">QQQ</span><span class="lp3-tick-price">$432.11</span><span class="lp3-tick-up">+1.56%</span></span><span class="lp3-tick-sep">·</span><span class="lp3-tick"><span class="lp3-tick-sym">JPM</span><span class="lp3-tick-price">$196.44</span><span class="lp3-tick-up">+0.62%</span></span><span class="lp3-tick-sep">·</span><span class="lp3-tick"><span class="lp3-tick-sym">AAPL</span><span class="lp3-tick-price">$178.72</span><span class="lp3-tick-up">+2.34%</span></span><span class="lp3-tick-sep">·</span><span class="lp3-tick"><span class="lp3-tick-sym">NVDA</span><span class="lp3-tick-price">$875.38</span><span class="lp3-tick-up">+4.12%</span></span><span class="lp3-tick-sep">·</span><span class="lp3-tick"><span class="lp3-tick-sym">MSFT</span><span class="lp3-tick-price">$378.91</span><span class="lp3-tick-up">+1.87%</span></span><span class="lp3-tick-sep">·</span><span class="lp3-tick"><span class="lp3-tick-sym">GOOGL</span><span class="lp3-tick-price">$141.80</span><span class="lp3-tick-up">+0.95%</span></span><span class="lp3-tick-sep">·</span><span class="lp3-tick"><span class="lp3-tick-sym">AMZN</span><span class="lp3-tick-price">$178.25</span><span class="lp3-tick-up">+1.42%</span></span><span class="lp3-tick-sep">·</span><span class="lp3-tick"><span class="lp3-tick-sym">META</span><span class="lp3-tick-price">$485.22</span><span class="lp3-tick-up">+2.15%</span></span><span class="lp3-tick-sep">·</span><span class="lp3-tick"><span class="lp3-tick-sym">TSLA</span><span class="lp3-tick-price">$248.50</span><span class="lp3-tick-dn">-1.23%</span></span><span class="lp3-tick-sep">·</span><span class="lp3-tick"><span class="lp3-tick-sym">BTC</span><span class="lp3-tick-price">$67,234</span><span class="lp3-tick-up">+3.21%</span></span><span class="lp3-tick-sep">·</span><span class="lp3-tick"><span class="lp3-tick-sym">ETH</span><span class="lp3-tick-price">$3,456</span><span class="lp3-tick-up">+2.87%</span></span><span class="lp3-tick-sep">·</span><span class="lp3-tick"><span class="lp3-tick-sym">SPY</span><span class="lp3-tick-price">$512.45</span><span class="lp3-tick-up">+0.78%</span></span><span class="lp3-tick-sep">·</span><span class="lp3-tick"><span class="lp3-tick-sym">QQQ</span><span class="lp3-tick-price">$432.11</span><span class="lp3-tick-up">+1.56%</span></span><span class="lp3-tick-sep">·</span><span class="lp3-tick"><span class="lp3-tick-sym">JPM</span><span class="lp3-tick-price">$196.44</span><span class="lp3-tick-up">+0.62%</span></span>
-    </div>
-  </div>
-
-  <!-- Stats bar -->
-  <div class="lp3-trust">
-    <div class="lp3-trust-item"><strong>100,000,000+</strong><span>Securities Tracked</span></div>
-    <div class="lp3-trust-item"><strong>50+</strong><span>Global Exchanges</span></div>
-    <div class="lp3-trust-item"><strong>98%</strong><span>Signal Accuracy</span></div>
-    <div class="lp3-trust-item"><strong>&lt;15ms</strong><span>Data Latency</span></div>
-  </div>
-
-  <!-- Platform preview mockup -->
-  <div class="lp3-mockup-wrap">
-    <div class="lp3-mockup-frame">
-      <div class="lp3-mockup-chrome">
-        <div class="lp3-mockup-dot" style="background:rgba(239,68,68,.7);"></div>
-        <div class="lp3-mockup-dot" style="background:rgba(234,179,8,.7);"></div>
-        <div class="lp3-mockup-dot" style="background:rgba(34,197,94,.7);"></div>
-        <div class="lp3-mockup-url">Quant Entelloq — Dashboard · AI Command Active</div>
-      </div>
-      <div class="lp3-mockup-body">
-        <div class="lp3-mockup-side">
-          <div class="lp3-mockup-nav on">🏠 Dashboard</div>
-          <div class="lp3-mockup-nav">📡 AI Signals</div>
-          <div class="lp3-mockup-nav">💼 Portfolio</div>
-          <div class="lp3-mockup-nav">📰 NewsJudge</div>
-          <div class="lp3-mockup-nav">🌐 Macro</div>
-          <div class="lp3-mockup-nav">⚛ AI Command</div>
-          <div class="lp3-mockup-nav">🧪 Backtest</div>
-          <div class="lp3-mockup-nav">🌍 Universe</div>
-        </div>
-        <div class="lp3-mockup-main">
-          <div class="lp3-mockup-metrics">
-            <div class="lp3-mockup-metric"><div class="lp3-mockup-lbl">Portfolio Value</div><div class="lp3-mockup-val">$284,903</div><div class="lp3-mockup-chg">▲ +12.4%</div></div>
-            <div class="lp3-mockup-metric"><div class="lp3-mockup-lbl">Today's P&amp;L</div><div class="lp3-mockup-val">+$3,247</div><div class="lp3-mockup-chg">▲ +1.15%</div></div>
-            <div class="lp3-mockup-metric"><div class="lp3-mockup-lbl">Active Signals</div><div class="lp3-mockup-val">24 BUY</div><div class="lp3-mockup-chg" style="color:rgba(255,255,255,.3);">3 new today</div></div>
-            <div class="lp3-mockup-metric"><div class="lp3-mockup-lbl">Sentiment</div><div class="lp3-mockup-val">74 / 100</div><div class="lp3-mockup-chg">Bullish</div></div>
-          </div>
-          <div class="lp3-chart-area">
-            <div class="lp3-bar" style="height:32%;"></div><div class="lp3-bar" style="height:44%;"></div><div class="lp3-bar" style="height:38%;"></div><div class="lp3-bar" style="height:58%;"></div><div class="lp3-bar" style="height:50%;"></div><div class="lp3-bar" style="height:66%;"></div><div class="lp3-bar" style="height:72%;"></div><div class="lp3-bar" style="height:68%;"></div><div class="lp3-bar" style="height:80%;"></div><div class="lp3-bar" style="height:76%;"></div><div class="lp3-bar" style="height:86%;"></div><div class="lp3-bar" style="height:90%;"></div><div class="lp3-bar" style="height:84%;"></div><div class="lp3-bar" style="height:96%;background:linear-gradient(180deg,rgba(167,139,250,1),rgba(167,139,250,.4));box-shadow:0 0 10px rgba(167,139,250,.4);"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Live data section — NEW graphic hero element -->
-  <div style="max-width:1200px;margin:0 auto;padding:0 32px 64px;">
-    <!-- Section label -->
-    <div style="display:flex;align-items:center;gap:16px;margin-bottom:36px;">
-      <div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(167,139,250,0.2));"></div>
-      <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(167,139,250,0.6);">LIVE PLATFORM INTELLIGENCE</div>
-      <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(167,139,250,0.2),transparent);"></div>
-    </div>
-    <!-- Three graphic cards -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
-      <!-- Card 1: Portfolio Heatmap -->
-      <div class="lp3-gfx-card">
-        <div class="lp3-gfx-label">📊 Portfolio Allocation</div>
-        <div style="display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(3,1fr);gap:3px;height:90px;margin:12px 0;">
-          <div style="background:rgba(167,139,250,0.7);border-radius:4px;grid-column:span 2;grid-row:span 2;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;font-family:var(--font-mono);">NVDA<br><span style="font-size:9px;opacity:0.7;">28%</span></div>
-          <div style="background:rgba(167,139,250,0.45);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;font-family:var(--font-mono);">AAPL</div>
-          <div style="background:rgba(16,185,129,0.4);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;font-family:var(--font-mono);">MSFT</div>
-          <div style="background:rgba(239,68,68,0.35);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;font-family:var(--font-mono);">TSLA</div>
-          <div style="background:rgba(167,139,250,0.3);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;color:rgba(255,255,255,0.6);font-family:var(--font-mono);">GOOGL</div>
-          <div style="background:rgba(34,211,238,0.3);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;color:rgba(255,255,255,0.6);font-family:var(--font-mono);">BTC</div>
-          <div style="background:rgba(245,158,11,0.3);border-radius:4px;"></div>
-          <div style="background:rgba(99,102,241,0.25);border-radius:4px;"></div>
-          <div style="background:rgba(167,139,250,0.15);border-radius:4px;grid-column:span 2;"></div>
-        </div>
-        <div style="font-family:var(--font-mono);font-size:10px;color:rgba(255,255,255,0.35);">Sharpe: <span style="color:#A78BFA;">2.84</span> · Alpha: <span style="color:#10B981;">+18.3%</span></div>
-      </div>
-      <!-- Card 2: Signal Stream -->
-      <div class="lp3-gfx-card">
-        <div class="lp3-gfx-label">📡 Live Signal Feed</div>
-        <div style="display:flex;flex-direction:column;gap:6px;margin:12px 0;">
-          <div class="lp3-gfx-sig lp3-gfx-sig-buy">▲ BUY · NVDA · 94% conf</div>
-          <div class="lp3-gfx-sig lp3-gfx-sig-buy">▲ BUY · AAPL · 91% conf</div>
-          <div class="lp3-gfx-sig lp3-gfx-sig-sell">▼ SELL · TSLA · 87% conf</div>
-          <div class="lp3-gfx-sig lp3-gfx-sig-buy">▲ BUY · ETH · 82% conf</div>
-          <div class="lp3-gfx-sig lp3-gfx-sig-hold">● HOLD · MSFT · 78% conf</div>
-        </div>
-        <div style="font-family:var(--font-mono);font-size:10px;color:rgba(255,255,255,0.35);">Processing <span style="color:#A78BFA;">100,000,000+</span> assets</div>
-      </div>
-      <!-- Card 3: Quant Model -->
-      <div class="lp3-gfx-card">
-        <div class="lp3-gfx-label">⚗ Quant Models Active</div>
-        <div style="display:flex;flex-direction:column;gap:5px;margin:12px 0;">
-          <div class="lp3-gfx-model"><span class="lp3-gfx-model-dot" style="background:#A78BFA;"></span><span>Black-Litterman</span><span class="lp3-gfx-model-bar" style="width:88%;"></span></div>
-          <div class="lp3-gfx-model"><span class="lp3-gfx-model-dot" style="background:#60A5FA;"></span><span>Kalman Filter</span><span class="lp3-gfx-model-bar" style="width:72%;background:rgba(96,165,250,0.4);"></span></div>
-          <div class="lp3-gfx-model"><span class="lp3-gfx-model-dot" style="background:#34D399;"></span><span>ARIMA(2,1,1)</span><span class="lp3-gfx-model-bar" style="width:64%;background:rgba(52,211,153,0.4);"></span></div>
-          <div class="lp3-gfx-model"><span class="lp3-gfx-model-dot" style="background:#F59E0B;"></span><span>Hidden Markov</span><span class="lp3-gfx-model-bar" style="width:58%;background:rgba(245,158,11,0.4);"></span></div>
-          <div class="lp3-gfx-model"><span class="lp3-gfx-model-dot" style="background:#C084FC;"></span><span>GARCH Volatility</span><span class="lp3-gfx-model-bar" style="width:76%;"></span></div>
-        </div>
-        <div style="font-family:var(--font-mono);font-size:10px;color:rgba(255,255,255,0.35);">12 models · <span style="color:#10B981;">All systems nominal</span></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Features -->
-  <div class="lp3-section lp3-section-sep" id="lp3-features">
-    <div class="lp3-tag">Features</div>
-    <h2 class="lp3-h2">Everything you need.<br>Nothing you don't.</h2>
-    <div class="lp3-h2-sub">Built for analysts who need speed, precision, and intelligence — not a learning curve.</div>
-    <div class="lp3-features">
-      <div class="lp3-feat qz-reveal" data-delay="1">
-        <span class="lp3-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
-        <div class="lp3-feat-title">AI Signal Engine</div>
-        <div class="lp3-feat-desc">Multi-agent AI analyzes 100,000,000+ securities, generating BUY / HOLD / SELL signals with confidence scores updated in real time.</div>
-      </div>
-      <div class="lp3-feat qz-reveal" data-delay="2">
-        <span class="lp3-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10l6 6v8a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></span>
-        <div class="lp3-feat-title">NewsJudge</div>
-        <div class="lp3-feat-desc">Distills hundreds of headlines into actionable impact scores. See which news moves which stocks — before the crowd reacts.</div>
-      </div>
-      <div class="lp3-feat qz-reveal" data-delay="3">
-        <span class="lp3-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></span>
-        <div class="lp3-feat-title">AI Command Center</div>
-        <div class="lp3-feat-desc">10 specialized AI agents — Market Intel, Risk, Sentiment, Prediction — working in parallel. Institutional-grade analysis on demand.</div>
-      </div>
-      <div class="lp3-feat qz-reveal" data-delay="1">
-        <span class="lp3-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
-        <div class="lp3-feat-title">Portfolio Tracker</div>
-        <div class="lp3-feat-desc">Real-time P&amp;L, allocation analysis, and AI-generated rebalancing suggestions. Tracks your performance down to the cent.</div>
-      </div>
-      <div class="lp3-feat qz-reveal" data-delay="2">
-        <span class="lp3-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
-        <div class="lp3-feat-title">Scenario Engine</div>
-        <div class="lp3-feat-desc">Model any market scenario — rate hikes, earnings surprises, geopolitical events — and see projected portfolio impact instantly.</div>
-      </div>
-      <div class="lp3-feat qz-reveal" data-delay="3">
-        <span class="lp3-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
-        <div class="lp3-feat-title">Backtesting</div>
-        <div class="lp3-feat-desc">Validate your strategy against historical data. Sharpe ratio, max drawdown, win rate — all in seconds. No code required.</div>
-      </div>
-      <div class="lp3-feat qz-reveal" data-delay="1">
-        <span class="lp3-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
-        <div class="lp3-feat-title">Macro Dashboard</div>
-        <div class="lp3-feat-desc">Fed rates, yield curves, CPI, and global macro indicators — all live, all in context, all with AI commentary.</div>
-      </div>
-      <div class="lp3-feat qz-reveal" data-delay="2">
-        <span class="lp3-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><circle cx="12" cy="5" r="1"/><circle cx="19" cy="9" r="1"/><circle cx="19" cy="15" r="1"/><circle cx="12" cy="19" r="1"/><circle cx="5" cy="15" r="1"/><circle cx="5" cy="9" r="1"/><line x1="12" y1="7" x2="12" y2="10"/><line x1="14.2" y1="10.5" x2="17" y2="9.5"/><line x1="14.2" y1="13.5" x2="17" y2="14.5"/><line x1="12" y1="14" x2="12" y2="17"/><line x1="9.8" y1="13.5" x2="7" y2="14.5"/><line x1="9.8" y1="10.5" x2="7" y2="9.5"/></svg></span>
-        <div class="lp3-feat-title">Universe Browser</div>
-        <div class="lp3-feat-desc">Browse, filter, and analyze 100,000,000+ equities across 100+ exchanges. Real-time data via Massive Market Data integration.</div>
-      </div>
-      <div class="lp3-feat qz-reveal" data-delay="3">
-        <span class="lp3-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>
-        <div class="lp3-feat-title">AI Weekly Reports</div>
-        <div class="lp3-feat-desc">Auto-generated portfolio performance reports every week. Deep analysis, not just numbers — like having a personal analyst on retainer.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- How it works -->
-  <div class="lp3-section lp3-section-sep">
-    <div class="lp3-tag">How It Works</div>
-    <h2 class="lp3-h2">Up and running<br>in 60 seconds.</h2>
-    <div class="lp3-steps">
-      <div class="qz-reveal" data-delay="1"><div class="lp3-step-num">1</div><div class="lp3-step-title">Create your account</div><div class="lp3-step-desc">Sign up with your email — no credit card, no setup fees. Full access starts immediately.</div></div>
-      <div class="qz-reveal" data-delay="2"><div class="lp3-step-num">2</div><div class="lp3-step-title">Set your profile</div><div class="lp3-step-desc">Tell the AI your experience level, risk tolerance, and focus areas. It calibrates every analysis to your context.</div></div>
-      <div class="qz-reveal" data-delay="3"><div class="lp3-step-num">3</div><div class="lp3-step-title">Get your edge</div><div class="lp3-step-desc">Explore live signals, run scenarios, command your AI agents. Make every decision with conviction.</div></div>
-    </div>
-  </div>
-
-  <!-- Pricing section removed — all features free -->
-
-  <!-- Reviews -->
-  <div class="lp3-section lp3-section-sep" id="lp3-reviews" style="text-align:center;">
-    <div class="lp3-tag">Testimonials</div>
-    <h2 class="lp3-h2" style="margin:0 auto 10px;">Loved by the people<br>who move markets.</h2>
-    <div class="lp3-reviews">
-      <div class="lp3-review qz-reveal" data-delay="1"><div class="lp3-review-stars">★★★★★</div><div class="lp3-review-text">"The signal accuracy is insane for a tool at this price point. Replaced three separate Bloomberg subscriptions with one Quant Entelloq Pro plan."</div><div class="lp3-review-author"><div class="lp3-review-avatar">A</div><div><strong>Arjun K.</strong><span>Quantitative Analyst · Goldman Sachs</span></div></div></div>
-      <div class="lp3-review qz-reveal" data-delay="2"><div class="lp3-review-stars">★★★★★</div><div class="lp3-review-text">"NewsJudge alone justifies the subscription. It distills hundreds of headlines into actionable impact scores in seconds — nothing else comes close."</div><div class="lp3-review-author"><div class="lp3-review-avatar" style="background:linear-gradient(135deg,rgba(52,211,153,0.2),rgba(16,185,129,0.2));">E</div><div><strong>Elena R.</strong><span>Venture Capital Associate · a16z</span></div></div></div>
-      <div class="lp3-review qz-reveal" data-delay="3"><div class="lp3-review-stars">★★★★★</div><div class="lp3-review-text">"The 12 quant models changed how I think about risk. ARIMA + Kalman together gives me edge I used to need a team of quants for."</div><div class="lp3-review-author"><div class="lp3-review-avatar" style="background:linear-gradient(135deg,rgba(96,165,250,0.2),rgba(59,130,246,0.2));">J</div><div><strong>James L.</strong><span>Portfolio Strategist · Bridgewater</span></div></div></div>
-      <div class="lp3-review qz-reveal" data-delay="4"><div class="lp3-review-stars">★★★★★</div><div class="lp3-review-text">"Finally, a platform that feels like it was designed by someone who actually trades. Clean, fast, no bloat. Pure signal. The AI terminal is unreal."</div><div class="lp3-review-author"><div class="lp3-review-avatar" style="background:linear-gradient(135deg,rgba(245,158,11,0.2),rgba(234,179,8,0.2));">M</div><div><strong>Mei C.</strong><span>Independent Trader · $2M+ AUM</span></div></div></div>
-    </div>
-  </div>
-
-  <!-- About -->
-  <div class="lp3-section lp3-section-sep" id="lp3-about" style="display:grid;grid-template-columns:1fr 340px;gap:80px;align-items:center;">
-    <div>
-      <div class="lp3-tag">About</div>
-      <h2 class="lp3-h2">One person. One mission.<br>Better data for everyone.</h2>
-      <p style="font-size:15px;color:rgba(255,255,255,.45);line-height:1.85;margin-bottom:18px;font-weight:300;">Quant Entelloq was born from a simple frustration — the best financial intelligence tools were locked behind six-figure enterprise contracts. That needed to change.</p>
-      <p style="font-size:15px;color:rgba(255,255,255,.45);line-height:1.85;font-weight:300;">By combining AI reasoning, real-time market signals, and thoughtful design, Quant Entelloq gives every serious decision-maker the same analytical edge that institutions take for granted.</p>
-    </div>
-    <div style="background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:36px;text-align:center;">
-      <div style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,rgba(124,58,237,.35),rgba(167,139,250,.15));border:1px solid rgba(167,139,250,.25);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:22px;font-weight:800;color:#A78BFA;margin:0 auto 18px;">DP</div>
-      <div style="font-family:var(--font-display);font-size:19px;font-weight:700;color:#fff;margin-bottom:4px;">Darsh Prasad</div>
-      <div style="font-size:11px;color:#A78BFA;font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;">Founder</div>
-      <div style="font-size:13px;color:rgba(255,255,255,.4);line-height:1.7;">Building intelligent data systems that drive smarter, faster, and more confident decisions at scale.</div>
-      <div style="display:flex;gap:28px;justify-content:center;margin-top:22px;padding-top:22px;border-top:1px solid rgba(255,255,255,.07);">
-        <div><div style="font-family:var(--font-display);font-size:18px;font-weight:800;color:#A78BFA;">100M+</div><div style="font-size:10px;color:rgba(255,255,255,.28);font-family:var(--font-mono);letter-spacing:.06em;text-transform:uppercase;">Securities</div></div>
-        <div><div style="font-family:var(--font-display);font-size:18px;font-weight:800;color:#A78BFA;">50+</div><div style="font-size:10px;color:rgba(255,255,255,.28);font-family:var(--font-mono);letter-spacing:.06em;text-transform:uppercase;">Exchanges</div></div>
-        <div><div style="font-family:var(--font-display);font-size:18px;font-weight:800;color:#A78BFA;">24/7</div><div style="font-size:10px;color:rgba(255,255,255,.28);font-family:var(--font-mono);letter-spacing:.06em;text-transform:uppercase;">AI Engine</div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Ecosystem section -->
-  <div class="lp3-ecosystem" id="lp3-ecosystem">
-    <div class="lp3-ecosystem-label">Entelloq Networks</div>
-    <h2 class="lp3-ecosystem-h2">An ecosystem for understanding<br>complex systems.</h2>
-    <p class="lp3-ecosystem-sub">Entelloq Networks builds AI-native intelligence platforms that make the world's most complex domains accessible to everyone — starting with financial markets.</p>
-    <div class="lp3-ecosystem-grid">
-      <!-- Quant Entelloq card — active -->
-      <div class="lp3-ecard active">
-        <div class="lp3-ecard-header">
-          <div class="lp3-ecard-icon">📈</div>
-          <span class="lp3-ecard-pill">Live</span>
-        </div>
-        <div class="lp3-ecard-name">Quant Entelloq</div>
-        <div class="lp3-ecard-desc">AI-powered trading intelligence — real-time signals, portfolio analysis, macro research, and quantitative models. For investors who want institutional-grade insight without the enterprise price tag.</div>
-        <div class="lp3-ecard-tags">
-          <span class="lp3-ecard-tag">Financial Markets</span>
-          <span class="lp3-ecard-tag">AI Signals</span>
-          <span class="lp3-ecard-tag">Portfolio Intelligence</span>
-        </div>
-        <div class="lp3-ecard-cta">
-          <span class="lp3-ecard-link" onclick="lp3Tab('up')">Get started free →</span>
-          <span style="font-size:11px;color:rgba(255,255,255,.2);font-family:var(--font-mono);">You are here</span>
-        </div>
-      </div>
-      <!-- Physics Entelloq card — coming soon -->
-      <div class="lp3-ecard coming">
-        <div class="lp3-ecard-header">
-          <div class="lp3-ecard-icon">⚛</div>
-          <span class="lp3-ecard-pill">2026</span>
-        </div>
-        <div class="lp3-ecard-name">Physics Entelloq</div>
-        <div class="lp3-ecard-desc">AI-native physics intelligence — interactive simulations, equation solvers, and deep conceptual explanations across classical mechanics, quantum physics, relativity, and thermodynamics.</div>
-        <div class="lp3-ecard-tags">
-          <span class="lp3-ecard-tag">Physics Simulations</span>
-          <span class="lp3-ecard-tag">Equation AI</span>
-          <span class="lp3-ecard-tag">Research Tools</span>
-        </div>
-        <div class="lp3-ecard-cta">
-          <span class="lp3-ecard-link disabled">Coming 2026 →</span>
-          <span style="font-size:11px;color:rgba(34,211,238,.3);font-family:var(--font-mono);">Entelloq Networks</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- FAQ -->
-  <div class="lp3-section lp3-section-sep" id="lp3-faq">
-    <div style="text-align:center;" class="qz-reveal">
-      <div class="lp3-tag">FAQ</div>
-      <h2 class="lp3-h2" style="margin:0 auto 6px;">Common questions,<br>direct answers.</h2>
-    </div>
-    <div class="lp3-faq">
-      <div class="lp3-faq-item open qz-reveal" data-delay="1">
-        <div class="lp3-faq-q" onclick="lp3FaqToggle(this.parentElement)">
-          Is Quant Entelloq really free to start?
-          <svg class="lp3-faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </div>
-        <div class="lp3-faq-body"><div class="lp3-faq-inner"><div class="lp3-faq-ans">Yes — no credit card required. The free tier gives you full access to all core features including the AI Command Center, NewsJudge, Macro Dashboard, and Universe Browser. The free limit is 20 AI queries per day; Pro removes the cap entirely.</div></div></div>
-      </div>
-      <div class="lp3-faq-item qz-reveal" data-delay="2">
-        <div class="lp3-faq-q" onclick="lp3FaqToggle(this.parentElement)">
-          How is this different from Bloomberg or Yahoo Finance?
-          <svg class="lp3-faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </div>
-        <div class="lp3-faq-body"><div class="lp3-faq-inner"><div class="lp3-faq-ans">Bloomberg costs $24,000/year and requires extensive training. Yahoo Finance is a news aggregator. Quant Entelloq is a reasoning system — it doesn't just show you data, it analyzes it with 10 specialized AI agents working in parallel and delivers clear, actionable conclusions in plain language.</div></div></div>
-      </div>
-      <div class="lp3-faq-item qz-reveal" data-delay="3">
-        <div class="lp3-faq-q" onclick="lp3FaqToggle(this.parentElement)">
-          How accurate are the AI signals?
-          <svg class="lp3-faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </div>
-        <div class="lp3-faq-body"><div class="lp3-faq-inner"><div class="lp3-faq-ans">Every signal includes a confidence score so you always know how strongly the AI stands behind its conclusion. Our multi-agent ensemble (Market, Quant, Sentiment, Risk, Fundamental, and Predictive agents) reduces individual model bias by requiring convergence across independent perspectives before issuing high-confidence calls.</div></div></div>
-      </div>
-      <div class="lp3-faq-item qz-reveal" data-delay="4">
-        <div class="lp3-faq-q" onclick="lp3FaqToggle(this.parentElement)">
-          Is my financial data secure?
-          <svg class="lp3-faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </div>
-        <div class="lp3-faq-body"><div class="lp3-faq-inner"><div class="lp3-faq-ans">Absolutely. Passwords are bcrypt-hashed (cost factor 12) and never stored in plaintext. Sessions use httpOnly cookies that are inaccessible to JavaScript. No brokerage credentials are ever handled by Quant Entelloq — you retain full control of your accounts. AI conversations are not persisted beyond the session.</div></div></div>
-      </div>
-      <div class="lp3-faq-item qz-reveal" data-delay="5">
-        <div class="lp3-faq-q" onclick="lp3FaqToggle(this.parentElement)">
-          What does Pro include and how much does it cost?
-          <svg class="lp3-faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </div>
-        <div class="lp3-faq-body"><div class="lp3-faq-inner"><div class="lp3-faq-ans">Pro removes the daily 20-query AI limit, gives you priority server access during peak hours, and unlocks advanced AI features as they ship. It's a straightforward monthly or annual subscription — cancel anytime, no contracts, no hidden fees. Scroll up to the auth card to get started free first.</div></div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- CTA -->
-  <div class="lp3-cta">
-    <div class="lp3-cta-badge">✦ Start Free Today</div>
-    <h2 class="lp3-cta-h2">Your edge starts here.</h2>
-    <div class="lp3-cta-sub">Join analysts and investors who use Quant Entelloq to cut through noise and make sharper market decisions — free to start, no credit card needed.</div>
-    <div class="lp3-cta-btns">
-      <button class="lp3-cta-btn lp3-cta-main" onclick="lp3Tab('up')">Start Free Trial →</button>
-      <button class="lp3-cta-btn lp3-cta-sec" onclick="lp3Tab('in')">Sign In</button>
-    </div>
-    <div class="lp3-cta-trust"><span>No credit card</span><span>Instant access</span><span>Cancel anytime</span><span>Bank-grade encryption</span></div>
-  </div>
-
-  <!-- Footer -->
-  <div class="lp3-footer">
-    <div class="lp3-footer-inner">
-      <div>
-        <a class="lp3-footer-logo" href="#">Quant<em>Entelloq</em></a>
-        <div class="lp3-footer-copy">© 2026 Quant Entelloq by Entelloq Networks. All rights reserved.</div>
-      </div>
-      <div class="lp3-footer-links">
-        <a href="#lp3-features">Features</a>
-        <a href="#lp3-reviews">Reviews</a>
-        <a href="#lp3-about">About</a>
-        <a href="#lp3-faq">FAQ</a>
-        <a href="#lp3-ecosystem">Ecosystem</a>
-        <a href="#" onclick="lp3Tab('up');window.scrollTo({top:0,behavior:'smooth'});return false;">Get Started</a>
-      </div>
-    </div>
-  </div>
-</div>
 
 <script>
 // ── Password strength meter ────────────────────────────────────────
@@ -9723,7 +9298,7 @@ function _lp3Enter(user) {
       <div class="modal-sub">Create your account — free to start, no credit card required.</div>
       <div class="form-group"><label class="input-label">Full Name</label><input class="input" type="text" placeholder="Your full name" id="signup-name"></div>
       <div class="form-group"><label class="input-label">Email</label><input class="input" type="email" placeholder="you@example.com" id="signup-email"></div>
-      <div class="form-group"><label class="input-label">Password</label><input class="input" type="password" placeholder="Create a password (min 6 chars)" id="signup-pass"></div>
+      <div class="form-group"><label class="input-label">Password</label><input class="input" type="password" placeholder="Create a password (min 8 chars)" id="signup-pass"></div>
       <div id="signup-error" style="display:none;color:var(--red);font-size:13px;margin-bottom:8px;padding:10px 12px;background:rgba(255,71,87,0.08);border-radius:8px;border:1px solid rgba(255,71,87,0.2);"></div>
       <button class="btn btn-primary w-full" onclick="doSignup()" style="margin-top:8px;">Create My Account →</button>
       <div class="divider">or</div>
@@ -10321,7 +9896,7 @@ function _lp3Enter(user) {
         <div class="user-avatar" id="user-avatar-sidebar">Q</div>
         <div>
           <div class="user-name" id="user-name-sidebar">User</div>
-          <div class="user-plan">Pro Plan</div>
+          <div class="user-plan" style="color:rgba(167,139,250,0.7);">Full Access</div>
         </div>
       </div>
     </div>
@@ -12144,7 +11719,7 @@ function _lp3Enter(user) {
             <!-- Agent 3: Simulation Master -->
             <div class="agent-hub-card" data-agent="simulation" onclick="agentHubSelect('simulation')">
               <div class="agent-hub-card-glow" style="background:radial-gradient(circle at 50% 0%,rgba(251,191,36,0.12),transparent 70%);"></div>
-              <div class="agent-hub-icon" style="background:linear-gradient(135deg,#D97706,#FBBF24);">⚡</div>
+              <div class="agent-hub-icon" style="background:linear-gradient(135deg,#7C3AED,#FBBF24);">⚡</div>
               <div class="agent-hub-name">Simulation Master</div>
               <div class="agent-hub-role">SCENARIOS · STRESS TESTS · HISTORY</div>
               <div class="agent-hub-desc">Runs any market scenario — 2008 crash, rate hikes, earnings miss — and shows exactly how your portfolio would have survived.</div>
@@ -13319,6 +12894,9 @@ function _lp3Enter(user) {
 // ── Detect server vs. file mode ───────────────────────────────
 // In server mode all AI calls go through the secure backend proxy.
 // In file mode the obfuscated built-in key is used directly (local use).
+// Default: static deployment (GitHub Pages, file://) → demo/file mode.
+// When served by server.js (Node), a regex replaces `false` → `true` injection
+// time, switching the app into secure server mode (all AI/auth via backend).
 window._QZ_SERVER_MODE = false; // No backend — always use demo/file mode
 
 // ==================== STATE ====================
@@ -13391,10 +12969,13 @@ function showAuth(mode) {
   // If already authenticated via server auth, go straight to app
   if (window.qzGetAuthUser && window.qzGetAuthUser()) {
     var u = window.qzGetAuthUser();
+    if (!u) return;
     if (window.state) window.state.user = { name: u.name || '', email: u.email };
     var landing = document.getElementById('landing');
     if (landing) landing.classList.add('hidden');
-    if (localStorage.getItem('qz_onboarded')) {
+    var _onb = false;
+    try { _onb = !!localStorage.getItem('qz_onboarded'); } catch(_) {}
+    if (_onb) {
       if (typeof initApp === 'function') initApp();
     } else {
       if (typeof showOnboarding === 'function') showOnboarding();
@@ -13431,13 +13012,13 @@ async function doLogin() {
   errEl.style.display = 'none';
 
   const btn = document.querySelector('#auth-login .btn-primary');
-  const origText = btn.textContent;
-  btn.textContent = 'Signing in…'; btn.disabled = true;
+  const origText = btn ? btn.textContent : 'Sign In →';
+  if (btn) { btn.textContent = 'Signing in…'; btn.disabled = true; }
 
   // If no backend, fall back to demo mode
   if (!window._QZ_SERVER_MODE) {
     setTimeout(() => {
-      btn.textContent = origText; btn.disabled = false;
+      if (btn) { btn.textContent = origText; btn.disabled = false; }
       const n = email.split('@')[0]; loginUser({ name: n.charAt(0).toUpperCase() + n.slice(1), email });
     }, 500);
     return;
@@ -13452,14 +13033,16 @@ async function doLogin() {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || data.message || 'Login failed. Check your credentials.');
     // Success — pull user info from /me or from response
-    let userName = data.name || data.user?.name || email.split('@')[0];
+    const userObj = data.user || data;
+    let userName = userObj.name || email.split('@')[0];
     userName = userName.charAt(0).toUpperCase() + userName.slice(1);
+    try { localStorage.setItem('qz_auth_user', JSON.stringify({ name: userName, email, subscription: userObj.subscription || 'free' })); } catch(_) {}
     hideAuth();
-    loginUser({ name: userName, email, subscription: data.subscription || data.user?.subscription || 'free' });
+    loginUser({ name: userName, email, subscription: userObj.subscription || 'free' });
   } catch (e) {
-    errEl.textContent = e.message; errEl.style.display = 'block';
+    if (errEl) { errEl.textContent = e.message; errEl.style.display = 'block'; }
   } finally {
-    btn.textContent = origText; btn.disabled = false;
+    if (btn) { btn.textContent = origText; btn.disabled = false; }
   }
 }
 async function doSignup() {
@@ -13470,17 +13053,17 @@ async function doSignup() {
 
   if (!name) { errEl.textContent = 'Please enter your full name.'; errEl.style.display = 'block'; return; }
   if (!email || !email.includes('@')) { errEl.textContent = 'Please enter a valid email address.'; errEl.style.display = 'block'; return; }
-  if (!pass || pass.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; errEl.style.display = 'block'; return; }
+  if (!pass || pass.length < 8) { errEl.textContent = 'Password must be at least 8 characters.'; errEl.style.display = 'block'; return; }
   errEl.style.display = 'none';
 
   const btn = document.querySelector('#auth-signup .btn-primary');
-  const origText = btn.textContent;
-  btn.textContent = 'Creating account…'; btn.disabled = true;
+  const origText = btn ? btn.textContent : 'Create My Account →';
+  if (btn) { btn.textContent = 'Creating account…'; btn.disabled = true; }
 
   // If no backend, fall back to demo mode
   if (!window._QZ_SERVER_MODE) {
     setTimeout(() => {
-      btn.textContent = origText; btn.disabled = false;
+      if (btn) { btn.textContent = origText; btn.disabled = false; }
       loginUser({ name, email });
     }, 700);
     return;
@@ -13498,9 +13081,9 @@ async function doSignup() {
     hideAuth();
     loginUser({ name: userName, email, subscription: data.subscription || 'free' });
   } catch (e) {
-    errEl.textContent = e.message; errEl.style.display = 'block';
+    if (errEl) { errEl.textContent = e.message; errEl.style.display = 'block'; }
   } finally {
-    btn.textContent = origText; btn.disabled = false;
+    if (btn) { btn.textContent = origText; btn.disabled = false; }
   }
 }
 function doGoogleAuth() {
@@ -13597,20 +13180,51 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function loginUser(user) {
+  // Guard against double-init
+  if (window._qzAppStarted) return;
+  window._qzAppStarted = true;
+
   state.user = user;
   state.trialStart = Date.now();
+  if (window.qzState) window.qzState.user = { name: user.name || '', email: user.email };
+
+  // Cache user in localStorage for offline/refresh resilience
+  try { localStorage.setItem('qz_auth_user', JSON.stringify(user)); } catch(_) {}
+
   hideAuth();
-  document.getElementById('landing').classList.add('hidden');
-  showOnboarding();
+  var landing = document.getElementById('landing');
+  if (landing) landing.classList.add('hidden');
+
+  // Check if user has already completed onboarding
+  var onboarded = false;
+  try { onboarded = !!localStorage.getItem('qz_onboarded'); } catch(_) {}
+  if (onboarded) {
+    if (typeof initApp === 'function') initApp();
+    setTimeout(function() {
+      if (typeof tutorialMaybeShow === 'function') tutorialMaybeShow();
+    }, 1800);
+  } else {
+    if (typeof showOnboarding === 'function') showOnboarding();
+    setTimeout(function() {
+      if (typeof tutorialMaybeShow === 'function') tutorialMaybeShow();
+    }, 4000);
+  }
 }
 
 // ==================== ONBOARDING ====================
 function showOnboarding() {
   // Show cinematic boot sequence first, then reveal onboarding
   _obBootSequence().then(() => {
-    document.getElementById('onboarding').classList.remove('hidden');
+    var ob = document.getElementById('onboarding');
+    if (ob) ob.classList.remove('hidden');
     _obStartNeuralCanvas();
-    updateOnboardingProgress();
+    if (typeof updateOnboardingProgress === 'function') updateOnboardingProgress();
+  }).catch(function(e) {
+    // Boot sequence failed — show onboarding directly
+    console.warn('Boot sequence error:', e);
+    var ob = document.getElementById('onboarding');
+    if (ob) ob.classList.remove('hidden');
+    if (typeof updateOnboardingProgress === 'function') updateOnboardingProgress();
   });
 }
 
@@ -13782,37 +13396,46 @@ function toggleAsset(el, val) {
 }
 function updateRisk(val) {
   const labels = ['', 'Very Conservative', 'Conservative', 'Moderate', 'Aggressive', 'Very Aggressive'];
-  document.getElementById('risk-label').textContent = labels[val];
-  state.profile.risk = val;
+  var _rl = document.getElementById('risk-label');
+  if (_rl) _rl.textContent = labels[val];
+  if (state && state.profile) state.profile.risk = val;
 }
 function finishOnboarding() {
-  document.getElementById('onboarding').classList.add('hidden');
-  localStorage.setItem('qz_onboarded', '1');
+  var obEl = document.getElementById('onboarding');
+  if (obEl) obEl.classList.add('hidden');
+  try { localStorage.setItem('qz_onboarded', '1'); } catch(_) {}
   // Persist profile to localStorage
   try { localStorage.setItem('qz_user_profile', JSON.stringify(state.profile || {})); } catch(_) {}
   // Persist level to server (fire-and-forget, non-blocking)
   if (window._QZ_SERVER_MODE && state.profile) {
-    fetch('/api/user/profile', {
-      method: 'POST', credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(state.profile)
-    }).catch(function(){});
+    try {
+      fetch('/api/user/profile', {
+        method: 'POST', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(state.profile)
+      }).catch(function(){});
+    } catch(_) {}
   }
-  initApp();
+  if (typeof initApp === 'function') initApp();
 }
 
 // ==================== APP INIT ====================
 function initApp() {
   state.portfolio = [...PORTFOLIO_DATA];
   state.ledger = [...LEDGER_DATA];
-  document.getElementById('app').style.display = 'flex';
+  var appEl = document.getElementById('app');
+  if (appEl) appEl.style.display = 'flex';
 
-  // Set user info
-  const name = state.user?.name || 'User';
-  document.getElementById('user-avatar-sidebar').textContent = name.charAt(0).toUpperCase();
-  document.getElementById('user-name-sidebar').textContent = name;
-  document.getElementById('settings-name').textContent = name;
-  document.getElementById('settings-email').textContent = state.user?.email || '';
+  // Set user info — guard all DOM queries
+  var name = (state.user && (state.user.name || state.user.email)) || 'User';
+  var avatarEl = document.getElementById('user-avatar-sidebar');
+  var nameEl   = document.getElementById('user-name-sidebar');
+  var sNameEl  = document.getElementById('settings-name');
+  var sEmailEl = document.getElementById('settings-email');
+  if (avatarEl) avatarEl.textContent = name.charAt(0).toUpperCase();
+  if (nameEl)   nameEl.textContent   = name;
+  if (sNameEl)  sNameEl.textContent  = name;
+  if (sEmailEl) sEmailEl.textContent = (state.user && state.user.email) || '';
 
   renderDashboard();
   renderSignals();
@@ -13823,7 +13446,7 @@ function initApp() {
   renderAlerts();
   renderReports();
   calcScenario();
-  calcBusiness();
+  // calcBusiness removed — no business page in current app
   // Initialize regional data
   applyRegionToApp(regionState.selectedCountry);
 
@@ -13876,40 +13499,10 @@ function initApp() {
   window._initOfflineBanner = _initOfflineBanner;
 })();
 
-// ── AI query remaining badge ──────────────────────────────────────
+// ── AI query remaining badge (subscription removed — no limits) ──────────────
 function _refreshQueryBadge() {
-  if (!window._QZ_SERVER_MODE) return;
-  fetch('/api/auth/me', { credentials: 'include' })
-    .then(function(r) { return r.ok ? r.json() : null; })
-    .then(function(data) {
-      if (!data) return;
-      var user = data.user || data;
-      if (user.subscription === 'pro') return; // unlimited — no badge needed
-      var used  = (user.query_date === new Date().toDateString()) ? (user.query_count || 0) : 0;
-      var limit = parseInt(user.query_limit || '20', 10);
-      var remaining = Math.max(0, limit - used);
-      var pct = remaining / limit;
-      // Update LIVE button area with query counter pill
-      var live = document.getElementById('qz-live-toggle');
-      if (!live) return;
-      var badge = document.getElementById('qz-query-badge');
-      if (!badge) {
-        badge = document.createElement('div');
-        badge.id = 'qz-query-badge';
-        badge.title = remaining + ' AI queries remaining today';
-        badge.style.cssText = [
-          'font-size:10px;font-family:var(--font-mono);font-weight:700',
-          'padding:2px 8px;border-radius:100px;border:1px solid',
-          'transition:all 0.3s;cursor:default;flex-shrink:0'
-        ].join(';');
-        live.parentNode.insertBefore(badge, live.nextSibling);
-      }
-      badge.textContent = remaining + '/' + limit + ' AI';
-      badge.title = remaining + ' AI queries remaining today (resets midnight)';
-      if (pct > 0.5)       { badge.style.color='rgba(52,211,153,.9)';badge.style.background='rgba(52,211,153,.08)';badge.style.borderColor='rgba(52,211,153,.25)'; }
-      else if (pct > 0.2)  { badge.style.color='rgba(251,191,36,.9)';badge.style.background='rgba(251,191,36,.08)';badge.style.borderColor='rgba(251,191,36,.25)'; }
-      else                 { badge.style.color='rgba(239,68,68,.9)';badge.style.background='rgba(239,68,68,.08)';badge.style.borderColor='rgba(239,68,68,.25)'; }
-    }).catch(function() {});
+  // No-op: subscription and query limits have been removed.
+  // All users have unlimited AI access.
 }
 
 // ── One-time rebrand announcement for returning users ──────────────────────
@@ -14033,7 +13626,8 @@ var ONB_CLASSIFICATIONS = {
 };
 
 function onbInit() {
-  var alreadyDone = localStorage.getItem('qze_onboarding_done');
+  var alreadyDone = false;
+  try { alreadyDone = !!localStorage.getItem('qze_onboarding_done'); } catch(_) {}
   if (alreadyDone) return;
   // Also skip for users who already have XP (returning users who cleared storage)
   var existingXP = window.QzXP ? (QzXP.getData().xp || 0) : 0;
@@ -14218,7 +13812,8 @@ function pgInitOwnership() {
 
 function pgInitCTA() {
   // Show user's classification if available
-  var cls = parseInt(localStorage.getItem('qze_user_class') || '0');
+  var cls = 0;
+  try { cls = parseInt(localStorage.getItem('qze_user_class') || '0'); } catch(_) {}
   var info = ONB_CLASSIFICATIONS[cls];
   var el = document.getElementById('pg-cta-classification');
   if (el && info) {
@@ -14936,6 +14531,7 @@ function showPage(page, navEl) {
 // ==================== DASHBOARD ====================
 function renderDashboard() {
   const grid = document.getElementById('signals-grid');
+  if (!grid) return;
   const topSignals = STOCKS.filter(s => s.signal === 'BUY').slice(0, 3);
   grid.innerHTML = topSignals.map(s => signalCardHTML(s)).join('');
   setTimeout(renderCharts, 100);
@@ -15341,6 +14937,7 @@ function filterSignalsCat(cat) {
 // ==================== NEWS ====================
 function renderNews() {
   const feed = document.getElementById('news-feed');
+  if (!feed) return;
   feed.innerHTML = NEWS.map(n => newsItemHTML(n)).join('');
 }
 function newsItemHTML(n) {
@@ -15435,6 +15032,7 @@ function filterNews(type, btn) {
 // ==================== PORTFOLIO ====================
 function renderPortfolio() {
   const tbody = document.getElementById('portfolio-tbody');
+  if (!tbody) return;
   tbody.innerHTML = state.portfolio.map(p => {
     const val = p.qty * p.current;
     const pnl = (p.current - p.cost) * p.qty;
@@ -15746,6 +15344,7 @@ function piConfirmImport() {
 // ==================== LEDGER ====================
 function renderLedger() {
   const tbody = document.getElementById('ledger-tbody');
+  if (!tbody) return;
   tbody.innerHTML = state.ledger.map(l => {
     const total = l.qty * l.price;
     const pnlCls = l.pnl.startsWith('+') ? 'ent-ldg-pnl-pos' : l.pnl.startsWith('-') ? 'ent-ldg-pnl-neg' : 'ent-ldg-pnl-neu';
@@ -16052,7 +15651,7 @@ function renderScenarioChart(portfolioData, benchData, containerId, height) {
 // --- Crisis scenarios ---
 const _CRISES = {
   gfc:    { name:'2008 GFC', equityDD:-0.568, bondGain:0.18, duration:18, recovery:48, color:'#F87171' },
-  covid:  { name:'COVID-19', equityDD:-0.339, bondGain:0.08, duration:2,  recovery:5,  color:'#FB923C' },
+  covid:  { name:'COVID-19', equityDD:-0.339, bondGain:0.08, duration:2,  recovery:5,  color:'#A78BFA' },
   dotcom: { name:'Dot-com',  equityDD:-0.491, bondGain:0.22, duration:30, recovery:84, color:'#FBBF24' },
   '1987': { name:'Black Monday', equityDD:-0.226, bondGain:0.06, duration:1, recovery:24, color:'#A78BFA' },
   '2022': { name:'Rate Hike 2022', equityDD:-0.254, bondGain:-0.18, duration:9, recovery:15, color:'#60A5FA' },
@@ -16197,7 +15796,7 @@ function _qzscRunStress() {
   const scenarios = [
     { name:'Fed Rate Hike +200bps',      impacts:{ us:-0.15, intl:-0.12, bond:-0.10, comm:0.05,  cash:0 }, color:'#F87171' },
     { name:'Severe Recession (-30%)',     impacts:{ us:-0.30, intl:-0.25, bond:0.12,  comm:-0.15, cash:0 }, color:'#EF4444' },
-    { name:'Stagflation',                 impacts:{ us:-0.20, intl:-0.18, bond:-0.08, comm:0.20,  cash:-0.05 }, color:'#FB923C' },
+    { name:'Stagflation',                 impacts:{ us:-0.20, intl:-0.18, bond:-0.08, comm:0.20,  cash:-0.05 }, color:'#A78BFA' },
     { name:'Dollar Crash (-20%)',         impacts:{ us:-0.08, intl:0.15,  bond:-0.05, comm:0.18,  cash:-0.20 }, color:'#FBBF24' },
     { name:'China Credit Crisis',         impacts:{ us:-0.12, intl:-0.20, bond:0.08,  comm:-0.10, cash:0 }, color:'#A78BFA' },
     { name:'Tech Sector Crash (-40%)',    impacts:{ us:-0.22, intl:-0.10, bond:0.05,  comm:0.02,  cash:0 }, color:'#60A5FA' },
@@ -18156,9 +17755,18 @@ function generateReport(btn) {
   }, 1200);
 }
 function logout() {
+  // Delegate to the full logout function which clears cookie + localStorage + state
+  if (typeof qzLogout === 'function') { qzLogout(); return; }
+  // Fallback if qzLogout not yet defined
   state.user = null;
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('landing').classList.remove('hidden');
+  window._qzAppStarted = false;
+  try { localStorage.removeItem('qz_auth_user'); } catch(_) {}
+  fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' }).catch(function(){});
+  var appEl = document.getElementById('app');
+  var landEl = document.getElementById('landing');
+  if (appEl)  appEl.style.display = 'none';
+  if (landEl) { landEl.classList.remove('hidden'); landEl.style.display = ''; }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 
@@ -20295,7 +19903,7 @@ function _renderLegalHistoryBlock(ticker) {
   const records = getCompanyLegalHistory(ticker);
   if (!records || !records.length) return '';
   const statusColor = { 'Settled':'#22C55E', 'Dismissed':'#60A5FA', 'Cleared':'#22C55E', 'Blocked':'#EF4444', 'Verdict against':'#EF4444', 'Verdict':'#F59E0B', 'Mixed':'#F59E0B', 'Partially decided':'#F59E0B', 'Abandoned':'#60A5FA', 'Ongoing':'#F59E0B' };
-  const typeColor = { 'Antitrust':'#A78BFA', 'Criminal':'#EF4444', 'Securities':'#60A5FA', 'Privacy':'#34D399', 'Consumer':'#FBBF24', 'Environmental':'#4ADE80', 'Employment':'#FB923C', 'Tax':'#F472B6', 'Labor':'#FB923C', 'Data Breach':'#60A5FA', 'Bribery':'#EF4444', 'Product Liability':'#EF4444', 'Export Control':'#F59E0B', 'Consumer Safety':'#EF4444', 'Trade Secret':'#A78BFA', 'Patent':'#A78BFA', 'Operational':'#60A5FA', 'Mortgage':'#FBBF24', 'Regulatory':'#60A5FA', 'Commodity':'#FBBF24', 'Civil':'#60A5FA' };
+  const typeColor = { 'Antitrust':'#A78BFA', 'Criminal':'#EF4444', 'Securities':'#60A5FA', 'Privacy':'#34D399', 'Consumer':'#FBBF24', 'Environmental':'#4ADE80', 'Employment':'#A78BFA', 'Tax':'#F472B6', 'Labor':'#A78BFA', 'Data Breach':'#60A5FA', 'Bribery':'#EF4444', 'Product Liability':'#EF4444', 'Export Control':'#F59E0B', 'Consumer Safety':'#EF4444', 'Trade Secret':'#A78BFA', 'Patent':'#A78BFA', 'Operational':'#60A5FA', 'Mortgage':'#FBBF24', 'Regulatory':'#60A5FA', 'Commodity':'#FBBF24', 'Civil':'#60A5FA' };
   const rows = records.map(r => {
     const sc = statusColor[r.status] || '#888';
     const tc = typeColor[r.type] || '#A78BFA';
@@ -21342,7 +20950,10 @@ function uvOpenStock(ticker) {
 }
 
 // ── QUICK PANEL — slide-up stock preview ──
-window._uvWatchlist = JSON.parse(localStorage.getItem('qe_watchlist') || '[]');
+window._uvWatchlist = (function() {
+  try { return JSON.parse(localStorage.getItem('qe_watchlist') || '[]'); }
+  catch(_) { return []; }
+})();
 
 function uvQuickPanel(ticker) {
   if (typeof UNIVERSE === 'undefined') return;
@@ -21410,7 +21021,8 @@ function uvCloseQuickPanel() {
 }
 
 function uvToggleWatch(ticker, btn) {
-  window._uvWatchlist = JSON.parse(localStorage.getItem('qe_watchlist') || '[]');
+  try { window._uvWatchlist = JSON.parse(localStorage.getItem('qe_watchlist') || '[]'); }
+  catch(_) { window._uvWatchlist = []; }
   const idx = window._uvWatchlist.indexOf(ticker);
   if (idx === -1) {
     window._uvWatchlist.push(ticker);
@@ -21419,7 +21031,7 @@ function uvToggleWatch(ticker, btn) {
     window._uvWatchlist.splice(idx, 1);
     if (btn) btn.textContent = '☆ Watch';
   }
-  localStorage.setItem('qe_watchlist', JSON.stringify(window._uvWatchlist));
+  try { localStorage.setItem('qe_watchlist', JSON.stringify(window._uvWatchlist)); } catch(_) {}
   // Update all ☆/★ buttons for this ticker in the table
   document.querySelectorAll('.uv3-row-btn[onclick*="' + ticker + '"]').forEach(b => {
     if (b.title === 'Watchlist') b.textContent = window._uvWatchlist.includes(ticker) ? '★' : '☆';
@@ -26551,7 +26163,8 @@ window.qeRL  = window.QESecurity.rateLimit;
 
 // ── CLAUDE API KEY MANAGEMENT ────────────────────────────────
 function getClaudeKey() {
-  return localStorage.getItem('qe_claude_key') || '';
+  try { return localStorage.getItem('qe_claude_key') || ''; }
+  catch(_) { return ''; }
 }
 
 // ─── Groq key management ─────────────────────────────────────────
@@ -26560,7 +26173,8 @@ function getClaudeKey() {
 var _QZ_BUILT_IN_GROQ = '__worker__'; // Routes through Cloudflare Worker proxy — key never in browser
 var _QZ_WORKER_URL = 'https://groq-proxy.physicsedge.workers.dev';
 function getGroqKey() {
-  return localStorage.getItem('qe_groq_key') || _QZ_BUILT_IN_GROQ || '';
+  try { return localStorage.getItem('qe_groq_key') || _QZ_BUILT_IN_GROQ || ''; }
+  catch(_) { return _QZ_BUILT_IN_GROQ || ''; }
 }
 
 function saveGroqKey() {
@@ -26575,7 +26189,11 @@ function saveGroqKey() {
     if (status) { status.style.color = 'var(--red)'; status.textContent = 'Invalid key — Groq keys start with gsk_'; }
     return;
   }
-  localStorage.setItem('qe_groq_key', key);
+  try { localStorage.setItem('qe_groq_key', key); }
+  catch(_) {
+    if (status) { status.style.color = 'var(--red)'; status.textContent = 'Browser storage unavailable (private mode?) — key not saved.'; }
+    return;
+  }
   const banner = document.getElementById('ai-key-banner');
   if (banner) banner.style.display = 'none';
   if (status) { status.style.color = '#4ade80'; status.textContent = '⚡ Groq connected — ultra-fast AI active!'; }
@@ -26601,7 +26219,11 @@ function saveClaudeKey() {
     if (status) { status.style.color = 'var(--red)'; status.textContent = 'Invalid key — must start with sk-ant-'; }
     return;
   }
-  localStorage.setItem('qe_claude_key', key);
+  try { localStorage.setItem('qe_claude_key', key); }
+  catch(_) {
+    if (status) { status.style.color = 'var(--red)'; status.textContent = 'Browser storage unavailable (private mode?) — key not saved.'; }
+    return;
+  }
   // Always hide banner when a valid key is saved
   const bannerEl = document.getElementById('ai-key-banner');
   if (bannerEl) bannerEl.style.display = 'none';
@@ -26614,7 +26236,7 @@ function saveClaudeKey() {
 }
 
 function clearClaudeKey() {
-  localStorage.removeItem('qe_claude_key');
+  try { localStorage.removeItem('qe_claude_key'); } catch(_) {}
   const banner = document.getElementById('ai-key-banner');
   if (banner && !getGroqKey()) banner.style.display = '';
 }
@@ -26636,7 +26258,8 @@ function _qzkSaveGroq() {
   const key = inp ? inp.value.trim() : '';
   if (!key) { _qzkStatus('settings-groq-status', 'Enter your Groq API key.', false); return; }
   if (!key.startsWith('gsk_')) { _qzkStatus('settings-groq-status', 'Invalid — Groq keys start with gsk_', false); return; }
-  localStorage.setItem('qe_groq_key', key);
+  try { localStorage.setItem('qe_groq_key', key); }
+  catch(_) { _qzkStatus('settings-groq-status', 'Browser storage unavailable — key not saved.', false); return; }
   if (inp) inp.value = '';
   const row = document.getElementById('settings-groq-saved-row');
   const prev = document.getElementById('settings-groq-preview');
@@ -26645,7 +26268,7 @@ function _qzkSaveGroq() {
   _qzkStatus('settings-groq-status', 'Groq connected — ultra-fast AI active!', true);
 }
 function _qzkForgetGroq() {
-  localStorage.removeItem('qe_groq_key');
+  try { localStorage.removeItem('qe_groq_key'); } catch(_) {}
   const row = document.getElementById('settings-groq-saved-row');
   if (row) row.style.display = 'none';
   _qzkStatus('settings-groq-status', 'Groq key removed.', true);
@@ -26655,7 +26278,8 @@ function _qzkSaveClaude() {
   const key = inp ? inp.value.trim() : '';
   if (!key) { _qzkStatus('settings-claude-status', 'Enter your Anthropic API key.', false); return; }
   if (!key.startsWith('sk-ant-')) { _qzkStatus('settings-claude-status', 'Invalid — Anthropic keys start with sk-ant-', false); return; }
-  localStorage.setItem('qe_claude_key', key);
+  try { localStorage.setItem('qe_claude_key', key); }
+  catch(_) { _qzkStatus('settings-claude-status', 'Browser storage unavailable — key not saved.', false); return; }
   if (inp) inp.value = '';
   const row = document.getElementById('settings-claude-saved-row');
   const prev = document.getElementById('settings-claude-preview');
@@ -26664,7 +26288,7 @@ function _qzkSaveClaude() {
   _qzkStatus('settings-claude-status', 'Claude connected!', true);
 }
 function _qzkForgetClaude() {
-  localStorage.removeItem('qe_claude_key');
+  try { localStorage.removeItem('qe_claude_key'); } catch(_) {}
   const row = document.getElementById('settings-claude-saved-row');
   if (row) row.style.display = 'none';
   _qzkStatus('settings-claude-status', 'Claude key removed.', true);
@@ -26679,14 +26303,14 @@ function _qzkInit() {
   }
   if (serverNotice) serverNotice.style.display = 'none';
   if (fileMode) fileMode.style.display = 'block';
-  const gKey = localStorage.getItem('qe_groq_key');
+  var gKey = ''; try { gKey = localStorage.getItem('qe_groq_key') || ''; } catch(_) {}
   if (gKey) {
     const row = document.getElementById('settings-groq-saved-row');
     const prev = document.getElementById('settings-groq-preview');
     if (row) row.style.display = 'flex';
     if (prev) prev.textContent = _qzkMask(gKey);
   }
-  const cKey = localStorage.getItem('qe_claude_key');
+  var cKey = ''; try { cKey = localStorage.getItem('qe_claude_key') || ''; } catch(_) {}
   if (cKey) {
     const row = document.getElementById('settings-claude-saved-row');
     const prev = document.getElementById('settings-claude-preview');
@@ -26892,7 +26516,7 @@ async function* qzAIStream(systemPrompt, messages, maxTokens) {
     if (!response.ok) {
       const errData = await response.json().catch(() => ({}));
       const msg = response.status === 401 ? 'Session expired — please log in again' :
-                  response.status === 402 ? (errData.error || 'Daily query limit reached — upgrade to Pro') :
+                  response.status === 402 ? (errData.error || 'AI query limit reached — please try again shortly') :
                   response.status === 429 ? 'Too many requests — please wait' :
                   (errData.error || 'AI service error ' + response.status);
       yield '⚠ ' + msg; return;
@@ -26930,33 +26554,44 @@ async function* qzAIStream(systemPrompt, messages, maxTokens) {
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
   let buf = '';
+  let _readerClosed = false;
 
-  while (true) {
-    let readResult;
-    try { readResult = await reader.read(); } catch(e) {
-      if (e.name === 'AbortError') break;
-      throw e;
-    }
-    const { done, value } = readResult;
-    if (done) break;
-    buf += decoder.decode(value, { stream: true });
-    const lines = buf.split('\n');
-    buf = lines.pop();
-    for (const line of lines) {
-      if (!line.startsWith('data: ')) continue;
-      const raw = line.slice(6).trim();
-      if (raw === '[DONE]') { _qzRL.cacheSet(_cacheKey, _collectedText); return; }
-      try {
-        const parsed = JSON.parse(raw);
-        const oaiChunk = parsed.choices?.[0]?.delta?.content;
-        if (oaiChunk != null) { _collectedText += oaiChunk; yield oaiChunk; continue; }
-        if (parsed.type === 'content_block_delta' && parsed.delta?.type === 'text_delta') {
-          _collectedText += parsed.delta.text; yield parsed.delta.text;
+  try {
+    while (true) {
+      let readResult;
+      try { readResult = await reader.read(); } catch(e) {
+        if (e.name === 'AbortError') break;
+        throw e;
+      }
+      const { done, value } = readResult;
+      if (done) { _readerClosed = true; break; }
+      buf += decoder.decode(value, { stream: true });
+      const lines = buf.split('\n');
+      buf = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const raw = line.slice(6).trim();
+        if (raw === '[DONE]') {
+          _qzRL.cacheSet(_cacheKey, _collectedText);
+          try { await reader.cancel(); } catch(_) {}
+          _readerClosed = true;
+          return;
         }
-      } catch(_) {}
+        try {
+          const parsed = JSON.parse(raw);
+          const oaiChunk = parsed.choices?.[0]?.delta?.content;
+          if (oaiChunk != null) { _collectedText += oaiChunk; yield oaiChunk; continue; }
+          if (parsed.type === 'content_block_delta' && parsed.delta?.type === 'text_delta') {
+            _collectedText += parsed.delta.text; yield parsed.delta.text;
+          }
+        } catch(_) {}
+      }
     }
+    if (_collectedText) _qzRL.cacheSet(_cacheKey, _collectedText);
+  } finally {
+    // Always release the stream — prevents connection leaks on early generator return
+    if (!_readerClosed) { try { await reader.cancel(); } catch(_) {} }
   }
-  if (_collectedText) _qzRL.cacheSet(_cacheKey, _collectedText);
 
   } catch(e) {
     if (e.name === 'AbortError') {
@@ -26975,7 +26610,7 @@ function _qzAIFriendlyError(e, status) {
   if (e && e.name === 'AbortError') return 'The AI took too long to respond. Please try again in a moment.';
   if (status === 429) return 'The AI is handling a lot of requests right now. Please wait a few seconds and try again.';
   if (status === 401 || status === 403) return 'AI access is not configured. Please check your API key in Settings.';
-  if (status === 402) return 'Your AI quota has been reached. Upgrade to Pro for unlimited AI access.';
+  if (status === 402) return 'AI rate limit reached. Please try again in a moment.';
   if (status === 503 || status === 502) return 'The AI service is temporarily unavailable. Please try again in a moment.';
   if (status >= 500) return 'The AI service encountered an error. Please try again shortly.';
   if (!navigator.onLine) return 'No internet connection detected. Please check your connection and try again.';
@@ -27201,8 +26836,14 @@ FORMAT: Use **bold** for key terms. Bullet points for lists.`;
   }
 
   // ── FORMAT AI RESPONSE ────────────────────────────────────
+  // SECURITY: HTML-escape AI output FIRST, then apply markdown transforms.
+  // This prevents prompt-injection XSS where the AI emits raw <script>/<img onerror>.
   function formatResponse(text) {
-    return text
+    if (typeof text !== 'string') text = String(text || '');
+    // 1. Escape all HTML in the AI output
+    var safe = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+    // 2. Apply markdown transforms on the already-escaped text
+    return safe
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
       .replace(/`(.*?)`/g, '<code style="background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:4px;font-family:var(--font-mono);font-size:12px;">$1</code>')
@@ -27292,18 +26933,24 @@ FORMAT: Use **bold** for key terms. Bullet points for lists.`;
       addToHistory('assistant', fullText);
 
     } catch(e) {
-      const msgEl = document.getElementById(msgId);
-      if (msgEl) {
-        const reply = (typeof getAIResponse === 'function') ? getAIResponse(msg) : 'I encountered a connection issue. Please check your network and try again.';
-        const formatted = formatResponse(typeof reply === 'string' ? reply : reply.text || '');
-        msgEl.querySelector('.chat-bubble').innerHTML = formatted + '<div class="ai-fallback-note">⚡ Local analysis mode — connect to unlock full AI</div>';
-        addToHistory('assistant', typeof reply === 'string' ? reply : (reply.text || ''));
-      }
+      try {
+        const msgEl = document.getElementById(msgId);
+        if (msgEl) {
+          const bubble = msgEl.querySelector('.chat-bubble');
+          if (bubble) {
+            const reply = (typeof getAIResponse === 'function') ? getAIResponse(msg) : 'I encountered a connection issue. Please check your network and try again.';
+            const formatted = formatResponse(typeof reply === 'string' ? reply : reply.text || '');
+            bubble.innerHTML = formatted + '<div class="ai-fallback-note">⚡ Local analysis mode — connect to unlock full AI</div>';
+            addToHistory('assistant', typeof reply === 'string' ? reply : (reply.text || ''));
+          }
+        }
+      } catch(_) { /* swallow render errors so we still re-enable input */ }
+    } finally {
+      // Always re-enable input — never let user get stuck with disabled input
+      input.disabled = false;
+      try { input.focus(); } catch(_) {}
+      try { container.scrollTop = container.scrollHeight; } catch(_) {}
     }
-
-    input.disabled = false;
-    input.focus();
-    container.scrollTop = container.scrollHeight;
   };
 
   // ── UPGRADE qeHandleQuery with AI fallback ────────────────
@@ -30527,7 +30174,7 @@ setTimeout(() => {
       <ul style="margin:8px 0 8px 20px;line-height:2;">
         <li>Your email address and display name</li>
         <li>A hashed (bcrypt) version of your password — your plaintext password is never stored</li>
-        <li>Your subscription tier and daily AI query count</li>
+        <li>Your AI query usage (for internal analytics only)</li>
         <li>Account creation timestamp</li>
       </ul>
       <p>The following data is stored only in your browser's localStorage and is never transmitted to our servers:</p>
@@ -30538,7 +30185,7 @@ setTimeout(() => {
         <li>Market data API key (Massive Market Data)</li>
       </ul>
       <h3 style="color:#fff;font-size:14px;margin:16px 0 8px;">2. AI Queries</h3>
-      <p>When you use AI features, your messages are routed through our secure backend to <strong>Groq's API</strong>. We do not store the content of your AI conversations. Query counts are tracked per day solely to enforce free-tier limits. Please review <a href="https://groq.com/privacy-policy" target="_blank" style="color:#A78BFA;">Groq's Privacy Policy</a>.</p>
+      <p>When you use AI features, your messages are routed through our secure backend to <strong>Groq's API</strong>. We do not store the content of your AI conversations. Please review <a href="https://groq.com/privacy-policy" target="_blank" style="color:#A78BFA;">Groq's Privacy Policy</a>.</p>
       <p>Market data is fetched from <strong>Massive Market Data</strong> using your own API key, directly from your browser. We do not proxy or log these requests. Please review <a href="https://massive.com/privacy-policy" target="_blank" style="color:#A78BFA;">Massive Market Data's Privacy Policy</a>.</p>
       <h3 style="color:#fff;font-size:14px;margin:16px 0 8px;">3. Authentication &amp; Cookies</h3>
       <p>Session authentication uses a secure, <strong>httpOnly cookie</strong> (<code>qz_token</code>) containing a signed JWT. This cookie is never accessible to JavaScript and is automatically cleared on logout. It expires after 7 days. We do not use tracking cookies, third-party analytics, or advertising scripts.</p>
@@ -30591,10 +30238,14 @@ setTimeout(() => {
 
   // ── Tab switching ────────────────────────────────────────────
   window.qzAuthSwitchTab = function(tab) {
-    document.getElementById('qz-form-signin').style.display = tab === 'signin' ? '' : 'none';
-    document.getElementById('qz-form-signup').style.display = tab === 'signup' ? '' : 'none';
-    document.getElementById('qz-tab-signin').classList.toggle('active', tab === 'signin');
-    document.getElementById('qz-tab-signup').classList.toggle('active', tab === 'signup');
+    var formIn  = document.getElementById('qz-form-signin');
+    var formUp  = document.getElementById('qz-form-signup');
+    var tabIn   = document.getElementById('qz-tab-signin');
+    var tabUp   = document.getElementById('qz-tab-signup');
+    if (formIn) formIn.style.display = tab === 'signin' ? '' : 'none';
+    if (formUp) formUp.style.display = tab === 'signup' ? '' : 'none';
+    if (tabIn)  tabIn.classList.toggle('active',  tab === 'signin');
+    if (tabUp)  tabUp.classList.toggle('active',  tab === 'signup');
     ['qz-si-error','qz-su-error','qz-su-ok'].forEach(function(id) {
       var el = document.getElementById(id);
       if (el) { el.style.display = 'none'; el.textContent = ''; }
@@ -30690,10 +30341,12 @@ setTimeout(() => {
       cancelAtPeriodEnd: user.cancelAtPeriodEnd,
       hasPortal:         user.hasPortal,
     });
-    _qzSyncIntervalUI();
+    // _qzSyncIntervalUI removed — subscription billing UI removed
 
-    var logoutBtn = document.querySelector('[onclick="logout()"]');
-    if (logoutBtn) logoutBtn.setAttribute('onclick', 'qzLogout()');
+    // Wire ALL logout buttons to qzLogout (supports multiple buttons)
+    document.querySelectorAll('[onclick="logout()"]').forEach(function(btn) {
+      btn.setAttribute('onclick', 'qzLogout()');
+    });
 
     // Navigation: only enter the app once — guard against race with lp3Enter
     var landing = document.getElementById('landing');
@@ -30706,25 +30359,30 @@ setTimeout(() => {
       try { onboarded = !!localStorage.getItem('qz_onboarded'); } catch(_) {}
       if (onboarded) {
         if (typeof initApp === 'function') initApp();
+        // Show tutorial for first-time app entry (session restore path)
+        setTimeout(function() {
+          if (typeof tutorialMaybeShow === 'function') tutorialMaybeShow();
+        }, 1800);
       } else {
         if (typeof showOnboarding === 'function') showOnboarding();
+        setTimeout(function() {
+          if (typeof tutorialMaybeShow === 'function') tutorialMaybeShow();
+        }, 4000);
       }
     }
   }
 
   function _updateSubUI(tier, extra) {
-    // extra = { renewalDate, cancelAtPeriodEnd, hasPortal } — optional
+    // Subscription removed — all users have full access
     extra = extra || {};
-    var isPro     = tier === 'pro';
-    var isPastDue = tier === 'past_due';
+    var isPro     = true;  // treat everyone as pro (no limits)
+    var isPastDue = false;
 
-    // Status bar — tier name & badge
+    // Status bar — show full access
     var tierEl  = document.getElementById('qz-sub-tier');
     var badgeEl = document.getElementById('qz-sub-badge');
-    var tierLabel = isPro ? 'Pro' : isPastDue ? 'Pro (payment failed)' : 'Free';
-    var badgeKey  = isPro ? 'pro' : isPastDue ? 'past_due' : 'free';
-    if (tierEl)  tierEl.textContent = tierLabel;
-    if (badgeEl) { badgeEl.textContent = badgeKey.replace('_',' ').toUpperCase(); badgeEl.className = 'qz-sub-badge ' + badgeKey; }
+    if (tierEl)  tierEl.textContent = 'Full Access';
+    if (badgeEl) { badgeEl.textContent = 'FULL ACCESS'; badgeEl.className = 'qz-sub-badge pro'; }
 
     // Renewal / cancel info line
     var renewalEl = document.getElementById('qz-renewal-info');
@@ -30773,17 +30431,9 @@ setTimeout(() => {
   }
 
   window.qzUpdateUsageBar = function(used, limit) {
-    var fill  = document.getElementById('qz-usage-fill');
-    var label = document.getElementById('qz-usage-text');
-    var pct   = Math.min(100, Math.round((used / limit) * 100));
-    if (fill)  fill.style.width = pct + '%';
-    if (label) label.textContent = used + ' / ' + limit;
-    // Warn visually when close to limit
-    if (fill) fill.style.background = pct >= 90
-      ? 'linear-gradient(90deg,#DC2626,#EF4444)'
-      : pct >= 70
-        ? 'linear-gradient(90deg,#D97706,#F59E0B)'
-        : 'linear-gradient(90deg,#7C3AED,#A78BFA)';
+    // Subscription removed — usage bars are hidden / irrelevant
+    var usageRow = document.getElementById('qz-usage-row');
+    if (usageRow) usageRow.style.display = 'none';
   };
 
   // ── Logout ───────────────────────────────────────────────────
@@ -30791,12 +30441,20 @@ setTimeout(() => {
     clearSession();
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' }).catch(function(){});
-    // Return to landing page so they can scroll freely before logging back in
-    var app = document.getElementById('app');
+
+    // Reset app state so re-login works cleanly
+    window._qzAppStarted = false;
+    if (window.qzState) window.qzState.user = null;
+    if (window.state)   window.state.user   = null;
+
+    // Return to landing page
+    var app     = document.getElementById('app');
     var landing = document.getElementById('landing');
-    if (app) app.style.display = 'none';
-    if (landing) landing.classList.remove('hidden');
-    window.scrollTo(0, 0);
+    if (app)     app.style.display = 'none';
+    if (landing) { landing.classList.remove('hidden'); landing.style.display = ''; }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Reset the "Sign In" tab so the form is clean
+    if (typeof lp3Tab === 'function') { try { lp3Tab('in'); } catch(_) {} }
   };
 
   // ── Helper ───────────────────────────────────────────────────
@@ -30807,19 +30465,23 @@ setTimeout(() => {
   }
 
   // ── Handle 401s globally (expired token) ────────────────────
-  var _origFetch = window.fetch;
-  window.fetch = function(url, opts) {
-    return _origFetch.apply(this, arguments).then(function(res) {
-      if (res.status === 401 && typeof url === 'string' &&
-          url.startsWith('/api/') &&
-          !url.startsWith('/api/auth/')) {
-        clearSession();
-        showAuth();
-        qzAuthSwitchTab('signin');
-      }
-      return res;
-    });
-  };
+  // Guard against double-wrapping (script reload / hot reload)
+  if (!window._qzFetchWrapped) {
+    window._qzFetchWrapped = true;
+    var _origFetch = window.fetch;
+    window.fetch = function(url, opts) {
+      return _origFetch.apply(this, arguments).then(function(res) {
+        if (res.status === 401 && typeof url === 'string' &&
+            url.startsWith('/api/') &&
+            !url.startsWith('/api/auth/')) {
+          clearSession();
+          showAuth();
+          qzAuthSwitchTab('signin');
+        }
+        return res;
+      });
+    };
+  }
 
   // ── On load: verify session (never auto-block landing page) ─────────
   window.addEventListener('DOMContentLoaded', function() {
@@ -34752,9 +34414,9 @@ var JRN_LEVELS = [
     mentorPrompt:'I learned about ETFs and index investing. Under what conditions (if any) does active stock picking make sense over just buying an index fund? What edge would an active investor need?',
     mentorSuggests:['What is dollar-cost averaging?','What is a 3-fund portfolio?','What are leveraged ETFs?'],
   },
-  { num:9, emoji:'🛡', color:'#F97316', xp:260, title:'Risk Management', tagline:'The skill that separates long-term survivors from everyone else',
+  { num:9, emoji:'🛡', color:'#6D28D9', xp:260, title:'Risk Management', tagline:'The skill that separates long-term survivors from everyone else',
     concepts:[
-      {icon:'⚖',bg:'rgba(249,115,22,.12)',title:'Risk Is Not the Enemy — Uncompensated Risk Is',body:'All investing involves risk. The question is: are you being PAID for the risk you take? High volatility with high expected returns is acceptable. High volatility with low expected returns is not.',key:'Crypto is high risk. US Treasury bonds are low risk. Understanding which risk is compensated is everything.'},
+      {icon:'⚖',bg:'rgba(124,58,237,.12)',title:'Risk Is Not the Enemy — Uncompensated Risk Is',body:'All investing involves risk. The question is: are you being PAID for the risk you take? High volatility with high expected returns is acceptable. High volatility with low expected returns is not.',key:'Crypto is high risk. US Treasury bonds are low risk. Understanding which risk is compensated is everything.'},
       {icon:'📉',bg:'rgba(248,113,113,.1)',title:'Volatility Is Normal — Absolutely Normal',body:'The S&P 500 drops 10%+ roughly every 1-2 years. 20%+ drops happen every 3-5 years. 50%+ drops happen occasionally. ALL of these were eventually followed by new all-time highs.',key:'The S&P 500 has never permanently lost value in its 100+ year history.'},
       {icon:'📊',bg:'rgba(167,139,250,.1)',title:'Maximum Drawdown: Know the Worst Case',body:'Drawdown = the percentage drop from peak to trough. The 2008-2009 S&P 500 drawdown was 57%. $100,000 became $43,000 temporarily. Knowing your max drawdown prevents panic-selling.',key:'Your risk tolerance = how much drawdown you can handle without selling at the bottom.'},
       {icon:'📐',bg:'rgba(34,211,238,.1)',title:'Sharpe Ratio: Returns Per Unit of Risk',body:'Sharpe Ratio = (Return − Risk-Free Rate) ÷ Volatility. Above 1.0 is good. Above 2.0 is excellent. Two portfolios with the same return but different volatility are NOT equally good.',key:'S&P 500 average Sharpe Ratio: ~0.45. Top hedge funds target 1.5+.'},
@@ -36020,7 +35682,7 @@ window._safeHTML = function(html) {
   var mouse = { x: -9999, y: -9999 };
   var raf   = null;
   var PALETTE = ['#7C3AED','#A78BFA','#22D3EE','#3B82F6','#6366F1','#8B5CF6'];
-  var MAX_DIST = 160, MAX_NODES = 72, MAX_PULSES = 16;
+  var MAX_DIST = 180, MAX_NODES = 65, MAX_PULSES = 14;
 
   function resize() {
     var p = canvas.parentElement;
@@ -36081,7 +35743,7 @@ window._safeHTML = function(html) {
           var dist = Math.sqrt(d2);
           ctx.beginPath();
           ctx.moveTo(nodes[i].x, nodes[i].y); ctx.lineTo(nodes[j].x, nodes[j].y);
-          ctx.strokeStyle = 'rgba(167,139,250,' + ((1 - dist / MAX_DIST) * 0.12) + ')';
+          ctx.strokeStyle = 'rgba(167,139,250,' + ((1 - dist / MAX_DIST) * 0.10) + ')';
           ctx.lineWidth = 0.55; ctx.stroke();
           if (d2 < md2max * 0.35) maybeSpawnPulse(nodes[i], nodes[j]);
         }
@@ -36275,7 +35937,7 @@ window.qzAnimateNumber = function(el, from, to, durationMs, prefix, suffix) {
             <li>Natural-language stock & macro analysis</li>
             <li>Earnings breakdowns vs. consensus estimates</li>
             <li>Portfolio risk scoring & scenario modeling</li>
-            <li>20 free queries/day · Unlimited on Pro</li>
+            <li>Unlimited AI queries</li>
           </ul>
         </div>
       </div>
@@ -36571,6 +36233,26 @@ window.qzAnimateNumber = function(el, from, to, durationMs, prefix, suffix) {
     setTimeout(function() {
       modal.classList.add('tut-hidden');
       modal.style.opacity = modal.style.transition = '';
+      // Return focus to the main page so the user is not left on a blank state
+      try { document.body.focus(); } catch(_) {}
+
+      if (completed) {
+        // If user is on the landing page (not yet logged in), scroll the auth
+        // card into view so they immediately see how to sign up / sign in.
+        var landing = document.getElementById('landing');
+        if (landing && !landing.classList.contains('hidden')) {
+          var card = document.getElementById('lp3-auth-inline');
+          if (card) {
+            setTimeout(function() {
+              card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              // Briefly highlight the card so the user notices it
+              card.style.transition = 'box-shadow 0.4s ease';
+              card.style.boxShadow = '0 0 0 2px rgba(167,139,250,0.6), 0 0 48px rgba(124,58,237,0.4)';
+              setTimeout(function() { card.style.boxShadow = ''; }, 1800);
+            }, 80);
+          }
+        }
+      }
     }, 290);
     if (completed) {
       try { localStorage.setItem(TUT_KEY, '1'); } catch(_) {}
