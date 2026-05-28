@@ -10215,6 +10215,24 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
             }
           });
         } catch(_) {}
+        // Update user name/avatar from the cached user — pure DOM, no helpers
+        try {
+          var name = u.name || (u.email || '').split('@')[0] || 'User';
+          var letter = (name.charAt(0) || 'U').toUpperCase();
+          ['user-name-sidebar','settings-name'].forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) el.textContent = name;
+          });
+          var av = document.getElementById('user-avatar-sidebar');
+          if (av) av.textContent = letter;
+          var em = document.getElementById('settings-email');
+          if (em && u.email) em.textContent = u.email;
+        } catch(_) {}
+        // Try to invoke initApp if defined — wrapped so failure can't block
+        if (!window._qzInitAppRan && typeof initApp === 'function') {
+          window._qzInitAppRan = true;
+          try { initApp(); } catch(e) { console.warn('[QZ-ENTRY] initApp threw on emergency call:', e); }
+        }
         // Body scroll restore
         document.body.style.overflow = '';
         document.body.style.position = '';
@@ -12345,68 +12363,28 @@ async function lp3Login() {
   _lp3Enter(user);
 }
 
+// SIMPLEST POSSIBLE POST-AUTH FLOW:
+// 1. Persist user to localStorage
+// 2. Set onboarded + tutorial flags
+// 3. Reload the page
+//
+// On the fresh load, emergency-entry script sees the stored user and forces
+// #app visible. Default visible page (#page-dashboard, no .hidden class)
+// renders naturally. No initApp timing dance, no showPage chain, no race
+// conditions between the auth handler and the page renders.
+//
+// The reload also clears any half-set state from the auth submit (failed
+// fetches, pending timers, etc.) so the next page load starts cleanly.
 function _lp3Enter(user) {
   _qzLog('_lp3Enter called for', user && user.email);
-
-  // Race-condition guard: prevent double-init if session restore already ran
-  if (window._qzAppStarted) {
-    _qzLog('_lp3Enter: already started, just ensuring visibility');
-    _qzForceEnterApp('lp3Enter-already-started');
-    return;
-  }
-  window._qzAppStarted = true;
-
-  // Persist + mirror state
   try { localStorage.setItem('qz_auth_user', JSON.stringify(user)); } catch(_) {}
   try { localStorage.setItem('qz_onboarded', '1'); } catch(_) {}
-  if (window.qzState) window.qzState.user = { name: user.name || '', email: user.email };
-  if (window.state)   window.state.user   = user;
-
-  // Update visible user labels (best-effort)
-  try {
-    var nameEl   = document.getElementById('user-name-sidebar');
-    var avatarEl = document.getElementById('user-avatar-sidebar');
-    var sNameEl  = document.getElementById('settings-name');
-    var sEmailEl = document.getElementById('settings-email');
-    if (nameEl)   nameEl.textContent   = user.name || user.email;
-    if (avatarEl) avatarEl.textContent = (user.name || user.email || 'U').charAt(0).toUpperCase();
-    if (sNameEl)  sNameEl.textContent  = user.name || user.email;
-    if (sEmailEl) sEmailEl.textContent = user.email;
-  } catch(_) {}
-
-  if (!window.qzGetAuthUser) {
-    window.qzGetAuthUser = function() { try { return JSON.parse(localStorage.getItem('qz_auth_user')||'null'); } catch(_){ return null; } };
-  }
-
-  // ── NUCLEAR ENTRY — bypass all middleware, just show the app ─────────
-  _qzForceEnterApp('lp3Enter-direct');
-
-  // Welcome toast
+  try { localStorage.setItem('qz_tutorial_v3', '1'); } catch(_) {}
+  // Brief delay so the "Account created" toast is visible, then reload
   setTimeout(function() {
-    if (typeof _qzShowWelcomeToast === 'function') {
-      var first = (user.name || '').split(' ')[0] || (user.email || 'trader').split('@')[0];
-      _qzShowWelcomeToast(first);
-    }
-  }, 500);
-
-  // Tutorial (if user hasn't seen it)
-  setTimeout(function() {
-    if (typeof tutorialMaybeShow === 'function') tutorialMaybeShow();
-  }, 1200);
-
-  // Triple safety net — recheck at 1s, 2.5s, 4s
-  setTimeout(function() { _qzForceEnterApp('safety-1s'); }, 1000);
-  setTimeout(function() { _qzForceEnterApp('safety-2_5s'); }, 2500);
-  setTimeout(function() {
-    var app = document.getElementById('app');
-    var landing = document.getElementById('landing');
-    var appOk = app && getComputedStyle(app).display !== 'none';
-    var landingHidden = !landing || getComputedStyle(landing).display === 'none' || landing.classList.contains('hidden');
-    if (!appOk || !landingHidden) {
-      _qzLog('FINAL SAFETY — app still not visible after 4s, hard reload');
-      _qzForceEnterApp('safety-4s-final');
-    }
-  }, 4000);
+    try { window.location.replace(window.location.pathname); }
+    catch(_) { window.location.reload(); }
+  }, 380);
 }
 </script>
 
@@ -16265,71 +16243,32 @@ function _qzHandleGoogleCredential(resp) {
     picture: claims.picture || '',
     googleId: claims.sub || ''
   };
-  // Reset double-init guard so re-login after logout works
-  window._qzAppStarted = false;
-  // Google already verified name + email — skip the 7-step onboarding
-  try {
-    localStorage.setItem('qz_onboarded', '1');
-    localStorage.setItem('qz_auth_user', JSON.stringify(user));
-  } catch(_) {}
-  if (typeof _qzArmEntryWatchdog === 'function') _qzArmEntryWatchdog();
-
-  // Helper: force the app into a visible state even if downstream init fails
-  function _forceEnterApp() {
-    try {
-      var landing = document.getElementById('landing');
-      var app     = document.getElementById('app');
-      var onbEl   = document.getElementById('onboarding');
-      if (landing) landing.classList.add('hidden');
-      if (onbEl)   onbEl.classList.add('hidden');
-      if (app)     app.style.display = 'flex';
-      if (typeof initApp === 'function') {
-        try { initApp(); } catch(e) { console.warn('initApp threw:', e); }
-      }
-      if (typeof showPage === 'function') {
-        try { showPage('dashboard', document.getElementById('nav-dashboard')); } catch(_) {}
-      }
-    } catch(e) { console.error('Force-enter app failed:', e); }
+  // Same simple flow as email signup: persist + reload. Emergency-entry on the
+  // next page load shows the app surface; default-visible #page-dashboard
+  // renders. Eliminates all post-auth init timing races.
+  try { localStorage.setItem('qz_auth_user', JSON.stringify(user)); } catch(_) {}
+  try { localStorage.setItem('qz_onboarded', '1'); } catch(_) {}
+  try { localStorage.setItem('qz_tutorial_v3', '1'); } catch(_) {}
+  // Server-mode: still POST the token to /api/auth/google/idtoken if a backend
+  // is present, so the backend can mint its own session cookie. Then reload.
+  function reload() {
+    try { window.location.replace(window.location.pathname); }
+    catch(_) { window.location.reload(); }
   }
-
-  function _enter(u) {
-    try {
-      if (typeof _lp3Enter === 'function') _lp3Enter(u);
-      else if (typeof loginUser === 'function') loginUser(u);
-      else _forceEnterApp();
-    } catch(e) {
-      console.warn('_lp3Enter/loginUser threw, forcing app entry:', e);
-      _forceEnterApp();
-    }
-    // Safety net: if 1.5s after sign-in the app still isn't visible, force it
-    setTimeout(function() {
-      var app = document.getElementById('app');
-      var landing = document.getElementById('landing');
-      var stillOnLanding = landing && !landing.classList.contains('hidden');
-      var appHidden = !app || app.style.display === 'none' || !app.offsetParent;
-      if (stillOnLanding || appHidden) {
-        console.warn('App did not enter after sign-in — forcing entry.');
-        _forceEnterApp();
-      }
-    }, 1500);
-  }
-
-  // Server-mode path
   if (window._QZ_SERVER_MODE) {
     fetch('/api/auth/google/idtoken', {
       method: 'POST', credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ credential: resp.credential })
-    }).then(function(r) { return r.ok ? r.json() : Promise.reject(); })
-      .then(function(d) { _enter(d.user || user); })
-      .catch(function() {
-        // Backend not wired — fall back to client-side login with real Google identity
-        _enter(user);
-      });
+    }).then(function(r) { if (r.ok) return r.json(); throw 0; })
+      .then(function(d) {
+        if (d && d.user) try { localStorage.setItem('qz_auth_user', JSON.stringify(d.user)); } catch(_) {}
+        setTimeout(reload, 300);
+      })
+      .catch(function() { setTimeout(reload, 300); });
     return;
   }
-  // Static deployment — log the user in with their real Google identity
-  _enter(user);
+  setTimeout(reload, 300);
 }
 
 // Loads the GIS script. Caches only the SUCCESS promise so a transient
