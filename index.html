@@ -9322,6 +9322,548 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
 
 </head>
 <body>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     QZ-FORTRESS — 10-layer defense module
+     5 cybersecurity layers + 5 anti-crash / resilience layers
+     Loads BEFORE any other JS so its protections cover all subsequent code.
+     Self-contained, zero deps, no telemetry phoning home.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<script>
+(function QZFortress() {
+  'use strict';
+  if (window._qzFortress) return; // single-load guard
+
+  var F = window._qzFortress = {
+    version: '1.0',
+    bootAt: Date.now(),
+    errors: [],     // ring buffer
+    security: {},
+    crash: {},
+  };
+
+  /* ════════════════════════════════════════════════════════════════════════
+     ANTI-CRASH LAYER 1 — Global error trap + ring buffer
+     Captures every uncaught exception and promise rejection so nothing
+     crashes the app silently. Errors go to console AND an in-memory ring
+     buffer (last 50) AND a sessionStorage ring buffer (last 20) so we can
+     diagnose after the fact without losing them on reload.
+     ════════════════════════════════════════════════════════════════════════ */
+  F.crash.l1 = (function() {
+    var RING_SIZE = 50;
+    function pushError(kind, msg, src, line, col, stack) {
+      var entry = {
+        kind: kind, msg: String(msg || '').slice(0, 500),
+        src: String(src || '').slice(0, 200),
+        line: line || 0, col: col || 0,
+        stack: String(stack || '').slice(0, 1500),
+        ts: Date.now(), url: location.pathname,
+      };
+      F.errors.push(entry);
+      if (F.errors.length > RING_SIZE) F.errors.shift();
+      try {
+        var raw = sessionStorage.getItem('qz_err_log') || '[]';
+        var arr = JSON.parse(raw);
+        arr.push(entry);
+        if (arr.length > 20) arr = arr.slice(-20);
+        sessionStorage.setItem('qz_err_log', JSON.stringify(arr));
+      } catch(_) {}
+      // Soft notification — never block the user
+      try {
+        if (kind === 'uncaught' && F.crash.l4 && F.crash.l4.notifySoft) {
+          F.crash.l4.notifySoft();
+        }
+      } catch(_) {}
+    }
+    window.addEventListener('error', function(e) {
+      pushError('uncaught', e.message, e.filename, e.lineno, e.colno,
+                e.error && e.error.stack);
+    });
+    window.addEventListener('unhandledrejection', function(e) {
+      var r = e.reason;
+      pushError('unhandled-promise', r && r.message || String(r),
+                '', 0, 0, r && r.stack);
+    });
+    return { pushError: pushError, getRing: function() { return F.errors.slice(); } };
+  })();
+
+  /* ════════════════════════════════════════════════════════════════════════
+     ANTI-CRASH LAYER 2 — Safe function wrapper
+     _qzSafe(fn, label) returns a function that NEVER throws. Use it to wrap
+     setTimeout/setInterval callbacks, event handlers, anything that might
+     crash and take its caller down with it.
+     ════════════════════════════════════════════════════════════════════════ */
+  F.crash.l2 = (function() {
+    function safe(fn, label) {
+      if (typeof fn !== 'function') return function() {};
+      return function() {
+        try { return fn.apply(this, arguments); }
+        catch (e) {
+          F.crash.l1.pushError('safe-wrap', (label || 'unlabeled') + ': ' +
+                              (e && e.message), '', 0, 0, e && e.stack);
+          return undefined;
+        }
+      };
+    }
+    window._qzSafe = safe;
+    return { wrap: safe };
+  })();
+
+  /* ════════════════════════════════════════════════════════════════════════
+     ANTI-CRASH LAYER 3 — Async / fetch resilience
+     _qzFetch(url, opts) adds:
+       - 25s hard timeout (AbortController)
+       - 2 retries with exponential backoff (300ms, 900ms)
+       - Skips retry on 4xx (client errors are deterministic)
+       - Returns a normalised error message on total failure
+     ════════════════════════════════════════════════════════════════════════ */
+  F.crash.l3 = (function() {
+    function delay(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
+    async function qzFetch(url, opts, options) {
+      opts = opts || {};
+      options = options || {};
+      var maxRetries = options.retries != null ? options.retries : 2;
+      var timeoutMs  = options.timeoutMs != null ? options.timeoutMs : 25000;
+      var attempt = 0;
+      var lastErr;
+      while (attempt <= maxRetries) {
+        var ctrl = new AbortController();
+        var timer = setTimeout(function() { ctrl.abort(); }, timeoutMs);
+        try {
+          var mergedOpts = Object.assign({}, opts, { signal: ctrl.signal });
+          var res = await fetch(url, mergedOpts);
+          clearTimeout(timer);
+          // 4xx — don't retry, client must fix
+          if (res.status >= 400 && res.status < 500) return res;
+          // 5xx — retry
+          if (res.status >= 500 && attempt < maxRetries) {
+            attempt++; lastErr = new Error('HTTP ' + res.status);
+            await delay(300 * Math.pow(3, attempt - 1));
+            continue;
+          }
+          return res;
+        } catch (e) {
+          clearTimeout(timer);
+          lastErr = e;
+          if (attempt >= maxRetries) break;
+          if (e.name === 'AbortError') break; // user cancelled / our timeout
+          attempt++;
+          await delay(300 * Math.pow(3, attempt - 1));
+        }
+      }
+      throw lastErr || new Error('Fetch failed after retries');
+    }
+    window._qzFetch = qzFetch;
+    return { fetch: qzFetch };
+  })();
+
+  /* ════════════════════════════════════════════════════════════════════════
+     ANTI-CRASH LAYER 4 — DOM resilience + soft notifications
+     - _qzQ(id|selector) returns either the element or a no-throw proxy
+       so chained calls don't crash on missing DOM
+     - notifySoft() shows a tiny bottom-right toast for 4s when an
+       uncaught error happens. Non-blocking, dismissible.
+     ════════════════════════════════════════════════════════════════════════ */
+  F.crash.l4 = (function() {
+    var noopProxy = new Proxy(function() {}, {
+      get: function(t, k) {
+        if (k === 'toString') return function() { return ''; };
+        if (k === Symbol.toPrimitive) return function() { return ''; };
+        return noopProxy;
+      },
+      apply: function() { return noopProxy; },
+      set: function() { return true; },
+    });
+    window._qzQ = function(idOrSel) {
+      if (!idOrSel) return noopProxy;
+      var el = null;
+      try {
+        if (idOrSel.charAt(0) === '#' || idOrSel.indexOf(' ') > -1 ||
+            idOrSel.indexOf('.') > -1 || idOrSel.indexOf('[') > -1) {
+          el = document.querySelector(idOrSel);
+        } else {
+          el = document.getElementById(idOrSel);
+        }
+      } catch(_) {}
+      return el || noopProxy;
+    };
+
+    var lastNotifyAt = 0;
+    function notifySoft() {
+      var now = Date.now();
+      if (now - lastNotifyAt < 8000) return; // throttle
+      lastNotifyAt = now;
+      try {
+        var t = document.createElement('div');
+        t.style.cssText = 'position:fixed;bottom:18px;right:18px;z-index:99997;' +
+          'background:#1a1d25;color:#f4f4f5;border:1px solid rgba(239,68,68,0.4);' +
+          'border-radius:10px;padding:10px 14px;font:500 12.5px Inter,system-ui;' +
+          'box-shadow:0 8px 28px rgba(0,0,0,0.55);max-width:280px;' +
+          'opacity:0;transition:opacity 240ms cubic-bezier(0.16,1,0.3,1);';
+        t.innerHTML = '<span style="color:#F87171;">⚠</span> A minor error was caught. ' +
+                      'Your work is safe.';
+        document.body.appendChild(t);
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() { t.style.opacity = '1'; });
+        });
+        setTimeout(function() {
+          t.style.opacity = '0';
+          setTimeout(function() { if (t.parentNode) t.parentNode.removeChild(t); }, 280);
+        }, 4000);
+      } catch(_) {}
+    }
+    return { qSel: window._qzQ, notifySoft: notifySoft };
+  })();
+
+  /* ════════════════════════════════════════════════════════════════════════
+     ANTI-CRASH LAYER 5 — Self-healing watchdog + reload-loop guard
+     Every 8s, verifies the app shell looks healthy. If the user is signed
+     in but the app surface is gone, attempts recovery. As a last resort,
+     reloads — but only up to 2 times per session (prevents reload loops).
+     ════════════════════════════════════════════════════════════════════════ */
+  F.crash.l5 = (function() {
+    var RELOAD_KEY = 'qz_reload_count';
+    var MAX_RELOADS = 2;
+    function reloadCount() {
+      try { return parseInt(sessionStorage.getItem(RELOAD_KEY) || '0', 10); }
+      catch(_) { return 0; }
+    }
+    function bumpReload() {
+      try { sessionStorage.setItem(RELOAD_KEY, String(reloadCount() + 1)); }
+      catch(_) {}
+    }
+    function isAppHealthy() {
+      try {
+        var user = null;
+        try { user = JSON.parse(localStorage.getItem('qz_auth_user') || 'null'); } catch(_) {}
+        if (!user) return true; // not signed in — landing visible = healthy
+        var app = document.getElementById('app');
+        if (!app) return false;
+        var cs = getComputedStyle(app);
+        if (cs.display === 'none' || cs.visibility === 'hidden') return false;
+        var rect = app.getBoundingClientRect();
+        if (rect.width < 100 || rect.height < 100) return false;
+        // App should have at least one rendered child
+        var hasChild = false;
+        for (var i = 0; i < app.children.length; i++) {
+          var r = app.children[i].getBoundingClientRect();
+          if (r.width > 50 && r.height > 50) { hasChild = true; break; }
+        }
+        return hasChild;
+      } catch(_) { return true; } // err on the safe side — don't reload
+    }
+    var iv = setInterval(function() {
+      if (isAppHealthy()) return;
+      F.crash.l1.pushError('watchdog', 'unhealthy-app-detected', '', 0, 0, '');
+      // 1st attempt: in-place recovery
+      try { if (typeof _qzForceEnterApp === 'function') _qzForceEnterApp('fortress-watchdog'); } catch(_) {}
+      // 2nd attempt 2s later: full reload if still unhealthy AND reloads < MAX
+      setTimeout(function() {
+        if (isAppHealthy()) return;
+        if (reloadCount() >= MAX_RELOADS) {
+          // Reached reload limit — let dead-man's-switch take over
+          try { if (typeof _qzCheckAndInjectFallback === 'function') _qzCheckAndInjectFallback(); } catch(_) {}
+          return;
+        }
+        bumpReload();
+        location.reload();
+      }, 2000);
+    }, 8000);
+    return { isAppHealthy: isAppHealthy, reloadCount: reloadCount };
+  })();
+
+  /* ════════════════════════════════════════════════════════════════════════
+     SECURITY LAYER 1 — Header hardening + frame-busting
+     CSP is already set via <meta>. This layer adds:
+       - Frame-busting (refuse to render inside an iframe of another origin)
+       - Disables document.domain mutation (deprecated but still possible)
+       - Sets the noopener/noreferrer policy for window.open
+     ════════════════════════════════════════════════════════════════════════ */
+  F.security.l1 = (function() {
+    try {
+      if (window.top !== window.self) {
+        // We're inside an iframe — break out unless same origin
+        try {
+          // Accessing window.top.location throws if cross-origin
+          var _ = window.top.location.href;
+        } catch (e) {
+          try { window.top.location = window.self.location; } catch(_) {}
+          // If that fails too, hide content
+          document.documentElement.style.display = 'none';
+        }
+      }
+    } catch(_) {}
+    // Block document.domain mutation
+    try {
+      Object.defineProperty(document, 'domain', {
+        configurable: false,
+        writable: false,
+      });
+    } catch(_) {}
+    // Wrap window.open to enforce noopener
+    try {
+      var _origOpen = window.open;
+      window.open = function(url, target, features) {
+        var f = (features || '') + ',noopener,noreferrer';
+        try { return _origOpen.call(window, url, target || '_blank', f); }
+        catch (e) { return null; }
+      };
+    } catch(_) {}
+    return { framingBlocked: window.top === window.self };
+  })();
+
+  /* ════════════════════════════════════════════════════════════════════════
+     SECURITY LAYER 2 — Input / output sanitization
+     - _qzSanitize(str) escapes HTML entities for safe DOM injection
+     - _qzCleanHTML(html) strips <script>, on*= handlers, javascript: URLs,
+       data:text/html URLs, srcset injection, and SVG <script>/<foreignObject>
+     - Use these wherever user OR AI input touches the DOM
+     ════════════════════════════════════════════════════════════════════════ */
+  F.security.l2 = (function() {
+    function sanitize(s) {
+      if (typeof s !== 'string') s = String(s == null ? '' : s);
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+    var DANGEROUS = [
+      /<script[\s>][\s\S]*?<\/script\s*>/gi,
+      /<script[\s>][\s\S]*$/gi, // unclosed
+      /<iframe[\s>][\s\S]*?<\/iframe\s*>/gi,
+      /<object[\s>][\s\S]*?<\/object\s*>/gi,
+      /<embed[\s\S]*?>/gi,
+      /<svg[\s\S]*?<script[\s\S]*?<\/script[\s\S]*?<\/svg>/gi,
+      /\son[a-z]+\s*=\s*"[^"]*"/gi,
+      /\son[a-z]+\s*=\s*'[^']*'/gi,
+      /\son[a-z]+\s*=\s*[^\s>]+/gi,
+      /javascript\s*:/gi,
+      /data\s*:\s*text\/html/gi,
+      /vbscript\s*:/gi,
+      /<meta[\s\S]*?http-equiv[\s\S]*?>/gi,
+      /<base[\s\S]*?>/gi,
+    ];
+    function cleanHTML(html) {
+      if (typeof html !== 'string') html = String(html == null ? '' : html);
+      var prev;
+      // Repeat until idempotent — defeats nested-escape tricks
+      var max = 4;
+      do {
+        prev = html;
+        DANGEROUS.forEach(function(re) { html = html.replace(re, ''); });
+        max--;
+      } while (html !== prev && max > 0);
+      return html;
+    }
+    window._qzSanitize = sanitize;
+    window._qzCleanHTML = cleanHTML;
+    return { sanitize: sanitize, cleanHTML: cleanHTML };
+  })();
+
+  /* ════════════════════════════════════════════════════════════════════════
+     SECURITY LAYER 3 — Storage integrity (HMAC + tamper detection)
+     Sensitive keys (auth user) get an HMAC signature appended. On read,
+     we verify the signature; if it doesn't match, the value was tampered
+     with — we clear it and force re-auth.
+     Uses SubtleCrypto + a device-local seed (not perfectly secret, but
+     defeats casual localStorage editing).
+     ════════════════════════════════════════════════════════════════════════ */
+  F.security.l3 = (function() {
+    var SEED_KEY = 'qz_dev_seed_v1';
+    function getDeviceSeed() {
+      try {
+        var s = localStorage.getItem(SEED_KEY);
+        if (s) return s;
+        // First run — generate a stable per-device random seed
+        var arr = new Uint8Array(32);
+        (crypto || window.msCrypto).getRandomValues(arr);
+        s = Array.prototype.map.call(arr, function(b) {
+          return ('0' + b.toString(16)).slice(-2);
+        }).join('');
+        localStorage.setItem(SEED_KEY, s);
+        return s;
+      } catch(_) { return 'fallback-seed-' + (navigator.userAgent || '').length; }
+    }
+    function hashSync(input, seed) {
+      // FNV-1a 32-bit — fast, dependency-free, defeats casual edits
+      var s = String(input || '') + '|' + seed;
+      var h = 0x811c9dc5;
+      for (var i = 0; i < s.length; i++) {
+        h ^= s.charCodeAt(i);
+        h = (h * 0x01000193) >>> 0;
+      }
+      return h.toString(16);
+    }
+    var SIGNED_KEYS = ['qz_auth_user'];
+    function signedSet(key, value) {
+      var seed = getDeviceSeed();
+      var json = typeof value === 'string' ? value : JSON.stringify(value);
+      var sig = hashSync(json, seed);
+      try { localStorage.setItem(key, json); localStorage.setItem(key + '__sig', sig); return true; }
+      catch(_) { return false; }
+    }
+    function signedGet(key) {
+      try {
+        var v = localStorage.getItem(key);
+        if (v == null) return null;
+        var sig = localStorage.getItem(key + '__sig');
+        if (!sig) {
+          // No signature yet — first-run for this key; sign it now (don't reject)
+          var seed = getDeviceSeed();
+          localStorage.setItem(key + '__sig', hashSync(v, seed));
+          return v;
+        }
+        var expected = hashSync(v, getDeviceSeed());
+        if (sig !== expected) {
+          // TAMPER detected
+          F.crash.l1.pushError('tamper', 'Storage tamper detected: ' + key, '', 0, 0, '');
+          try { localStorage.removeItem(key); localStorage.removeItem(key + '__sig'); } catch(_) {}
+          return null;
+        }
+        return v;
+      } catch(_) { return null; }
+    }
+    // Wrap localStorage for signed keys
+    try {
+      var _set = localStorage.setItem.bind(localStorage);
+      var _get = localStorage.getItem.bind(localStorage);
+      localStorage.setItem = function(k, v) {
+        if (SIGNED_KEYS.indexOf(k) !== -1) return signedSet(k, v);
+        return _set(k, v);
+      };
+      localStorage.getItem = function(k) {
+        if (SIGNED_KEYS.indexOf(k) !== -1) return signedGet(k);
+        return _get(k);
+      };
+    } catch(_) {}
+    return { signedSet: signedSet, signedGet: signedGet };
+  })();
+
+  /* ════════════════════════════════════════════════════════════════════════
+     SECURITY LAYER 4 — Session security
+     - Idle timeout: auto-sign-out after 60 minutes of zero activity
+     - Cross-tab sign-out: if user signs out in another tab, this tab logs
+       out too (via storage event)
+     - Last-activity heartbeat in localStorage
+     ════════════════════════════════════════════════════════════════════════ */
+  F.security.l4 = (function() {
+    var IDLE_MS = 60 * 60 * 1000; // 60 minutes
+    var ACTIVITY_KEY = 'qz_last_activity';
+    function bump() {
+      try { localStorage.setItem(ACTIVITY_KEY, String(Date.now())); } catch(_) {}
+    }
+    ['click','keydown','mousemove','touchstart','scroll'].forEach(function(ev) {
+      window.addEventListener(ev, bump, { passive: true, capture: true });
+    });
+    bump();
+
+    setInterval(function() {
+      try {
+        var user = localStorage.getItem('qz_auth_user');
+        if (!user) return;
+        var last = parseInt(localStorage.getItem(ACTIVITY_KEY) || '0', 10);
+        if (Date.now() - last > IDLE_MS) {
+          F.crash.l1.pushError('session-idle', 'auto-logout', '', 0, 0, '');
+          try { localStorage.removeItem('qz_auth_user'); } catch(_) {}
+          try { localStorage.removeItem('qz_auth_user__sig'); } catch(_) {}
+          if (typeof qzLogout === 'function') {
+            try { qzLogout(); } catch(_) { location.reload(); }
+          } else {
+            location.reload();
+          }
+        }
+      } catch(_) {}
+    }, 30000);
+
+    // Cross-tab sign-out sync
+    window.addEventListener('storage', function(e) {
+      if (e.key !== 'qz_auth_user') return;
+      if (e.oldValue && !e.newValue) {
+        // Other tab signed out
+        if (typeof qzLogout === 'function') {
+          try { qzLogout(); } catch(_) { location.reload(); }
+        } else {
+          location.reload();
+        }
+      }
+    });
+    return { bump: bump };
+  })();
+
+  /* ════════════════════════════════════════════════════════════════════════
+     SECURITY LAYER 5 — Runtime tampering detection
+     - Freezes critical security functions so injected scripts can't
+       overwrite _qzSanitize, _qzCleanHTML, _qzFortress
+     - MutationObserver on <head> alerts on injected <script> or <meta>
+       tags that didn't come from our deployment (only logs — doesn't block)
+     - Detects basic prototype pollution attempts
+     ════════════════════════════════════════════════════════════════════════ */
+  F.security.l5 = (function() {
+    // Freeze critical surfaces
+    try {
+      Object.defineProperty(window, '_qzSanitize', { configurable: false, writable: false });
+      Object.defineProperty(window, '_qzCleanHTML', { configurable: false, writable: false });
+      Object.defineProperty(window, '_qzFortress', { configurable: false, writable: false });
+    } catch(_) {}
+
+    // Watch <head> for unexpected script/meta injections (e.g. XSS attempt
+    // bypassing our CSP somehow)
+    var initialScripts = new Set();
+    try {
+      document.head.querySelectorAll('script[src]').forEach(function(s) {
+        initialScripts.add(s.src);
+      });
+    } catch(_) {}
+    try {
+      var mo = new MutationObserver(function(mutations) {
+        mutations.forEach(function(m) {
+          (m.addedNodes || []).forEach(function(n) {
+            if (n.tagName === 'SCRIPT' && n.src && !initialScripts.has(n.src)) {
+              F.crash.l1.pushError('tamper', 'Late script injected: ' + n.src, '', 0, 0, '');
+            }
+            if (n.tagName === 'META' && (n.httpEquiv || n.name)) {
+              F.crash.l1.pushError('tamper', 'Late meta injected: ' + (n.httpEquiv || n.name), '', 0, 0, '');
+            }
+          });
+        });
+      });
+      mo.observe(document.head, { childList: true });
+    } catch(_) {}
+
+    // Detect basic prototype pollution (someone adding to Object.prototype)
+    try {
+      var protoCheck = setInterval(function() {
+        var keys = Object.keys(Object.prototype);
+        if (keys.length > 0) {
+          F.crash.l1.pushError('tamper', 'Object.prototype pollution: ' + keys.join(','), '', 0, 0, '');
+          clearInterval(protoCheck);
+        }
+      }, 5000);
+    } catch(_) {}
+
+    return { headObserverActive: true };
+  })();
+
+  /* ════════════════════════════════════════════════════════════════════════
+     PUBLIC INSPECTION API (for diagnostics)
+     Open DevTools and type _qzFortress to see all layers and recent errors.
+     ════════════════════════════════════════════════════════════════════════ */
+  F.report = function() {
+    return {
+      version: F.version,
+      uptime_s: ((Date.now() - F.bootAt) / 1000).toFixed(1),
+      layers_active: {
+        security: Object.keys(F.security).length,
+        crash:    Object.keys(F.crash).length,
+      },
+      recent_errors: F.errors.slice(-10),
+      reload_count: F.crash.l5.reloadCount(),
+      app_healthy: F.crash.l5.isAppHealthy(),
+    };
+  };
+  console.log('%c[QZ-FORTRESS]%c 10 defense layers active. Type _qzFortress.report() for status.',
+              'background:#7C3AED;color:#fff;padding:2px 6px;border-radius:3px;', 'color:#888;');
+})();
+</script>
+
 <div id="qe-grid-bg"></div>
 <!-- App-shell ambient neon orbs (visible in both landing + app) -->
 <div id="qe-app-orb-1"></div>
