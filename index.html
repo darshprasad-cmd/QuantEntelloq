@@ -7994,44 +7994,654 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:20px;
 <script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
-     NEUMORPHIC REDESIGN LAYER — landing page visual overhaul
-     Design system: GCORE-inspired dark canvas, neumorphic depth (inset+outset
-     shadows), parallax scroll, custom easing curves per Emil Kowalski.
+     GLOBAL DESIGN SYSTEM — Linear / Vercel / Stripe-grade tokens + primitives
+     Applies app-wide (not just landing). Restyles existing surfaces without
+     touching markup IDs that JS depends on.
+
+     Principles (the ones that actually matter):
+     - Hairline borders, never thick
+     - Restrained color: neutrals + ONE accent (violet)
+     - Sharp-but-soft radii (8/12/16) — never the 24-28px neumorphic look
+     - Minimal shadows — elevation is communicated by 1px borders + slight
+       background lift, not blur theatre
+     - Inter / system stack with tabular-nums on numeric surfaces
+     - Motion: 160-220ms ease-out, no bounce, no glow noise
+     - Respects prefers-reduced-motion
      ═══════════════════════════════════════════════════════════════════════════ -->
-<style id="qz-neuro-redesign">
+<style id="qz-design-system">
 :root {
-  /* ── Surface palette ─────────────────────────────────────────────── */
-  --neu-bg-deep:        #07080d;
-  --neu-bg-canvas:      #0b0d14;
-  --neu-surface:        #11131c;
-  --neu-surface-raised: #161924;
-  --neu-surface-sunken: #0c0e16;
+  /* ── Color: dark palette (the app is dark-first) ─────────────────── */
+  --ds-bg:           #08090b;          /* page canvas */
+  --ds-bg-elev-1:    #0e1014;          /* sidebar, top nav */
+  --ds-bg-elev-2:    #14171d;          /* cards */
+  --ds-bg-elev-3:    #1a1d25;          /* modals, popovers */
+  --ds-bg-inset:     #06070a;          /* sunken: code, inputs */
 
-  /* ── Shadow stack (the heart of neumorphism) ─────────────────────── */
-  --neu-light:   rgba(255,255,255,0.045);
-  --neu-dark:    rgba(0,0,0,0.60);
-  --neu-in-dark: rgba(0,0,0,0.55);
-  --neu-in-lite: rgba(255,255,255,0.04);
+  /* Borders — hairline. Never thicker than 1px. */
+  --ds-border:       rgba(255,255,255,0.06);
+  --ds-border-strong:rgba(255,255,255,0.10);
+  --ds-border-focus: rgba(124,58,237,0.55);
 
-  /* Outset depth (raised surfaces — buttons, cards) */
-  --neu-out-sm: -3px -3px 8px var(--neu-light), 4px 4px 14px var(--neu-dark);
-  --neu-out:    -6px -6px 18px var(--neu-light), 9px 9px 28px var(--neu-dark);
-  --neu-out-lg: -10px -10px 30px var(--neu-light), 14px 14px 42px var(--neu-dark);
+  /* Text */
+  --ds-text:         #f4f4f5;          /* primary */
+  --ds-text-2:       rgba(244,244,245,0.72);  /* secondary */
+  --ds-text-3:       rgba(244,244,245,0.46);  /* tertiary / muted */
+  --ds-text-4:       rgba(244,244,245,0.28);  /* placeholder */
 
-  /* Inset depth (sunken surfaces — inputs, wells) */
-  --neu-in:     inset 3px 3px 8px var(--neu-in-dark), inset -2px -2px 6px var(--neu-in-lite);
-  --neu-in-lg:  inset 5px 5px 14px var(--neu-in-dark), inset -3px -3px 10px var(--neu-in-lite);
+  /* Accent — exactly one. Used sparingly. */
+  --ds-accent:       #7C3AED;
+  --ds-accent-hov:   #6D28D9;
+  --ds-accent-soft:  rgba(124,58,237,0.12);
+  --ds-accent-ring:  rgba(124,58,237,0.32);
 
-  /* Brand glow accents */
-  --neu-violet: #7C3AED;
-  --neu-violet-soft: #A78BFA;
-  --neu-cyan:   #22D3EE;
-  --neu-glow-violet: 0 0 0 1px rgba(124,58,237,0.35), 0 12px 40px rgba(124,58,237,0.28);
+  /* Semantic colors — restrained */
+  --ds-success:      #10B981;
+  --ds-warning:      #F59E0B;
+  --ds-danger:       #EF4444;
+  --ds-info:         #06B6D4;
 
-  /* Easing curves (Emil Kowalski) */
-  --neu-ease-out:    cubic-bezier(0.23, 1, 0.32, 1);
-  --neu-ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-  --neu-ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  /* Numeric / financial */
+  --ds-up:           #10B981;
+  --ds-down:         #EF4444;
+
+  /* ── Radius scale ────────────────────────────────────────────────── */
+  --ds-r-sm:  6px;    /* chips, badges */
+  --ds-r:     8px;    /* buttons, inputs */
+  --ds-r-md:  10px;   /* tabs */
+  --ds-r-lg:  12px;   /* cards */
+  --ds-r-xl:  16px;   /* large surfaces */
+  --ds-r-2xl: 20px;   /* hero card */
+
+  /* ── Shadow — minimal. Elevation is borders + bg lift, not blur. ── */
+  --ds-shadow-1: 0 1px 0 rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+  --ds-shadow-2: 0 4px 12px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.3);
+  --ds-shadow-3: 0 12px 32px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.35);
+  --ds-shadow-pop: 0 8px 28px rgba(0,0,0,0.55), 0 0 0 1px var(--ds-border-strong);
+
+  /* ── Type ────────────────────────────────────────────────────────── */
+  --ds-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI Variable',
+             'SF Pro Text', system-ui, sans-serif;
+  --ds-font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', 'IBM Plex Mono',
+                  Menlo, Consolas, monospace;
+
+  /* ── Easing & duration ──────────────────────────────────────────── */
+  --ds-ease:       cubic-bezier(0.16, 1, 0.3, 1);          /* default ease-out */
+  --ds-ease-in:    cubic-bezier(0.4, 0, 0.2, 1);            /* in-out */
+  --ds-ease-drawer:cubic-bezier(0.32, 0.72, 0, 1);          /* drawers */
+  --ds-dur-fast:   140ms;
+  --ds-dur:        200ms;
+  --ds-dur-slow:   320ms;
+
+  /* ── Spacing scale (8pt grid) ───────────────────────────────────── */
+  --ds-s1: 4px;  --ds-s2: 8px;  --ds-s3: 12px; --ds-s4: 16px;
+  --ds-s5: 20px; --ds-s6: 24px; --ds-s7: 32px; --ds-s8: 48px;
+  --ds-s9: 64px; --ds-s10: 96px;
+
+  /* ── Layout ─────────────────────────────────────────────────────── */
+  --ds-container: 1240px;
+  --ds-nav-h:     56px;
+}
+
+/* ── 1. Base reset / typography ──────────────────────────────────── */
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--ds-font) !important;
+  font-feature-settings: "cv02","cv03","cv04","cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.005em;
+  color: var(--ds-text);
+}
+
+/* Tabular numbers wherever finance is displayed */
+[class*="price"], [class*="change"], [class*="signal"], [class*="qty"],
+[class*="pnl"], [class*="conf"], [class*="metric"], [class*="ticker"],
+.font-mono, [class*="-mono"], .qze-tick-price, .qze-tick-up, .qze-tick-dn {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum","cv02";
+}
+
+/* Headings — tight tracking, weight 600/700 */
+h1, .h1 { font-size: clamp(36px, 5vw, 56px); line-height: 1.05; letter-spacing: -0.035em; font-weight: 700; }
+h2, .h2 { font-size: clamp(28px, 3.4vw, 40px); line-height: 1.1;  letter-spacing: -0.028em; font-weight: 700; }
+h3, .h3 { font-size: 22px; line-height: 1.2; letter-spacing: -0.02em;  font-weight: 600; }
+h4, .h4 { font-size: 16px; line-height: 1.3; letter-spacing: -0.012em; font-weight: 600; }
+
+/* Selection */
+::selection { background: rgba(124,58,237,0.30); color: #fff; }
+
+/* Focus rings — uniform, accessible */
+:where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--ds-accent-ring);
+  outline-offset: 2px;
+  border-radius: var(--ds-r);
+}
+
+/* Smooth scroll site-wide */
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0ms !important;
+    transition-duration: 0ms !important;
+  }
+}
+
+/* ── 2. Page canvas — landing & app ──────────────────────────────── */
+#landing, body {
+  background: var(--ds-bg);
+}
+
+/* Landing — calm ambient depth (NO ray beams, NO theatrical parallax) */
+#landing {
+  position: relative;
+  overflow-x: hidden;
+}
+#landing > * { position: relative; z-index: 1; }
+#landing::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 50% -10%, rgba(124,58,237,0.10), transparent 60%),
+    radial-gradient(ellipse 50% 35% at 90% 30%, rgba(34,211,238,0.04), transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+
+/* ── 3. Top navigation (landing + app) ───────────────────────────── */
+.qze-nav, header.top-bar, .app-topbar, #top-nav {
+  background: rgba(8,9,11,0.72) !important;
+  backdrop-filter: saturate(140%) blur(14px);
+  -webkit-backdrop-filter: saturate(140%) blur(14px);
+  border-bottom: 1px solid var(--ds-border) !important;
+  min-height: var(--ds-nav-h);
+}
+
+/* ── 4. Auth card — Linear/Vercel-grade ──────────────────────────── */
+.qze-auth-card,
+#lp3-auth-inline {
+  background: var(--ds-bg-elev-2) !important;
+  border: 1px solid var(--ds-border) !important;
+  border-radius: var(--ds-r-2xl) !important;
+  box-shadow: var(--ds-shadow-3) !important;
+  padding: 32px !important;
+  transition: border-color var(--ds-dur) var(--ds-ease) !important;
+}
+.qze-auth-card:hover { border-color: var(--ds-border-strong) !important; }
+
+.qze-auth-card .qze-auth-logo {
+  font-weight: 600 !important;
+  letter-spacing: -0.014em !important;
+  font-size: 14px !important;
+  color: var(--ds-text-2) !important;
+  margin-bottom: 24px !important;
+}
+.qze-auth-card .qze-auth-title {
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.022em !important;
+  color: var(--ds-text) !important;
+  margin: 0 0 6px !important;
+}
+.qze-auth-card .qze-auth-sub {
+  font-size: 13.5px !important;
+  color: var(--ds-text-3) !important;
+  font-weight: 400 !important;
+  margin-bottom: 20px !important;
+}
+
+/* Tab toggle — flat, hairline track, single-pill active */
+.qze-auth-card .lp3-tabs {
+  background: var(--ds-bg-inset) !important;
+  border: 1px solid var(--ds-border) !important;
+  box-shadow: none !important;
+  border-radius: var(--ds-r-md) !important;
+  padding: 3px !important;
+  gap: 0 !important;
+  margin: 18px 0 20px !important;
+}
+.qze-auth-card .lp3-tab {
+  border-radius: 7px !important;
+  padding: 9px 10px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  color: var(--ds-text-3) !important;
+  background: transparent !important;
+  transition: background var(--ds-dur-fast) var(--ds-ease),
+              color var(--ds-dur-fast) var(--ds-ease),
+              box-shadow var(--ds-dur-fast) var(--ds-ease) !important;
+}
+.qze-auth-card .lp3-tab:hover { color: var(--ds-text-2) !important; }
+.qze-auth-card .lp3-tab.active {
+  background: var(--ds-bg-elev-2) !important;
+  color: var(--ds-text) !important;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.25),
+              inset 0 0 0 1px var(--ds-border-strong) !important;
+}
+.qze-auth-card .lp3-tab:active { transform: none !important; }
+
+/* Inputs — flat, hairline, focus = 2px ring (not glow) */
+.qze-auth-card .lp3-input,
+#lp3-auth-inline .lp3-input {
+  background: var(--ds-bg-inset) !important;
+  border: 1px solid var(--ds-border) !important;
+  box-shadow: none !important;
+  border-radius: var(--ds-r) !important;
+  padding: 11px 14px !important;
+  color: var(--ds-text) !important;
+  font-size: 14px !important;
+  font-family: var(--ds-font) !important;
+  height: 40px !important;
+  transition: border-color var(--ds-dur-fast) var(--ds-ease),
+              box-shadow var(--ds-dur-fast) var(--ds-ease) !important;
+}
+.qze-auth-card .lp3-input::placeholder,
+#lp3-auth-inline .lp3-input::placeholder { color: var(--ds-text-4) !important; }
+.qze-auth-card .lp3-input:focus,
+#lp3-auth-inline .lp3-input:focus {
+  border-color: var(--ds-border-focus) !important;
+  box-shadow: 0 0 0 3px var(--ds-accent-ring) !important;
+  outline: none !important;
+}
+
+/* Primary submit — solid accent, no gradients, no glow */
+.qze-auth-card .lp3-submit,
+#lp3-auth-inline .lp3-submit {
+  background: var(--ds-accent) !important;
+  color: #fff !important;
+  border: 1px solid transparent !important;
+  border-radius: var(--ds-r) !important;
+  padding: 0 16px !important;
+  height: 40px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  letter-spacing: -0.005em !important;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.10) inset, 0 1px 2px rgba(0,0,0,0.30) !important;
+  transition: background var(--ds-dur-fast) var(--ds-ease),
+              transform var(--ds-dur-fast) var(--ds-ease) !important;
+  cursor: pointer !important;
+}
+.qze-auth-card .lp3-submit:hover,
+#lp3-auth-inline .lp3-submit:hover {
+  background: var(--ds-accent-hov) !important;
+  transform: none !important;
+  filter: none !important;
+}
+.qze-auth-card .lp3-submit:active,
+#lp3-auth-inline .lp3-submit:active { transform: translateY(0.5px) !important; }
+
+/* Google button — neutral secondary */
+.qze-auth-card .btn-google-primary {
+  background: var(--ds-bg-elev-3) !important;
+  border: 1px solid var(--ds-border) !important;
+  border-radius: var(--ds-r) !important;
+  padding: 0 16px !important;
+  height: 40px !important;
+  color: var(--ds-text) !important;
+  box-shadow: none !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  transition: background var(--ds-dur-fast) var(--ds-ease),
+              border-color var(--ds-dur-fast) var(--ds-ease) !important;
+}
+.qze-auth-card .btn-google-primary:hover {
+  background: #20232c !important;
+  border-color: var(--ds-border-strong) !important;
+  transform: none !important;
+}
+
+/* "or continue with email" — subtle, balanced */
+.qze-auth-card .lp3-or {
+  font-size: 11px !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  color: var(--ds-text-4) !important;
+  margin: 18px 0 14px !important;
+}
+
+/* Card lock note — hairline divider */
+.qze-auth-card .lp3-card-lock {
+  margin-top: 20px !important;
+  padding-top: 16px !important;
+  border-top: 1px solid var(--ds-border) !important;
+  font-size: 11px !important;
+  color: var(--ds-text-4) !important;
+  letter-spacing: 0 !important;
+  text-align: center !important;
+}
+
+/* ── 5. Buttons — global primary/secondary/ghost ──────────────────── */
+button, .btn {
+  font-family: var(--ds-font) !important;
+}
+.btn-primary,
+.btn.primary,
+button.primary {
+  background: var(--ds-accent) !important;
+  color: #fff !important;
+  border: 1px solid transparent !important;
+  border-radius: var(--ds-r) !important;
+  padding: 0 16px !important;
+  height: 36px !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: background var(--ds-dur-fast) var(--ds-ease) !important;
+}
+.btn-primary:hover { background: var(--ds-accent-hov) !important; }
+.btn-secondary,
+.btn.secondary {
+  background: var(--ds-bg-elev-3) !important;
+  color: var(--ds-text) !important;
+  border: 1px solid var(--ds-border) !important;
+  border-radius: var(--ds-r) !important;
+  padding: 0 14px !important;
+  height: 36px !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  transition: background var(--ds-dur-fast) var(--ds-ease),
+              border-color var(--ds-dur-fast) var(--ds-ease) !important;
+}
+.btn-secondary:hover {
+  background: #1f232c !important;
+  border-color: var(--ds-border-strong) !important;
+}
+.btn-ghost {
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  color: var(--ds-text-2) !important;
+}
+.btn-ghost:hover {
+  background: rgba(255,255,255,0.04) !important;
+  color: var(--ds-text) !important;
+}
+
+/* ── 6. Cards — feature/review/CTA/showcase ──────────────────────── */
+.qze-feat-card,
+.qze-review-card,
+.qze-spanel,
+.qze-plan-pro,
+.qze-plan-free {
+  background: var(--ds-bg-elev-2) !important;
+  border: 1px solid var(--ds-border) !important;
+  border-radius: var(--ds-r-lg) !important;
+  box-shadow: none !important;
+  padding: 24px !important;
+  transition: border-color var(--ds-dur) var(--ds-ease),
+              background var(--ds-dur) var(--ds-ease),
+              transform var(--ds-dur) var(--ds-ease) !important;
+}
+.qze-feat-card:hover,
+.qze-review-card:hover {
+  border-color: var(--ds-border-strong) !important;
+  background: #161a22 !important;
+  transform: translateY(-1px);
+}
+
+/* CTA section — large hero panel, subtle accent rim */
+.qze-cta-section {
+  background: var(--ds-bg-elev-2) !important;
+  border: 1px solid var(--ds-border-strong) !important;
+  border-radius: var(--ds-r-xl) !important;
+  box-shadow: none !important;
+  margin: 80px 32px !important;
+  padding: 56px 48px !important;
+  position: relative;
+  overflow: hidden;
+}
+.qze-cta-section::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 80% at 50% 0%,
+              rgba(124,58,237,0.10), transparent 70%);
+  pointer-events: none;
+}
+
+/* ── 7. Ticker bar — sunken neutral track ────────────────────────── */
+.qze-ticker-bar {
+  background: var(--ds-bg-inset) !important;
+  border-top: 1px solid var(--ds-border) !important;
+  border-bottom: 1px solid var(--ds-border) !important;
+  box-shadow: none !important;
+}
+
+/* ── 8. Showcase tabs — minimal, hairline ────────────────────────── */
+.qze-stab {
+  background: transparent !important;
+  border: 1px solid var(--ds-border) !important;
+  border-radius: var(--ds-r) !important;
+  box-shadow: none !important;
+  color: var(--ds-text-2) !important;
+  padding: 9px 14px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  transition: background var(--ds-dur-fast) var(--ds-ease),
+              border-color var(--ds-dur-fast) var(--ds-ease),
+              color var(--ds-dur-fast) var(--ds-ease) !important;
+}
+.qze-stab:hover {
+  background: rgba(255,255,255,0.04) !important;
+  color: var(--ds-text) !important;
+}
+.qze-stab.active {
+  background: var(--ds-accent-soft) !important;
+  border-color: var(--ds-accent) !important;
+  color: #fff !important;
+}
+
+/* ── 9. App shell: sidebar + content surfaces ────────────────────── */
+#sidebar, .sidebar, #app-sidebar {
+  background: var(--ds-bg-elev-1) !important;
+  border-right: 1px solid var(--ds-border) !important;
+}
+.nav-item, .sidebar .nav-item {
+  border-radius: var(--ds-r) !important;
+  color: var(--ds-text-2) !important;
+  padding: 8px 12px !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  margin: 1px 8px !important;
+  transition: background var(--ds-dur-fast) var(--ds-ease),
+              color var(--ds-dur-fast) var(--ds-ease) !important;
+}
+.nav-item:hover {
+  background: rgba(255,255,255,0.04) !important;
+  color: var(--ds-text) !important;
+}
+.nav-item.active {
+  background: var(--ds-accent-soft) !important;
+  color: #fff !important;
+  border-left: 2px solid var(--ds-accent) !important;
+}
+
+/* In-app cards — used across dashboard, signals, portfolio, etc. */
+.card, .qz-card, .metric-card, .signal-card, .panel,
+.qz-card-premium, .glass-panel {
+  background: var(--ds-bg-elev-2) !important;
+  border: 1px solid var(--ds-border) !important;
+  border-radius: var(--ds-r-lg) !important;
+  box-shadow: none !important;
+  /* Glass effect kept ONLY for items already using it — but flattened */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* In-app inputs */
+.input, input[type="text"], input[type="email"], input[type="password"],
+input[type="number"], input[type="search"], select, textarea {
+  background: var(--ds-bg-inset) !important;
+  border: 1px solid var(--ds-border) !important;
+  border-radius: var(--ds-r) !important;
+  color: var(--ds-text) !important;
+  font-family: var(--ds-font) !important;
+  font-size: 14px !important;
+  padding: 10px 12px !important;
+  transition: border-color var(--ds-dur-fast) var(--ds-ease),
+              box-shadow var(--ds-dur-fast) var(--ds-ease) !important;
+}
+.input:focus, input:focus, select:focus, textarea:focus {
+  border-color: var(--ds-border-focus) !important;
+  box-shadow: 0 0 0 3px var(--ds-accent-ring) !important;
+  outline: none !important;
+}
+
+/* Tables */
+table, .table {
+  width: 100%;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+table th, .table th {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  color: var(--ds-text-3) !important;
+  padding: 12px 14px !important;
+  border-bottom: 1px solid var(--ds-border) !important;
+  text-align: left;
+  background: transparent !important;
+}
+table td, .table td {
+  padding: 12px 14px !important;
+  border-bottom: 1px solid var(--ds-border) !important;
+  font-size: 13.5px !important;
+  color: var(--ds-text) !important;
+  font-variant-numeric: tabular-nums !important;
+}
+table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !important; }
+
+/* Modals */
+.modal, .qz-modal, .modal-content, [class*="modal-overlay"] > div {
+  background: var(--ds-bg-elev-3) !important;
+  border: 1px solid var(--ds-border) !important;
+  border-radius: var(--ds-r-xl) !important;
+  box-shadow: var(--ds-shadow-3) !important;
+}
+
+/* Modal backdrop — calm, not too dark */
+.modal-overlay, .qz-modal-overlay {
+  background: rgba(8,9,11,0.72) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+
+/* Badges & chips */
+.badge, .chip {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  border-radius: var(--ds-r-sm);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-bg-elev-3);
+  color: var(--ds-text-2);
+}
+.badge-green, .badge.up   { background: rgba(16,185,129,0.10); border-color: rgba(16,185,129,0.30); color: var(--ds-up); }
+.badge-red,   .badge.down { background: rgba(239,68,68,0.10);  border-color: rgba(239,68,68,0.30);  color: var(--ds-down); }
+.badge-yellow             { background: rgba(245,158,11,0.10); border-color: rgba(245,158,11,0.30); color: var(--ds-warning); }
+.badge-purple, .badge.accent { background: var(--ds-accent-soft); border-color: var(--ds-accent-ring); color: var(--ds-text); }
+
+/* Spinner — calm, not bouncy */
+.qz-loading-spinner, .spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.10);
+  border-top-color: var(--ds-accent);
+  border-radius: 50%;
+  animation: ds-spin 700ms linear infinite;
+}
+@keyframes ds-spin { to { transform: rotate(360deg); } }
+
+/* Skeleton — single hue shimmer */
+.qz-skeleton, .skeleton {
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.04) 0%,
+    rgba(255,255,255,0.08) 50%,
+    rgba(255,255,255,0.04) 100%);
+  background-size: 200% 100%;
+  animation: ds-shimmer 1.4s linear infinite;
+  border-radius: var(--ds-r);
+}
+@keyframes ds-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* Tooltips */
+[data-tooltip] { position: relative; }
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--ds-bg-elev-3);
+  color: var(--ds-text);
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--ds-border-strong);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--ds-dur-fast) var(--ds-ease),
+              transform var(--ds-dur-fast) var(--ds-ease);
+  z-index: 100;
+}
+[data-tooltip]:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ── 10. Reveal-on-scroll (no parallax) ──────────────────────────── */
+.qz-reveal-up {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 600ms var(--ds-ease),
+              transform 600ms var(--ds-ease);
+}
+.qz-reveal-up.is-visible { opacity: 1; transform: translateY(0); }
+
+/* ── 11. Remove the previous neumorphic / parallax noise ─────────── */
+.qz-beam-layer { display: none !important; }
+[data-parallax] { transform: none !important; }
+
+/* ── 12. Hero typography polish ──────────────────────────────────── */
+.qze-headline, .qze-hero-title, #landing h1 {
+  font-size: clamp(40px, 5.6vw, 64px) !important;
+  line-height: 1.04 !important;
+  letter-spacing: -0.035em !important;
+  font-weight: 700 !important;
+  color: var(--ds-text) !important;
+}
+.qze-hero-sub, .qze-sub {
+  color: var(--ds-text-3) !important;
+  font-size: 17px !important;
+  line-height: 1.55 !important;
+}
+
+/* Eyebrow / kicker — small caps label */
+.qz-eyebrow, .qze-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: var(--ds-text-3) !important;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--ds-border);
+  background: var(--ds-bg-elev-2);
+}
+
+/* ── 13. Mobile refinements ──────────────────────────────────────── */
+@media (max-width: 720px) {
+  .qze-auth-card, #lp3-auth-inline { padding: 24px 20px !important; border-radius: var(--ds-r-xl) !important; }
+  .qze-cta-section { margin: 56px 16px !important; padding: 40px 24px !important; }
+  h1, .h1 { font-size: clamp(28px, 8vw, 40px); }
+  /* Increase touch targets */
+  button, .btn, .nav-item, .qze-stab { min-height: 40px; }
 }
 
 /* ── Page canvas (override existing landing background) ───────────────── */
@@ -36930,97 +37540,32 @@ window.qzAnimateNumber = function(el, from, to, durationMs, prefix, suffix) {
 <script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
 
 <!-- ═══════════════════════════════════════════════════════════════════════
-     NEUMORPHIC REDESIGN — Parallax engine + scroll reveal
-     - Spring-smoothed parallax (no raw scrollY × speed multiplication)
-     - rAF-throttled scroll handler
-     - IntersectionObserver for scroll-reveal entrance animations
-     - Respects prefers-reduced-motion
-     - Adds GCORE-style ray-beam layer + 3 parallax depth slabs on landing
+     QUIET SCROLL REVEAL — calm fade+rise on landing-section entry only.
+     No parallax. Just respectful motion.
      ═══════════════════════════════════════════════════════════════════════ -->
 <script>
 (function() {
   'use strict';
-  if (window._qzNeuroBooted) return; // double-load guard
-  window._qzNeuroBooted = true;
+  if (window._qzRevealBooted) return;
+  window._qzRevealBooted = true;
 
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // ── 1. Inject beam + parallax depth layers into #landing ───────────────
-  function injectDepthLayers() {
+  function boot() {
     var landing = document.getElementById('landing');
-    if (!landing || landing.querySelector('.qz-beam-layer')) return;
+    if (!landing) return;
 
-    var beam = document.createElement('div');
-    beam.className = 'qz-beam-layer qz-parallax-layer';
-    beam.setAttribute('data-parallax', '0.18');
-    beam.setAttribute('aria-hidden', 'true');
-    landing.insertBefore(beam, landing.firstChild);
+    var targets = landing.querySelectorAll(
+      '.qze-features-section, .qze-features-inner, .qze-reviews-section, ' +
+      '.qze-reviews-inner, .qze-cta-section, .qze-showcase, ' +
+      '.qze-feat-card, .qze-review-card'
+    );
 
-    // Three subtle scroll-bound depth slabs for additional GCORE-style layering
-    var depths = [
-      { speed: 0.08, top: '10%',  side: 'left:6%',   size: '320px', hue: 'rgba(124,58,237,0.10)' },
-      { speed: 0.14, top: '40%',  side: 'right:8%',  size: '260px', hue: 'rgba(34,211,238,0.08)' },
-      { speed: 0.22, top: '70%',  side: 'left:30%',  size: '380px', hue: 'rgba(167,139,250,0.07)' }
-    ];
-    depths.forEach(function(d) {
-      var el = document.createElement('div');
-      el.className = 'qz-parallax-layer';
-      el.setAttribute('data-parallax', d.speed);
-      el.setAttribute('aria-hidden', 'true');
-      el.style.cssText = 'position:absolute;top:' + d.top + ';' + d.side +
-        ';width:' + d.size + ';height:' + d.size +
-        ';border-radius:50%;pointer-events:none;z-index:0;' +
-        'background:radial-gradient(circle,' + d.hue + ',transparent 70%);' +
-        'filter:blur(40px);will-change:transform;';
-      landing.appendChild(el);
-    });
-  }
-
-  // ── 2. Parallax engine ─────────────────────────────────────────────────
-  // Spring-smoothed: maintains velocity, doesn't snap. Per Emil — natural motion
-  // beats raw scrollY × speed math.
-  var parallaxItems = [];
-  var rafId = null;
-  var targetY = 0;
-  var currentY = 0;
-  var velocity = 0;
-  var STIFFNESS = 0.12;
-  var DAMPING   = 0.78;
-
-  function refreshParallaxItems() {
-    parallaxItems = Array.prototype.slice.call(document.querySelectorAll('[data-parallax]'));
-  }
-
-  function tick() {
-    rafId = null;
-    if (reduced) return;
-    var diff = targetY - currentY;
-    velocity = velocity * DAMPING + diff * STIFFNESS;
-    currentY += velocity;
-    if (Math.abs(velocity) < 0.05 && Math.abs(diff) < 0.5) {
-      currentY = targetY;
-    } else {
-      rafId = requestAnimationFrame(tick);
-    }
-    for (var i = 0; i < parallaxItems.length; i++) {
-      var el = parallaxItems[i];
-      var speed = parseFloat(el.getAttribute('data-parallax')) || 0.2;
-      // Hardware-accelerated transform (translate3d so GPU compositor handles it)
-      el.style.transform = 'translate3d(0,' + (-currentY * speed).toFixed(2) + 'px,0)';
-    }
-  }
-
-  function onScroll() {
-    targetY = window.scrollY || window.pageYOffset || 0;
-    if (rafId == null) rafId = requestAnimationFrame(tick);
-  }
-
-  // ── 3. Scroll-reveal: fade + rise sections as they enter viewport ──────
-  function setupReveal() {
-    if (!('IntersectionObserver' in window)) {
-      document.querySelectorAll('.qz-reveal-up').forEach(function(el) { el.classList.add('is-visible'); });
+    if (reduced || !('IntersectionObserver' in window)) {
+      targets.forEach(function(el) { el.classList.add('qz-reveal-up', 'is-visible'); });
       return;
     }
+
     var io = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
         if (entry.isIntersecting) {
@@ -37028,56 +37573,15 @@ window.qzAnimateNumber = function(el, from, to, durationMs, prefix, suffix) {
           io.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    }, { threshold: 0.10, rootMargin: '0px 0px -40px 0px' });
 
-    // Auto-apply reveal to top-level landing sections that aren't the hero
-    var landing = document.getElementById('landing');
-    if (!landing) return;
-    var sections = landing.querySelectorAll(
-      '.qze-features-section, .qze-features-inner, .qze-reviews-section, .qze-reviews-inner, ' +
-      '.qze-cta-section, .qze-showcase, .qze-feat-card, .qze-review-card'
-    );
-    sections.forEach(function(s, i) {
-      s.classList.add('qz-reveal-up');
-      // Slight stagger inside grids for natural waterfall feel
-      if (s.classList.contains('qze-feat-card') || s.classList.contains('qze-review-card')) {
-        s.style.transitionDelay = (i % 6) * 60 + 'ms';
+    targets.forEach(function(el, i) {
+      el.classList.add('qz-reveal-up');
+      if (el.classList.contains('qze-feat-card') || el.classList.contains('qze-review-card')) {
+        el.style.transitionDelay = Math.min(i % 6, 5) * 40 + 'ms';
       }
-      io.observe(s);
+      io.observe(el);
     });
-  }
-
-  // ── 4. Hero parallax tagging — apply small parallax to hero copy/card ──
-  function tagHeroParallax() {
-    var hero = document.querySelector('.qze-hero, .qze-hero-grid, .qze-hero-section');
-    if (!hero) return;
-    // Tag inner content with a tiny parallax so it rises slowly as user scrolls
-    var headline = hero.querySelector('.qze-hero-copy, .qze-headline');
-    if (headline && !headline.hasAttribute('data-parallax')) {
-      headline.setAttribute('data-parallax', '-0.08');
-      headline.classList.add('qz-parallax-layer');
-    }
-    var card = document.getElementById('lp3-auth-inline');
-    if (card && !card.hasAttribute('data-parallax')) {
-      card.setAttribute('data-parallax', '-0.04');
-      card.classList.add('qz-parallax-layer');
-    }
-  }
-
-  // ── Boot ────────────────────────────────────────────────────────────────
-  function boot() {
-    injectDepthLayers();
-    tagHeroParallax();
-    refreshParallaxItems();
-    setupReveal();
-    if (!reduced) {
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', refreshParallaxItems, { passive: true });
-      // Prime initial position so layers don't jump on first scroll
-      targetY = window.scrollY || 0;
-      currentY = targetY;
-      tick();
-    }
   }
 
   if (document.readyState === 'loading') {
