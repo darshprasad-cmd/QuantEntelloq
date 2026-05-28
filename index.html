@@ -28694,12 +28694,20 @@ function _qzkSaveGroq() {
   if (row) row.style.display = 'flex';
   if (prev) prev.textContent = _qzkMask(key);
   _qzkStatus('settings-groq-status', 'Groq connected — ultra-fast AI active!', true);
+  // Refresh the built-in banner to reflect the new active mode
+  var banner = document.querySelector('.qzk-builtin-banner');
+  if (banner && banner.parentNode) banner.parentNode.removeChild(banner);
+  if (typeof _qzkInjectBuiltinStatus === 'function') _qzkInjectBuiltinStatus();
 }
 function _qzkForgetGroq() {
   try { localStorage.removeItem('qe_groq_key'); } catch(_) {}
   const row = document.getElementById('settings-groq-saved-row');
   if (row) row.style.display = 'none';
-  _qzkStatus('settings-groq-status', 'Groq key removed.', true);
+  _qzkStatus('settings-groq-status', 'Groq key removed — built-in AI is active again.', true);
+  // Refresh the banner
+  var banner = document.querySelector('.qzk-builtin-banner');
+  if (banner && banner.parentNode) banner.parentNode.removeChild(banner);
+  if (typeof _qzkInjectBuiltinStatus === 'function') _qzkInjectBuiltinStatus();
 }
 function _qzkSaveClaude() {
   const inp = document.getElementById('settings-claude-key');
@@ -28731,6 +28739,11 @@ function _qzkInit() {
   }
   if (serverNotice) serverNotice.style.display = 'none';
   if (fileMode) fileMode.style.display = 'block';
+
+  // Always inject the "Built-in AI" status banner at the top of the AI section
+  // so the user knows AI is already working out of the box, with NO key required.
+  _qzkInjectBuiltinStatus();
+
   var gKey = ''; try { gKey = localStorage.getItem('qe_groq_key') || ''; } catch(_) {}
   if (gKey) {
     const row = document.getElementById('settings-groq-saved-row');
@@ -28746,6 +28759,54 @@ function _qzkInit() {
     if (prev) prev.textContent = _qzkMask(cKey);
   }
 }
+
+// ── Built-in AI status banner — shown in AI Studio Settings ─────────────
+function _qzkInjectBuiltinStatus() {
+  var host = document.getElementById('qzk-file-mode');
+  if (!host) host = document.getElementById('settings-ai-section') || document.querySelector('.settings-section');
+  if (!host) return;
+  if (host.querySelector('.qzk-builtin-banner')) return; // already injected
+
+  var hasUserGroq  = false; try { hasUserGroq  = !!localStorage.getItem('qe_groq_key'); } catch(_) {}
+  var hasUserClaude= false; try { hasUserClaude= !!localStorage.getItem('qe_claude_key'); } catch(_) {}
+  var activeMode = hasUserGroq ? 'user-groq' : (hasUserClaude ? 'user-claude' : 'builtin');
+
+  var label = ({
+    'user-groq':   { dot:'#10B981', title:'Your Groq key is active',
+                     sub:'Direct Groq API — your key, your rate limit.' },
+    'user-claude': { dot:'#10B981', title:'Your Claude key is active',
+                     sub:'Direct Anthropic API — your key, your rate limit.' },
+    'builtin':     { dot:'#7C3AED', title:'Built-in AI active — no key required',
+                     sub:'Routed via our secure proxy (Llama 3.3 70B). Paste your own Groq key below for higher limits.' }
+  })[activeMode];
+
+  var banner = document.createElement('div');
+  banner.className = 'qzk-builtin-banner';
+  banner.style.cssText = [
+    'background:var(--ds-bg-elev-2,#14171d)',
+    'border:1px solid var(--ds-border,rgba(255,255,255,0.08))',
+    'border-radius:12px',
+    'padding:14px 16px',
+    'margin-bottom:18px',
+    'display:flex',
+    'gap:12px',
+    'align-items:flex-start',
+    'font-family:Inter,system-ui,sans-serif'
+  ].join(';');
+  banner.innerHTML =
+    '<div style="width:8px;height:8px;border-radius:50%;background:' + label.dot +
+      ';margin-top:6px;flex:0 0 auto;box-shadow:0 0 12px ' + label.dot + ';"></div>' +
+    '<div style="flex:1;min-width:0;">' +
+      '<div style="font-size:13.5px;font-weight:600;color:#f4f4f5;letter-spacing:-0.012em;">' +
+        label.title +
+      '</div>' +
+      '<div style="font-size:12px;color:rgba(244,244,245,0.55);line-height:1.5;margin-top:3px;">' +
+        label.sub +
+      '</div>' +
+    '</div>';
+  host.insertBefore(banner, host.firstChild);
+}
+window._qzkRefreshStatus = _qzkInjectBuiltinStatus;
 
 // ─── Unified provider selector ────────────────────────────────────
 // Returns { key, provider: 'server' | 'groq' | 'claude' | null }
