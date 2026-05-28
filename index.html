@@ -9593,29 +9593,28 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
 <script>
 (function emergencyEntry() {
   try {
-    // Hard-disable the tutorial PERMANENTLY (it caused the "blank page" issue)
+    // Hard-disable the tutorial + onboarding flags
     try {
       localStorage.setItem('qz_tutorial_v3', '1');
       localStorage.setItem('qz_onboarded', '1');
     } catch(_) {}
 
-    // Detect a REAL user record — string must parse to an object with a
-    // .email property. Empty strings, 'null', '{}', or garbage means no user
-    // and the landing page should stay visible.
+    // ── Detect a real user record ─────────────────────────────────────
     var u = null;
     try {
       var raw = localStorage.getItem('qz_auth_user');
       if (raw && raw !== 'null' && raw !== '{}' && raw.length > 4) {
-        try { var parsed = JSON.parse(raw);
-              if (parsed && typeof parsed === 'object' && parsed.email) u = parsed;
+        try {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object' && parsed.email) u = parsed;
         } catch(_) {}
       }
     } catch(_) {}
     if (!u) return;
 
+    // ── Force the app shell visible ───────────────────────────────────
     function forceShowApp() {
       try {
-        // Kill ALL blocking overlays with inline !important
         var blockers = [
           'landing','onboarding','ob-boot-overlay','auth-modal',
           'qz-auth-overlay','tutorial-modal','qe-legal-overlay'
@@ -9629,7 +9628,6 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
           el.style.setProperty('pointer-events','none','important');
           el.style.setProperty('opacity','0','important');
         });
-        // Force #app visible at all costs
         var app = document.getElementById('app');
         if (app) {
           app.style.setProperty('display','flex','important');
@@ -9638,14 +9636,71 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
           app.style.setProperty('pointer-events','auto','important');
           app.classList.remove('hidden');
         }
-        // Body scroll
+        // Make sure the dashboard page is visible inside #app
+        var dash = document.getElementById('page-dashboard');
+        if (dash) {
+          dash.classList.remove('hidden');
+          dash.style.removeProperty('display');
+        }
+        // Hide all OTHER pages (only dashboard visible on entry)
+        try {
+          document.querySelectorAll('[id^="page-"]').forEach(function(p) {
+            if (p.id !== 'page-dashboard') {
+              if (!p.classList.contains('hidden')) p.classList.add('hidden');
+            }
+          });
+        } catch(_) {}
+        // Body scroll restore
         document.body.style.overflow = '';
         document.body.style.position = '';
       } catch(_) {}
     }
 
-    // Run as early as DOM allows, then re-run several times to defeat any
-    // later script that tries to re-show landing or open the tutorial
+    // ── Diagnostic dump (callable from DevTools as _qzDiagnose()) ─────
+    window._qzDiagnose = function() {
+      function pretty(el) {
+        if (!el) return { exists: false };
+        var cs = getComputedStyle(el);
+        var r = el.getBoundingClientRect();
+        return {
+          exists: true,
+          id: el.id || '(no id)',
+          classes: el.className,
+          display: cs.display,
+          visibility: cs.visibility,
+          opacity: cs.opacity,
+          width: Math.round(r.width),
+          height: Math.round(r.height),
+          children: el.children.length,
+          hidden_class: el.classList.contains('hidden')
+        };
+      }
+      var snap = {
+        url: location.href,
+        user_in_storage: (function() {
+          try { return !!localStorage.getItem('qz_auth_user'); } catch(_) { return 'err'; }
+        })(),
+        onboarded: (function() {
+          try { return localStorage.getItem('qz_onboarded'); } catch(_) { return 'err'; }
+        })(),
+        landing: pretty(document.getElementById('landing')),
+        app: pretty(document.getElementById('app')),
+        page_dashboard: pretty(document.getElementById('page-dashboard')),
+        sidebar: pretty(document.querySelector('.sidebar')),
+        topbar: pretty(document.querySelector('.topbar') || document.getElementById('top-nav')),
+        ghub_wrap: pretty(document.getElementById('ghub-wrap')),
+        tutorial_visible: !!document.querySelector('#tutorial-modal:not(.tut-hidden)'),
+        visible_pages: Array.from(document.querySelectorAll('[id^="page-"]'))
+          .filter(function(p) { return !p.classList.contains('hidden') && getComputedStyle(p).display !== 'none'; })
+          .map(function(p) { return p.id; }),
+        body_overflow: document.body.style.overflow,
+      };
+      console.table(snap);
+      console.log('FULL DIAGNOSTIC:', JSON.stringify(snap, null, 2));
+      return snap;
+    };
+
+    // Run forceShowApp 7 times then auto-diagnose at 3s
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', forceShowApp);
     } else {
@@ -9654,6 +9709,16 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
     [50, 200, 600, 1200, 2500, 4500].forEach(function(ms) {
       setTimeout(forceShowApp, ms);
     });
+    // Auto-run diagnostic at 3s — output goes to console, helps debug
+    setTimeout(function() {
+      try {
+        var snap = window._qzDiagnose();
+        if (!snap.app.exists) console.warn('[QZ-AUTO-DIAG] #app missing from DOM!');
+        else if (snap.app.display === 'none') console.warn('[QZ-AUTO-DIAG] #app is display:none after 3s!');
+        else if (snap.app.height < 100) console.warn('[QZ-AUTO-DIAG] #app rendered with height ' + snap.app.height + 'px — likely empty.');
+        else console.log('[QZ-AUTO-DIAG] App appears healthy at 3s.');
+      } catch(_) {}
+    }, 3000);
   } catch(_) {}
 })();
 </script>
