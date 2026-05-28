@@ -9599,9 +9599,18 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
       localStorage.setItem('qz_onboarded', '1');
     } catch(_) {}
 
-    // Detect any user record — if not, no work to do (landing is correct state)
+    // Detect a REAL user record — string must parse to an object with a
+    // .email property. Empty strings, 'null', '{}', or garbage means no user
+    // and the landing page should stay visible.
     var u = null;
-    try { u = localStorage.getItem('qz_auth_user'); } catch(_) {}
+    try {
+      var raw = localStorage.getItem('qz_auth_user');
+      if (raw && raw !== 'null' && raw !== '{}' && raw.length > 4) {
+        try { var parsed = JSON.parse(raw);
+              if (parsed && typeof parsed === 'object' && parsed.email) u = parsed;
+        } catch(_) {}
+      }
+    } catch(_) {}
     if (!u) return;
 
     function forceShowApp() {
@@ -10011,47 +10020,63 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
       return h.toString(16);
     }
     var SIGNED_KEYS = ['qz_auth_user'];
+    // CRITICAL: capture the ORIGINAL (unwrapped) localStorage methods BEFORE
+    // we define signedSet/signedGet, and use those originals inside the signed
+    // functions. Otherwise we get infinite recursion the first time anyone
+    // writes a signed key → stack overflow → ENTIRE page fails to render.
+    var _lsSet = null, _lsGet = null, _lsRemove = null;
+    try {
+      _lsSet    = localStorage.setItem.bind(localStorage);
+      _lsGet    = localStorage.getItem.bind(localStorage);
+      _lsRemove = localStorage.removeItem.bind(localStorage);
+    } catch(_) {}
+
     function signedSet(key, value) {
-      var seed = getDeviceSeed();
-      var json = typeof value === 'string' ? value : JSON.stringify(value);
-      var sig = hashSync(json, seed);
-      try { localStorage.setItem(key, json); localStorage.setItem(key + '__sig', sig); return true; }
-      catch(_) { return false; }
+      if (!_lsSet) return false;
+      try {
+        var seed = getDeviceSeed();
+        var json = typeof value === 'string' ? value : JSON.stringify(value);
+        var sig = hashSync(json, seed);
+        _lsSet(key, json);
+        _lsSet(key + '__sig', sig);
+        return true;
+      } catch(_) { return false; }
     }
     function signedGet(key) {
+      if (!_lsGet) return null;
       try {
-        var v = localStorage.getItem(key);
+        var v = _lsGet(key);
         if (v == null) return null;
-        var sig = localStorage.getItem(key + '__sig');
+        var sig = _lsGet(key + '__sig');
         if (!sig) {
-          // No signature yet — first-run for this key; sign it now (don't reject)
+          // No signature yet — first-run for this key; sign it now
           var seed = getDeviceSeed();
-          localStorage.setItem(key + '__sig', hashSync(v, seed));
+          try { _lsSet(key + '__sig', hashSync(v, seed)); } catch(_) {}
           return v;
         }
         var expected = hashSync(v, getDeviceSeed());
         if (sig !== expected) {
-          // TAMPER detected
-          F.crash.l1.pushError('tamper', 'Storage tamper detected: ' + key, '', 0, 0, '');
-          try { localStorage.removeItem(key); localStorage.removeItem(key + '__sig'); } catch(_) {}
+          // TAMPER detected — silent (avoid spamming the error trap)
+          try { _lsRemove(key); _lsRemove(key + '__sig'); } catch(_) {}
           return null;
         }
         return v;
       } catch(_) { return null; }
     }
-    // Wrap localStorage for signed keys
-    try {
-      var _set = localStorage.setItem.bind(localStorage);
-      var _get = localStorage.getItem.bind(localStorage);
-      localStorage.setItem = function(k, v) {
-        if (SIGNED_KEYS.indexOf(k) !== -1) return signedSet(k, v);
-        return _set(k, v);
-      };
-      localStorage.getItem = function(k) {
-        if (SIGNED_KEYS.indexOf(k) !== -1) return signedGet(k);
-        return _get(k);
-      };
-    } catch(_) {}
+
+    // Now safely wrap localStorage for signed keys
+    if (_lsSet && _lsGet) {
+      try {
+        localStorage.setItem = function(k, v) {
+          if (SIGNED_KEYS.indexOf(k) !== -1) return signedSet(k, v);
+          return _lsSet(k, v);
+        };
+        localStorage.getItem = function(k) {
+          if (SIGNED_KEYS.indexOf(k) !== -1) return signedGet(k);
+          return _lsGet(k);
+        };
+      } catch(_) {}
+    }
     return { signedSet: signedSet, signedGet: signedGet };
   })();
 
