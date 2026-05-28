@@ -5059,6 +5059,37 @@ input[type="number"]:focus {
   font-size: 13.5px !important; font-weight: 600 !important; padding: 11px 16px !important;
   margin-bottom: 14px !important;
 }
+/* ── Sign In / Create Account tab toggle ── */
+.qze-auth-card .lp3-tabs {
+  display: flex; gap: 4px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 11px;
+  padding: 4px;
+  margin: 14px 0 16px;
+}
+.qze-auth-card .lp3-tab {
+  flex: 1;
+  background: transparent;
+  border: 0;
+  color: rgba(255,255,255,0.5);
+  font: 600 12.5px/1 var(--font-display, system-ui, sans-serif);
+  letter-spacing: 0.01em;
+  padding: 9px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 160ms cubic-bezier(0.23,1,0.32,1), color 160ms ease;
+}
+.qze-auth-card .lp3-tab:hover { color: rgba(255,255,255,0.85); }
+.qze-auth-card .lp3-tab.active {
+  background: linear-gradient(135deg, rgba(124,58,237,0.22), rgba(167,139,250,0.22));
+  color: #fff;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 4px 14px rgba(124,58,237,0.18);
+}
+.qze-auth-card .lp3-tab:active { transform: scale(0.97); }
+.qze-auth-card .lp3-tab:focus-visible {
+  outline: 2px solid rgba(167,139,250,0.6); outline-offset: 2px;
+}
 .qze-auth-card .lp3-or {
   font-size: 11px !important; color: rgba(255,255,255,0.25) !important;
   margin: 0 0 12px !important;
@@ -8082,9 +8113,8 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:20px;
   font-size:11px;color:rgba(255,255,255,.22);font-family:var(--font-mono);letter-spacing:.04em;
 }
 .lp3-or::before,.lp3-or::after { content:'';flex:1;height:1px;background:rgba(255,255,255,.07); }
-/* old tabs hidden — we use toggle links instead */
-.lp3-tabs { display:none; }
-.lp3-tab  { display:none; }
+/* (Old "tabs hidden" override removed — the .qze-auth-card .lp3-tabs styles
+   below provide the active Sign In / Create Account toggle.) */
 .lp3-field { margin-bottom:10px; }
 .lp3-input {
   width:100%;padding:11px 14px;background:rgba(255,255,255,.05);
@@ -8491,9 +8521,15 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:20px;
       <div class="qze-auth-title" id="lp3-card-title">Create your account</div>
       <div class="qze-auth-sub" id="lp3-card-sub">No credit card · Full platform access</div>
 
+      <!-- ── Tab toggle ─────────────────────────────────────────────── -->
+      <div class="lp3-tabs" role="tablist" aria-label="Sign in or create account">
+        <button class="lp3-tab active" id="lp3-tab-up" role="tab" aria-selected="true"  onclick="lp3Tab('up')">Create Account</button>
+        <button class="lp3-tab"        id="lp3-tab-in" role="tab" aria-selected="false" onclick="lp3Tab('in')">Sign In</button>
+      </div>
+
       <button class="btn-google-primary qz-magnetic" onclick="doGoogleAuth()">
         <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-        Continue with Google
+        <span id="lp3-google-label">Continue with Google</span>
       </button>
       <div class="lp3-or">or continue with email</div>
 
@@ -9122,10 +9158,23 @@ function lp3Tab(tab) {
   if (su) su.style.display = tab === 'up' ? '' : 'none';
   if (si) si.style.display = tab === 'in' ? '' : 'none';
   if (fp) fp.style.display = 'none'; // always hide forgot-password when switching tabs
+  // Tab toggle state
+  var tabUp = document.getElementById('lp3-tab-up');
+  var tabIn = document.getElementById('lp3-tab-in');
+  if (tabUp) { tabUp.classList.toggle('active', tab === 'up'); tabUp.setAttribute('aria-selected', tab === 'up' ? 'true' : 'false'); }
+  if (tabIn) { tabIn.classList.toggle('active', tab === 'in'); tabIn.setAttribute('aria-selected', tab === 'in' ? 'true' : 'false'); }
+  // Title + sub + Google button label
   var title = document.getElementById('lp3-card-title');
   var sub   = document.getElementById('lp3-card-sub');
+  var gLbl  = document.getElementById('lp3-google-label');
   if (title) title.textContent = tab === 'up' ? 'Create your free account' : 'Welcome back';
   if (sub)   sub.textContent   = tab === 'up' ? 'No credit card · Full access immediately' : 'Sign in to your Quant Entelloq account';
+  if (gLbl)  gLbl.textContent  = tab === 'up' ? 'Sign up with Google' : 'Sign in with Google';
+  // Clear any stale error/success state on switch
+  ['lp3-su-err','lp3-su-ok','lp3-si-err','lp3-fp-err','lp3-fp-ok'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) { el.style.display = 'none'; el.textContent = ''; }
+  });
   var card = document.getElementById('lp3-auth-inline');
   if (card && window.innerWidth < 960) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
   else window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -9262,19 +9311,40 @@ function _lp3Enter(user) {
   if (landing) landing.classList.add('hidden');
   var onboarded = false;
   try { onboarded = !!localStorage.getItem('qz_onboarded'); } catch(_) {}
+
+  // Defensive helper: make absolutely sure the app becomes visible
+  function _ensureAppVisible() {
+    var app = document.getElementById('app');
+    var onbEl = document.getElementById('onboarding');
+    var stillOnLanding = landing && !landing.classList.contains('hidden');
+    var appHidden = !app || app.style.display === 'none';
+    var onboardingActive = onbEl && !onbEl.classList.contains('hidden');
+    if ((stillOnLanding || appHidden) && !onboardingActive) {
+      console.warn('App not visible after _lp3Enter — forcing entry.');
+      if (landing) landing.classList.add('hidden');
+      if (app)     app.style.display = 'flex';
+      try { if (typeof initApp === 'function') initApp(); } catch(_){}
+      try { if (typeof showPage === 'function') showPage('dashboard', document.getElementById('nav-dashboard')); } catch(_){}
+    }
+  }
+
   if (onboarded) {
-    if (typeof initApp === 'function') initApp();
+    try { if (typeof initApp === 'function') initApp(); } catch(e) { console.warn('initApp threw:', e); }
     // Show tutorial on first login after onboarding is complete
     setTimeout(function() {
       if (typeof tutorialMaybeShow === 'function') tutorialMaybeShow();
     }, 1800);
   } else {
-    if (typeof showOnboarding === 'function') showOnboarding();
+    try { if (typeof showOnboarding === 'function') showOnboarding(); }
+    catch(e) { console.warn('showOnboarding threw — forcing app entry:', e); _ensureAppVisible(); }
     // Tutorial shown after onboarding flow completes (longer delay)
     setTimeout(function() {
       if (typeof tutorialMaybeShow === 'function') tutorialMaybeShow();
     }, 4000);
   }
+
+  // Safety net: 2s after sign-in, if nothing rendered, force app visible
+  setTimeout(_ensureAppVisible, 2000);
 }
 </script>
 
@@ -13124,6 +13194,53 @@ function _qzHandleGoogleCredential(resp) {
   };
   // Reset double-init guard so re-login after logout works
   window._qzAppStarted = false;
+  // Google already verified name + email — skip the 7-step onboarding
+  // (profile prefs can be set later in Settings)
+  try {
+    localStorage.setItem('qz_onboarded', '1');
+    localStorage.setItem('qz_auth_user', JSON.stringify(user));
+  } catch(_) {}
+
+  // Helper: force the app into a visible state even if downstream init fails
+  function _forceEnterApp() {
+    try {
+      var landing = document.getElementById('landing');
+      var app     = document.getElementById('app');
+      var onbEl   = document.getElementById('onboarding');
+      if (landing) landing.classList.add('hidden');
+      if (onbEl)   onbEl.classList.add('hidden');
+      if (app)     app.style.display = 'flex';
+      if (typeof initApp === 'function') {
+        try { initApp(); } catch(e) { console.warn('initApp threw:', e); }
+      }
+      if (typeof showPage === 'function') {
+        try { showPage('dashboard', document.getElementById('nav-dashboard')); } catch(_) {}
+      }
+    } catch(e) { console.error('Force-enter app failed:', e); }
+  }
+
+  function _enter(u) {
+    try {
+      if (typeof _lp3Enter === 'function') _lp3Enter(u);
+      else if (typeof loginUser === 'function') loginUser(u);
+      else _forceEnterApp();
+    } catch(e) {
+      console.warn('_lp3Enter/loginUser threw, forcing app entry:', e);
+      _forceEnterApp();
+    }
+    // Safety net: if 1.5s after sign-in the app still isn't visible, force it
+    setTimeout(function() {
+      var app = document.getElementById('app');
+      var landing = document.getElementById('landing');
+      var stillOnLanding = landing && !landing.classList.contains('hidden');
+      var appHidden = !app || app.style.display === 'none' || !app.offsetParent;
+      if (stillOnLanding || appHidden) {
+        console.warn('App did not enter after sign-in — forcing entry.');
+        _forceEnterApp();
+      }
+    }, 1500);
+  }
+
   // Server-mode path
   if (window._QZ_SERVER_MODE) {
     fetch('/api/auth/google/idtoken', {
@@ -13131,15 +13248,15 @@ function _qzHandleGoogleCredential(resp) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ credential: resp.credential })
     }).then(function(r) { return r.ok ? r.json() : Promise.reject(); })
-      .then(function(d) { if (typeof _lp3Enter === 'function') _lp3Enter(d.user || user); else loginUser(d.user || user); })
+      .then(function(d) { _enter(d.user || user); })
       .catch(function() {
         // Backend not wired — fall back to client-side login with real Google identity
-        if (typeof _lp3Enter === 'function') _lp3Enter(user); else loginUser(user);
+        _enter(user);
       });
     return;
   }
   // Static deployment — log the user in with their real Google identity
-  if (typeof _lp3Enter === 'function') _lp3Enter(user); else loginUser(user);
+  _enter(user);
 }
 
 // Loads the GIS script. Caches only the SUCCESS promise so a transient
@@ -36383,24 +36500,60 @@ window.qzAnimateNumber = function(el, from, to, durationMs, prefix, suffix) {
     setTimeout(function() {
       modal.classList.add('tut-hidden');
       modal.style.opacity = modal.style.transition = '';
-      // Return focus to the main page so the user is not left on a blank state
+
+      // ── ALWAYS restore the page to a usable state ─────────────────────────
+      // Release any body scroll lock from elsewhere
+      try {
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
+      } catch(_) {}
+      // Clear lingering inline styles on any tut-* scene that could intercept clicks
+      for (var i = 1; i <= TUT_TOTAL; i++) {
+        var s = document.getElementById('tut-s' + i);
+        if (s) { s.style.transform = s.style.opacity = s.style.transition = ''; }
+      }
+      // Return focus to body
       try { document.body.focus(); } catch(_) {}
 
+      var landing = document.getElementById('landing');
+      var app = document.getElementById('app');
+      var onLanding = landing && !landing.classList.contains('hidden');
+
       if (completed) {
-        // If user is on the landing page (not yet logged in), scroll the auth
-        // card into view so they immediately see how to sign up / sign in.
-        var landing = document.getElementById('landing');
-        if (landing && !landing.classList.contains('hidden')) {
+        if (onLanding) {
+          // Not yet logged in: scroll auth card into view so they see how to sign up
           var card = document.getElementById('lp3-auth-inline');
           if (card) {
             setTimeout(function() {
               card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              // Briefly highlight the card so the user notices it
               card.style.transition = 'box-shadow 0.4s ease';
               card.style.boxShadow = '0 0 0 2px rgba(167,139,250,0.6), 0 0 48px rgba(124,58,237,0.4)';
               setTimeout(function() { card.style.boxShadow = ''; }, 1800);
             }, 80);
           }
+        } else {
+          // Logged-in user finished the tutorial: ensure the app is fully visible
+          // and re-render the active page so they don't see a stale/blank state.
+          if (app) {
+            if (app.style.display === 'none' || !app.offsetParent) app.style.display = 'flex';
+          }
+          // Scroll to top so they see the dashboard header
+          try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch(_) {}
+          // Re-render the current page (or default to dashboard) so any data that
+          // was stale during the tutorial overlay is fresh
+          try {
+            var curPage = (window.state && state.currentPage) || 'dashboard';
+            if (typeof showPage === 'function') {
+              var navEl = document.getElementById('nav-' + curPage) || document.getElementById('nav-dashboard');
+              showPage(curPage, navEl);
+            }
+          } catch(e) { console.warn('Post-tutorial showPage failed:', e); }
+        }
+      } else {
+        // Dismissed: same safety — if logged in, make sure app is visible
+        if (!onLanding && app && (app.style.display === 'none' || !app.offsetParent)) {
+          app.style.display = 'flex';
         }
       }
     }, 290);
