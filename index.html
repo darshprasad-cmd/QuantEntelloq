@@ -16109,47 +16109,58 @@ function finishOnboarding() {
 
 // ==================== APP INIT ====================
 function initApp() {
-  state.portfolio = [...PORTFOLIO_DATA];
-  state.ledger = [...LEDGER_DATA];
+  // State init — guard for missing PORTFOLIO_DATA / LEDGER_DATA constants
+  try { state.portfolio = (typeof PORTFOLIO_DATA !== 'undefined' && PORTFOLIO_DATA) ? [...PORTFOLIO_DATA] : []; }
+  catch(_) { state.portfolio = []; }
+  try { state.ledger = (typeof LEDGER_DATA !== 'undefined' && LEDGER_DATA) ? [...LEDGER_DATA] : []; }
+  catch(_) { state.ledger = []; }
+
   var appEl = document.getElementById('app');
   if (appEl) appEl.style.display = 'flex';
 
   // Set user info — guard all DOM queries
-  var name = (state.user && (state.user.name || state.user.email)) || 'User';
-  var avatarEl = document.getElementById('user-avatar-sidebar');
-  var nameEl   = document.getElementById('user-name-sidebar');
-  var sNameEl  = document.getElementById('settings-name');
-  var sEmailEl = document.getElementById('settings-email');
-  if (avatarEl) avatarEl.textContent = name.charAt(0).toUpperCase();
-  if (nameEl)   nameEl.textContent   = name;
-  if (sNameEl)  sNameEl.textContent  = name;
-  if (sEmailEl) sEmailEl.textContent = (state.user && state.user.email) || '';
+  try {
+    var name = (state.user && (state.user.name || state.user.email)) || 'User';
+    var avatarEl = document.getElementById('user-avatar-sidebar');
+    var nameEl   = document.getElementById('user-name-sidebar');
+    var sNameEl  = document.getElementById('settings-name');
+    var sEmailEl = document.getElementById('settings-email');
+    if (avatarEl) avatarEl.textContent = name.charAt(0).toUpperCase();
+    if (nameEl)   nameEl.textContent   = name;
+    if (sNameEl)  sNameEl.textContent  = name;
+    if (sEmailEl) sEmailEl.textContent = (state.user && state.user.email) || '';
+  } catch(e) { console.warn('[initApp] user info update failed:', e); }
 
-  renderDashboard();
-  renderSignals();
-  renderNews();
-  renderPortfolio();
-  renderLedger();
-  renderScanner();
-  renderAlerts();
-  renderReports();
-  calcScenario();
-  // calcBusiness removed — no business page in current app
-  // Initialize regional data
-  applyRegionToApp(regionState.selectedCountry);
+  // Each render call is independently isolated — one failing render does
+  // NOT prevent the others from running. This is the difference between
+  // "fully working app" and "completely blank dashboard."
+  var renders = [
+    ['renderDashboard',  function() { if (typeof renderDashboard  === 'function') renderDashboard(); }],
+    ['renderSignals',    function() { if (typeof renderSignals    === 'function') renderSignals(); }],
+    ['renderNews',       function() { if (typeof renderNews       === 'function') renderNews(); }],
+    ['renderPortfolio',  function() { if (typeof renderPortfolio  === 'function') renderPortfolio(); }],
+    ['renderLedger',     function() { if (typeof renderLedger     === 'function') renderLedger(); }],
+    ['renderScanner',    function() { if (typeof renderScanner    === 'function') renderScanner(); }],
+    ['renderAlerts',     function() { if (typeof renderAlerts     === 'function') renderAlerts(); }],
+    ['renderReports',    function() { if (typeof renderReports    === 'function') renderReports(); }],
+    ['calcScenario',     function() { if (typeof calcScenario     === 'function') calcScenario(); }],
+    ['applyRegionToApp', function() {
+      if (typeof applyRegionToApp === 'function' && typeof regionState !== 'undefined') {
+        applyRegionToApp(regionState.selectedCountry);
+      }
+    }],
+  ];
+  renders.forEach(function(pair) {
+    try { pair[1](); }
+    catch (e) { console.warn('[initApp] ' + pair[0] + ' failed (continuing):', e && e.message); }
+  });
 
-  // Trial timer (24 hours → for demo, use 24 mins or skip)
-  // For real: check after 24h. We'll give full access for demo.
   state.subscribed = true;
 
-  // Show one-time rebrand notification for returning users
-  setTimeout(_showRebrandToast, 1200);
-
-  // ── Offline / Online detection ──────────────────────────────────
-  _initOfflineBanner();
-
-  // ── AI query counter badge (topbar) ───────────────────────────
-  _refreshQueryBadge();
+  // Side-effect helpers — also isolated
+  try { setTimeout(function() { if (typeof _showRebrandToast === 'function') _showRebrandToast(); }, 1200); } catch(_) {}
+  try { if (typeof _initOfflineBanner === 'function') _initOfflineBanner(); } catch(_) {}
+  try { if (typeof _refreshQueryBadge === 'function') _refreshQueryBadge(); } catch(_) {}
 }
 
 // ── Offline banner system ─────────────────────────────────────────
