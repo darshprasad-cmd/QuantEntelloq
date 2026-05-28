@@ -10538,6 +10538,68 @@ function _qzMarkOnboarded() {
   try { localStorage.setItem('qz_onboarded', '1'); } catch(_) {}
 }
 
+// ── MASTER ENTRY WATCHDOG ─────────────────────────────────────────────
+// Guarantees the user lands in the app within ~1.8s of ANY auth attempt,
+// regardless of which auth path was used (lp3Login/Signup, qzAuthLogin/Signup,
+// Google GIS, doLogin/Signup, session restore). Polls every 300ms; if it sees
+// a stored user but the app isn't visible, it force-enters.
+function _qzForceEnterApp() {
+  try {
+    var landing = document.getElementById('landing');
+    var app     = document.getElementById('app');
+    var onb     = document.getElementById('onboarding');
+    if (landing) landing.classList.add('hidden');
+    if (onb)     onb.classList.add('hidden');
+    if (app)     app.style.display = 'flex';
+    try { localStorage.setItem('qz_onboarded', '1'); } catch(_) {}
+    if (typeof initApp === 'function') {
+      try { initApp(); } catch(e) { console.warn('[watchdog] initApp threw:', e); }
+    }
+    if (typeof showPage === 'function') {
+      try { showPage('dashboard', document.getElementById('nav-dashboard')); } catch(_) {}
+    }
+  } catch(e) { console.error('[watchdog] force-enter failed:', e); }
+}
+
+window._qzArmEntryWatchdog = function() {
+  if (window._qzEntryWatchdogArmed) return;
+  window._qzEntryWatchdogArmed = true;
+  var startedAt = Date.now();
+  var ticks = 0;
+  var iv = setInterval(function() {
+    ticks++;
+    var stored = null;
+    try { stored = localStorage.getItem('qz_auth_user'); } catch(_) {}
+    var landing = document.getElementById('landing');
+    var app     = document.getElementById('app');
+    var stillOnLanding = landing && !landing.classList.contains('hidden');
+    var appHidden = !app || app.style.display === 'none' || !app.offsetParent;
+    var onbVisible = (function() {
+      var o = document.getElementById('onboarding');
+      return o && !o.classList.contains('hidden');
+    })();
+    // If a user IS stored AND the app isn't visible → force entry
+    if (stored && (stillOnLanding || appHidden || onbVisible)) {
+      console.warn('[watchdog] Detected stored user but app not visible — forcing entry.');
+      _qzForceEnterApp();
+      window._qzEntryWatchdogArmed = false;
+      clearInterval(iv);
+      return;
+    }
+    // User got into the app → done
+    if (stored && !stillOnLanding && !appHidden) {
+      window._qzEntryWatchdogArmed = false;
+      clearInterval(iv);
+      return;
+    }
+    // Timeout (6s) → give up
+    if (Date.now() - startedAt > 6000) {
+      window._qzEntryWatchdogArmed = false;
+      clearInterval(iv);
+    }
+  }, 300);
+};
+
 // Subtle welcome toast on first sign-in. No animation theatre, just a small
 // confirmation slide-up that disappears in 3 seconds.
 function _qzShowWelcomeToast(name) {
@@ -10575,6 +10637,7 @@ async function lp3Signup() {
   if (btn) { btn.disabled = true; btn.textContent = 'Creating account…'; }
 
   _qzMarkOnboarded(); // skip the questionnaire — go straight to the app
+  if (typeof _qzArmEntryWatchdog === 'function') _qzArmEntryWatchdog();
 
   if (window._QZ_SERVER_MODE) {
     try {
@@ -10617,6 +10680,7 @@ async function lp3Login() {
   if (btn) { btn.disabled = true; btn.textContent = 'Signing in…'; }
 
   _qzMarkOnboarded(); // skip onboarding for returning users too
+  if (typeof _qzArmEntryWatchdog === 'function') _qzArmEntryWatchdog();
 
   if (window._QZ_SERVER_MODE) {
     var _loginUser = null;
@@ -14434,13 +14498,18 @@ function switchAuth(mode) {
   document.getElementById('auth-signup').classList.toggle('hidden', mode !== 'signup');
 }
 async function doLogin() {
-  const email = document.getElementById('login-email').value.trim();
-  const pass = document.getElementById('login-pass').value;
+  const emailEl = document.getElementById('login-email');
+  const passEl  = document.getElementById('login-pass');
+  const email = (emailEl && emailEl.value || '').trim();
+  const pass  = (passEl && passEl.value) || '';
   const errEl = document.getElementById('login-error');
+  function _err(m) { if (errEl) { errEl.textContent = m; errEl.style.display = 'block'; } }
 
-  if (!email || !email.includes('@')) { errEl.textContent = 'Please enter a valid email address.'; errEl.style.display = 'block'; return; }
-  if (!pass) { errEl.textContent = 'Please enter your password.'; errEl.style.display = 'block'; return; }
-  errEl.style.display = 'none';
+  if (!email || !email.includes('@')) { _err('Please enter a valid email address.'); return; }
+  if (!pass) { _err('Please enter your password.'); return; }
+  if (errEl) errEl.style.display = 'none';
+  try { localStorage.setItem('qz_onboarded', '1'); } catch(_) {}
+  if (typeof _qzArmEntryWatchdog === 'function') _qzArmEntryWatchdog();
 
   const btn = document.querySelector('#auth-login .btn-primary');
   const origText = btn ? btn.textContent : 'Sign In →';
@@ -14477,15 +14546,21 @@ async function doLogin() {
   }
 }
 async function doSignup() {
-  const name = document.getElementById('signup-name').value.trim();
-  const email = document.getElementById('signup-email').value.trim();
-  const pass = document.getElementById('signup-pass').value;
+  const nameEl  = document.getElementById('signup-name');
+  const emailEl = document.getElementById('signup-email');
+  const passEl  = document.getElementById('signup-pass');
+  const name  = (nameEl && nameEl.value || '').trim();
+  const email = (emailEl && emailEl.value || '').trim();
+  const pass  = (passEl && passEl.value) || '';
   const errEl = document.getElementById('signup-error');
+  function _err(m) { if (errEl) { errEl.textContent = m; errEl.style.display = 'block'; } }
 
-  if (!name) { errEl.textContent = 'Please enter your full name.'; errEl.style.display = 'block'; return; }
-  if (!email || !email.includes('@')) { errEl.textContent = 'Please enter a valid email address.'; errEl.style.display = 'block'; return; }
-  if (!pass || pass.length < 8) { errEl.textContent = 'Password must be at least 8 characters.'; errEl.style.display = 'block'; return; }
-  errEl.style.display = 'none';
+  if (!name) { _err('Please enter your full name.'); return; }
+  if (!email || !email.includes('@')) { _err('Please enter a valid email address.'); return; }
+  if (!pass || pass.length < 8) { _err('Password must be at least 8 characters.'); return; }
+  if (errEl) errEl.style.display = 'none';
+  try { localStorage.setItem('qz_onboarded', '1'); } catch(_) {}
+  if (typeof _qzArmEntryWatchdog === 'function') _qzArmEntryWatchdog();
 
   const btn = document.querySelector('#auth-signup .btn-primary');
   const origText = btn ? btn.textContent : 'Create My Account →';
@@ -14553,11 +14628,11 @@ function _qzHandleGoogleCredential(resp) {
   // Reset double-init guard so re-login after logout works
   window._qzAppStarted = false;
   // Google already verified name + email — skip the 7-step onboarding
-  // (profile prefs can be set later in Settings)
   try {
     localStorage.setItem('qz_onboarded', '1');
     localStorage.setItem('qz_auth_user', JSON.stringify(user));
   } catch(_) {}
+  if (typeof _qzArmEntryWatchdog === 'function') _qzArmEntryWatchdog();
 
   // Helper: force the app into a visible state even if downstream init fails
   function _forceEnterApp() {
@@ -31885,8 +31960,10 @@ setTimeout(() => {
 
     if (!email || !pass) { _showMsg(errEl, 'Enter your email and password.'); return; }
 
-    btn.disabled = true; btn.textContent = 'Signing in…';
-    errEl.style.display = 'none';
+    if (btn)   { btn.disabled = true; btn.textContent = 'Signing in…'; }
+    if (errEl) errEl.style.display = 'none';
+    try { localStorage.setItem('qz_onboarded', '1'); } catch(_) {}
+    if (typeof _qzArmEntryWatchdog === 'function') _qzArmEntryWatchdog();
     try {
       var res  = await fetch('/api/auth/login', {
         method: 'POST',
@@ -31902,7 +31979,7 @@ setTimeout(() => {
     } catch(e) {
       _showMsg(errEl, e.message);
     }
-    btn.disabled = false; btn.textContent = 'Sign In →';
+    if (btn) { btn.disabled = false; btn.textContent = 'Sign In →'; }
   };
 
   // ── Signup ───────────────────────────────────────────────────
@@ -31914,12 +31991,15 @@ setTimeout(() => {
     var okEl   = document.getElementById('qz-su-ok');
     var btn    = document.getElementById('qz-su-btn');
 
-    errEl.style.display = 'none'; okEl.style.display = 'none';
+    if (errEl) errEl.style.display = 'none';
+    if (okEl)  okEl.style.display = 'none';
 
-    if (!email)        { _showMsg(errEl, 'Email address is required.'); return; }
+    if (!email || !email.includes('@')) { _showMsg(errEl, 'Please enter a valid email address.'); return; }
     if (pass.length < 8) { _showMsg(errEl, 'Password must be at least 8 characters.'); return; }
 
-    btn.disabled = true; btn.textContent = 'Creating account…';
+    if (btn) { btn.disabled = true; btn.textContent = 'Creating account…'; }
+    try { localStorage.setItem('qz_onboarded', '1'); } catch(_) {} // skip questionnaire
+    if (typeof _qzArmEntryWatchdog === 'function') _qzArmEntryWatchdog();
     try {
       var res  = await fetch('/api/auth/signup', {
         method: 'POST',
@@ -31929,13 +32009,13 @@ setTimeout(() => {
       });
       var data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Signup failed');
-      okEl.style.display = '';
+      if (okEl) okEl.style.display = '';
       setSession(data.user);
-      setTimeout(function() { hideAuth(); _onAuthSuccess(data.user); }, 900);
+      setTimeout(function() { hideAuth(); _onAuthSuccess(data.user); }, 500);
     } catch(e) {
       _showMsg(errEl, e.message);
     }
-    btn.disabled = false; btn.textContent = 'Create Account →';
+    if (btn) { btn.disabled = false; btn.textContent = 'Create Account →'; }
   };
 
   // ── After successful auth ────────────────────────────────────
@@ -31974,25 +32054,26 @@ setTimeout(() => {
 
     // Navigation: only enter the app once — guard against race with lp3Enter
     var landing = document.getElementById('landing');
+    var appEl   = document.getElementById('app');
+    var legacyOnb = document.getElementById('onboarding');
+    if (legacyOnb) legacyOnb.classList.add('hidden'); // never show questionnaire
+
     if (landing && !landing.classList.contains('hidden')) {
-      // lp3Enter hasn't fired yet — we own this transition
       if (window._qzAppStarted) return; // already handled elsewhere
       window._qzAppStarted = true;
       landing.classList.add('hidden');
-      var onboarded = false;
-      try { onboarded = !!localStorage.getItem('qz_onboarded'); } catch(_) {}
-      if (onboarded) {
-        if (typeof initApp === 'function') initApp();
-        // Show tutorial for first-time app entry (session restore path)
-        setTimeout(function() {
-          if (typeof tutorialMaybeShow === 'function') tutorialMaybeShow();
-        }, 1800);
-      } else {
-        if (typeof showOnboarding === 'function') showOnboarding();
-        setTimeout(function() {
-          if (typeof tutorialMaybeShow === 'function') tutorialMaybeShow();
-        }, 4000);
-      }
+      if (appEl) appEl.style.display = 'flex';
+      // No questionnaire — straight into the app
+      try { localStorage.setItem('qz_onboarded', '1'); } catch(_) {}
+      try { if (typeof initApp === 'function') initApp(); }
+      catch (e) { console.warn('initApp threw:', e); }
+      setTimeout(function() {
+        if (typeof tutorialMaybeShow === 'function') tutorialMaybeShow();
+      }, 1400);
+    } else if (appEl && (appEl.style.display === 'none' || !appEl.offsetParent)) {
+      // Edge case: landing already hidden but app never made visible
+      if (appEl) appEl.style.display = 'flex';
+      try { if (typeof initApp === 'function') initApp(); } catch(_) {}
     }
   }
 
@@ -32122,10 +32203,24 @@ setTimeout(() => {
       if (errEl) { errEl.textContent = decodeURIComponent(authErr); errEl.style.display = 'block'; }
     }
 
+    // ── Session restore ────────────────────────────────────────────
+    // Strategy: in SERVER mode, ask /api/auth/me. In STATIC mode, just
+    // trust the localStorage cache (there's no server to verify against).
+    var cached = getUser();
+
+    if (!window._QZ_SERVER_MODE) {
+      // Static deployment — instant restore from localStorage
+      if (cached && cached.email) {
+        if (typeof _qzArmEntryWatchdog === 'function') _qzArmEntryWatchdog();
+        _onAuthSuccess(cached);
+      }
+      return; // skip the /api/auth/me probe entirely
+    }
+
+    // Server mode — verify via backend, fall back to cache on network error
     fetch('/api/auth/me', { credentials: 'same-origin' })
       .then(function(r) {
         if (r.status === 401) { clearSession(); return null; }
-        // On static hosts (Netlify etc.) this returns an HTML 404 — treat as no session
         var ct = (r.headers && r.headers.get('content-type')) || '';
         if (!ct.includes('application/json')) { clearSession(); return null; }
         return r.json();
@@ -32134,17 +32229,18 @@ setTimeout(() => {
         if (!user) return;
         if (user.email) {
           setSession(user);
+          if (typeof _qzArmEntryWatchdog === 'function') _qzArmEntryWatchdog();
           _onAuthSuccess(user);
         } else {
           clearSession();
         }
       })
       .catch(function() {
-        // Genuine network error (offline) — trust cached session for resilience
-        // Do NOT restore session if we're on a static host with no backend
-        var cached = getUser();
-        if (cached && cached.email && window._QZ_SERVER_MODE) _onAuthSuccess(cached);
-        // else: no backend or no cache — leave landing page visible
+        // Network error — trust cached session for resilience
+        if (cached && cached.email) {
+          if (typeof _qzArmEntryWatchdog === 'function') _qzArmEntryWatchdog();
+          _onAuthSuccess(cached);
+        }
       });
   });
 
