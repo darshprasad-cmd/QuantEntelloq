@@ -10561,8 +10561,12 @@ function _qzForceEnterApp(reason) {
   try {
     // 1. Onboarded flag — never lock the user out
     try { localStorage.setItem('qz_onboarded', '1'); } catch(_) {}
+    // Tutorial auto-popup was masking the dashboard with an opaque backdrop.
+    // Mark it seen so it cannot auto-open after sign-in. User can still open
+    // it manually from the Tour button later.
+    try { localStorage.setItem('qz_tutorial_v3', '1'); } catch(_) {}
 
-    // 2. Kill every possible blocking overlay
+    // 2. Kill every possible blocking overlay (tutorial included)
     [
       'landing',
       'onboarding',
@@ -10621,10 +10625,89 @@ function _qzForceEnterApp(reason) {
     }
 
     window._qzAppStarted = true;
+
+    // 7. DEAD-MAN'S-SWITCH — after 800ms, if #app is still visually empty,
+    // inject a minimal-but-functional dashboard fallback. The user is NEVER
+    // looking at a blank screen.
+    setTimeout(function() {
+      _qzCheckAndInjectFallback();
+    }, 800);
   } catch(e) { console.error('[QZ-ENTRY] catastrophic failure in forceEnter:', e); }
 }
 
+function _qzCheckAndInjectFallback() {
+  try {
+    var app = document.getElementById('app');
+    if (!app) return;
+    var rect = app.getBoundingClientRect();
+    var hasVisibleContent = false;
+    // Walk top-level children and look for one with non-zero rendered size
+    var children = app.children;
+    for (var i = 0; i < children.length; i++) {
+      var r = children[i].getBoundingClientRect();
+      var cs = getComputedStyle(children[i]);
+      if (r.width > 50 && r.height > 50 && cs.display !== 'none' && cs.visibility !== 'hidden') {
+        hasVisibleContent = true; break;
+      }
+    }
+    if (hasVisibleContent) {
+      _qzLog('blank-check passed — app has visible content');
+      return;
+    }
+    _qzLog('BLANK PAGE DETECTED — injecting fallback shell');
+    var user = null;
+    try { user = JSON.parse(localStorage.getItem('qz_auth_user') || 'null'); } catch(_) {}
+    var name = (user && (user.name || user.email)) ? (user.name || user.email).split('@')[0].split(' ')[0] : 'trader';
+
+    var fallback = document.getElementById('qz-fallback-shell');
+    if (!fallback) {
+      fallback = document.createElement('div');
+      fallback.id = 'qz-fallback-shell';
+      fallback.style.cssText = 'position:fixed;inset:0;background:#08090b;color:#f4f4f5;' +
+        'font-family:Inter,system-ui,sans-serif;display:flex;align-items:center;justify-content:center;' +
+        'z-index:9999;padding:24px;';
+      fallback.innerHTML =
+        '<div style="max-width:480px;text-align:center;">' +
+          '<div style="font-size:28px;font-weight:700;letter-spacing:-0.025em;margin-bottom:8px;">' +
+            'Welcome, ' + name + '.' +
+          '</div>' +
+          '<div style="font-size:14px;color:rgba(244,244,245,0.6);margin-bottom:28px;line-height:1.5;">' +
+            "You're signed in. The dashboard didn't load on its own — click below to retry, " +
+            'or refresh the page.' +
+          '</div>' +
+          '<div style="display:flex;gap:10px;justify-content:center;">' +
+            '<button id="qz-fallback-retry" style="background:#7C3AED;color:#fff;border:0;' +
+              'border-radius:8px;padding:11px 20px;font-size:13.5px;font-weight:600;cursor:pointer;' +
+              'font-family:inherit;">Retry loading dashboard</button>' +
+            '<button id="qz-fallback-reload" style="background:#14171d;color:#f4f4f5;' +
+              'border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:11px 20px;' +
+              'font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;">Hard reload</button>' +
+            '<button id="qz-fallback-logout" style="background:transparent;color:rgba(244,244,245,0.6);' +
+              'border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:11px 20px;' +
+              'font-size:13.5px;font-weight:500;cursor:pointer;font-family:inherit;">Sign out</button>' +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(fallback);
+      document.getElementById('qz-fallback-retry').onclick = function() {
+        fallback.remove();
+        if (typeof initApp === 'function') { try { initApp(); } catch(e) { console.error(e); } }
+        if (typeof showPage === 'function') { try { showPage('dashboard', document.getElementById('nav-dashboard')); } catch(_) {} }
+        setTimeout(_qzCheckAndInjectFallback, 800);
+      };
+      document.getElementById('qz-fallback-reload').onclick = function() {
+        window.location.reload();
+      };
+      document.getElementById('qz-fallback-logout').onclick = function() {
+        try { localStorage.removeItem('qz_auth_user'); } catch(_) {}
+        try { localStorage.removeItem('qz_onboarded'); } catch(_) {}
+        window.location.reload();
+      };
+    }
+  } catch(e) { console.error('[QZ-ENTRY] fallback injection failed:', e); }
+}
+
 window._qzForceEnterApp = _qzForceEnterApp;
+window._qzCheckAndInjectFallback = _qzCheckAndInjectFallback;
 
 // Background watchdog — runs continuously from page load
 window._qzArmEntryWatchdog = function() {
