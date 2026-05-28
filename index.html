@@ -9753,12 +9753,30 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
 <script>
 (function QZFortress() {
   'use strict';
-  if (window._qzFortress) return; // single-load guard
+  // ── EMERGENCY DISABLE ──
+  // The Fortress module shipped real protections but each layer interacted
+  // with global state (localStorage wrapping, document.domain freeze,
+  // window.fetch override, frame-busting via documentElement.display=none).
+  // Any one of those could be the blank-page cause. Short-circuiting here
+  // proves whether Fortress is the culprit. If the page renders after this,
+  // we re-enable layers one at a time.
+  console.log('[QZ-FORTRESS] disabled (emergency triage)');
+  // Provide minimal stubs so any later code that references these doesn't crash
+  window._qzFortress = { version: '1.0-disabled', errors: [], report: function() { return { disabled: true }; } };
+  window._qzSafe      = function(fn) { return function() { try { return fn.apply(this, arguments); } catch(_) {} }; };
+  window._qzFetch     = function(u, o) { return fetch(u, o); };
+  window._qzQ         = function(id) { try { return document.getElementById(id); } catch(_) { return null; } };
+  window._qzSanitize  = function(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); };
+  window._qzCleanHTML = function(h) { return String(h == null ? '' : h); };
+  return; // ← short-circuit the entire module
+  // ── END EMERGENCY DISABLE ──
+
+  if (window._qzFortress) return;
 
   var F = window._qzFortress = {
     version: '1.0',
     bootAt: Date.now(),
-    errors: [],     // ring buffer
+    errors: [],
     security: {},
     crash: {},
   };
