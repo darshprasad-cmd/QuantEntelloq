@@ -8942,6 +8942,382 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
   .qz-parallax-slow { transform: none !important; transition: none !important; }
   .qz-reveal-up { opacity: 1 !important; transform: none !important; transition: none !important; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   INTERIOR POLISH — Dashboard, top bar, sidebar, empty states
+   Improves information density, alignment, hierarchy in the in-app shell
+   without restructuring markup.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── App shell ───────────────────────────────────────────────────────── */
+#app { background: var(--ds-bg) !important; }
+
+/* Top bar above pages */
+.topbar, #topbar, .top-bar, .qz-topbar, .page-title, #page-title {
+  font-family: var(--ds-font) !important;
+}
+.page-title {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.02em !important;
+  color: var(--ds-text) !important;
+  display: flex !important;
+  align-items: baseline !important;
+  gap: 12px !important;
+}
+.page-title small {
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  color: var(--ds-text-3) !important;
+  letter-spacing: 0 !important;
+}
+
+/* Sidebar sections — small-caps section label */
+.sidebar-section, .nav-section, .nav-section-label {
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: var(--ds-text-4) !important;
+  padding: 12px 20px 6px !important;
+}
+
+/* Sidebar icon spacing — uniform */
+.nav-item svg, .nav-item .nav-icon {
+  width: 16px; height: 16px;
+  margin-right: 10px;
+  opacity: 0.7;
+  transition: opacity var(--ds-dur-fast) var(--ds-ease);
+}
+.nav-item.active svg, .nav-item:hover svg { opacity: 1; }
+
+/* ── Dashboard metric cards — tighter, more aligned ─────────────────── */
+.metric-card, .ghub-card {
+  background: var(--ds-bg-elev-2) !important;
+  border: 1px solid var(--ds-border) !important;
+  border-radius: var(--ds-r-lg) !important;
+  padding: 20px !important;
+  box-shadow: none !important;
+  transition: border-color var(--ds-dur) var(--ds-ease),
+              background var(--ds-dur) var(--ds-ease),
+              transform var(--ds-dur) var(--ds-ease) !important;
+}
+.metric-card:hover, .ghub-card:hover {
+  border-color: var(--ds-border-strong) !important;
+  background: #161a22 !important;
+  transform: none !important;
+}
+.metric-card::before, .metric-card::after { display: none !important; }
+
+.metric-value, .ghub-xp-num {
+  font-size: 26px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.025em !important;
+  font-variant-numeric: tabular-nums !important;
+  line-height: 1.1 !important;
+  color: var(--ds-text) !important;
+}
+.metric-label, .ghub-xp-lbl {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: var(--ds-text-3) !important;
+  margin-bottom: 6px !important;
+}
+.metric-change {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  font-variant-numeric: tabular-nums !important;
+  margin-top: 6px !important;
+}
+.metric-change.up   { color: var(--ds-up) !important; }
+.metric-change.down { color: var(--ds-down) !important; }
+
+/* Game Hub — make it feel less "student project" */
+.ghub-wrap {
+  background: var(--ds-bg-elev-2) !important;
+  border: 1px solid var(--ds-border) !important;
+  border-radius: var(--ds-r-xl) !important;
+  padding: 24px !important;
+  box-shadow: none !important;
+}
+.ghub-hero, .ghub-hero-top, .ghub-bar-row { box-shadow: none !important; }
+.ghub-rank-icon {
+  width: 40px !important; height: 40px !important;
+  border-radius: var(--ds-r) !important;
+  background: var(--ds-bg-elev-3) !important;
+  border: 1px solid var(--ds-border) !important;
+  font-size: 18px !important;
+}
+.ghub-rank-name {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.012em !important;
+  color: var(--ds-text) !important;
+}
+.ghub-rank-sub {
+  font-size: 12.5px !important;
+  color: var(--ds-text-3) !important;
+}
+.ghub-xp-num {
+  font-family: var(--ds-font) !important;
+  letter-spacing: -0.025em !important;
+}
+.ghub-bar-wrap {
+  height: 4px !important;
+  background: var(--ds-bg-inset) !important;
+  border-radius: 999px !important;
+  overflow: hidden;
+  box-shadow: none !important;
+}
+.ghub-bar-fill {
+  background: var(--ds-accent) !important;
+  border-radius: 999px !important;
+  transition: width 800ms var(--ds-ease) !important;
+  box-shadow: none !important;
+}
+.ghub-card { padding: 18px !important; }
+.ghub-card-label {
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  color: var(--ds-text-3) !important;
+  text-transform: uppercase;
+}
+.ghub-card-title {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.012em !important;
+  color: var(--ds-text) !important;
+  margin-top: 8px !important;
+}
+.ghub-card-desc {
+  font-size: 13px !important;
+  color: var(--ds-text-3) !important;
+  line-height: 1.5 !important;
+  margin-top: 4px !important;
+}
+
+/* Signal cards (dashboard + signals page) */
+.signal-card {
+  background: var(--ds-bg-elev-2) !important;
+  border: 1px solid var(--ds-border) !important;
+  border-radius: var(--ds-r-lg) !important;
+  padding: 18px !important;
+  box-shadow: none !important;
+  transition: border-color var(--ds-dur) var(--ds-ease),
+              background var(--ds-dur) var(--ds-ease) !important;
+}
+.signal-card:hover {
+  border-color: var(--ds-border-strong) !important;
+  background: #161a22 !important;
+  transform: none !important;
+}
+.signal-card::after { display: none !important; }
+.signal-card .ticker, .signal-card .scanner-ticker {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.005em !important;
+  color: var(--ds-text) !important;
+}
+.signal-card .price, .signal-card [class*="price"] {
+  font-variant-numeric: tabular-nums !important;
+  font-weight: 600 !important;
+  color: var(--ds-text) !important;
+}
+
+/* Dashboard status bar (the strip above signals) */
+.dash-status-bar {
+  background: var(--ds-bg-elev-2) !important;
+  border: 1px solid var(--ds-border) !important;
+  border-radius: var(--ds-r-lg) !important;
+  box-shadow: none !important;
+}
+.dash-status-flag {
+  background: var(--ds-bg-elev-3) !important;
+  border: 1px solid var(--ds-border) !important;
+}
+.dash-status-label {
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  color: var(--ds-text-3) !important;
+}
+.dash-status-title {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  color: var(--ds-text) !important;
+}
+
+/* "Market Intelligence" small-caps divider */
+[style*="Market Intelligence"] {
+  font-family: var(--ds-font) !important;
+}
+
+/* ── Period buttons (dashboard chart) ─────────────────────────────────── */
+.period-btn {
+  background: transparent !important;
+  border: 1px solid var(--ds-border) !important;
+  border-radius: 6px !important;
+  color: var(--ds-text-2) !important;
+  padding: 5px 10px !important;
+  font-size: 11.5px !important;
+  font-weight: 500 !important;
+  transition: background var(--ds-dur-fast) var(--ds-ease),
+              border-color var(--ds-dur-fast) var(--ds-ease),
+              color var(--ds-dur-fast) var(--ds-ease) !important;
+}
+.period-btn:hover {
+  background: rgba(255,255,255,0.04) !important;
+  color: var(--ds-text) !important;
+}
+.period-btn.active {
+  background: var(--ds-accent-soft) !important;
+  border-color: var(--ds-accent) !important;
+  color: #fff !important;
+}
+
+/* ── Empty states across pages ────────────────────────────────────────── */
+.qz-empty-state, .empty-state {
+  text-align: center;
+  padding: 64px 24px;
+  border: 1px dashed var(--ds-border) !important;
+  border-radius: var(--ds-r-lg) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.qz-empty-state .empty-icon, .empty-state-icon {
+  font-size: 28px;
+  opacity: 0.4;
+  margin-bottom: 8px;
+}
+.qz-empty-state .empty-title, .empty-state-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ds-text);
+  margin-bottom: 4px;
+}
+.qz-empty-state .empty-sub, .empty-state-sub {
+  font-size: 13px;
+  color: var(--ds-text-3);
+  line-height: 1.5;
+}
+
+/* ── Scanner / Universe items ────────────────────────────────────────── */
+.scanner-item, .universe-stat, .country-subset-card, .market-card, .uv3-row {
+  background: var(--ds-bg-elev-2) !important;
+  border: 1px solid var(--ds-border) !important;
+  border-radius: var(--ds-r-lg) !important;
+  box-shadow: none !important;
+  transition: border-color var(--ds-dur-fast) var(--ds-ease),
+              background var(--ds-dur-fast) var(--ds-ease) !important;
+}
+.scanner-item:hover, .market-card:hover {
+  border-color: var(--ds-border-strong) !important;
+  background: #161a22 !important;
+  transform: none !important;
+}
+
+/* ── News / Report sections ──────────────────────────────────────────── */
+.news-item, .alert-item, .report-section, .report-item {
+  background: var(--ds-bg-elev-2) !important;
+  border: 1px solid var(--ds-border) !important;
+  border-radius: var(--ds-r-lg) !important;
+  box-shadow: none !important;
+}
+.report-item { border-radius: 0 !important; border-left: 0; border-right: 0; border-top: 0; }
+.report-section { padding: 20px 24px !important; }
+.report-section-title {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.012em !important;
+  color: var(--ds-text) !important;
+}
+
+/* ── AI chat surfaces ────────────────────────────────────────────────── */
+.chat-msg.ai .chat-bubble, .chat-msg.user .chat-bubble {
+  border: 1px solid var(--ds-border) !important;
+  border-radius: var(--ds-r-lg) !important;
+  background: var(--ds-bg-elev-2) !important;
+}
+.chat-msg.user .chat-bubble {
+  background: var(--ds-accent-soft) !important;
+  border-color: var(--ds-accent-ring) !important;
+}
+.chat-msg-label {
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: var(--ds-text-3) !important;
+}
+
+/* ── Tab strips inside pages (Signals filters, etc.) ─────────────────── */
+.ent-tab, .tab {
+  background: transparent !important;
+  border: 1px solid var(--ds-border) !important;
+  border-radius: var(--ds-r) !important;
+  color: var(--ds-text-2) !important;
+  padding: 7px 12px !important;
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
+  transition: background var(--ds-dur-fast) var(--ds-ease),
+              border-color var(--ds-dur-fast) var(--ds-ease) !important;
+}
+.ent-tab.active, .tab.active {
+  background: var(--ds-accent-soft) !important;
+  border-color: var(--ds-accent) !important;
+  color: #fff !important;
+}
+
+/* Forms inside the app */
+.form-group { margin-bottom: 14px; }
+.input-label, label.input-label {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: var(--ds-text-2) !important;
+  margin-bottom: 6px !important;
+  display: block;
+  letter-spacing: -0.005em !important;
+}
+
+/* Settings sections */
+.settings-section {
+  background: var(--ds-bg-elev-2) !important;
+  border: 1px solid var(--ds-border) !important;
+  border-radius: var(--ds-r-lg) !important;
+  padding: 24px !important;
+  box-shadow: none !important;
+}
+.settings-section-title {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+  color: var(--ds-text) !important;
+  margin-bottom: 14px !important;
+}
+
+/* ── Welcome toast (post-login) ───────────────────────────────────────── */
+.qz-welcome-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--ds-bg-elev-3);
+  border: 1px solid var(--ds-border-strong);
+  border-radius: var(--ds-r-lg);
+  padding: 12px 18px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ds-text);
+  box-shadow: var(--ds-shadow-3);
+  opacity: 0;
+  z-index: 99998;
+  transition: opacity 240ms var(--ds-ease), transform 240ms var(--ds-ease);
+  pointer-events: none;
+}
+.qz-welcome-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
 
 </head>
@@ -10156,6 +10532,32 @@ function _lp3Fetch(url, opts, timeoutMs) {
     .finally(function() { clearTimeout(tid); });
 }
 
+// Mark the user as onboarded so the 7-step questionnaire is skipped.
+// We removed onboarding — Google + email signup now go straight into the app.
+function _qzMarkOnboarded() {
+  try { localStorage.setItem('qz_onboarded', '1'); } catch(_) {}
+}
+
+// Subtle welcome toast on first sign-in. No animation theatre, just a small
+// confirmation slide-up that disappears in 3 seconds.
+function _qzShowWelcomeToast(name) {
+  try {
+    var existing = document.querySelector('.qz-welcome-toast');
+    if (existing) existing.remove();
+    var t = document.createElement('div');
+    t.className = 'qz-welcome-toast';
+    t.textContent = 'Welcome, ' + (name || 'trader') + '.';
+    document.body.appendChild(t);
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() { t.classList.add('show'); });
+    });
+    setTimeout(function() {
+      t.classList.remove('show');
+      setTimeout(function() { if (t.parentNode) t.parentNode.removeChild(t); }, 280);
+    }, 2800);
+  } catch(_) {}
+}
+
 async function lp3Signup() {
   var name  = (document.getElementById('lp3-su-name')?.value  || '').trim();
   var email = (document.getElementById('lp3-su-email')?.value || '').trim();
@@ -10169,7 +10571,10 @@ async function lp3Signup() {
   if (!email || !email.includes('@')) { _lp3ShowErr(errEl, 'Please enter a valid email address.'); return; }
   if (pass.length < 8) { _lp3ShowErr(errEl, 'Password must be at least 8 characters.'); return; }
 
-  btn.disabled = true; btn.textContent = 'Creating account…';
+  // Defensive: btn may not exist if the markup changes
+  if (btn) { btn.disabled = true; btn.textContent = 'Creating account…'; }
+
+  _qzMarkOnboarded(); // skip the questionnaire — go straight to the app
 
   if (window._QZ_SERVER_MODE) {
     try {
@@ -10181,8 +10586,8 @@ async function lp3Signup() {
       var data = await _lp3JSON(res);
       if (!res.ok) throw new Error(data.error || 'Signup failed');
       try { localStorage.setItem('qz_auth_user', JSON.stringify(data.user)); } catch(_) {}
-      if (okEl) { okEl.textContent = 'Account created! Launching platform…'; okEl.style.display = 'block'; }
-      setTimeout(function() { _lp3Enter(data.user); }, 900);
+      if (okEl) { okEl.textContent = 'Account created — launching…'; okEl.style.display = 'block'; }
+      setTimeout(function() { _lp3Enter(data.user); }, 600);
     } catch(e) {
       var msg = e.name === 'AbortError'
         ? 'Request timed out — check your connection and try again.'
@@ -10193,11 +10598,11 @@ async function lp3Signup() {
     }
     return;
   }
-  // Demo / file mode — localStorage only
+  // Demo / file mode — localStorage only (this is the production static path)
   var user = { name: name || email.split('@')[0], email: email, subscription: 'free' };
   try { localStorage.setItem('qz_auth_user', JSON.stringify(user)); } catch(_) {}
-  if (okEl) { okEl.textContent = 'Welcome! Launching platform…'; okEl.style.display = 'block'; }
-  setTimeout(function() { _lp3Enter(user); }, 700);
+  if (okEl) { okEl.textContent = 'Welcome — launching your platform…'; okEl.style.display = 'block'; }
+  setTimeout(function() { _lp3Enter(user); }, 500);
 }
 
 async function lp3Login() {
@@ -10209,7 +10614,9 @@ async function lp3Login() {
   if (errEl) errEl.style.display = 'none';
   if (!email || !pass) { _lp3ShowErr(errEl, 'Enter your email and password.'); return; }
 
-  btn.disabled = true; btn.textContent = 'Signing in…';
+  if (btn) { btn.disabled = true; btn.textContent = 'Signing in…'; }
+
+  _qzMarkOnboarded(); // skip onboarding for returning users too
 
   if (window._QZ_SERVER_MODE) {
     var _loginUser = null;
@@ -10261,17 +10668,17 @@ function _lp3Enter(user) {
   if (!window.qzGetAuthUser) window.qzGetAuthUser = function() { try { return JSON.parse(localStorage.getItem('qz_auth_user')||'null'); } catch(_){ return null; } };
   var landing = document.getElementById('landing');
   if (landing) landing.classList.add('hidden');
-  var onboarded = false;
-  try { onboarded = !!localStorage.getItem('qz_onboarded'); } catch(_) {}
+
+  // Hide the legacy onboarding element if it's somehow visible from a stale session
+  var _legacyOnb = document.getElementById('onboarding');
+  if (_legacyOnb && !_legacyOnb.classList.contains('hidden')) _legacyOnb.classList.add('hidden');
 
   // Defensive helper: make absolutely sure the app becomes visible
   function _ensureAppVisible() {
     var app = document.getElementById('app');
-    var onbEl = document.getElementById('onboarding');
     var stillOnLanding = landing && !landing.classList.contains('hidden');
     var appHidden = !app || app.style.display === 'none';
-    var onboardingActive = onbEl && !onbEl.classList.contains('hidden');
-    if ((stillOnLanding || appHidden) && !onboardingActive) {
+    if (stillOnLanding || appHidden) {
       console.warn('App not visible after _lp3Enter — forcing entry.');
       if (landing) landing.classList.add('hidden');
       if (app)     app.style.display = 'flex';
@@ -10280,20 +10687,19 @@ function _lp3Enter(user) {
     }
   }
 
-  if (onboarded) {
-    try { if (typeof initApp === 'function') initApp(); } catch(e) { console.warn('initApp threw:', e); }
-    // Show tutorial on first login after onboarding is complete
-    setTimeout(function() {
-      if (typeof tutorialMaybeShow === 'function') tutorialMaybeShow();
-    }, 1800);
-  } else {
-    try { if (typeof showOnboarding === 'function') showOnboarding(); }
-    catch(e) { console.warn('showOnboarding threw — forcing app entry:', e); _ensureAppVisible(); }
-    // Tutorial shown after onboarding flow completes (longer delay)
-    setTimeout(function() {
-      if (typeof tutorialMaybeShow === 'function') tutorialMaybeShow();
-    }, 4000);
-  }
+  // No questionnaire — every signed-in user goes straight into the app
+  try { if (typeof initApp === 'function') initApp(); }
+  catch (e) { console.warn('initApp threw:', e); }
+  // Subtle welcome toast — uses real Google name when available
+  setTimeout(function() {
+    if (typeof _qzShowWelcomeToast === 'function') {
+      var first = (user.name || '').split(' ')[0] || user.email.split('@')[0];
+      _qzShowWelcomeToast(first);
+    }
+  }, 600);
+  setTimeout(function() {
+    if (typeof tutorialMaybeShow === 'function') tutorialMaybeShow();
+  }, 1400);
 
   // Safety net: 2s after sign-in, if nothing rendered, force app visible
   setTimeout(_ensureAppVisible, 2000);
@@ -14413,38 +14819,37 @@ function loginUser(user) {
   hideAuth();
   var landing = document.getElementById('landing');
   if (landing) landing.classList.add('hidden');
+  // Hide stale onboarding overlay if present from an older session
+  var _legacyOnb = document.getElementById('onboarding');
+  if (_legacyOnb) _legacyOnb.classList.add('hidden');
 
-  // Check if user has already completed onboarding
-  var onboarded = false;
-  try { onboarded = !!localStorage.getItem('qz_onboarded'); } catch(_) {}
-  if (onboarded) {
-    if (typeof initApp === 'function') initApp();
-    setTimeout(function() {
-      if (typeof tutorialMaybeShow === 'function') tutorialMaybeShow();
-    }, 1800);
-  } else {
-    if (typeof showOnboarding === 'function') showOnboarding();
-    setTimeout(function() {
-      if (typeof tutorialMaybeShow === 'function') tutorialMaybeShow();
-    }, 4000);
-  }
+  // No questionnaire — straight to the app
+  try { localStorage.setItem('qz_onboarded', '1'); } catch(_) {}
+  if (typeof initApp === 'function') initApp();
+  setTimeout(function() {
+    if (typeof tutorialMaybeShow === 'function') tutorialMaybeShow();
+  }, 1400);
 }
 
-// ==================== ONBOARDING ====================
+// ==================== ONBOARDING — REMOVED ====================
+// The 7-step questionnaire is no longer shown. This stub remains because
+// older code paths may still reference showOnboarding(); it now just skips
+// straight into the app, matching the new "no friction" sign-up flow.
 function showOnboarding() {
-  // Show cinematic boot sequence first, then reveal onboarding
-  _obBootSequence().then(() => {
-    var ob = document.getElementById('onboarding');
-    if (ob) ob.classList.remove('hidden');
-    _obStartNeuralCanvas();
-    if (typeof updateOnboardingProgress === 'function') updateOnboardingProgress();
-  }).catch(function(e) {
-    // Boot sequence failed — show onboarding directly
-    console.warn('Boot sequence error:', e);
-    var ob = document.getElementById('onboarding');
-    if (ob) ob.classList.remove('hidden');
-    if (typeof updateOnboardingProgress === 'function') updateOnboardingProgress();
-  });
+  try { localStorage.setItem('qz_onboarded', '1'); } catch(_) {}
+  var ob = document.getElementById('onboarding');
+  if (ob) ob.classList.add('hidden'); // never show
+  // Force enter the app
+  var landing = document.getElementById('landing');
+  var app     = document.getElementById('app');
+  if (landing) landing.classList.add('hidden');
+  if (app) app.style.display = 'flex';
+  if (typeof initApp === 'function') {
+    try { initApp(); } catch(e) { console.warn('initApp threw:', e); }
+  }
+  setTimeout(function() {
+    if (typeof tutorialMaybeShow === 'function') tutorialMaybeShow();
+  }, 1200);
 }
 
 async function _obBootSequence() {
