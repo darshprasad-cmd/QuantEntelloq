@@ -7992,6 +7992,348 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:20px;
 
 <!-- TradingView Lightweight Charts v4 — institutional-grade financial charts -->
 <script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     NEUMORPHIC REDESIGN LAYER — landing page visual overhaul
+     Design system: GCORE-inspired dark canvas, neumorphic depth (inset+outset
+     shadows), parallax scroll, custom easing curves per Emil Kowalski.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<style id="qz-neuro-redesign">
+:root {
+  /* ── Surface palette ─────────────────────────────────────────────── */
+  --neu-bg-deep:        #07080d;
+  --neu-bg-canvas:      #0b0d14;
+  --neu-surface:        #11131c;
+  --neu-surface-raised: #161924;
+  --neu-surface-sunken: #0c0e16;
+
+  /* ── Shadow stack (the heart of neumorphism) ─────────────────────── */
+  --neu-light:   rgba(255,255,255,0.045);
+  --neu-dark:    rgba(0,0,0,0.60);
+  --neu-in-dark: rgba(0,0,0,0.55);
+  --neu-in-lite: rgba(255,255,255,0.04);
+
+  /* Outset depth (raised surfaces — buttons, cards) */
+  --neu-out-sm: -3px -3px 8px var(--neu-light), 4px 4px 14px var(--neu-dark);
+  --neu-out:    -6px -6px 18px var(--neu-light), 9px 9px 28px var(--neu-dark);
+  --neu-out-lg: -10px -10px 30px var(--neu-light), 14px 14px 42px var(--neu-dark);
+
+  /* Inset depth (sunken surfaces — inputs, wells) */
+  --neu-in:     inset 3px 3px 8px var(--neu-in-dark), inset -2px -2px 6px var(--neu-in-lite);
+  --neu-in-lg:  inset 5px 5px 14px var(--neu-in-dark), inset -3px -3px 10px var(--neu-in-lite);
+
+  /* Brand glow accents */
+  --neu-violet: #7C3AED;
+  --neu-violet-soft: #A78BFA;
+  --neu-cyan:   #22D3EE;
+  --neu-glow-violet: 0 0 0 1px rgba(124,58,237,0.35), 0 12px 40px rgba(124,58,237,0.28);
+
+  /* Easing curves (Emil Kowalski) */
+  --neu-ease-out:    cubic-bezier(0.23, 1, 0.32, 1);
+  --neu-ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --neu-ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* ── Page canvas (override existing landing background) ───────────────── */
+#landing {
+  background: var(--neu-bg-deep) !important;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Layered ambient depth — three parallax layers behind the content */
+#landing::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(124,58,237,0.20), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 100% 30%, rgba(34,211,238,0.10), transparent 70%),
+    radial-gradient(ellipse 70% 50% at 0% 60%, rgba(124,58,237,0.10), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+#landing::after {
+  content: ''; position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+  background-size: 64px 64px;
+  pointer-events: none;
+  z-index: 0;
+  mask-image: radial-gradient(ellipse 100% 60% at 50% 30%, #000 30%, transparent 80%);
+}
+
+/* GCORE-style ray beam layer — pure CSS, parallax-bound */
+.qz-beam-layer {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  will-change: transform;
+}
+.qz-beam-layer::before,
+.qz-beam-layer::after {
+  content: '';
+  position: absolute;
+  top: -10%; bottom: -10%;
+  width: 280px;
+  background: conic-gradient(from 220deg at 50% 0%,
+    transparent 0deg,
+    rgba(124,58,237,0.18) 8deg,
+    rgba(167,139,250,0.10) 18deg,
+    transparent 35deg);
+  filter: blur(36px);
+  opacity: 0.85;
+}
+.qz-beam-layer::before { left: 12%; transform: rotate(-12deg); }
+.qz-beam-layer::after  { right: 14%; transform: rotate(11deg);
+  background: conic-gradient(from 140deg at 50% 0%,
+    transparent 0deg,
+    rgba(34,211,238,0.16) 8deg,
+    rgba(124,58,237,0.10) 20deg,
+    transparent 35deg);
+}
+
+/* Content sits above the depth layers */
+#landing > * { position: relative; z-index: 1; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   NEUMORPHIC AUTH CARD — restyle without changing markup IDs
+   ═══════════════════════════════════════════════════════════════════════ */
+.qze-auth-card,
+#lp3-auth-inline {
+  background: linear-gradient(180deg, var(--neu-surface-raised) 0%, var(--neu-surface) 100%) !important;
+  border: 1px solid rgba(255,255,255,0.04) !important;
+  border-radius: 24px !important;
+  box-shadow: var(--neu-out-lg), 0 0 0 1px rgba(167,139,250,0.04) inset !important;
+  padding: 36px 32px !important;
+  position: relative;
+  transition: transform 280ms var(--neu-ease-out), box-shadow 280ms var(--neu-ease-out);
+}
+.qze-auth-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--neu-out-lg), var(--neu-glow-violet), 0 0 0 1px rgba(167,139,250,0.06) inset !important;
+}
+.qze-auth-card .qze-auth-logo {
+  font: 700 17px/1 var(--font-display, system-ui) !important;
+  letter-spacing: -0.01em !important;
+}
+.qze-auth-card .qze-auth-title {
+  font: 700 22px/1.15 var(--font-display, system-ui) !important;
+  letter-spacing: -0.02em !important;
+  margin-top: 14px !important;
+  margin-bottom: 6px !important;
+  color: #fff !important;
+}
+.qze-auth-card .qze-auth-sub {
+  font: 400 13px/1.5 var(--font-display, system-ui) !important;
+  color: rgba(255,255,255,0.45) !important;
+  margin-bottom: 20px !important;
+}
+
+/* Tab toggle — neumorphic sunken track with raised active pill */
+.qze-auth-card .lp3-tabs {
+  background: var(--neu-surface-sunken) !important;
+  border: 0 !important;
+  box-shadow: var(--neu-in) !important;
+  border-radius: 14px !important;
+  padding: 5px !important;
+  gap: 0 !important;
+  margin: 16px 0 22px !important;
+}
+.qze-auth-card .lp3-tab {
+  border-radius: 10px !important;
+  padding: 11px 10px !important;
+  font-size: 12.5px !important;
+  letter-spacing: 0.02em !important;
+  transition: background 200ms var(--neu-ease-out), color 200ms var(--neu-ease-out), box-shadow 200ms var(--neu-ease-out) !important;
+}
+.qze-auth-card .lp3-tab.active {
+  background: linear-gradient(180deg, var(--neu-surface-raised), var(--neu-surface)) !important;
+  color: #fff !important;
+  box-shadow:
+    -2px -2px 6px var(--neu-light),
+    3px 3px 10px var(--neu-dark),
+    0 0 0 1px rgba(167,139,250,0.18) inset !important;
+}
+.qze-auth-card .lp3-tab:active { transform: scale(0.97) !important; }
+
+/* Inputs — sunken wells */
+.qze-auth-card .lp3-input,
+#lp3-auth-inline .lp3-input {
+  background: var(--neu-surface-sunken) !important;
+  border: 1px solid rgba(255,255,255,0.03) !important;
+  box-shadow: var(--neu-in) !important;
+  border-radius: 12px !important;
+  padding: 13px 16px !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  transition: box-shadow 240ms var(--neu-ease-out), border-color 240ms var(--neu-ease-out) !important;
+}
+.qze-auth-card .lp3-input:focus,
+#lp3-auth-inline .lp3-input:focus {
+  border-color: rgba(167,139,250,0.40) !important;
+  box-shadow: var(--neu-in), 0 0 0 3px rgba(124,58,237,0.18) !important;
+  outline: none !important;
+}
+
+/* Primary submit — raised neumorphic with violet glow on hover */
+.qze-auth-card .lp3-submit,
+#lp3-auth-inline .lp3-submit {
+  background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%) !important;
+  color: #fff !important;
+  border: 0 !important;
+  border-radius: 13px !important;
+  padding: 14px 18px !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  letter-spacing: 0.01em !important;
+  box-shadow:
+    -2px -2px 6px rgba(167,139,250,0.18),
+    4px 4px 16px rgba(0,0,0,0.55),
+    0 0 0 1px rgba(255,255,255,0.05) inset !important;
+  transition: transform 180ms var(--neu-ease-out), box-shadow 240ms var(--neu-ease-out), filter 200ms var(--neu-ease-out) !important;
+  cursor: pointer !important;
+}
+.qze-auth-card .lp3-submit:hover,
+#lp3-auth-inline .lp3-submit:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+  box-shadow:
+    -3px -3px 10px rgba(167,139,250,0.25),
+    6px 6px 24px rgba(124,58,237,0.45),
+    0 0 0 1px rgba(255,255,255,0.08) inset !important;
+}
+.qze-auth-card .lp3-submit:active { transform: scale(0.97); }
+
+/* Google button — raised neumorphic, neutral surface */
+.qze-auth-card .btn-google-primary {
+  background: var(--neu-surface-raised) !important;
+  border: 1px solid rgba(255,255,255,0.04) !important;
+  border-radius: 13px !important;
+  padding: 12px 16px !important;
+  box-shadow: var(--neu-out-sm) !important;
+  font-weight: 600 !important;
+  transition: transform 180ms var(--neu-ease-out), box-shadow 240ms var(--neu-ease-out), background 200ms var(--neu-ease-out) !important;
+}
+.qze-auth-card .btn-google-primary:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(180deg, #1a1e2b, #161924) !important;
+  box-shadow: var(--neu-out) !important;
+}
+.qze-auth-card .btn-google-primary:active { transform: scale(0.97); }
+
+/* "or continue with email" divider — refined */
+.qze-auth-card .lp3-or { margin: 18px 0 14px !important; opacity: 0.6; }
+
+/* Lock note */
+.qze-auth-card .lp3-card-lock {
+  margin-top: 18px !important;
+  padding-top: 14px !important;
+  border-top: 1px solid rgba(255,255,255,0.04) !important;
+  font-size: 10.5px !important;
+  letter-spacing: 0.04em !important;
+  color: rgba(255,255,255,0.28) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   NEUMORPHIC FEATURE / SHOWCASE / REVIEW / CTA CARDS
+   ═══════════════════════════════════════════════════════════════════════ */
+.qze-feat-card,
+.qze-review-card,
+.qze-spanel,
+.qze-plan-pro,
+.qze-plan-free,
+.qze-cta-section > *:not(.qz-beam-layer) {
+  background: linear-gradient(180deg, var(--neu-surface-raised) 0%, var(--neu-surface) 100%) !important;
+  border: 1px solid rgba(255,255,255,0.04) !important;
+  border-radius: 20px !important;
+  box-shadow: var(--neu-out) !important;
+  transition: transform 280ms var(--neu-ease-out), box-shadow 320ms var(--neu-ease-out) !important;
+}
+.qze-feat-card:hover,
+.qze-review-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--neu-out-lg), 0 0 0 1px rgba(167,139,250,0.10) inset !important;
+}
+
+/* CTA section — large raised panel with violet rim */
+.qze-cta-section {
+  background: linear-gradient(180deg, var(--neu-surface-raised) 0%, var(--neu-surface-sunken) 100%) !important;
+  border: 1px solid rgba(167,139,250,0.10) !important;
+  border-radius: 28px !important;
+  box-shadow: var(--neu-out-lg), 0 0 80px rgba(124,58,237,0.18) !important;
+  margin: 80px 32px !important;
+  padding: 64px 48px !important;
+}
+
+/* Hero headline emphasis */
+#landing .qze-hero-title,
+#landing .qze-headline {
+  font-feature-settings: "ss01", "ss02";
+  letter-spacing: -0.035em;
+}
+
+/* ── Top nav — neumorphic pill ──────────────────────────────────────── */
+.qze-nav {
+  background: rgba(11, 13, 20, 0.72) !important;
+  backdrop-filter: blur(20px) saturate(1.3);
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+}
+.qze-nav .btn,
+.qze-nav button {
+  transition: transform 180ms var(--neu-ease-out), box-shadow 220ms var(--neu-ease-out) !important;
+}
+.qze-nav button:active { transform: scale(0.97); }
+
+/* ── Ticker bar — sunken track ──────────────────────────────────────── */
+.qze-ticker-bar {
+  background: var(--neu-bg-canvas) !important;
+  border-top: 1px solid rgba(255,255,255,0.04) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+  box-shadow: var(--neu-in) !important;
+}
+
+/* ── Showcase tabs — sunken track w/ raised active ──────────────────── */
+.qze-stab {
+  background: var(--neu-surface-sunken) !important;
+  border: 0 !important;
+  box-shadow: var(--neu-in) !important;
+  border-radius: 12px !important;
+  transition: box-shadow 240ms var(--neu-ease-out), color 240ms var(--neu-ease-out) !important;
+}
+.qze-stab.active {
+  background: linear-gradient(180deg, var(--neu-surface-raised), var(--neu-surface)) !important;
+  box-shadow: var(--neu-out-sm), 0 0 0 1px rgba(167,139,250,0.18) inset !important;
+  color: #fff !important;
+}
+.qze-stab:active { transform: scale(0.97); }
+
+/* ── Parallax helper classes ────────────────────────────────────────── */
+.qz-parallax-layer { will-change: transform; transition: transform 60ms linear; }
+.qz-parallax-fast  { will-change: transform; }
+.qz-parallax-slow  { will-change: transform; }
+
+/* Scroll-reveal entrance (used for sections as they enter viewport) */
+.qz-reveal-up {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 720ms var(--neu-ease-out), transform 720ms var(--neu-ease-out);
+}
+.qz-reveal-up.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .qz-parallax-layer,
+  .qz-parallax-fast,
+  .qz-parallax-slow { transform: none !important; transition: none !important; }
+  .qz-reveal-up { opacity: 1 !important; transform: none !important; transition: none !important; }
+}
+</style>
+
 </head>
 <body>
 <div id="qe-grid-bg"></div>
@@ -36586,6 +36928,165 @@ window.qzAnimateNumber = function(el, from, to, durationMs, prefix, suffix) {
      ═══════════════════════════════════════════════════════════════════════ -->
 <elevenlabs-convai agent-id="agent_0501ksj7b896e93vzq4xbj1xzk5h"></elevenlabs-convai>
 <script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     NEUMORPHIC REDESIGN — Parallax engine + scroll reveal
+     - Spring-smoothed parallax (no raw scrollY × speed multiplication)
+     - rAF-throttled scroll handler
+     - IntersectionObserver for scroll-reveal entrance animations
+     - Respects prefers-reduced-motion
+     - Adds GCORE-style ray-beam layer + 3 parallax depth slabs on landing
+     ═══════════════════════════════════════════════════════════════════════ -->
+<script>
+(function() {
+  'use strict';
+  if (window._qzNeuroBooted) return; // double-load guard
+  window._qzNeuroBooted = true;
+
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ── 1. Inject beam + parallax depth layers into #landing ───────────────
+  function injectDepthLayers() {
+    var landing = document.getElementById('landing');
+    if (!landing || landing.querySelector('.qz-beam-layer')) return;
+
+    var beam = document.createElement('div');
+    beam.className = 'qz-beam-layer qz-parallax-layer';
+    beam.setAttribute('data-parallax', '0.18');
+    beam.setAttribute('aria-hidden', 'true');
+    landing.insertBefore(beam, landing.firstChild);
+
+    // Three subtle scroll-bound depth slabs for additional GCORE-style layering
+    var depths = [
+      { speed: 0.08, top: '10%',  side: 'left:6%',   size: '320px', hue: 'rgba(124,58,237,0.10)' },
+      { speed: 0.14, top: '40%',  side: 'right:8%',  size: '260px', hue: 'rgba(34,211,238,0.08)' },
+      { speed: 0.22, top: '70%',  side: 'left:30%',  size: '380px', hue: 'rgba(167,139,250,0.07)' }
+    ];
+    depths.forEach(function(d) {
+      var el = document.createElement('div');
+      el.className = 'qz-parallax-layer';
+      el.setAttribute('data-parallax', d.speed);
+      el.setAttribute('aria-hidden', 'true');
+      el.style.cssText = 'position:absolute;top:' + d.top + ';' + d.side +
+        ';width:' + d.size + ';height:' + d.size +
+        ';border-radius:50%;pointer-events:none;z-index:0;' +
+        'background:radial-gradient(circle,' + d.hue + ',transparent 70%);' +
+        'filter:blur(40px);will-change:transform;';
+      landing.appendChild(el);
+    });
+  }
+
+  // ── 2. Parallax engine ─────────────────────────────────────────────────
+  // Spring-smoothed: maintains velocity, doesn't snap. Per Emil — natural motion
+  // beats raw scrollY × speed math.
+  var parallaxItems = [];
+  var rafId = null;
+  var targetY = 0;
+  var currentY = 0;
+  var velocity = 0;
+  var STIFFNESS = 0.12;
+  var DAMPING   = 0.78;
+
+  function refreshParallaxItems() {
+    parallaxItems = Array.prototype.slice.call(document.querySelectorAll('[data-parallax]'));
+  }
+
+  function tick() {
+    rafId = null;
+    if (reduced) return;
+    var diff = targetY - currentY;
+    velocity = velocity * DAMPING + diff * STIFFNESS;
+    currentY += velocity;
+    if (Math.abs(velocity) < 0.05 && Math.abs(diff) < 0.5) {
+      currentY = targetY;
+    } else {
+      rafId = requestAnimationFrame(tick);
+    }
+    for (var i = 0; i < parallaxItems.length; i++) {
+      var el = parallaxItems[i];
+      var speed = parseFloat(el.getAttribute('data-parallax')) || 0.2;
+      // Hardware-accelerated transform (translate3d so GPU compositor handles it)
+      el.style.transform = 'translate3d(0,' + (-currentY * speed).toFixed(2) + 'px,0)';
+    }
+  }
+
+  function onScroll() {
+    targetY = window.scrollY || window.pageYOffset || 0;
+    if (rafId == null) rafId = requestAnimationFrame(tick);
+  }
+
+  // ── 3. Scroll-reveal: fade + rise sections as they enter viewport ──────
+  function setupReveal() {
+    if (!('IntersectionObserver' in window)) {
+      document.querySelectorAll('.qz-reveal-up').forEach(function(el) { el.classList.add('is-visible'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+
+    // Auto-apply reveal to top-level landing sections that aren't the hero
+    var landing = document.getElementById('landing');
+    if (!landing) return;
+    var sections = landing.querySelectorAll(
+      '.qze-features-section, .qze-features-inner, .qze-reviews-section, .qze-reviews-inner, ' +
+      '.qze-cta-section, .qze-showcase, .qze-feat-card, .qze-review-card'
+    );
+    sections.forEach(function(s, i) {
+      s.classList.add('qz-reveal-up');
+      // Slight stagger inside grids for natural waterfall feel
+      if (s.classList.contains('qze-feat-card') || s.classList.contains('qze-review-card')) {
+        s.style.transitionDelay = (i % 6) * 60 + 'ms';
+      }
+      io.observe(s);
+    });
+  }
+
+  // ── 4. Hero parallax tagging — apply small parallax to hero copy/card ──
+  function tagHeroParallax() {
+    var hero = document.querySelector('.qze-hero, .qze-hero-grid, .qze-hero-section');
+    if (!hero) return;
+    // Tag inner content with a tiny parallax so it rises slowly as user scrolls
+    var headline = hero.querySelector('.qze-hero-copy, .qze-headline');
+    if (headline && !headline.hasAttribute('data-parallax')) {
+      headline.setAttribute('data-parallax', '-0.08');
+      headline.classList.add('qz-parallax-layer');
+    }
+    var card = document.getElementById('lp3-auth-inline');
+    if (card && !card.hasAttribute('data-parallax')) {
+      card.setAttribute('data-parallax', '-0.04');
+      card.classList.add('qz-parallax-layer');
+    }
+  }
+
+  // ── Boot ────────────────────────────────────────────────────────────────
+  function boot() {
+    injectDepthLayers();
+    tagHeroParallax();
+    refreshParallaxItems();
+    setupReveal();
+    if (!reduced) {
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', refreshParallaxItems, { passive: true });
+      // Prime initial position so layers don't jump on first scroll
+      targetY = window.scrollY || 0;
+      currentY = targetY;
+      tick();
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+})();
+</script>
 
 </body>
 </html>
