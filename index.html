@@ -9603,6 +9603,33 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
       localStorage.setItem('qz_onboarded', '1');
     } catch(_) {}
 
+    // ── ALWAYS kill the decorative HUD overlays (run on every page load,
+    //    regardless of signed-in state). These layers were causing the
+    //    landing page AND dashboard to appear washed out behind a stack
+    //    of fixed-position grids, scanlines, corner brackets, and telemetry.
+    function killAllOverlays() {
+      ['qe-hud-grid','qe-hud-scan','qe-vp-tl','qe-vp-tr','qe-vp-bl','qe-vp-br',
+       'qe-telemetry','qe-grid-bg','qe-app-orb-1','qe-app-orb-2','qe-app-orb-3',
+       'qe-app-radial'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) {
+          el.style.setProperty('display','none','important');
+          if (el.parentNode) el.parentNode.removeChild(el);
+        }
+      });
+    }
+    if (document.body) killAllOverlays();
+    document.addEventListener('DOMContentLoaded', killAllOverlays);
+    [100, 400, 1000, 2500, 5000].forEach(function(ms) { setTimeout(killAllOverlays, ms); });
+    // Inject a CSS rule to suppress these globally so they can't re-appear
+    var killCSS = document.createElement('style');
+    killCSS.id = 'qz-kill-overlays';
+    killCSS.textContent =
+      '#qe-hud-grid, #qe-hud-scan, .qe-hud-vp-corner, #qe-telemetry, ' +
+      '#qe-grid-bg, #qe-app-orb-1, #qe-app-orb-2, #qe-app-orb-3, #qe-app-radial ' +
+      '{ display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }';
+    if (document.head) document.head.appendChild(killCSS);
+
     // ── Detect a real user record ─────────────────────────────────────
     var u = null;
     try {
