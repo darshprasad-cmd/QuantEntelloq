@@ -9667,6 +9667,30 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
     if (document.body) markBody();
     else document.addEventListener('DOMContentLoaded', markBody);
 
+    // ── KILL the HUD overlays that cover the app shell ─────────────────
+    // The qe-hud-grid / qe-hud-scan / qe-hud-vp-corner / qe-telemetry
+    // elements get appended to <body> at z-index 3-6 and visually overlay
+    // the dashboard. They were intended as ambient decoration but are
+    // making the actual content hard to see. Remove them in signed-in mode.
+    function killHudOverlays() {
+      ['qe-hud-grid','qe-hud-scan','qe-vp-tl','qe-vp-tr','qe-vp-bl','qe-vp-br','qe-telemetry','qe-grid-bg'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) {
+          el.style.setProperty('display', 'none', 'important');
+          el.remove();
+        }
+      });
+      // Also dim the orbs so they don't wash out the foreground
+      ['qe-app-orb-1','qe-app-orb-2','qe-app-orb-3','qe-app-radial'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.style.setProperty('opacity', '0.25', 'important');
+      });
+    }
+    if (document.body) killHudOverlays();
+    document.addEventListener('DOMContentLoaded', killHudOverlays);
+    // Also run periodically in case scripts re-inject them
+    [200, 800, 2000, 4000].forEach(function(ms) { setTimeout(killHudOverlays, ms); });
+
     // ── Force the app shell visible ───────────────────────────────────
     function forceShowApp() {
       try {
