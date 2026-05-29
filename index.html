@@ -8954,10 +8954,12 @@ function _lp3Enter(user) {
 </div><!-- /app -->
 
 <script>
-// ── Detect server vs. file mode ───────────────────────────────
-// In server mode all AI calls go through the secure backend proxy.
-// In file mode the obfuscated built-in key is used directly (local use).
-window._QZ_SERVER_MODE = (location.protocol !== 'file:' && location.hostname !== '');
+// ── Server vs. file mode ──────────────────────────────────────
+// Production deployment is STATIC GitHub Pages — there is no /api/* backend.
+// Force file mode so auth/AI calls go through client-side localStorage + the
+// Cloudflare Worker proxy instead of trying to hit /api/auth/login etc
+// (which returns HTTP 405 on the static host).
+window._QZ_SERVER_MODE = false;
 
 // ==================== STATE ====================
 const state = {
@@ -9580,7 +9582,17 @@ function _showRebrandToast() {
 }
 
 // ==================== PAGE NAVIGATION ====================
+// Pages whose JS engines were removed due to parse errors — show a
+// premium "coming soon" overlay instead of letting the user see broken
+// inert markup.
+const _qzComingSoon = { quantlab: true, intel: true };
+
 function showPage(page, navEl) {
+  // Coming-soon intercept
+  if (_qzComingSoon[page]) {
+    _qzShowComingSoon(page);
+    return;
+  }
   document.querySelectorAll('[id^="page-"]').forEach(p => p.classList.add('hidden'));
   const _pageEl = document.getElementById(`page-${page}`);
   if (!_pageEl) return;
@@ -9706,6 +9718,56 @@ function updateDashboardMetrics() {
     const topGainer = [...STOCKS].sort((a,b) => b.change - a.change)[0];
     aiEl.textContent = `Markets showing ${sentLabel.toLowerCase()} momentum. ${topGainer.name} (+${topGainer.change}%) leads today on strong signal confidence of ${topGainer.conf}%. ${buyCnt} buy signals active across ${STOCKS.length} tracked securities — risk appetite is ${avgSent > 60 ? 'elevated' : 'moderate'}. Monitor for potential consolidation near key resistance levels.`;
   }
+}
+
+// ── Premium "Coming Soon" overlay for pages with stripped JS engines ──
+function _qzShowComingSoon(page) {
+  // Remove any existing overlay
+  var existing = document.getElementById('qz-coming-soon');
+  if (existing) existing.remove();
+
+  var titles = {
+    quantlab: { icon:'🧪', name:'Quant Lab',           desc:'Risk metrics · Black-Scholes · Monte Carlo · Frontier · Kelly · GARCH · HMM regimes' },
+    intel:    { icon:'🛰️', name:'Intelligence Terminal', desc:'Live news feed · AI briefings · arXiv quant research · sentiment lab · macro intel' },
+  };
+  var t = titles[page] || { icon:'⚡', name:'Feature', desc:'Coming soon to your dashboard' };
+
+  var overlay = document.createElement('div');
+  overlay.id = 'qz-coming-soon';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:99998;background:rgba(8,9,11,0.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;transition:opacity 220ms cubic-bezier(0.16,1,0.3,1);';
+  overlay.innerHTML =
+    '<div style="background:linear-gradient(135deg,#14171d,#0e1117);border:1px solid rgba(167,139,250,0.22);border-radius:20px;padding:44px 40px;max-width:480px;width:100%;text-align:center;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(124,58,237,0.20),0 40px 100px rgba(0,0,0,0.55);">' +
+      '<div style="position:absolute;top:-60px;right:-30px;width:280px;height:280px;background:radial-gradient(circle,rgba(124,58,237,0.20),transparent 65%);pointer-events:none;filter:blur(20px);"></div>' +
+      '<div style="position:absolute;bottom:-40px;left:25%;width:220px;height:220px;background:radial-gradient(circle,rgba(34,211,238,0.10),transparent 65%);pointer-events:none;"></div>' +
+      '<div style="position:relative;">' +
+        '<div style="font-size:48px;margin-bottom:18px;line-height:1;filter:drop-shadow(0 0 24px rgba(167,139,250,0.40));">' + t.icon + '</div>' +
+        '<div style="display:inline-flex;align-items:center;gap:8px;font-size:10.5px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:#A78BFA;padding:5px 11px;border-radius:999px;border:1px solid rgba(167,139,250,0.30);background:rgba(124,58,237,0.10);margin-bottom:18px;box-shadow:0 0 16px rgba(167,139,250,0.20);">' +
+          '<span style="width:6px;height:6px;border-radius:50%;background:#A78BFA;box-shadow:0 0 10px #A78BFA;"></span>Launching Soon' +
+        '</div>' +
+        '<div style="font-size:24px;font-weight:700;letter-spacing:-0.025em;color:#fff;line-height:1.15;margin-bottom:10px;">' + t.name + '</div>' +
+        '<div style="font-size:13.5px;color:rgba(244,244,245,0.62);line-height:1.55;margin-bottom:28px;">' + t.desc + '</div>' +
+        '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">' +
+          '<button onclick="_qzClose(); showPage(\'dashboard\', document.getElementById(\'nav-dashboard\'))" style="background:linear-gradient(180deg,#8B5CF6,#7C3AED);color:#fff;border:0;border-radius:10px;padding:11px 22px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 4px 20px rgba(124,58,237,0.40),0 0 0 1px rgba(167,139,250,0.20) inset;transition:transform 180ms,box-shadow 200ms;">← Back to Dashboard</button>' +
+          '<button onclick="_qzClose()" style="background:transparent;color:rgba(244,244,245,0.65);border:1px solid rgba(255,255,255,0.10);border-radius:10px;padding:11px 22px;font-size:13.5px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 180ms;">Close</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+  document.body.appendChild(overlay);
+
+  // Define close handler
+  window._qzClose = function() {
+    var o = document.getElementById('qz-coming-soon');
+    if (o) {
+      o.style.opacity = '0';
+      setTimeout(function() { if (o.parentNode) o.parentNode.removeChild(o); }, 220);
+    }
+  };
+
+  // Fade in
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() { overlay.style.opacity = '1'; });
+  });
 }
 
 function _sparkData(ticker, price, isUp) {
