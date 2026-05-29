@@ -10304,13 +10304,57 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
         injectCleanDashboard();
       }
 
+      // ── HERO BUILDER — premium neon hero for any inline page ──
+      function _qzPageHero(opts) {
+        // opts: { eyebrow, title, sub, stats: [{label,value,color}], accent }
+        var accent = opts.accent || '#A78BFA';
+        var statsHtml = (opts.stats || []).map(function(s) {
+          return '<div style="display:flex;flex-direction:column;gap:4px;min-width:0;">' +
+            '<div style="font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(244,244,245,0.42);">' + s.label + '</div>' +
+            '<div style="font-size:18px;font-weight:600;letter-spacing:-0.022em;color:' + (s.color || '#fff') + ';font-variant-numeric:tabular-nums;">' + s.value + '</div>' +
+          '</div>';
+        }).join('');
+        return '<div style="background:linear-gradient(135deg,#14171d 0%,#0e1117 100%);border:1px solid rgba(167,139,250,0.18);border-radius:18px;padding:28px 32px;margin-bottom:24px;position:relative;overflow:hidden;box-shadow:0 0 40px rgba(124,58,237,0.08);">' +
+          '<div style="position:absolute;top:-60px;right:-60px;width:280px;height:280px;background:radial-gradient(circle,' + accent + '33,transparent 65%);pointer-events:none;filter:blur(20px);"></div>' +
+          '<div style="position:absolute;bottom:-40px;left:25%;width:220px;height:220px;background:radial-gradient(circle,rgba(34,211,238,0.10),transparent 65%);pointer-events:none;"></div>' +
+          // Subtle grid pattern
+          '<div style="position:absolute;inset:0;background-image:linear-gradient(rgba(167,139,250,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(167,139,250,0.04) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(ellipse 70% 50% at 50% 50%,#000 30%,transparent 90%);-webkit-mask-image:radial-gradient(ellipse 70% 50% at 50% 50%,#000 30%,transparent 90%);pointer-events:none;"></div>' +
+          '<div style="position:relative;">' +
+            '<div style="display:inline-flex;align-items:center;gap:8px;font-size:10.5px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:' + accent + ';padding:5px 11px;border-radius:999px;border:1px solid ' + accent + '4d;background:' + accent + '14;margin-bottom:14px;box-shadow:0 0 16px ' + accent + '33;">' +
+              '<span style="width:6px;height:6px;border-radius:50%;background:' + accent + ';box-shadow:0 0 10px ' + accent + ';animation:qzPulse 2s ease-in-out infinite;"></span>' +
+              (opts.eyebrow || 'Live') +
+            '</div>' +
+            '<div style="font-size:26px;font-weight:700;letter-spacing:-0.028em;line-height:1.1;margin-bottom:8px;color:#fff;text-shadow:0 0 30px ' + accent + '40;">' + opts.title + '</div>' +
+            '<div style="font-size:14px;color:rgba(244,244,245,0.62);line-height:1.55;max-width:600px;margin-bottom:' + (opts.stats ? '20px' : '0') + ';">' + (opts.sub || '') + '</div>' +
+            (opts.stats ? '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:24px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06);">' + statsHtml + '</div>' : '') +
+          '</div>' +
+        '</div>';
+      }
+
       function _qzRenderSignals() {
         try {
           var stocks = (typeof STOCKS !== 'undefined' && Array.isArray(STOCKS)) ? STOCKS : [];
           if (stocks.length === 0) {
             return _qzReplaceMain('<div style="text-align:center;padding:80px 20px;color:rgba(244,244,245,0.4);">No signals available.</div>', 'AI Signals', 'High-conviction opportunities', 'signals');
           }
-          var html = '<div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">' +
+          var buyCount = stocks.filter(function(s) { return s.signal === 'BUY'; }).length;
+          var sellCount = stocks.filter(function(s) { return s.signal === 'SELL'; }).length;
+          var holdCount = stocks.filter(function(s) { return s.signal === 'HOLD'; }).length;
+          var avgConf = Math.round(stocks.reduce(function(a, s) { return a + (s.conf || 0); }, 0) / stocks.length);
+          var html = _qzPageHero({
+            eyebrow: 'AI Signal Engine · Live',
+            title: 'Institutional-Grade Trade Signals',
+            sub: 'Real-time BUY/HOLD/SELL signals across ' + stocks.length + ' securities with AI confidence scores, momentum, and sentiment indicators.',
+            stats: [
+              { label: 'Total Signals', value: stocks.length, color: '#fff' },
+              { label: 'BUY', value: buyCount, color: '#10B981' },
+              { label: 'HOLD', value: holdCount, color: '#F59E0B' },
+              { label: 'SELL', value: sellCount, color: '#EF4444' },
+              { label: 'Avg Confidence', value: avgConf + '%', color: '#A78BFA' }
+            ],
+            accent: '#A78BFA'
+          });
+          html += '<div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">' +
             ['All','BUY','HOLD','SELL'].map(function(f, i) {
               return '<button data-filter="' + f + '" style="background:' + (i === 0 ? 'rgba(124,58,237,0.14)' : 'transparent') + ';color:' + (i === 0 ? '#fff' : 'rgba(244,244,245,0.6)') + ';border:1px solid rgba(255,255,255,0.08);border-radius:7px;padding:6px 12px;font-size:12.5px;font-weight:500;cursor:pointer;font-family:inherit;">' + f + '</button>';
             }).join('') + '</div>';
@@ -10497,16 +10541,30 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
       function _qzRenderPortfolio() {
         try {
           var port = (typeof PORTFOLIO_DATA !== 'undefined' && Array.isArray(PORTFOLIO_DATA)) ? PORTFOLIO_DATA : [];
-          var html;
+          var html = _qzPageHero({
+            eyebrow: 'Portfolio · Live P&L',
+            title: 'Track. Analyze. Optimize.',
+            sub: 'Real-time portfolio analytics with allocation breakdown, risk scoring, sector exposure, and AI-powered rebalancing suggestions.',
+            stats: [
+              { label: 'Positions', value: port.length, color: '#fff' },
+              { label: 'Total Value', value: '$0', color: '#22D3EE' },
+              { label: 'Day P&L', value: '$0.00', color: 'rgba(244,244,245,0.55)' },
+              { label: 'All-time P&L', value: '$0.00', color: 'rgba(244,244,245,0.55)' }
+            ],
+            accent: '#22D3EE'
+          });
           if (port.length === 0) {
-            html = '<div style="background:#14171d;border:1px dashed rgba(255,255,255,0.10);border-radius:14px;padding:80px 24px;text-align:center;">' +
-              '<div style="font-size:48px;margin-bottom:16px;opacity:0.4;">💼</div>' +
-              '<div style="font-size:18px;font-weight:600;letter-spacing:-0.012em;color:#fff;margin-bottom:8px;">Your portfolio is empty</div>' +
-              '<div style="font-size:13.5px;color:rgba(244,244,245,0.5);max-width:420px;margin:0 auto 24px;line-height:1.55;">Add your first position to start tracking real-time P&L, allocation analysis, and AI-generated rebalancing suggestions.</div>' +
-              '<button style="background:linear-gradient(180deg,#8B5CF6,#7C3AED);color:#fff;border:0;border-radius:9px;padding:11px 22px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(124,58,237,0.4);">+ Add Position</button>' +
+            html += '<div style="background:#14171d;border:1px dashed rgba(255,255,255,0.10);border-radius:14px;padding:64px 24px;text-align:center;position:relative;overflow:hidden;">' +
+              '<div style="position:absolute;top:50%;left:50%;width:200px;height:200px;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(34,211,238,0.10),transparent 60%);pointer-events:none;"></div>' +
+              '<div style="position:relative;">' +
+                '<div style="font-size:48px;margin-bottom:16px;opacity:0.4;">💼</div>' +
+                '<div style="font-size:18px;font-weight:600;letter-spacing:-0.012em;color:#fff;margin-bottom:8px;">Your portfolio is empty</div>' +
+                '<div style="font-size:13.5px;color:rgba(244,244,245,0.5);max-width:420px;margin:0 auto 24px;line-height:1.55;">Add your first position to start tracking real-time P&L, allocation analysis, and AI-generated rebalancing suggestions.</div>' +
+                '<button style="background:linear-gradient(180deg,#06B6D4,#0891B2);color:#fff;border:0;border-radius:9px;padding:11px 22px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 4px 24px rgba(34,211,238,0.40),0 0 0 1px rgba(34,211,238,0.20) inset;transition:transform 180ms,box-shadow 200ms;" onmouseover="this.style.transform=\'translateY(-1px)\';this.style.boxShadow=\'0 6px 32px rgba(34,211,238,0.55),0 0 0 1px rgba(34,211,238,0.30) inset\'" onmouseout="this.style.transform=\'\';this.style.boxShadow=\'0 4px 24px rgba(34,211,238,0.40),0 0 0 1px rgba(34,211,238,0.20) inset\'">+ Add Position</button>' +
+              '</div>' +
             '</div>';
           } else {
-            html = '<div style="background:#14171d;border:1px solid rgba(255,255,255,0.06);border-radius:12px;overflow:hidden;">' +
+            html += '<div style="background:#14171d;border:1px solid rgba(255,255,255,0.06);border-radius:12px;overflow:hidden;">' +
               '<table style="width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;">' +
               '<thead><tr style="background:rgba(255,255,255,0.02);">' +
                 ['Ticker','Qty','Cost','Current','P&L'].map(function(h) {
@@ -10531,11 +10589,29 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
       function _qzRenderLedger() {
         try {
           var led = (typeof LEDGER_DATA !== 'undefined' && Array.isArray(LEDGER_DATA)) ? LEDGER_DATA : [];
+          var buys = led.filter(function(t) { return t.type === 'BUY'; }).length;
+          var sells = led.filter(function(t) { return t.type === 'SELL'; }).length;
+          var totalPnl = led.reduce(function(a, t) {
+            var v = parseFloat(String(t.pnl).replace(/[^\-0-9.]/g, '')) || 0;
+            return a + v;
+          }, 0);
+          var heroHtml = _qzPageHero({
+            eyebrow: 'Ledger · Full History',
+            title: 'Every Transaction. Every Position.',
+            sub: 'Complete cost-basis ledger with full P&L tracking. Tax-lot accurate, audit-ready, export to CSV anytime.',
+            stats: [
+              { label: 'Transactions', value: led.length, color: '#fff' },
+              { label: 'Buys', value: buys, color: '#10B981' },
+              { label: 'Sells', value: sells, color: '#EF4444' },
+              { label: 'Net P&L', value: (totalPnl >= 0 ? '+' : '') + '$' + Math.abs(totalPnl).toFixed(0), color: totalPnl >= 0 ? '#10B981' : '#EF4444' }
+            ],
+            accent: '#10B981'
+          });
           if (led.length === 0) {
-            _qzReplaceMain('<div style="text-align:center;padding:80px 20px;color:rgba(244,244,245,0.4);">No transactions yet.</div>', 'Ledger', 'Transaction history', 'ledger');
+            _qzReplaceMain(heroHtml + '<div style="text-align:center;padding:80px 20px;color:rgba(244,244,245,0.4);">No transactions yet.</div>', 'Ledger', 'Transaction history', 'ledger');
             return;
           }
-          var html = '<div style="background:#14171d;border:1px solid rgba(255,255,255,0.06);border-radius:12px;overflow:hidden;">' +
+          var html = heroHtml + '<div style="background:#14171d;border:1px solid rgba(255,255,255,0.06);border-radius:12px;overflow:hidden;">' +
             '<table style="width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;">' +
             '<thead><tr style="background:rgba(255,255,255,0.02);">' +
               ['Date','Ticker','Type','Qty','Price','P&L'].map(function(h) {
@@ -10560,7 +10636,19 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
       }
 
       function _qzRenderMacro() {
-        var html = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;">';
+        var html = _qzPageHero({
+          eyebrow: 'Global Macro · Real-Time',
+          title: 'The World, At Your Command.',
+          sub: 'Live central bank rates, inflation, GDP growth, and unemployment data across the world\'s major economies. AI-curated commentary on every datapoint.',
+          stats: [
+            { label: 'Economies', value: '6', color: '#fff' },
+            { label: 'Indicators', value: '24', color: '#F59E0B' },
+            { label: 'Updates', value: 'Daily', color: '#22D3EE' },
+            { label: 'Coverage', value: '~$95T GDP', color: '#10B981' }
+          ],
+          accent: '#F59E0B'
+        });
+        html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;">';
         [
           {flag:'🇺🇸',country:'United States',rate:'5.25-5.50%',cpi:'3.1%',gdp:'+2.8%',unemp:'3.9%'},
           {flag:'🇪🇺',country:'European Union',rate:'4.25%',cpi:'2.6%',gdp:'+0.4%',unemp:'6.5%'},
