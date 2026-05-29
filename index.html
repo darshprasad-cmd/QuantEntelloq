@@ -9777,27 +9777,89 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
           '</header>' +
 
           // Scrollable content area
-          '<div style="flex:1;overflow-y:auto;overflow-x:hidden;padding:28px;">' +
-            // Welcome hero card
-            '<div style="background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(167,139,250,0.04));border:1px solid rgba(167,139,250,0.18);border-radius:16px;padding:28px 32px;margin-bottom:24px;position:relative;overflow:hidden;">' +
-              '<div style="position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(124,58,237,0.15),transparent 70%);pointer-events:none;"></div>' +
-              '<div style="position:relative;">' +
-                '<div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(167,139,250,0.85);margin-bottom:8px;">⚡ Account Active</div>' +
-                '<div style="font-size:24px;font-weight:600;letter-spacing:-0.025em;margin-bottom:6px;">Welcome to Quant Entelloq, ' + firstName + '.</div>' +
-                '<div style="font-size:14px;color:rgba(244,244,245,0.65);line-height:1.55;max-width:640px;">Your AI-native financial intelligence platform is ready. Explore live market signals, command the AI agents, and build your edge.</div>' +
+          '<div style="flex:1;overflow-y:auto;overflow-x:hidden;">' +
+            // ── LIVE TICKER STRIP ──
+            '<div style="background:#0e1117;border-bottom:1px solid rgba(255,255,255,0.04);padding:10px 0;overflow:hidden;position:relative;">' +
+              '<div style="display:flex;gap:36px;font-family:Inter,system-ui,sans-serif;font-size:12.5px;font-variant-numeric:tabular-nums;white-space:nowrap;animation:qzTickerScroll 60s linear infinite;padding:0 28px;">' +
+                ['AAPL $189.40 ▲2.1%','NVDA $878.30 ▲4.8%','MSFT $413.20 ▲1.4%','TSLA $244.80 ▼1.2%','GOOGL $174.30 ▲1.9%','AMZN $187.60 ▲2.7%','META $498.20 ▲3.1%','BTC $67,234 ▲3.1%','SPX 5,842 ▲0.43%','GOLD $186.20 ▲0.6%','OIL $113.80 ▼2.1%','EUR/USD 1.0873 ▲0.18%']
+                  .concat(['AAPL $189.40 ▲2.1%','NVDA $878.30 ▲4.8%','MSFT $413.20 ▲1.4%','TSLA $244.80 ▼1.2%','GOOGL $174.30 ▲1.9%','AMZN $187.60 ▲2.7%','META $498.20 ▲3.1%','BTC $67,234 ▲3.1%','SPX 5,842 ▲0.43%','GOLD $186.20 ▲0.6%','OIL $113.80 ▼2.1%','EUR/USD 1.0873 ▲0.18%'])
+                  .map(function(t) {
+                    var p = t.split(' ');
+                    var sym = p[0], price = p[1], chg = p[2] || '';
+                    var color = chg.indexOf('▲') > -1 ? '#10B981' : chg.indexOf('▼') > -1 ? '#EF4444' : 'rgba(244,244,245,0.5)';
+                    return '<span style="display:inline-flex;gap:6px;align-items:center;"><span style="color:rgba(244,244,245,0.85);font-weight:600;">' + sym + '</span><span style="color:rgba(244,244,245,0.55);">' + price + '</span><span style="color:' + color + ';font-weight:500;">' + chg + '</span></span>';
+                  }).join('') +
               '</div>' +
             '</div>' +
 
-            // Stats grid
-            '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:24px;">' +
-              statCard('AI Signals', '247', 'Live across global markets', '#A78BFA') +
-              statCard('Portfolio', 'Empty', 'Add your first position', '#22D3EE') +
-              statCard('Watchlists', '0', 'Track tickers you care about', '#34D399') +
-              statCard('AI Queries', '∞', 'Unlimited for your account', '#F472B6') +
+            // ── HERO: GAME HUB-STYLE PROGRESSION + ACCOUNT STATUS ──
+            '<div style="padding:24px 28px 0;">' +
+              '<div style="background:linear-gradient(135deg,#14171d 0%,#0e1117 100%);border:1px solid rgba(167,139,250,0.18);border-radius:18px;padding:28px 32px;position:relative;overflow:hidden;margin-bottom:20px;">' +
+                // Decorative glow
+                '<div style="position:absolute;top:-60px;right:-60px;width:300px;height:300px;background:radial-gradient(circle,rgba(124,58,237,0.18),transparent 65%);pointer-events:none;"></div>' +
+                '<div style="position:absolute;bottom:-40px;left:30%;width:240px;height:240px;background:radial-gradient(circle,rgba(34,211,238,0.10),transparent 65%);pointer-events:none;"></div>' +
+                // Decorative chart sparkline
+                '<svg viewBox="0 0 600 120" style="position:absolute;bottom:0;left:0;right:0;width:100%;height:100px;opacity:0.20;pointer-events:none;" preserveAspectRatio="none"><path d="M0,80 C50,75 100,60 150,55 C200,50 250,40 300,42 C350,44 400,30 450,25 C500,20 550,15 600,18 L600,120 L0,120 Z" fill="url(#qzg)"/><defs><linearGradient id="qzg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#A78BFA" stop-opacity="0.6"/><stop offset="100%" stop-color="#A78BFA" stop-opacity="0"/></linearGradient></defs><path d="M0,80 C50,75 100,60 150,55 C200,50 250,40 300,42 C350,44 400,30 450,25 C500,20 550,15 600,18" stroke="#A78BFA" stroke-width="1.5" fill="none" opacity="0.6"/></svg>' +
+                '<div style="position:relative;display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;">' +
+                  '<div style="flex:1;min-width:260px;">' +
+                    '<div style="display:inline-flex;align-items:center;gap:8px;font-size:10.5px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:rgba(167,139,250,0.85);padding:5px 11px;border-radius:999px;border:1px solid rgba(167,139,250,0.30);background:rgba(124,58,237,0.10);margin-bottom:16px;">' +
+                      '<span style="width:6px;height:6px;border-radius:50%;background:#A78BFA;box-shadow:0 0 8px #A78BFA;animation:qzPulse 2s ease-in-out infinite;"></span>Account Active · Full Access' +
+                    '</div>' +
+                    '<div style="font-size:28px;font-weight:700;letter-spacing:-0.028em;line-height:1.1;margin-bottom:8px;">Welcome back, ' + firstName + '.</div>' +
+                    '<div style="font-size:14.5px;color:rgba(244,244,245,0.6);line-height:1.55;max-width:560px;">Your AI-native financial intelligence platform is live. 12 active signals, multi-agent AI, 100M+ assets — at your command.</div>' +
+                  '</div>' +
+                  // XP / Level widget
+                  '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:16px 20px;min-width:220px;">' +
+                    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
+                      '<div style="display:flex;align-items:center;gap:8px;"><span style="font-size:14px;">🌱</span><span style="font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(167,139,250,0.85);">Novice · Lv 1</span></div>' +
+                      '<span style="font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;color:#A78BFA;">0 XP</span>' +
+                    '</div>' +
+                    '<div style="height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;margin-bottom:6px;">' +
+                      '<div style="height:100%;width:0%;background:linear-gradient(90deg,#A78BFA,#7C3AED);border-radius:3px;"></div>' +
+                    '</div>' +
+                    '<div style="font-size:11px;color:rgba(244,244,245,0.46);">100 XP to <strong style="color:#fff;">Lv 2 · Explorer</strong></div>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+
+              // ── KEY METRICS ROW ──
+              '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:24px;">' +
+                premiumStat('Active Signals', '12', '+3 today', '#A78BFA', '📊', true) +
+                premiumStat('Portfolio Value', '$0', 'Add positions', '#22D3EE', '💼', false) +
+                premiumStat('AI Queries', '∞', 'Unlimited', '#10B981', '⚡', true) +
+                premiumStat('Markets Open', '7 / 12', 'NYSE · LSE · TSE', '#F59E0B', '🌍', true) +
+              '</div>' +
+
+              // ── TWO COLUMN: TOP SIGNALS + LATEST NEWS ──
+              '<div style="display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-bottom:24px;">' +
+                // Top signals
+                '<div style="background:#14171d;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:20px 22px;">' +
+                  '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">' +
+                    '<div style="font-size:13px;font-weight:600;letter-spacing:-0.005em;color:#fff;">Top AI Signals</div>' +
+                    '<a href="#" data-page="signals" style="font-size:11.5px;color:#A78BFA;text-decoration:none;font-weight:500;">View all →</a>' +
+                  '</div>' +
+                  topSignalsList() +
+                '</div>' +
+                // Latest news
+                '<div style="background:#14171d;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:20px 22px;">' +
+                  '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">' +
+                    '<div style="font-size:13px;font-weight:600;letter-spacing:-0.005em;color:#fff;">Latest Intel</div>' +
+                    '<a href="#" data-page="news" style="font-size:11.5px;color:#A78BFA;text-decoration:none;font-weight:500;">NewsJudge →</a>' +
+                  '</div>' +
+                  latestNewsList() +
+                '</div>' +
+              '</div>' +
             '</div>' +
 
-            // Action grid
-            '<div style="font-size:14px;font-weight:600;letter-spacing:-0.012em;color:rgba(244,244,245,0.85);margin:8px 0 14px;">Get started</div>' +
+            // ── ALL FEATURES ── (action grid)
+            '<div style="padding:0 28px 40px;">' +
+
+            // Section heading
+            '<div style="display:flex;align-items:baseline;gap:12px;margin:8px 0 18px;">' +
+              '<div style="font-size:11.5px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:rgba(167,139,250,0.85);">Platform</div>' +
+              '<div style="height:1px;flex:1;background:linear-gradient(90deg,rgba(167,139,250,0.3),transparent);"></div>' +
+              '<div style="font-size:11px;color:rgba(244,244,245,0.4);">18 features</div>' +
+            '</div>' +
             '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;">' +
               actionCard('📈', 'AI Signals', 'Institutional-grade BUY/HOLD/SELL signals with confidence scores across 100M+ securities.', 'signals') +
               actionCard('⚡', 'AI Studio', 'Multi-agent orchestration — market intel, risk, sentiment, quantitative, strategy.', 'aistudio') +
@@ -9818,10 +9880,80 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
               actionCard('🤖', 'AI Mentor', 'Your personal AI financial coach — ask anything, get crisp answers.', 'ai') +
               actionCard('⚙️', 'Settings', 'Configure AI provider, profile, API keys, region, and preferences.', 'settings') +
             '</div>' +
+            '</div>' +
           '</div>' +
         '</main>';
 
       document.body.appendChild(shell);
+
+      // Inject animation keyframes once
+      if (!document.getElementById('qz-hub-keyframes')) {
+        var kf = document.createElement('style');
+        kf.id = 'qz-hub-keyframes';
+        kf.textContent =
+          '@keyframes qzTickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }' +
+          '@keyframes qzPulse { 0%,100% { opacity:1; box-shadow:0 0 8px #A78BFA; } 50% { opacity:0.5; box-shadow:0 0 14px #A78BFA; } }' +
+          '@keyframes qzShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }';
+        document.head.appendChild(kf);
+      }
+
+      // ── Premium stat card helper ──
+      function premiumStat(label, value, sub, color, icon, positive) {
+        var subColor = positive ? '#10B981' : 'rgba(244,244,245,0.46)';
+        return '<div style="background:#14171d;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden;transition:border-color 200ms,background 200ms;" onmouseover="this.style.borderColor=\'rgba(167,139,250,0.20)\'" onmouseout="this.style.borderColor=\'rgba(255,255,255,0.06)\'">' +
+          '<div style="position:absolute;top:-20px;right:-10px;font-size:60px;opacity:0.05;pointer-events:none;">' + icon + '</div>' +
+          '<div style="font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(244,244,245,0.42);margin-bottom:8px;">' + label + '</div>' +
+          '<div style="font-size:26px;font-weight:600;letter-spacing:-0.028em;font-variant-numeric:tabular-nums;color:' + color + ';line-height:1.05;margin-bottom:4px;">' + value + '</div>' +
+          '<div style="font-size:11.5px;color:' + subColor + ';font-weight:500;">' + sub + '</div>' +
+        '</div>';
+      }
+
+      // ── Top signals preview list ──
+      function topSignalsList() {
+        try {
+          var stocks = (typeof STOCKS !== 'undefined' && Array.isArray(STOCKS)) ? STOCKS.slice() : [];
+          stocks.sort(function(a, b) { return (b.conf || 0) - (a.conf || 0); });
+          var top = stocks.slice(0, 5);
+          if (top.length === 0) return '<div style="color:rgba(244,244,245,0.4);font-size:12px;padding:20px 0;text-align:center;">No signals available</div>';
+          return top.map(function(s) {
+            var sigColor = s.signal === 'BUY' ? '#10B981' : s.signal === 'SELL' ? '#EF4444' : '#F59E0B';
+            var sigBg = s.signal === 'BUY' ? 'rgba(16,185,129,0.12)' : s.signal === 'SELL' ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.12)';
+            var chgColor = s.change > 0 ? '#10B981' : '#EF4444';
+            return '<div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);">' +
+              '<div style="flex:1;min-width:0;">' +
+                '<div style="display:flex;align-items:center;gap:8px;margin-bottom:2px;">' +
+                  '<span style="font-size:13.5px;font-weight:600;letter-spacing:-0.008em;color:#fff;">' + s.ticker + '</span>' +
+                  '<span style="background:' + sigBg + ';color:' + sigColor + ';font-size:9.5px;font-weight:700;letter-spacing:0.05em;padding:2px 6px;border-radius:4px;">' + s.signal + '</span>' +
+                  '<span style="font-size:10.5px;color:rgba(244,244,245,0.42);font-variant-numeric:tabular-nums;">' + s.conf + '%</span>' +
+                '</div>' +
+                '<div style="font-size:11px;color:rgba(244,244,245,0.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + s.name + '</div>' +
+              '</div>' +
+              '<div style="text-align:right;flex-shrink:0;">' +
+                '<div style="font-size:13px;font-weight:600;color:#fff;font-variant-numeric:tabular-nums;">$' + (typeof s.price === 'number' ? s.price.toLocaleString() : s.price) + '</div>' +
+                '<div style="font-size:11px;font-weight:500;color:' + chgColor + ';font-variant-numeric:tabular-nums;">' + (s.change > 0 ? '+' : '') + s.change + '%</div>' +
+              '</div>' +
+            '</div>';
+          }).join('');
+        } catch(_) { return '<div style="color:rgba(244,244,245,0.4);font-size:12px;">Could not load signals</div>'; }
+      }
+
+      // ── Latest news preview list ──
+      function latestNewsList() {
+        try {
+          var news = (typeof NEWS !== 'undefined' && Array.isArray(NEWS)) ? NEWS.slice(0, 4) : [];
+          if (news.length === 0) return '<div style="color:rgba(244,244,245,0.4);font-size:12px;padding:20px 0;text-align:center;">No news available</div>';
+          return news.map(function(n) {
+            var impactColor = n.impact === 'positive' ? '#10B981' : n.impact === 'negative' ? '#EF4444' : '#F59E0B';
+            return '<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);">' +
+              '<div style="width:3px;background:' + impactColor + ';border-radius:2px;flex-shrink:0;"></div>' +
+              '<div style="flex:1;min-width:0;">' +
+                '<div style="font-size:12.5px;font-weight:500;color:rgba(244,244,245,0.92);line-height:1.4;margin-bottom:3px;">' + n.title + '</div>' +
+                '<div style="font-size:10.5px;color:rgba(244,244,245,0.42);">' + n.source + ' · ' + n.time + '</div>' +
+              '</div>' +
+            '</div>';
+          }).join('');
+        } catch(_) { return '<div style="color:rgba(244,244,245,0.4);font-size:12px;">Could not load news</div>'; }
+      }
 
       // Helpers
       function navItem(icon, label, active, explicitSlug) {
