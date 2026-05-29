@@ -9873,27 +9873,114 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
       };
       function openOriginalPage(slug) {
         var pageKey = PAGE_MAP[slug] || slug;
-        // Hide the clean dashboard
+        // Fade-out the clean dashboard for smooth transition
         var dash = document.getElementById('qz-clean-dashboard');
-        if (dash) dash.style.setProperty('display', 'none', 'important');
-        // Show #app
-        var app = document.getElementById('app');
-        if (app) {
-          app.style.setProperty('display', 'flex', 'important');
-          app.style.setProperty('visibility', 'visible', 'important');
-          app.style.setProperty('opacity', '1', 'important');
+        if (dash) {
+          dash.style.transition = 'opacity 180ms cubic-bezier(0.16,1,0.3,1)';
+          dash.style.opacity = '0';
+          setTimeout(function() {
+            dash.style.setProperty('display', 'none', 'important');
+          }, 180);
         }
-        // Force initApp once + then call showPage to navigate
+        // Force #app + every layout descendant visible with !important inline
+        // so NO CSS rule can prevent the rendering.
+        var forceVis = function(el, display) {
+          if (!el) return;
+          el.style.setProperty('display', display || 'flex', 'important');
+          el.style.setProperty('visibility', 'visible', 'important');
+          el.style.setProperty('opacity', '1', 'important');
+          el.classList.remove('hidden');
+        };
+        var app = document.getElementById('app');
+        forceVis(app, 'flex');
+        if (app) {
+          app.style.setProperty('flex-direction', 'row', 'important');
+          app.style.setProperty('width', '100%', 'important');
+          app.style.setProperty('height', '100vh', 'important');
+          app.style.setProperty('overflow', 'hidden', 'important');
+        }
+        var sb = app && app.querySelector('.sidebar');
+        forceVis(sb, 'flex');
+        if (sb) {
+          sb.style.setProperty('width', '232px', 'important');
+          sb.style.setProperty('flex-shrink', '0', 'important');
+          sb.style.setProperty('height', '100%', 'important');
+          sb.style.setProperty('overflow-y', 'auto', 'important');
+        }
+        var mc = app && app.querySelector('.main-content');
+        forceVis(mc, 'flex');
+        if (mc) {
+          mc.style.setProperty('flex-direction', 'column', 'important');
+          mc.style.setProperty('flex', '1 1 0%', 'important');
+          mc.style.setProperty('min-width', '0', 'important');
+          mc.style.setProperty('height', '100%', 'important');
+        }
+        var tb = mc && mc.querySelector('.top-bar');
+        forceVis(tb, 'flex');
+        var pc = mc && mc.querySelector('.page-content');
+        forceVis(pc, 'block');
+
+        // Run initApp once for sidebar XP / region / etc
         try {
           if (!window._qzInitAppRan && typeof initApp === 'function') {
             window._qzInitAppRan = true;
-            try { initApp(); } catch(e) { console.warn('[clean-dash] initApp threw:', e); }
+            initApp();
           }
+        } catch(e) { console.warn('[clean-dash] initApp threw:', e); }
+
+        // Navigate to the target page
+        try {
           if (typeof showPage === 'function') {
             var navEl = document.getElementById('nav-' + pageKey);
             showPage(pageKey, navEl);
+          } else {
+            // Fallback: manually toggle visibility
+            document.querySelectorAll('[id^="page-"]').forEach(function(p) {
+              p.classList.add('hidden');
+            });
+            var target = document.getElementById('page-' + pageKey);
+            if (target) target.classList.remove('hidden');
           }
-        } catch(e) { console.warn('[clean-dash] openOriginalPage failed:', e); }
+        } catch(e) { console.warn('[clean-dash] showPage failed:', e); }
+
+        // Page-specific initialization hooks (each is safe-no-op if undef)
+        setTimeout(function() {
+          try {
+            var inits = {
+              settings:  function() { if (typeof _qzkInit === 'function') _qzkInit(); },
+              quantlab:  function() {
+                if (typeof _ql2Init === 'function') _ql2Init();
+                if (typeof qlAIInit === 'function') qlAIInit();
+              },
+              intel:     function() { if (typeof _intelInit === 'function') _intelInit(); },
+              command:   function() { if (typeof renderCommandCenter === 'function') renderCommandCenter(); },
+              ai:        function() { if (typeof _aiPanelInit === 'function') _aiPanelInit(); },
+              universe:  function() { if (typeof uvInit === 'function') uvInit(); },
+              scanner:   function() { if (typeof renderScanner === 'function') renderScanner(); },
+              signals:   function() { if (typeof renderSignals === 'function') renderSignals(); },
+              portfolio: function() { if (typeof renderPortfolio === 'function') renderPortfolio(); },
+              news:      function() { if (typeof renderNews === 'function') renderNews(); },
+              macro:     function() { if (typeof updateDashboardRegion === 'function') updateDashboardRegion(); },
+              ledger:    function() { if (typeof renderLedger === 'function') renderLedger(); },
+              reports:   function() { if (typeof renderReports === 'function') renderReports(); },
+              alerts:    function() { if (typeof renderAlerts === 'function') renderAlerts(); },
+              scenario:  function() { if (typeof calcScenario === 'function') calcScenario(); },
+              backtest:  function() { if (typeof _qzbtInit === 'function') _qzbtInit(); },
+              playground:function() { if (typeof pgInitCTA === 'function') pgInitCTA(); },
+              journey:   function() { if (typeof jrnInit === 'function') jrnInit(); },
+              arena:     function() { if (typeof arenaInit === 'function') arenaInit(); },
+              galaxy:    function() { if (typeof galaxyInit === 'function') galaxyInit(); },
+              progress:  function() { if (typeof renderProgressTree === 'function') renderProgressTree(); }
+            };
+            var hook = inits[pageKey];
+            if (hook) try { hook(); } catch(e) { console.warn('[clean-dash] page hook ' + pageKey + ' threw:', e); }
+          } catch(_) {}
+        }, 50);
+
+        // Scroll the page-content back to top for fresh entry
+        setTimeout(function() {
+          if (pc) try { pc.scrollTop = 0; } catch(_) {}
+        }, 100);
       }
       // Attach click handlers to all data-page links inside the clean dashboard
       shell.querySelectorAll('[data-page]').forEach(function(el) {
@@ -9908,23 +9995,43 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
         });
       });
 
-      // ── "Back to home" floating button — appears when on a feature page,
-      // lets the user return to the clean dashboard from any deep page.
+      // ── "Back to Home" floating button — visible when on any feature page
       if (!document.getElementById('qz-back-home')) {
         var back = document.createElement('button');
         back.id = 'qz-back-home';
-        back.textContent = '← Back to Home';
+        back.innerHTML = '<span style="font-size:14px;">←</span><span>Home</span>';
         back.style.cssText = [
           'position:fixed','top:14px','right:14px','z-index:99999',
-          'background:#14171d','color:#f4f4f5',
-          'border:1px solid rgba(255,255,255,0.10)','border-radius:8px',
-          'padding:7px 14px','font-size:13px','font-weight:500',
-          'font-family:Inter,system-ui,sans-serif','cursor:pointer',
-          'box-shadow:0 4px 16px rgba(0,0,0,0.4)','display:none'
+          'background:linear-gradient(180deg,#1a1d25,#14171d)',
+          'color:#f4f4f5',
+          'border:1px solid rgba(255,255,255,0.10)','border-radius:10px',
+          'padding:8px 14px','font-size:13px','font-weight:600',
+          'letter-spacing:-0.005em',
+          'font-family:Inter,-apple-system,system-ui,sans-serif','cursor:pointer',
+          'box-shadow:0 4px 20px rgba(0,0,0,0.5),0 0 0 1px rgba(167,139,250,0.15) inset',
+          'display:none','align-items:center','gap:8px',
+          'transition:transform 180ms cubic-bezier(0.16,1,0.3,1),box-shadow 200ms,background 200ms'
         ].join(';');
+        back.onmouseover = function() {
+          back.style.transform = 'translateY(-1px)';
+          back.style.background = 'linear-gradient(180deg,#20232c,#1a1d25)';
+          back.style.boxShadow = '0 6px 24px rgba(0,0,0,0.5),0 0 0 1px rgba(167,139,250,0.30) inset';
+        };
+        back.onmouseout = function() {
+          back.style.transform = '';
+          back.style.background = 'linear-gradient(180deg,#1a1d25,#14171d)';
+          back.style.boxShadow = '0 4px 20px rgba(0,0,0,0.5),0 0 0 1px rgba(167,139,250,0.15) inset';
+        };
         back.addEventListener('click', function() {
           var dash = document.getElementById('qz-clean-dashboard');
-          if (dash) dash.style.removeProperty('display');
+          if (dash) {
+            dash.style.removeProperty('display');
+            dash.style.opacity = '0';
+            requestAnimationFrame(function() {
+              dash.style.transition = 'opacity 220ms cubic-bezier(0.16,1,0.3,1)';
+              dash.style.opacity = '1';
+            });
+          }
           back.style.display = 'none';
         });
         document.body.appendChild(back);
@@ -9933,8 +10040,8 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
           var d = document.getElementById('qz-clean-dashboard');
           if (!d) return;
           var hidden = getComputedStyle(d).display === 'none';
-          back.style.display = hidden ? '' : 'none';
-        }, 600);
+          back.style.display = hidden ? 'inline-flex' : 'none';
+        }, 400);
       }
 
       // Hide every legacy floating notification/toast that might cover the dashboard
