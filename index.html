@@ -9695,12 +9695,15 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
     else document.addEventListener('DOMContentLoaded', markBody);
 
     // ══════════════════════════════════════════════════════════════════
-    //  CLEAN DASHBOARD INJECTION
-    //  Existing dashboard CSS is too broken to debug per-element. Inject
-    //  a self-contained, fully styled dashboard at z-index 9999 that
-    //  COMPLETELY replaces what the user sees post-auth.
+    //  CLEAN DASHBOARD INJECTION — DISABLED
+    //  User wants the original feature set back (Game Hub, Quant Lab,
+    //  Intelligence Terminal, Signals, Portfolio, all 20+ pages).
+    //  Returning early so the existing #page-dashboard markup renders
+    //  in #app. HUD overlays still killed, layout still forced visible
+    //  via the qz-signed-in CSS rules above.
     //  ══════════════════════════════════════════════════════════════════
-    function injectCleanDashboard() {
+    function injectCleanDashboard() { return; /* disabled — original UI restored */ }
+    var __DISABLED_CLEAN_DASHBOARD_CODE = function() {
       if (document.getElementById('qz-clean-dashboard')) return;
       var firstName = (u.name || '').split(' ')[0] || (u.email || '').split('@')[0] || 'Trader';
       var initial = firstName.charAt(0).toUpperCase();
