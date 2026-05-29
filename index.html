@@ -9695,15 +9695,11 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
     else document.addEventListener('DOMContentLoaded', markBody);
 
     // ══════════════════════════════════════════════════════════════════
-    //  CLEAN DASHBOARD INJECTION — DISABLED
-    //  User wants the original feature set back (Game Hub, Quant Lab,
-    //  Intelligence Terminal, Signals, Portfolio, all 20+ pages).
-    //  Returning early so the existing #page-dashboard markup renders
-    //  in #app. HUD overlays still killed, layout still forced visible
-    //  via the qz-signed-in CSS rules above.
+    //  CLEAN DASHBOARD HUB — landing page after signin, with nav into
+    //  the original existing feature pages (Quant Lab, Intelligence
+    //  Terminal, AI Studio, Galaxy View, all of them).
     //  ══════════════════════════════════════════════════════════════════
-    function injectCleanDashboard() { return; /* disabled — original UI restored */ }
-    var __DISABLED_CLEAN_DASHBOARD_CODE = function() {
+    function injectCleanDashboard() {
       if (document.getElementById('qz-clean-dashboard')) return;
       var firstName = (u.name || '').split(' ')[0] || (u.email || '').split('@')[0] || 'Trader';
       var initial = firstName.charAt(0).toUpperCase();
@@ -9734,11 +9730,25 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
             navItem('💼','Portfolio',false) +
             navItem('📰','News',false) +
             navItem('🌍','Macro',false) +
-            navItem('⚡','AI Studio',false) +
-            '<div style="font-size:10.5px;font-weight:600;letter-spacing:0.08em;color:rgba(244,244,245,0.32);text-transform:uppercase;padding:14px 12px 4px;">Tools</div>' +
+            navItem('📋','Ledger',false) +
+            '<div style="font-size:10.5px;font-weight:600;letter-spacing:0.08em;color:rgba(244,244,245,0.32);text-transform:uppercase;padding:14px 12px 4px;">Intelligence</div>' +
+            navItem('⚡','AI Studio','false','aistudio') +
+            navItem('🧪','Quant Lab','false','quantlab') +
+            navItem('🛰️','Intel Terminal','false','intel') +
+            navItem('🌌','Universe','false','universe') +
+            navItem('🌐','Galaxy View','false','galaxy') +
+            '<div style="font-size:10.5px;font-weight:600;letter-spacing:0.08em;color:rgba(244,244,245,0.32);text-transform:uppercase;padding:14px 12px 4px;">Pro Tools</div>' +
             navItem('🔍','Scanner',false) +
             navItem('🎯','Backtest',false) +
+            navItem('🎲','Scenario','false','scenario') +
+            navItem('🏟️','Arena','false','arena') +
             navItem('📊','Reports',false) +
+            '<div style="font-size:10.5px;font-weight:600;letter-spacing:0.08em;color:rgba(244,244,245,0.32);text-transform:uppercase;padding:14px 12px 4px;">Foundation</div>' +
+            navItem('🚀','Playground',false) +
+            navItem('📚','Journey',false) +
+            navItem('🎯','Progress',false) +
+            navItem('🤖','AI Mentor','false','ai') +
+            navItem('🔔','Alerts',false) +
             navItem('⚙️','Settings',false) +
           '</nav>' +
           '<div style="padding:14px;border-top:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;gap:10px;">' +
@@ -9789,12 +9799,24 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
             // Action grid
             '<div style="font-size:14px;font-weight:600;letter-spacing:-0.012em;color:rgba(244,244,245,0.85);margin:8px 0 14px;">Get started</div>' +
             '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;">' +
-              actionCard('📈', 'View AI Signals', 'See institutional-grade buy/hold/sell signals with confidence scores across 100M+ securities.', 'signals') +
-              actionCard('⚡', 'Open AI Studio', 'Multi-agent AI orchestration for research, risk, and market intelligence on demand.', 'ai') +
-              actionCard('💼', 'Build Portfolio', 'Import positions or add manually. Real-time P&L, risk, and AI rebalancing.', 'portfolio') +
-              actionCard('🔍', 'Universe Scanner', 'Browse and filter 100M+ stocks, ETFs, crypto, forex, indices, and commodities.', 'scanner') +
-              actionCard('🌍', 'Macro Intel', 'Fed rates, yield curves, CPI, and global macro indicators with AI commentary.', 'macro') +
-              actionCard('⚙️', 'Settings', 'Configure your AI provider (built-in active by default), profile, and preferences.', 'settings') +
+              actionCard('📈', 'AI Signals', 'Institutional-grade BUY/HOLD/SELL signals with confidence scores across 100M+ securities.', 'signals') +
+              actionCard('⚡', 'AI Studio', 'Multi-agent orchestration — market intel, risk, sentiment, quantitative, strategy.', 'aistudio') +
+              actionCard('🧪', 'Quant Lab', 'Build factor models, run correlation matrices, design custom indicators.', 'quantlab') +
+              actionCard('🛰️', 'Intelligence Terminal', 'Live news feed with sentiment, macro briefings, arXiv quant research papers.', 'intel') +
+              actionCard('💼', 'Portfolio', 'Real-time P&L, allocation analysis, AI-generated rebalancing suggestions.', 'portfolio') +
+              actionCard('🌌', 'Universe Browser', 'Browse and filter 100M+ stocks, ETFs, crypto, forex, indices, commodities.', 'universe') +
+              actionCard('🚀', 'Playground', 'Cinematic 6-scene financial intelligence intro — earn your first XP.', 'playground') +
+              actionCard('📚', 'Quant Journey', '10-level progression from Novice to Master Quant. Unlock features as you climb.', 'journey') +
+              actionCard('🏟️', 'Quant Arena', 'Risk-free paper trading with AI coaching, rankings, and institutional-grade tools.', 'arena') +
+              actionCard('🔍', 'Scanner', 'Real-time scanner: filter by momentum, fundamentals, technical patterns.', 'scanner') +
+              actionCard('🌍', 'Macro', 'Fed rates, yield curves, CPI, global macro indicators with AI commentary.', 'macro') +
+              actionCard('🌐', 'Galaxy View', 'Navigate the financial universe as a live 3D constellation by sector and volatility.', 'galaxy') +
+              actionCard('🎲', 'Scenario Engine', 'Stress-test any market scenario — rates, earnings, geopolitics, recessions.', 'scenario') +
+              actionCard('⚡', 'Backtest', 'Validate strategies on historical data. Sharpe, max drawdown, win rate.', 'backtest') +
+              actionCard('📰', 'NewsJudge', 'AI-scored news with bullish/bearish impact analysis on every headline.', 'news') +
+              actionCard('📊', 'Reports', 'Auto-generated weekly portfolio performance reports with deep analysis.', 'reports') +
+              actionCard('🤖', 'AI Mentor', 'Your personal AI financial coach — ask anything, get crisp answers.', 'ai') +
+              actionCard('⚙️', 'Settings', 'Configure AI provider, profile, API keys, region, and preferences.', 'settings') +
             '</div>' +
           '</div>' +
         '</main>';
@@ -9802,8 +9824,10 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
       document.body.appendChild(shell);
 
       // Helpers
-      function navItem(icon, label, active) {
-        return '<a href="#" data-page="' + label.toLowerCase().replace(/\s/g,'') + '" style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:7px;font-size:13.5px;font-weight:500;letter-spacing:-0.005em;text-decoration:none;color:' + (active ? '#fff' : 'rgba(244,244,245,0.55)') + ';' + (active ? 'background:rgba(124,58,237,0.14);border-left:2px solid #7C3AED;padding-left:10px;' : '') + 'transition:background 140ms,color 140ms;">' +
+      function navItem(icon, label, active, explicitSlug) {
+        var slug = explicitSlug || label.toLowerCase().replace(/\s/g,'');
+        var isActive = active === true || active === 'true';
+        return '<a href="#" data-page="' + slug + '" style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:7px;font-size:13.5px;font-weight:500;letter-spacing:-0.005em;text-decoration:none;color:' + (isActive ? '#fff' : 'rgba(244,244,245,0.55)') + ';' + (isActive ? 'background:rgba(124,58,237,0.14);border-left:2px solid #7C3AED;padding-left:10px;' : '') + 'transition:background 140ms,color 140ms;">' +
           '<span style="width:16px;text-align:center;font-size:14px;">' + icon + '</span>' +
           '<span>' + label + '</span></a>';
       }
@@ -9829,6 +9853,89 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
         try { localStorage.removeItem('qz_auth_user__sig'); } catch(_) {}
         window.location.replace(window.location.pathname);
       });
+
+      // ── Wire EVERY data-page link to open the original feature page ──
+      // Map of clean-dashboard nav slugs → original showPage() page keys.
+      // The original pages (Quant Lab, Intelligence Terminal, AI Studio,
+      // Galaxy View, Signals, Portfolio, etc.) all exist in markup as
+      // <div id="page-xxx" class="page-anim hidden">. We just call the
+      // existing showPage() to reveal them — same code path the original
+      // sidebar uses.
+      var PAGE_MAP = {
+        dashboard:'dashboard', signals:'signals', portfolio:'portfolio',
+        news:'news', macro:'macro', aistudio:'command', ai:'ai',
+        scanner:'scanner', backtest:'backtest', reports:'reports',
+        settings:'settings', alerts:'alerts', ledger:'ledger',
+        playground:'playground', journey:'journey', progress:'progress',
+        universe:'universe', paper:'paper', quantlab:'quantlab',
+        intel:'intel', arena:'arena', galaxy:'galaxy', scenario:'scenario',
+        devhub:'devhub'
+      };
+      function openOriginalPage(slug) {
+        var pageKey = PAGE_MAP[slug] || slug;
+        // Hide the clean dashboard
+        var dash = document.getElementById('qz-clean-dashboard');
+        if (dash) dash.style.setProperty('display', 'none', 'important');
+        // Show #app
+        var app = document.getElementById('app');
+        if (app) {
+          app.style.setProperty('display', 'flex', 'important');
+          app.style.setProperty('visibility', 'visible', 'important');
+          app.style.setProperty('opacity', '1', 'important');
+        }
+        // Force initApp once + then call showPage to navigate
+        try {
+          if (!window._qzInitAppRan && typeof initApp === 'function') {
+            window._qzInitAppRan = true;
+            try { initApp(); } catch(e) { console.warn('[clean-dash] initApp threw:', e); }
+          }
+          if (typeof showPage === 'function') {
+            var navEl = document.getElementById('nav-' + pageKey);
+            showPage(pageKey, navEl);
+          }
+        } catch(e) { console.warn('[clean-dash] openOriginalPage failed:', e); }
+      }
+      // Attach click handlers to all data-page links inside the clean dashboard
+      shell.querySelectorAll('[data-page]').forEach(function(el) {
+        el.addEventListener('click', function(ev) {
+          ev.preventDefault();
+          var slug = el.getAttribute('data-page');
+          if (slug === 'dashboard') {
+            // Stay on clean dashboard
+            return;
+          }
+          openOriginalPage(slug);
+        });
+      });
+
+      // ── "Back to home" floating button — appears when on a feature page,
+      // lets the user return to the clean dashboard from any deep page.
+      if (!document.getElementById('qz-back-home')) {
+        var back = document.createElement('button');
+        back.id = 'qz-back-home';
+        back.textContent = '← Back to Home';
+        back.style.cssText = [
+          'position:fixed','top:14px','right:14px','z-index:99999',
+          'background:#14171d','color:#f4f4f5',
+          'border:1px solid rgba(255,255,255,0.10)','border-radius:8px',
+          'padding:7px 14px','font-size:13px','font-weight:500',
+          'font-family:Inter,system-ui,sans-serif','cursor:pointer',
+          'box-shadow:0 4px 16px rgba(0,0,0,0.4)','display:none'
+        ].join(';');
+        back.addEventListener('click', function() {
+          var dash = document.getElementById('qz-clean-dashboard');
+          if (dash) dash.style.removeProperty('display');
+          back.style.display = 'none';
+        });
+        document.body.appendChild(back);
+        // Show the back button only when clean dashboard is hidden
+        setInterval(function() {
+          var d = document.getElementById('qz-clean-dashboard');
+          if (!d) return;
+          var hidden = getComputedStyle(d).display === 'none';
+          back.style.display = hidden ? '' : 'none';
+        }, 600);
+      }
 
       // Hide every legacy floating notification/toast that might cover the dashboard
       ['qe-legal-overlay','qz-rebrand-toast','region-toast','qz-offline-banner',
