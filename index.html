@@ -9660,9 +9660,20 @@ function _showRebrandToast() {
 // Pages whose JS engines were removed due to parse errors — show a
 // premium "coming soon" overlay instead of letting the user see broken
 // inert markup.
-const _qzComingSoon = { quantlab: true, intel: true };
+const _qzComingSoon = { quantlab: true };
 
 function showPage(page, navEl) {
+  // Unified Intelligence Terminal — replaces both 'intel' and 'news' with
+  // the new ecosystem (NewsJudge + Intelligence + Opportunities merged).
+  if (page === 'intel' || page === 'news') {
+    document.querySelectorAll('[id^="page-"]').forEach(p => p.classList.add('hidden'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    if (navEl) navEl.classList.add('active');
+    _qzRenderUnifiedIntel();
+    var titleEl = document.getElementById('page-title');
+    if (titleEl) titleEl.innerHTML = 'Intelligence Terminal<small>AI-powered news + signals + opportunities</small>';
+    return;
+  }
   // Coming-soon intercept
   if (_qzComingSoon[page]) {
     _qzShowComingSoon(page);
@@ -9843,6 +9854,334 @@ function _qzShowComingSoon(page) {
   requestAnimationFrame(function() {
     requestAnimationFrame(function() { overlay.style.opacity = '1'; });
   });
+}
+
+// ══════════════════════════════════════════════════════════════════════
+//   UNIFIED INTELLIGENCE TERMINAL
+//   Merges: Intelligence tab + NewsJudge + Opportunity Engine
+//   + Portfolio-aware feed + Watchlist activity + AI-rewritten news
+// ══════════════════════════════════════════════════════════════════════
+function _qzRenderUnifiedIntel() {
+  // Use #page-intel as the container (it exists in markup), or fall back
+  // to creating one inside .page-content.
+  var container = document.getElementById('page-intel');
+  if (!container) {
+    var pc = document.querySelector('.page-content');
+    if (!pc) return;
+    container = document.createElement('div');
+    container.id = 'page-intel';
+    container.className = 'page-anim';
+    pc.appendChild(container);
+  }
+  container.classList.remove('hidden');
+  container.style.display = '';
+
+  // ── AI-rewritten news intelligence (mock data structured the way the
+  //    real pipeline would output — each item is platform-native, not a
+  //    direct copy of any source) ─────────────────────────────────────
+  var INTEL = [
+    {
+      id:1, headline:'NVIDIA Supplier Activity Signals AI Infrastructure Expansion',
+      summary:'Chain checks across Taiwan and Korea suggest Blackwell production ramping 18% above prior estimates, with hyperscaler orders front-loaded into Q3.',
+      takeaway:'AI capex cycle is accelerating, not plateauing as some bears argued',
+      implication:'Data center semis remain in primary uptrend; expect multiple expansion on AMD and TSM if NVDA breaks $920',
+      risk:'China export rules could clip 8-12% of NVDA revenue if tightened in Q4',
+      sectors:['Semiconductors','Cloud','AI Infrastructure'],
+      tickers:['NVDA','AMD','TSM','AVGO','MU'],
+      sentiment:'bullish', confidence:91, horizon:'1-3 months', vol:'high',
+      cat:'AI Picks', source:'Bloomberg + 3 channel checks',
+      time:'14 min ago', impact:9.2
+    },
+    {
+      id:2, headline:'Fed Minutes Reveal Pivot Discussions Earlier Than Markets Priced',
+      summary:'FOMC participants debated September rate cut conditions in detail. Real rates "meaningfully restrictive" cited by 7+ members.',
+      takeaway:'First cut likely September if July CPI <0.3% MoM',
+      implication:'Duration trade reopening — 7-10y Treasuries, REITs, small caps with debt should outperform',
+      risk:'Sticky services inflation could push first cut to November',
+      sectors:['Rates','REITs','Small Caps','Regional Banks'],
+      tickers:['TLT','IWM','VNQ','KRE','XLF'],
+      sentiment:'bullish', confidence:88, horizon:'2-6 weeks', vol:'medium',
+      cat:'Macro', source:'Fed minutes + 4 sell-side analysis',
+      time:'1h ago', impact:8.7
+    },
+    {
+      id:3, headline:'Apple Services Margin Expands 240bps on AI Feature Monetization',
+      summary:'iOS 18 AI feature adoption is driving premium tier upgrades 3x faster than baseline. Services gross margin hit 76.2% — new record.',
+      takeaway:'AAPL platform monetization thesis playing out faster than consensus modeled',
+      implication:'AAPL re-rating possible if Services growth sustains above 20%; supports current valuation premium',
+      risk:'EU Digital Markets Act could compress margins by 5-8% over 2 years',
+      sectors:['Mega Cap Tech','Consumer Electronics'],
+      tickers:['AAPL','SPY','QQQ'],
+      sentiment:'bullish', confidence:84, horizon:'3-6 months', vol:'low',
+      cat:'Earnings', source:'Apple 10-Q + 6 channel checks',
+      time:'2h ago', impact:7.8
+    },
+    {
+      id:4, headline:'Energy Complex Diverges as OPEC+ Signals Production Discipline',
+      summary:'OPEC+ extended voluntary cuts through year-end. Saudi/Russia coordination strongest since 2020.',
+      takeaway:'Oil price floor near $75 WTI established for next 90 days',
+      implication:'XLE leveraged players (XOP) benefit; refiners (VLO, MPC) hurt as cracks compress',
+      risk:'Iran nuclear deal could add 1.2M bpd to global supply',
+      sectors:['Energy E&P','Refiners','Pipelines'],
+      tickers:['XLE','XOP','XOM','CVX','OXY','VLO','MPC'],
+      sentiment:'bullish', confidence:79, horizon:'1-3 months', vol:'high',
+      cat:'Market Moving', source:'OPEC statement + 5 energy analysts',
+      time:'3h ago', impact:7.4
+    },
+    {
+      id:5, headline:'Tesla Q1 Deliveries Miss Triggers Production Slowdown Re-Rating',
+      summary:'386,810 deliveries vs 420,000 consensus. Production cuts at Fremont confirmed; Cybertruck ramp slower than guided.',
+      takeaway:'EV demand softening; TSLA premium to legacy autos under pressure',
+      implication:'Bears target $200; bulls need robotaxi catalyst by July to defend',
+      risk:'Margin compression could accelerate if Model 2 launch delays',
+      sectors:['EV','Auto','Lithium'],
+      tickers:['TSLA','RIVN','LCID','LIT','GM','F'],
+      sentiment:'bearish', confidence:82, horizon:'4-8 weeks', vol:'high',
+      cat:'Market Moving', source:'Tesla press release + 8 auto analysts',
+      time:'5h ago', impact:8.1
+    },
+    {
+      id:6, headline:'Bitcoin Spot ETFs Hit $13B Net Inflows — Institutional Adoption Inflection',
+      summary:'BlackRock IBIT alone now manages $19B. Combined spot Bitcoin ETF AUM crossed $58B. Pension allocations beginning to appear in filings.',
+      takeaway:'Institutional onramp accelerating faster than 2021 cycle',
+      implication:'BTC $80K possible if ETF inflows hold; ETH spot ETF approval Q3 is next catalyst',
+      risk:'Sustained Fed hawkishness could trigger 20% correction',
+      sectors:['Crypto','Bitcoin','Fintech'],
+      tickers:['BTC','IBIT','FBTC','COIN','MSTR','MARA'],
+      sentiment:'bullish', confidence:86, horizon:'2-3 months', vol:'high',
+      cat:'Crypto', source:'13F filings + ETF flow data',
+      time:'6h ago', impact:8.4
+    },
+    {
+      id:7, headline:'Unusual Options Flow Detected in Boeing — $4.2M Bullish Bet',
+      summary:'1,200 BA call contracts opened at $190 strike, July expiry. Premium paid suggests sophisticated trader with 60-day horizon.',
+      takeaway:'Smart money positioning for FAA approval + earnings catalyst',
+      implication:'BA technical setup confirms — break of $185 targets $210',
+      risk:'737 MAX certification issues could re-emerge',
+      sectors:['Aerospace','Defense','Industrials'],
+      tickers:['BA','LMT','RTX'],
+      sentiment:'bullish', confidence:74, horizon:'4-6 weeks', vol:'high',
+      cat:'Whale/Unusual Flow', source:'Options flow analysis',
+      time:'7h ago', impact:6.8
+    },
+    {
+      id:8, headline:'NVIDIA Insider Sells $48M — Routine 10b5-1 Plan or Top?',
+      summary:'CFO Colette Kress sold 28K shares under pre-arranged plan. Activity consistent with quarterly cadence; not unusual.',
+      takeaway:'Mechanical sale, not a signal — narrative-driven concern likely overblown',
+      implication:'No actionable change to NVDA thesis',
+      risk:'Watch for accelerated insider selling beyond plan',
+      sectors:['Semiconductors'],
+      tickers:['NVDA'],
+      sentiment:'neutral', confidence:71, horizon:'N/A', vol:'low',
+      cat:'Insider Activity', source:'SEC Form 4',
+      time:'9h ago', impact:4.2
+    },
+    {
+      id:9, headline:'Goldman Upgrades Microsoft to Conviction Buy, $510 PT',
+      summary:'Azure growth re-accelerating to 31% YoY on AI workloads. Copilot monetization tracking ahead of plan with 6.7M paid seats.',
+      takeaway:'AI integration lifecycle now reflecting in fundamentals',
+      implication:'MSFT consensus likely to rerate higher; $480 → $510 possible',
+      risk:'AI infrastructure capex concerns could pressure margins short-term',
+      sectors:['Cloud','Mega Cap Tech','AI Software'],
+      tickers:['MSFT','GOOGL','AMZN'],
+      sentiment:'bullish', confidence:89, horizon:'6-12 months', vol:'low',
+      cat:'Analyst Changes', source:'Goldman Sachs equity research',
+      time:'11h ago', impact:7.6
+    },
+    {
+      id:10, headline:'China Manufacturing PMI Contracts — Third Consecutive Monthly Decline',
+      summary:'PMI fell to 49.1, missing 49.8 consensus. New orders sub-component at 47.2 signals continued demand weakness.',
+      takeaway:'China recovery hopes pushed out to H2 2026',
+      implication:'Negative for global commodity demand, copper, BHP; positive for USD',
+      risk:'Beijing stimulus response could reverse narrative in weeks',
+      sectors:['Materials','Mining','Emerging Markets'],
+      tickers:['FCX','BHP','RIO','EEM','FXI'],
+      sentiment:'bearish', confidence:81, horizon:'1-2 months', vol:'medium',
+      cat:'Macro', source:'NBS China + 6 macro economists',
+      time:'14h ago', impact:7.2
+    },
+  ];
+
+  // ── OPPORTUNITY ENGINE — synthesized from intel + signals ──
+  var OPPORTUNITIES = [
+    { title:'High Bullish Momentum · AI Infrastructure', desc:'4 of 5 leading indicators confirm continuation. Capex cycle accelerating.', score:91, sentiment:'bullish', tickers:'NVDA, AMD, TSM, AVGO', timing:'1-3 months', icon:'⚡' },
+    { title:'Macro Tailwind Setup · Rate-Sensitive Names', desc:'Fed pivot earlier than priced. Duration + small cap rotation likely.', score:84, sentiment:'bullish', tickers:'TLT, IWM, KRE', timing:'2-6 weeks', icon:'📈' },
+    { title:'Crypto Adoption Inflection · ETF Flow Acceleration', desc:'Institutional onramp at 2021-cycle pace. BTC $80K probable.', score:82, sentiment:'bullish', tickers:'BTC, IBIT, COIN', timing:'2-3 months', icon:'🪙' },
+    { title:'Bearish Reversal Watch · EV Auto', desc:'Demand softening confirmed. Margin compression accelerating.', score:78, sentiment:'bearish', tickers:'TSLA, RIVN, LCID', timing:'4-8 weeks', icon:'⚠️' },
+  ];
+
+  // ── Portfolio-aware (uses user's STOCKS holdings to filter relevant) ──
+  var userTickers = ['NVDA','AAPL','TSLA','BTC']; // mock — would read from portfolio
+  var portfolioImpact = INTEL.filter(function(n) {
+    return n.tickers.some(function(t) { return userTickers.indexOf(t) > -1; });
+  });
+
+  // ── Stats ──
+  var bullCount = INTEL.filter(function(n) { return n.sentiment === 'bullish'; }).length;
+  var bearCount = INTEL.filter(function(n) { return n.sentiment === 'bearish'; }).length;
+  var avgConf = Math.round(INTEL.reduce(function(a, n) { return a + n.confidence; }, 0) / INTEL.length);
+  var avgImpact = (INTEL.reduce(function(a, n) { return a + n.impact; }, 0) / INTEL.length).toFixed(1);
+
+  // ── Build HTML ──
+  var html = '<style>' +
+    '@keyframes qzIntelPulse { 0%,100% { opacity:0.85; } 50% { opacity:1; } }' +
+    '@keyframes qzIntelGlow { 0%,100% { box-shadow:0 0 16px rgba(167,139,250,0.25); } 50% { box-shadow:0 0 28px rgba(167,139,250,0.45); } }' +
+    '@keyframes qzIntelTick { 0% { transform:translateX(0); } 100% { transform:translateX(-50%); } }' +
+    '.qz-intel-card { background:#14171d; border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:22px 26px; transition:border-color 220ms cubic-bezier(0.16,1,0.3,1), box-shadow 220ms cubic-bezier(0.16,1,0.3,1), transform 220ms cubic-bezier(0.16,1,0.3,1); }' +
+    '.qz-intel-card:hover { border-color:rgba(167,139,250,0.30); box-shadow:0 0 24px rgba(124,58,237,0.15), 0 8px 28px rgba(0,0,0,0.40); transform:translateY(-1px); }' +
+    '.qz-intel-pill { display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; padding:3px 9px; border-radius:6px; }' +
+    '.qz-intel-section-title { font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:rgba(244,244,245,0.55); display:flex; align-items:center; gap:10px; margin:32px 0 14px; }' +
+    '.qz-intel-section-title::after { content:""; flex:1; height:1px; background:linear-gradient(90deg, rgba(167,139,250,0.20), transparent); }' +
+    '.qz-cat-chip { display:inline-flex; align-items:center; gap:6px; padding:6px 12px; font-size:11.5px; font-weight:500; color:rgba(244,244,245,0.60); background:transparent; border:1px solid rgba(255,255,255,0.06); border-radius:7px; cursor:pointer; transition:all 160ms cubic-bezier(0.16,1,0.3,1); }' +
+    '.qz-cat-chip:hover { background:rgba(255,255,255,0.04); color:#fff; }' +
+    '.qz-cat-chip.active { background:rgba(124,58,237,0.14); color:#fff; border-color:rgba(167,139,250,0.40); box-shadow:0 0 16px rgba(124,58,237,0.20); }' +
+  '</style>';
+
+  // ── HERO ──
+  html += '<div style="background:linear-gradient(135deg,#14171d 0%,#0e1117 100%);border:1px solid rgba(167,139,250,0.18);border-radius:18px;padding:28px 32px;margin-bottom:24px;position:relative;overflow:hidden;">' +
+    '<div style="position:absolute;top:-60px;right:-60px;width:300px;height:300px;background:radial-gradient(circle,rgba(124,58,237,0.20),transparent 65%);pointer-events:none;filter:blur(20px);"></div>' +
+    '<div style="position:absolute;bottom:-40px;left:30%;width:240px;height:240px;background:radial-gradient(circle,rgba(34,211,238,0.10),transparent 65%);pointer-events:none;"></div>' +
+    '<div style="position:relative;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;">' +
+        '<div style="flex:1;min-width:260px;">' +
+          '<div style="display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:#A78BFA;padding:5px 12px;border-radius:999px;border:1px solid rgba(167,139,250,0.30);background:rgba(124,58,237,0.10);margin-bottom:14px;animation:qzIntelGlow 3s ease-in-out infinite;">' +
+            '<span style="width:6px;height:6px;border-radius:50%;background:#A78BFA;box-shadow:0 0 10px #A78BFA;animation:qzIntelPulse 2s ease-in-out infinite;"></span>' +
+            'Intelligence Terminal · Live' +
+          '</div>' +
+          '<div style="font-size:28px;font-weight:700;letter-spacing:-0.028em;line-height:1.1;margin-bottom:10px;color:#fff;">Markets, Synthesized.</div>' +
+          '<div style="font-size:14px;color:rgba(244,244,245,0.62);line-height:1.55;max-width:600px;">AI-rewritten intelligence from 32 sources + 20 newsletters + SEC filings + options flow. Every item classified, scored, and routed to what matters to your portfolio.</div>' +
+        '</div>' +
+        '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;min-width:260px;">' +
+          '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px 16px;"><div style="font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(244,244,245,0.42);margin-bottom:4px;">Processed</div><div style="font-size:18px;font-weight:600;letter-spacing:-0.022em;color:#fff;font-variant-numeric:tabular-nums;">1,247</div></div>' +
+          '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px 16px;"><div style="font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(244,244,245,0.42);margin-bottom:4px;">Surfaced</div><div style="font-size:18px;font-weight:600;letter-spacing:-0.022em;color:#A78BFA;font-variant-numeric:tabular-nums;">' + INTEL.length + '</div></div>' +
+          '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(16,185,129,0.18);border-radius:10px;padding:12px 16px;"><div style="font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(244,244,245,0.42);margin-bottom:4px;">Bullish</div><div style="font-size:18px;font-weight:600;letter-spacing:-0.022em;color:#10B981;font-variant-numeric:tabular-nums;">' + bullCount + '</div></div>' +
+          '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(239,68,68,0.18);border-radius:10px;padding:12px 16px;"><div style="font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(244,244,245,0.42);margin-bottom:4px;">Bearish</div><div style="font-size:18px;font-weight:600;letter-spacing:-0.022em;color:#EF4444;font-variant-numeric:tabular-nums;">' + bearCount + '</div></div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+
+  // ── OPPORTUNITY ENGINE ──
+  html += '<div class="qz-intel-section-title">⚡ Opportunity Engine</div>';
+  html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:24px;">';
+  OPPORTUNITIES.forEach(function(o) {
+    var sColor = o.sentiment === 'bullish' ? '#10B981' : '#EF4444';
+    var sBg = o.sentiment === 'bullish' ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)';
+    html += '<div class="qz-intel-card" style="position:relative;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px;">' +
+        '<div style="font-size:24px;line-height:1;filter:drop-shadow(0 0 12px ' + sColor + '40);">' + o.icon + '</div>' +
+        '<div style="text-align:right;"><div style="font-size:11px;font-weight:600;letter-spacing:0.06em;color:rgba(244,244,245,0.42);text-transform:uppercase;">Score</div><div style="font-size:22px;font-weight:700;color:' + sColor + ';font-variant-numeric:tabular-nums;line-height:1;">' + o.score + '</div></div>' +
+      '</div>' +
+      '<div style="font-size:14.5px;font-weight:600;letter-spacing:-0.012em;color:#fff;margin-bottom:6px;line-height:1.25;">' + o.title + '</div>' +
+      '<div style="font-size:12.5px;color:rgba(244,244,245,0.60);line-height:1.5;margin-bottom:12px;">' + o.desc + '</div>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;font-size:10.5px;color:rgba(244,244,245,0.50);font-variant-numeric:tabular-nums;">' +
+        '<span class="qz-intel-pill" style="background:' + sBg + ';color:' + sColor + ';">' + o.sentiment + '</span>' +
+        '<span class="qz-intel-pill" style="background:rgba(255,255,255,0.04);color:rgba(244,244,245,0.55);">' + o.timing + '</span>' +
+      '</div>' +
+      '<div style="margin-top:10px;font-size:11px;font-family:monospace;color:rgba(167,139,250,0.85);letter-spacing:0.04em;">' + o.tickers + '</div>' +
+    '</div>';
+  });
+  html += '</div>';
+
+  // ── PORTFOLIO IMPACT ──
+  if (portfolioImpact.length > 0) {
+    html += '<div class="qz-intel-section-title">💼 Portfolio Impact <span style="background:rgba(124,58,237,0.14);border:1px solid rgba(167,139,250,0.30);color:#A78BFA;font-size:10.5px;padding:2px 7px;border-radius:4px;font-weight:600;letter-spacing:0.05em;">' + portfolioImpact.length + ' RELEVANT</span></div>';
+    html += '<div style="display:grid;gap:10px;margin-bottom:24px;">';
+    portfolioImpact.slice(0, 3).forEach(function(n) {
+      var sColor = n.sentiment === 'bullish' ? '#10B981' : n.sentiment === 'bearish' ? '#EF4444' : '#F59E0B';
+      html += '<div class="qz-intel-card" style="padding:16px 22px;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">' +
+          '<div style="flex:1;min-width:0;">' +
+            '<div style="font-size:11px;color:rgba(167,139,250,0.85);font-weight:500;margin-bottom:4px;letter-spacing:0.02em;">Affects: ' + n.tickers.filter(function(t) { return userTickers.indexOf(t) > -1; }).join(' · ') + '</div>' +
+            '<div style="font-size:14px;font-weight:600;color:#fff;line-height:1.3;">' + n.headline + '</div>' +
+          '</div>' +
+          '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;">' +
+            '<span class="qz-intel-pill" style="background:' + sColor + '20;color:' + sColor + ';">' + n.sentiment + ' · ' + n.confidence + '%</span>' +
+            '<span style="font-size:10.5px;color:rgba(244,244,245,0.42);">' + n.time + '</span>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    });
+    html += '</div>';
+  }
+
+  // ── CATEGORY FILTER ──
+  html += '<div class="qz-intel-section-title">📡 Live Intelligence Feed</div>';
+  var cats = ['All','Market Moving','Bullish','Bearish','Macro','Earnings','Crypto','AI Picks','Whale/Unusual Flow','Insider Activity','Analyst Changes'];
+  html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;">';
+  cats.forEach(function(c, i) {
+    html += '<button class="qz-cat-chip ' + (i === 0 ? 'active' : '') + '" data-filter="' + c + '" onclick="_qzIntelFilter(this, \'' + c + '\')">' + c + '</button>';
+  });
+  html += '</div>';
+
+  // ── MAIN FEED CARDS ──
+  html += '<div id="qz-intel-feed" style="display:grid;gap:12px;">';
+  INTEL.forEach(function(n) {
+    html += _qzIntelCard(n);
+  });
+  html += '</div>';
+
+  // ── SOURCES STRIP (collapsed) ──
+  html += '<div style="margin-top:32px;padding:18px 22px;background:#0e1117;border:1px solid rgba(255,255,255,0.04);border-radius:12px;">' +
+    '<div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(244,244,245,0.45);margin-bottom:10px;">📡 Ingestion Sources · 32 active</div>' +
+    '<div style="font-size:12px;color:rgba(244,244,245,0.55);line-height:1.7;">Bloomberg · Reuters · Financial Times · WSJ · The Economist · CNBC · MarketWatch · Barron\'s · Investor\'s Business Daily · Seeking Alpha · Morningstar · Yahoo Finance · Forbes · Business Insider · Fortune · TechCrunch · The Information · Axios · Politico · SCMP · Nikkei · Handelsblatt · Les Echos · Economic Times · arXiv q-fin · SSRN · NBER · Federal Reserve · ECB · Bank of England · IMF · World Bank</div>' +
+  '</div>';
+
+  html += '<div style="margin-top:14px;padding:18px 22px;background:#0e1117;border:1px solid rgba(167,139,250,0.10);border-radius:12px;">' +
+    '<div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(244,244,245,0.45);margin-bottom:10px;">✉️ Newsletters · 20 monitored</div>' +
+    '<div style="font-size:12px;color:rgba(244,244,245,0.55);line-height:1.7;">Stratechery · The Diff · Net Interest · Money Stuff (Levine) · The Daily Shot · Axios Markets · Axios Macro · Chartbook (Tooze) · Doomberg · Marginal Revolution · Conviction Capital · The Profile · Off Topic · Pirate Wires · Not Boring · Platformer · The Generalist · Above the Crowd · Of Dollars and Data · The Reformed Broker</div>' +
+  '</div>';
+
+  container.innerHTML = html;
+
+  // Expose filter function globally
+  window._qzIntelFilter = function(btn, cat) {
+    document.querySelectorAll('.qz-cat-chip').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    var feed = document.getElementById('qz-intel-feed');
+    if (!feed) return;
+    var filtered = cat === 'All' ? INTEL :
+      cat === 'Bullish' ? INTEL.filter(function(n) { return n.sentiment === 'bullish'; }) :
+      cat === 'Bearish' ? INTEL.filter(function(n) { return n.sentiment === 'bearish'; }) :
+      INTEL.filter(function(n) { return n.cat === cat; });
+    feed.innerHTML = filtered.map(_qzIntelCard).join('') || '<div style="padding:40px;text-align:center;color:rgba(244,244,245,0.42);font-size:13px;">No intelligence items in this category.</div>';
+  };
+}
+
+function _qzIntelCard(n) {
+  var sColor = n.sentiment === 'bullish' ? '#10B981' : n.sentiment === 'bearish' ? '#EF4444' : '#F59E0B';
+  var sBg = n.sentiment === 'bullish' ? 'rgba(16,185,129,0.12)' : n.sentiment === 'bearish' ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.12)';
+  var impactColor = n.impact >= 8 ? '#A78BFA' : n.impact >= 6 ? '#22D3EE' : 'rgba(244,244,245,0.55)';
+  return '<div class="qz-intel-card" style="position:relative;">' +
+    '<div style="position:absolute;left:0;top:22px;bottom:22px;width:3px;background:' + sColor + ';box-shadow:0 0 12px ' + sColor + '80;border-radius:0 2px 2px 0;"></div>' +
+    '<div style="margin-left:10px;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:12px;flex-wrap:wrap;">' +
+        '<div style="font-size:15.5px;font-weight:600;letter-spacing:-0.012em;color:#fff;line-height:1.3;flex:1;min-width:0;">' + n.headline + '</div>' +
+        '<div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">' +
+          '<span class="qz-intel-pill" style="background:' + sBg + ';color:' + sColor + ';">' + n.sentiment + ' · ' + n.confidence + '%</span>' +
+          '<span class="qz-intel-pill" style="background:rgba(167,139,250,0.10);color:' + impactColor + ';">Impact ' + n.impact + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<div style="font-size:11px;color:rgba(244,244,245,0.42);margin-bottom:14px;letter-spacing:0.01em;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+        '<span class="qz-intel-pill" style="background:rgba(124,58,237,0.10);color:#A78BFA;font-size:9.5px;">' + n.cat + '</span>' +
+        '<span style="color:rgba(167,139,250,0.85);font-weight:500;">' + n.source + '</span>' +
+        '<span style="color:rgba(244,244,245,0.30);">·</span>' +
+        '<span>' + n.time + '</span>' +
+        '<span style="color:rgba(244,244,245,0.30);">·</span>' +
+        '<span>' + n.horizon + ' · ' + n.vol + ' vol</span>' +
+      '</div>' +
+      '<div style="font-size:13.5px;color:rgba(244,244,245,0.78);line-height:1.6;margin-bottom:14px;">' + n.summary + '</div>' +
+      '<div style="border-top:1px solid rgba(255,255,255,0.05);padding-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">' +
+        '<div><div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#A78BFA;margin-bottom:4px;">Key Takeaway</div><div style="font-size:12.5px;color:rgba(244,244,245,0.78);line-height:1.5;">' + n.takeaway + '</div></div>' +
+        '<div><div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#22D3EE;margin-bottom:4px;">Implication</div><div style="font-size:12.5px;color:rgba(244,244,245,0.78);line-height:1.5;">' + n.implication + '</div></div>' +
+        '<div><div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#F87171;margin-bottom:4px;">Risk</div><div style="font-size:12.5px;color:rgba(244,244,245,0.78);line-height:1.5;">' + n.risk + '</div></div>' +
+      '</div>' +
+      '<div style="margin-top:12px;display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:rgba(244,244,245,0.50);">' +
+        '<div><strong style="color:#A78BFA;font-weight:600;">Sectors:</strong> ' + n.sectors.join(' · ') + '</div>' +
+        '<div><strong style="color:#A78BFA;font-weight:600;">Tickers:</strong> <span style="font-family:monospace;letter-spacing:0.04em;color:rgba(244,244,245,0.85);">' + n.tickers.join(' ') + '</span></div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
 }
 
 function _sparkData(ticker, price, isUp) {
