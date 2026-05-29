@@ -9871,8 +9871,96 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
         intel:'intel', arena:'arena', galaxy:'galaxy', scenario:'scenario',
         devhub:'devhub'
       };
+      // ── STABILIZATION: per-page init tracking, nav lock, error trap ──
+      window._qzPageInitDone = window._qzPageInitDone || {};
+      window._qzNavLock = window._qzNavLock || { busy: false, last: 0 };
+
+      // Global error-recovery toast. Non-blocking, dismisses in 4s.
+      function _qzShowErrToast(msg) {
+        try {
+          var ex = document.getElementById('qz-err-toast');
+          if (ex) ex.remove();
+          var t = document.createElement('div');
+          t.id = 'qz-err-toast';
+          t.style.cssText = 'position:fixed;top:14px;left:50%;transform:translateX(-50%) translateY(-8px);' +
+            'z-index:99999;background:#1a1d25;color:#f4f4f5;border:1px solid rgba(248,113,113,0.4);' +
+            'border-radius:10px;padding:10px 16px;font:500 12.5px Inter,system-ui;' +
+            'box-shadow:0 8px 24px rgba(0,0,0,0.5);max-width:90vw;opacity:0;' +
+            'transition:opacity 200ms cubic-bezier(0.16,1,0.3,1),transform 200ms cubic-bezier(0.16,1,0.3,1);';
+          t.innerHTML = '<span style="color:#F87171;">⚠</span> ' + msg;
+          document.body.appendChild(t);
+          requestAnimationFrame(function() {
+            requestAnimationFrame(function() {
+              t.style.opacity = '1';
+              t.style.transform = 'translateX(-50%) translateY(0)';
+            });
+          });
+          setTimeout(function() {
+            if (t.parentNode) { t.style.opacity = '0'; setTimeout(function() { t.remove(); }, 220); }
+          }, 4000);
+        } catch(_) {}
+      }
+
+      // Install global error trap if not already (catches uncaught errors during nav)
+      if (!window._qzGlobalErrTrap) {
+        window._qzGlobalErrTrap = true;
+        window.addEventListener('error', function(e) {
+          if (e.message && /qz-clean|openOriginalPage|showPage/i.test(e.message + ' ' + (e.filename || ''))) {
+            console.warn('[stabilization] caught error:', e.message);
+          }
+        });
+        window.addEventListener('unhandledrejection', function(e) {
+          console.warn('[stabilization] unhandled promise:', e.reason && (e.reason.message || e.reason));
+        });
+      }
+
+      // Show a transient loading skeleton on the target page area
+      function _qzShowPageSkeleton() {
+        try {
+          var existing = document.getElementById('qz-page-skeleton');
+          if (existing) existing.remove();
+          var s = document.createElement('div');
+          s.id = 'qz-page-skeleton';
+          s.style.cssText = 'position:fixed;top:60px;left:232px;right:0;bottom:0;' +
+            'z-index:8000;background:#0a0c14;padding:32px;display:flex;flex-direction:column;gap:14px;' +
+            'pointer-events:none;opacity:0;transition:opacity 140ms cubic-bezier(0.16,1,0.3,1);';
+          // Three skeleton blocks
+          for (var i = 0; i < 3; i++) {
+            var h = i === 0 ? 80 : (i === 1 ? 120 : 200);
+            s.innerHTML += '<div style="height:' + h + 'px;border-radius:12px;' +
+              'background:linear-gradient(90deg,rgba(255,255,255,0.04) 0%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.04) 100%);' +
+              'background-size:200% 100%;animation:qz-shimmer 1.4s linear infinite;"></div>';
+          }
+          document.body.appendChild(s);
+          requestAnimationFrame(function() { s.style.opacity = '1'; });
+          // Auto-hide skeleton after 600ms
+          setTimeout(function() {
+            if (s.parentNode) { s.style.opacity = '0'; setTimeout(function() { s.remove(); }, 200); }
+          }, 600);
+        } catch(_) {}
+      }
+      // One-time shimmer keyframes
+      if (!document.getElementById('qz-shimmer-css')) {
+        var sk = document.createElement('style');
+        sk.id = 'qz-shimmer-css';
+        sk.textContent = '@keyframes qz-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }';
+        document.head.appendChild(sk);
+      }
+
       function openOriginalPage(slug) {
+        // ── Navigation lock: ignore rapid double-clicks ──
+        var now = Date.now();
+        if (window._qzNavLock.busy || (now - window._qzNavLock.last) < 200) {
+          return;
+        }
+        window._qzNavLock.busy = true;
+        window._qzNavLock.last = now;
+        setTimeout(function() { window._qzNavLock.busy = false; }, 250);
+
         var pageKey = PAGE_MAP[slug] || slug;
+        // Show transient loading skeleton
+        _qzShowPageSkeleton();
+
         // Fade-out the clean dashboard for smooth transition
         var dash = document.getElementById('qz-clean-dashboard');
         if (dash) {
@@ -9943,7 +10031,9 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
           }
         } catch(e) { console.warn('[clean-dash] showPage failed:', e); }
 
-        // Page-specific initialization hooks (each is safe-no-op if undef)
+        // Page-specific initialization hooks — each runs ONCE per page
+        // (tracked via _qzPageInitDone) and is fully wrapped so a single
+        // page failure cannot block navigation to other pages.
         setTimeout(function() {
           try {
             var inits = {
@@ -9973,8 +10063,20 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
               progress:  function() { if (typeof renderProgressTree === 'function') renderProgressTree(); }
             };
             var hook = inits[pageKey];
-            if (hook) try { hook(); } catch(e) { console.warn('[clean-dash] page hook ' + pageKey + ' threw:', e); }
-          } catch(_) {}
+            // Run init ONCE per page — re-navigation reuses already-rendered state
+            if (hook && !window._qzPageInitDone[pageKey]) {
+              try {
+                hook();
+                window._qzPageInitDone[pageKey] = true;
+              } catch(e) {
+                console.warn('[stabilization] page hook ' + pageKey + ' threw:', e && e.message);
+                // Don't mark done — let it retry next time
+                _qzShowErrToast('Page loaded with partial data. Reload for full content.');
+              }
+            }
+          } catch(e) {
+            console.warn('[stabilization] init-hooks block threw:', e);
+          }
         }, 50);
 
         // Scroll the page-content back to top for fresh entry
@@ -9982,6 +10084,24 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
           if (pc) try { pc.scrollTop = 0; } catch(_) {}
         }, 100);
       }
+      // ── Wrap openOriginalPage in an outer error boundary ──
+      var _origOpenPage = openOriginalPage;
+      openOriginalPage = function(slug) {
+        try {
+          _origOpenPage(slug);
+        } catch (e) {
+          console.error('[stabilization] openOriginalPage failed for ' + slug + ':', e);
+          // Recovery: show toast, return to clean dashboard
+          _qzShowErrToast('Could not open that page. Returning to home.');
+          try { window._qzNavLock.busy = false; } catch(_) {}
+          var d = document.getElementById('qz-clean-dashboard');
+          if (d) {
+            d.style.removeProperty('display');
+            d.style.opacity = '1';
+          }
+        }
+      };
+
       // Attach click handlers to all data-page links inside the clean dashboard
       shell.querySelectorAll('[data-page]').forEach(function(el) {
         el.addEventListener('click', function(ev) {
@@ -10023,16 +10143,29 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
           back.style.boxShadow = '0 4px 20px rgba(0,0,0,0.5),0 0 0 1px rgba(167,139,250,0.15) inset';
         };
         back.addEventListener('click', function() {
-          var dash = document.getElementById('qz-clean-dashboard');
-          if (dash) {
-            dash.style.removeProperty('display');
-            dash.style.opacity = '0';
-            requestAnimationFrame(function() {
-              dash.style.transition = 'opacity 220ms cubic-bezier(0.16,1,0.3,1)';
-              dash.style.opacity = '1';
-            });
+          try {
+            var dash = document.getElementById('qz-clean-dashboard');
+            if (dash) {
+              dash.style.removeProperty('display');
+              dash.style.opacity = '0';
+              requestAnimationFrame(function() {
+                dash.style.transition = 'opacity 220ms cubic-bezier(0.16,1,0.3,1)';
+                dash.style.opacity = '1';
+              });
+            } else {
+              // Dashboard was removed — re-inject it
+              if (typeof injectCleanDashboard === 'function') {
+                injectCleanDashboard();
+              }
+            }
+            back.style.display = 'none';
+            // Reset nav lock in case it was stuck
+            try { window._qzNavLock.busy = false; } catch(_) {}
+          } catch(e) {
+            console.warn('[stabilization] Home-button click recovery:', e);
+            // Last resort: reload
+            window.location.replace(window.location.pathname);
           }
-          back.style.display = 'none';
         });
         document.body.appendChild(back);
         // Show the back button only when clean dashboard is hidden
