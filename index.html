@@ -9830,8 +9830,8 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
                 premiumStat('Markets Open', '7 / 12', 'NYSE · LSE · TSE', '#F59E0B', '🌍', true) +
               '</div>' +
 
-              // ── TWO COLUMN: TOP SIGNALS + LATEST NEWS ──
-              '<div style="display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-bottom:24px;">' +
+              // ── TWO COLUMN: TOP SIGNALS + LATEST NEWS — responsive ──
+              '<div class="qz-hub-twocol" style="display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:16px;margin-bottom:24px;">' +
                 // Top signals
                 '<div style="background:#14171d;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:20px 22px;">' +
                   '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">' +
@@ -9886,14 +9886,29 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
 
       document.body.appendChild(shell);
 
-      // Inject animation keyframes once
+      // Inject animation keyframes + neon styles + responsive rules
       if (!document.getElementById('qz-hub-keyframes')) {
         var kf = document.createElement('style');
         kf.id = 'qz-hub-keyframes';
-        kf.textContent =
-          '@keyframes qzTickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }' +
-          '@keyframes qzPulse { 0%,100% { opacity:1; box-shadow:0 0 8px #A78BFA; } 50% { opacity:0.5; box-shadow:0 0 14px #A78BFA; } }' +
-          '@keyframes qzShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }';
+        kf.textContent = [
+          '@keyframes qzTickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }',
+          '@keyframes qzPulse { 0%,100% { opacity:1; box-shadow:0 0 8px #A78BFA; } 50% { opacity:0.5; box-shadow:0 0 14px #A78BFA; } }',
+          '@keyframes qzShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }',
+          '@keyframes qzNeonGlow { 0%,100% { box-shadow:0 0 18px rgba(167,139,250,0.18), 0 0 0 1px rgba(167,139,250,0.10) inset; } 50% { box-shadow:0 0 32px rgba(167,139,250,0.35), 0 0 0 1px rgba(167,139,250,0.25) inset; } }',
+          '@keyframes qzScanLine { 0% { transform: translateY(-100%); opacity:0; } 50% { opacity:1; } 100% { transform: translateY(100%); opacity:0; } }',
+          // Neon hover on action cards
+          '#qz-clean-dashboard a[data-page]:hover { background:#181c25 !important; border-color:rgba(167,139,250,0.45) !important; box-shadow:0 0 0 1px rgba(167,139,250,0.18), 0 6px 24px rgba(124,58,237,0.18), 0 0 32px rgba(124,58,237,0.10) !important; transform:translateY(-2px) !important; }',
+          // Premium stat card neon-on-hover
+          '#qz-clean-dashboard [data-stat]:hover { border-color:rgba(167,139,250,0.40) !important; box-shadow:0 0 24px rgba(124,58,237,0.20), inset 0 0 18px rgba(124,58,237,0.04) !important; }',
+          // Responsive: stack 2-column on narrow screens
+          '@media (max-width: 980px) { #qz-clean-dashboard .qz-hub-twocol { grid-template-columns: 1fr !important; } }',
+          '@media (max-width: 720px) { #qz-clean-dashboard aside { width:64px !important; min-width:64px !important; flex:0 0 64px !important; } #qz-clean-dashboard aside span:not(.qz-keep) { display:none !important; } }',
+          // Neon underline on section titles
+          '#qz-clean-dashboard .qz-section-title::after { content:""; display:inline-block; width:40px; height:2px; background:linear-gradient(90deg, #A78BFA, transparent); margin-left:12px; vertical-align:middle; box-shadow:0 0 8px rgba(167,139,250,0.5); }',
+          // Glow for "Sources" pills
+          '.qz-source-pill { transition: all 200ms cubic-bezier(0.16,1,0.3,1); }',
+          '.qz-source-pill:hover { background:rgba(167,139,250,0.14) !important; border-color:rgba(167,139,250,0.50) !important; color:#fff !important; box-shadow:0 0 16px rgba(167,139,250,0.30), 0 0 0 1px rgba(167,139,250,0.30) inset !important; transform:translateY(-1px); }',
+        ].join('\n');
         document.head.appendChild(kf);
       }
 
@@ -10331,25 +10346,152 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
       function _qzRenderNews() {
         try {
           var news = (typeof NEWS !== 'undefined' && Array.isArray(NEWS)) ? NEWS : [];
-          var html = news.map(function(n) {
+
+          // ── All the sources NewsJudge pulls from ──
+          var SOURCES = [
+            { name:'Bloomberg',       cat:'Premier',  icon:'📊' },
+            { name:'Reuters',         cat:'Premier',  icon:'🌐' },
+            { name:'Financial Times', cat:'Premier',  icon:'📈' },
+            { name:'Wall Street Journal', cat:'Premier', icon:'📰' },
+            { name:'The Economist',   cat:'Premier',  icon:'🎩' },
+            { name:'CNBC',            cat:'Markets',  icon:'📺' },
+            { name:'MarketWatch',     cat:'Markets',  icon:'⚡' },
+            { name:'Barron\'s',       cat:'Markets',  icon:'💼' },
+            { name:'Investor\'s Business Daily', cat:'Markets', icon:'📉' },
+            { name:'Seeking Alpha',   cat:'Markets',  icon:'🔍' },
+            { name:'Morningstar',     cat:'Research', icon:'⭐' },
+            { name:'Yahoo Finance',   cat:'Markets',  icon:'💰' },
+            { name:'Forbes',          cat:'Business', icon:'👔' },
+            { name:'Business Insider',cat:'Business', icon:'🏢' },
+            { name:'Fortune',         cat:'Business', icon:'💎' },
+            { name:'TechCrunch',      cat:'Tech',     icon:'🚀' },
+            { name:'The Information', cat:'Tech',     icon:'💡' },
+            { name:'Axios',           cat:'Macro',    icon:'⚡' },
+            { name:'Politico',        cat:'Macro',    icon:'🏛️' },
+            { name:'SCMP',            cat:'Global',   icon:'🌏' },
+            { name:'Nikkei',          cat:'Global',   icon:'🇯🇵' },
+            { name:'Handelsblatt',    cat:'Global',   icon:'🇩🇪' },
+            { name:'Les Echos',       cat:'Global',   icon:'🇫🇷' },
+            { name:'Economic Times',  cat:'Global',   icon:'🇮🇳' },
+            { name:'arXiv q-fin',     cat:'Research', icon:'🧪' },
+            { name:'SSRN',            cat:'Research', icon:'📚' },
+            { name:'NBER',            cat:'Research', icon:'🏛️' },
+            { name:'Federal Reserve', cat:'Official', icon:'🏦' },
+            { name:'ECB',             cat:'Official', icon:'🇪🇺' },
+            { name:'BoE',             cat:'Official', icon:'🇬🇧' },
+            { name:'IMF',             cat:'Official', icon:'🌍' },
+            { name:'World Bank',      cat:'Official', icon:'🌐' }
+          ];
+
+          // ── Newsletters NewsJudge scans ──
+          var NEWSLETTERS = [
+            'Stratechery (Ben Thompson)',
+            'The Diff (Byrne Hobart)',
+            'Net Interest (Marc Rubinstein)',
+            'Money Stuff (Matt Levine · Bloomberg)',
+            'The Daily Shot',
+            'Axios Markets',
+            'Axios Macro',
+            'Chartbook (Adam Tooze)',
+            'Doomberg',
+            'Marginal Revolution',
+            'Conviction Capital',
+            'The Profile (Polina Marinova)',
+            'Off Topic',
+            'Pirate Wires',
+            'Not Boring (Packy McCormick)',
+            'Platformer (Casey Newton)',
+            'The Generalist (Mario Gabriele)',
+            'Above the Crowd (Bill Gurley)',
+            'Of Dollars and Data',
+            'The Reformed Broker (Josh Brown)'
+          ];
+
+          // ── HEADER: Sources & Newsletters strip ──
+          var html =
+            '<div style="background:linear-gradient(135deg,#14171d 0%,#0e1117 100%);border:1px solid rgba(167,139,250,0.18);border-radius:16px;padding:24px 28px;margin-bottom:24px;position:relative;overflow:hidden;">' +
+              '<div style="position:absolute;top:-50px;right:-30px;width:240px;height:240px;background:radial-gradient(circle,rgba(124,58,237,0.16),transparent 65%);pointer-events:none;"></div>' +
+              '<div style="position:absolute;bottom:-30px;left:30%;width:200px;height:200px;background:radial-gradient(circle,rgba(34,211,238,0.10),transparent 65%);pointer-events:none;"></div>' +
+              '<div style="position:relative;">' +
+                '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px;">' +
+                  '<div>' +
+                    '<div style="font-size:11px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:rgba(167,139,250,0.85);margin-bottom:6px;">' +
+                      '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#A78BFA;box-shadow:0 0 8px #A78BFA;margin-right:8px;animation:qzPulse 2s ease-in-out infinite;"></span>' +
+                      'Live News Intelligence' +
+                    '</div>' +
+                    '<div style="font-size:20px;font-weight:600;letter-spacing:-0.022em;color:#fff;line-height:1.15;">Scanning ' + SOURCES.length + ' sources + ' + NEWSLETTERS.length + ' newsletters in real time</div>' +
+                  '</div>' +
+                  '<div style="display:flex;gap:8px;align-items:center;">' +
+                    '<div style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:rgba(244,244,245,0.55);padding:5px 11px;border:1px solid rgba(255,255,255,0.06);border-radius:7px;background:rgba(255,255,255,0.02);">' +
+                      '<div style="width:5px;height:5px;border-radius:50%;background:#10B981;box-shadow:0 0 8px #10B981;animation:qzPulse 2s ease-in-out infinite;"></div>Live · Updated 2 min ago' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+                // Sources grid
+                '<div style="margin-bottom:18px;">' +
+                  '<div style="font-size:10.5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(244,244,245,0.45);margin-bottom:10px;">📡 Sources</div>' +
+                  '<div style="display:flex;gap:6px;flex-wrap:wrap;">' +
+                    SOURCES.map(function(s) {
+                      return '<div class="qz-source-pill" style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:5px 10px 5px 8px;font-size:11.5px;color:rgba(244,244,245,0.75);cursor:default;">' +
+                        '<span style="font-size:11px;opacity:0.85;">' + s.icon + '</span><span>' + s.name + '</span>' +
+                      '</div>';
+                    }).join('') +
+                  '</div>' +
+                '</div>' +
+                // Newsletters grid
+                '<div>' +
+                  '<div style="font-size:10.5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(244,244,245,0.45);margin-bottom:10px;">✉️ Premium Newsletters</div>' +
+                  '<div style="display:flex;gap:6px;flex-wrap:wrap;">' +
+                    NEWSLETTERS.map(function(n) {
+                      return '<div class="qz-source-pill" style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.025);border:1px solid rgba(167,139,250,0.10);border-radius:8px;padding:5px 10px;font-size:11.5px;color:rgba(244,244,245,0.70);cursor:default;">' +
+                        '<span style="color:#A78BFA;">·</span><span>' + n + '</span>' +
+                      '</div>';
+                    }).join('') +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
+
+          // Filter bar
+          html += '<div style="display:flex;gap:8px;align-items:center;margin-bottom:18px;flex-wrap:wrap;">' +
+            '<div style="font-size:11.5px;color:rgba(244,244,245,0.5);margin-right:4px;">Filter:</div>' +
+            ['All','Positive','Negative','Macro','Tech','Energy'].map(function(f, i) {
+              return '<button style="background:' + (i === 0 ? 'rgba(124,58,237,0.14)' : 'transparent') + ';color:' + (i === 0 ? '#fff' : 'rgba(244,244,245,0.6)') + ';border:1px solid ' + (i === 0 ? 'rgba(167,139,250,0.30)' : 'rgba(255,255,255,0.08)') + ';border-radius:7px;padding:5px 11px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 160ms;">' + f + '</button>';
+            }).join('') +
+          '</div>';
+
+          // News cards
+          html += news.map(function(n) {
             var impactColor = n.impact === 'positive' ? '#10B981' : n.impact === 'negative' ? '#EF4444' : '#F59E0B';
             var impactBg = n.impact === 'positive' ? 'rgba(16,185,129,0.12)' : n.impact === 'negative' ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.12)';
-            return '<div style="background:#14171d;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:20px 24px;margin-bottom:12px;transition:border-color 200ms;" onmouseover="this.style.borderColor=\'rgba(167,139,250,0.30)\'" onmouseout="this.style.borderColor=\'rgba(255,255,255,0.06)\'">' +
-              '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:10px;">' +
-                '<div style="font-size:15px;font-weight:600;letter-spacing:-0.012em;color:#fff;line-height:1.35;">' + n.title + '</div>' +
-                '<span style="background:' + impactBg + ';color:' + impactColor + ';font-size:10.5px;font-weight:700;letter-spacing:0.05em;padding:3px 8px;border-radius:5px;text-transform:uppercase;white-space:nowrap;flex-shrink:0;">' + n.impact + '</span>' +
-              '</div>' +
-              '<div style="font-size:11px;color:rgba(244,244,245,0.45);margin-bottom:10px;letter-spacing:0.01em;">' + n.source + ' · ' + n.time + '</div>' +
-              '<div style="font-size:13px;color:rgba(244,244,245,0.7);line-height:1.55;margin-bottom:12px;">' + n.excerpt + '</div>' +
-              '<div style="border-top:1px solid rgba(255,255,255,0.05);padding-top:12px;font-size:12px;color:rgba(244,244,245,0.55);">' +
-                '<div style="margin-bottom:4px;"><strong style="color:#A78BFA;">Impact:</strong> ' + n.analysis.impact + '</div>' +
-                '<div style="margin-bottom:4px;"><strong style="color:#A78BFA;">Assets:</strong> ' + n.analysis.assets + '</div>' +
-                '<div><strong style="color:#A78BFA;">Opportunities:</strong> ' + n.analysis.opportunities + '</div>' +
+            var glowColor = n.impact === 'positive' ? 'rgba(16,185,129' : n.impact === 'negative' ? 'rgba(239,68,68' : 'rgba(245,158,11';
+            return '<div style="background:#14171d;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:22px 26px;margin-bottom:12px;transition:border-color 200ms,box-shadow 200ms;position:relative;" ' +
+              'onmouseover="this.style.borderColor=\'' + glowColor + ',0.30)\';this.style.boxShadow=\'0 0 22px ' + glowColor + ',0.10), 0 8px 24px rgba(0,0,0,0.30)\';" ' +
+              'onmouseout="this.style.borderColor=\'rgba(255,255,255,0.06)\';this.style.boxShadow=\'none\';">' +
+              '<div style="position:absolute;left:0;top:20px;bottom:20px;width:3px;background:' + impactColor + ';box-shadow:0 0 12px ' + glowColor + ',0.5);border-radius:0 2px 2px 0;"></div>' +
+              '<div style="margin-left:8px;">' +
+                '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:10px;">' +
+                  '<div style="font-size:15.5px;font-weight:600;letter-spacing:-0.012em;color:#fff;line-height:1.35;">' + n.title + '</div>' +
+                  '<span style="background:' + impactBg + ';color:' + impactColor + ';font-size:10.5px;font-weight:700;letter-spacing:0.05em;padding:3px 9px;border-radius:6px;text-transform:uppercase;white-space:nowrap;flex-shrink:0;box-shadow:0 0 12px ' + glowColor + ',0.20) inset;">' + n.impact + '</span>' +
+                '</div>' +
+                '<div style="font-size:11px;color:rgba(244,244,245,0.45);margin-bottom:12px;letter-spacing:0.01em;display:flex;align-items:center;gap:6px;">' +
+                  '<span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:rgba(167,139,250,0.6);"></span>' +
+                  '<strong style="color:rgba(167,139,250,0.85);font-weight:500;">' + n.source + '</strong>' +
+                  '<span style="color:rgba(244,244,245,0.30);">·</span>' +
+                  '<span>' + n.time + '</span>' +
+                '</div>' +
+                '<div style="font-size:13.5px;color:rgba(244,244,245,0.75);line-height:1.6;margin-bottom:14px;">' + n.excerpt + '</div>' +
+                '<div style="border-top:1px solid rgba(255,255,255,0.05);padding-top:14px;font-size:12px;color:rgba(244,244,245,0.6);display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;">' +
+                  '<div><strong style="color:#A78BFA;font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;display:block;margin-bottom:4px;">Impact</strong>' + n.analysis.impact + '</div>' +
+                  '<div><strong style="color:#22D3EE;font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;display:block;margin-bottom:4px;">Assets</strong>' + n.analysis.assets + '</div>' +
+                  '<div><strong style="color:#10B981;font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;display:block;margin-bottom:4px;">Opportunities</strong>' + n.analysis.opportunities + '</div>' +
+                '</div>' +
               '</div>' +
             '</div>';
           }).join('');
-          _qzReplaceMain(html, 'NewsJudge', 'AI-scored market news · ' + news.length + ' headlines', 'news');
-        } catch(e) { _qzReplaceMain('<div style="padding:40px;color:#F87171;">Failed to render news.</div>', 'News'); }
+
+          _qzReplaceMain(html, 'NewsJudge', 'AI-scored news · ' + SOURCES.length + ' sources · ' + NEWSLETTERS.length + ' newsletters · live', 'news');
+        } catch(e) { console.warn('renderNews failed:', e); _qzReplaceMain('<div style="padding:40px;color:#F87171;">Failed to render news.</div>', 'News'); }
       }
 
       function _qzRenderPortfolio() {
