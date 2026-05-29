@@ -9670,8 +9670,8 @@ function showPage(page, navEl) {
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     if (navEl) navEl.classList.add('active');
     _qzRenderUnifiedIntel();
-    var titleEl = document.getElementById('page-title');
-    if (titleEl) titleEl.innerHTML = 'Intelligence Terminal<small>AI-powered news + signals + opportunities</small>';
+    var _intelTitle = document.getElementById('page-title');
+    if (_intelTitle) _intelTitle.innerHTML = 'Intelligence Terminal<small>AI-powered news + signals + opportunities</small>';
     return;
   }
   // Coming-soon intercept
