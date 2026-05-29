@@ -27750,7 +27750,7 @@ const IntelEngine = (() => {
     return [
       { title: 'Fed signals cautious approach to rate cuts amid sticky inflation', desc: 'Federal Reserve officials emphasize data-dependency as core PCE remains elevated above the 2% target.', pubDate: new Date(Date.now() - 3600000).toUTCString(), _src: 'Reuters', link: '#' },
       { title: 'NVIDIA posts record datacenter revenue on surging AI demand', desc: 'AI chip giant surpasses expectations with $22.6B in datacenter revenue as hyperscalers ramp GPU purchases.', pubDate: new Date(Date.now() - 7200000).toUTCString(), _src: 'CNBC', link: '#' },
-      { title: 'China manufacturing PMI contracts for third consecutive month', desc: 'Factory activity in China slipped to 49.1, signaling continued weakness in the world's second-largest economy.', pubDate: new Date(Date.now() - 10800000).toUTCString(), _src: 'FT', link: '#' },
+      { title: 'China manufacturing PMI contracts for third consecutive month', desc: "Factory activity in China slipped to 49.1, signaling continued weakness in the world's second-largest economy.", pubDate: new Date(Date.now() - 10800000).toUTCString(), _src: 'FT', link: '#' },
       { title: 'Treasury yields fall as safe-haven demand rises on geopolitical risk', desc: '10-year Treasury yields declined 8bps as investors rotated into government bonds amid Middle East tensions.', pubDate: new Date(Date.now() - 14400000).toUTCString(), _src: 'Bloomberg', link: '#' },
       { title: 'Bitcoin holds above $65K ahead of key options expiry', desc: 'Crypto markets stabilize with BTC trading in a tight range as $2.4B in options contracts expire Friday.', pubDate: new Date(Date.now() - 18000000).toUTCString(), _src: 'MarketWatch', link: '#' },
       { title: 'European equities rally on ECB rate cut expectations', desc: 'Stoxx 600 climbed 0.8% as investors priced in a June ECB cut following softer-than-expected inflation data.', pubDate: new Date(Date.now() - 21600000).toUTCString(), _src: 'Reuters', link: '#' },
@@ -28132,9 +28132,10 @@ Abstract: ' + paper.abstract }
     switchCountry('US');
   }
 
-  // Orphaned return + IIFE-close in the source file removed — the
-  // exported functions are already global function declarations and
-  // are wired via onclick handlers in the markup.
+  // Close orphan brace + bracket from the source file (was originally
+  // part of the IIFE wrapper that we removed).
+  return { _init: false, _papers: [], boot, switchTab, switchCountry, loadFeed, loadResearch, refreshBriefing, refreshMacroAI, summarizePaper };
+})();
 </script>
 </body>
 </html>
