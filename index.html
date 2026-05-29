@@ -10102,14 +10102,239 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
         }
       };
 
+      // ══════════════════════════════════════════════════════════════════
+      //   INLINE PAGE RENDERERS — Workspace pages built directly with
+      //   data from globals (STOCKS, NEWS, PORTFOLIO_DATA, LEDGER_DATA).
+      //   These replace the clean dashboard's main content area so the
+      //   user always sees something rendered, even when the legacy
+      //   #app pages have rendering issues.
+      // ══════════════════════════════════════════════════════════════════
+      function _qzCleanMain() {
+        return shell.querySelector('main');
+      }
+      function _qzReplaceMain(html, title, sub) {
+        var main = _qzCleanMain();
+        if (!main) return;
+        main.innerHTML =
+          '<header style="height:60px;padding:0 28px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;background:rgba(14,17,23,0.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);flex-shrink:0;">' +
+            '<div>' +
+              '<div style="font-size:18px;font-weight:600;letter-spacing:-0.022em;line-height:1.1;">' + title + '</div>' +
+              '<div style="font-size:12px;color:rgba(244,244,245,0.46);letter-spacing:-0.005em;">' + (sub || '') + '</div>' +
+            '</div>' +
+            '<button id="qz-page-home" style="background:transparent;border:1px solid rgba(255,255,255,0.08);color:rgba(244,244,245,0.65);border-radius:7px;padding:6px 12px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;">← Home</button>' +
+          '</header>' +
+          '<div style="flex:1;overflow-y:auto;overflow-x:hidden;padding:28px;">' + html + '</div>';
+
+        var home = main.querySelector('#qz-page-home');
+        if (home) home.addEventListener('click', _qzRebuildHub);
+        // Highlight the right sidebar item
+        _qzHighlightNav(arguments[3] || '');
+      }
+      function _qzHighlightNav(slug) {
+        try {
+          shell.querySelectorAll('[data-page]').forEach(function(el) {
+            var isActive = el.getAttribute('data-page') === slug;
+            if (isActive) {
+              el.style.color = '#fff';
+              el.style.background = 'rgba(124,58,237,0.14)';
+              el.style.borderLeft = '2px solid #7C3AED';
+              el.style.paddingLeft = '10px';
+            } else {
+              el.style.color = 'rgba(244,244,245,0.55)';
+              el.style.background = '';
+              el.style.borderLeft = '';
+              el.style.paddingLeft = '12px';
+            }
+          });
+        } catch(_) {}
+      }
+      function _qzRebuildHub() {
+        // Replace main with the original welcome+stat+actions content by
+        // reinjecting the whole clean dashboard.
+        var old = document.getElementById('qz-clean-dashboard');
+        if (old) old.remove();
+        try { delete window._qzInitAppRan; } catch(_) {}
+        injectCleanDashboard();
+      }
+
+      function _qzRenderSignals() {
+        try {
+          var stocks = (typeof STOCKS !== 'undefined' && Array.isArray(STOCKS)) ? STOCKS : [];
+          if (stocks.length === 0) {
+            return _qzReplaceMain('<div style="text-align:center;padding:80px 20px;color:rgba(244,244,245,0.4);">No signals available.</div>', 'AI Signals', 'High-conviction opportunities', 'signals');
+          }
+          var html = '<div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">' +
+            ['All','BUY','HOLD','SELL'].map(function(f, i) {
+              return '<button data-filter="' + f + '" style="background:' + (i === 0 ? 'rgba(124,58,237,0.14)' : 'transparent') + ';color:' + (i === 0 ? '#fff' : 'rgba(244,244,245,0.6)') + ';border:1px solid rgba(255,255,255,0.08);border-radius:7px;padding:6px 12px;font-size:12.5px;font-weight:500;cursor:pointer;font-family:inherit;">' + f + '</button>';
+            }).join('') + '</div>';
+          html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;">';
+          stocks.forEach(function(s) {
+            var sigColor = s.signal === 'BUY' ? '#10B981' : s.signal === 'SELL' ? '#EF4444' : '#F59E0B';
+            var sigBg = s.signal === 'BUY' ? 'rgba(16,185,129,0.12)' : s.signal === 'SELL' ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.12)';
+            var chgColor = s.change > 0 ? '#10B981' : '#EF4444';
+            html += '<div style="background:#14171d;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:18px 20px;transition:border-color 200ms,background 200ms;cursor:pointer;" onmouseover="this.style.borderColor=\'rgba(167,139,250,0.30)\'" onmouseout="this.style.borderColor=\'rgba(255,255,255,0.06)\'">' +
+              '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">' +
+                '<div>' +
+                  '<div style="font-size:16px;font-weight:600;letter-spacing:-0.012em;color:#fff;">' + s.ticker + '</div>' +
+                  '<div style="font-size:12px;color:rgba(244,244,245,0.5);">' + s.name + '</div>' +
+                '</div>' +
+                '<span style="background:' + sigBg + ';color:' + sigColor + ';font-size:11px;font-weight:700;letter-spacing:0.05em;padding:4px 10px;border-radius:6px;font-variant-numeric:tabular-nums;">' + s.signal + ' ' + s.conf + '%</span>' +
+              '</div>' +
+              '<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:14px;">' +
+                '<span style="font-size:20px;font-weight:600;letter-spacing:-0.022em;font-variant-numeric:tabular-nums;">$' + (typeof s.price === 'number' ? s.price.toLocaleString() : s.price) + '</span>' +
+                '<span style="font-size:13px;font-weight:500;font-variant-numeric:tabular-nums;color:' + chgColor + ';">' + (s.change > 0 ? '+' : '') + s.change + '%</span>' +
+              '</div>' +
+              '<div style="font-size:12.5px;color:rgba(244,244,245,0.6);line-height:1.55;">' + s.reason + '</div>' +
+              '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;">' +
+                '<div><div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(244,244,245,0.4);margin-bottom:4px;">Momentum</div><div style="height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;"><div style="height:100%;width:' + s.momentum + '%;background:linear-gradient(90deg,#A78BFA,#7C3AED);"></div></div></div>' +
+                '<div><div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(244,244,245,0.4);margin-bottom:4px;">Sentiment</div><div style="height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;"><div style="height:100%;width:' + s.sentiment + '%;background:linear-gradient(90deg,#22D3EE,#06B6D4);"></div></div></div>' +
+              '</div>' +
+            '</div>';
+          });
+          html += '</div>';
+          _qzReplaceMain(html, 'AI Signals', 'High-conviction opportunities across 12 securities', 'signals');
+        } catch(e) { console.warn('renderSignals failed:', e); _qzReplaceMain('<div style="padding:40px;color:#F87171;">Failed to render signals.</div>', 'Signals'); }
+      }
+
+      function _qzRenderNews() {
+        try {
+          var news = (typeof NEWS !== 'undefined' && Array.isArray(NEWS)) ? NEWS : [];
+          var html = news.map(function(n) {
+            var impactColor = n.impact === 'positive' ? '#10B981' : n.impact === 'negative' ? '#EF4444' : '#F59E0B';
+            var impactBg = n.impact === 'positive' ? 'rgba(16,185,129,0.12)' : n.impact === 'negative' ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.12)';
+            return '<div style="background:#14171d;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:20px 24px;margin-bottom:12px;transition:border-color 200ms;" onmouseover="this.style.borderColor=\'rgba(167,139,250,0.30)\'" onmouseout="this.style.borderColor=\'rgba(255,255,255,0.06)\'">' +
+              '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:10px;">' +
+                '<div style="font-size:15px;font-weight:600;letter-spacing:-0.012em;color:#fff;line-height:1.35;">' + n.title + '</div>' +
+                '<span style="background:' + impactBg + ';color:' + impactColor + ';font-size:10.5px;font-weight:700;letter-spacing:0.05em;padding:3px 8px;border-radius:5px;text-transform:uppercase;white-space:nowrap;flex-shrink:0;">' + n.impact + '</span>' +
+              '</div>' +
+              '<div style="font-size:11px;color:rgba(244,244,245,0.45);margin-bottom:10px;letter-spacing:0.01em;">' + n.source + ' · ' + n.time + '</div>' +
+              '<div style="font-size:13px;color:rgba(244,244,245,0.7);line-height:1.55;margin-bottom:12px;">' + n.excerpt + '</div>' +
+              '<div style="border-top:1px solid rgba(255,255,255,0.05);padding-top:12px;font-size:12px;color:rgba(244,244,245,0.55);">' +
+                '<div style="margin-bottom:4px;"><strong style="color:#A78BFA;">Impact:</strong> ' + n.analysis.impact + '</div>' +
+                '<div style="margin-bottom:4px;"><strong style="color:#A78BFA;">Assets:</strong> ' + n.analysis.assets + '</div>' +
+                '<div><strong style="color:#A78BFA;">Opportunities:</strong> ' + n.analysis.opportunities + '</div>' +
+              '</div>' +
+            '</div>';
+          }).join('');
+          _qzReplaceMain(html, 'NewsJudge', 'AI-scored market news · ' + news.length + ' headlines', 'news');
+        } catch(e) { _qzReplaceMain('<div style="padding:40px;color:#F87171;">Failed to render news.</div>', 'News'); }
+      }
+
+      function _qzRenderPortfolio() {
+        try {
+          var port = (typeof PORTFOLIO_DATA !== 'undefined' && Array.isArray(PORTFOLIO_DATA)) ? PORTFOLIO_DATA : [];
+          var html;
+          if (port.length === 0) {
+            html = '<div style="background:#14171d;border:1px dashed rgba(255,255,255,0.10);border-radius:14px;padding:80px 24px;text-align:center;">' +
+              '<div style="font-size:48px;margin-bottom:16px;opacity:0.4;">💼</div>' +
+              '<div style="font-size:18px;font-weight:600;letter-spacing:-0.012em;color:#fff;margin-bottom:8px;">Your portfolio is empty</div>' +
+              '<div style="font-size:13.5px;color:rgba(244,244,245,0.5);max-width:420px;margin:0 auto 24px;line-height:1.55;">Add your first position to start tracking real-time P&L, allocation analysis, and AI-generated rebalancing suggestions.</div>' +
+              '<button style="background:linear-gradient(180deg,#8B5CF6,#7C3AED);color:#fff;border:0;border-radius:9px;padding:11px 22px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(124,58,237,0.4);">+ Add Position</button>' +
+            '</div>';
+          } else {
+            html = '<div style="background:#14171d;border:1px solid rgba(255,255,255,0.06);border-radius:12px;overflow:hidden;">' +
+              '<table style="width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;">' +
+              '<thead><tr style="background:rgba(255,255,255,0.02);">' +
+                ['Ticker','Qty','Cost','Current','P&L'].map(function(h) {
+                  return '<th style="text-align:left;padding:12px 20px;font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(244,244,245,0.42);border-bottom:1px solid rgba(255,255,255,0.06);">' + h + '</th>';
+                }).join('') +
+              '</tr></thead><tbody>' +
+              port.map(function(p) {
+                return '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">' +
+                  '<td style="padding:14px 20px;font-weight:600;">' + p.ticker + '</td>' +
+                  '<td style="padding:14px 20px;">' + p.qty + '</td>' +
+                  '<td style="padding:14px 20px;">$' + p.cost + '</td>' +
+                  '<td style="padding:14px 20px;">$' + (p.current || p.cost) + '</td>' +
+                  '<td style="padding:14px 20px;color:#10B981;">+$' + (((p.current || p.cost) - p.cost) * p.qty).toFixed(2) + '</td>' +
+                '</tr>';
+              }).join('') +
+              '</tbody></table></div>';
+          }
+          _qzReplaceMain(html, 'Portfolio', 'Holdings & performance', 'portfolio');
+        } catch(e) { _qzReplaceMain('<div style="padding:40px;color:#F87171;">Failed to render portfolio.</div>', 'Portfolio'); }
+      }
+
+      function _qzRenderLedger() {
+        try {
+          var led = (typeof LEDGER_DATA !== 'undefined' && Array.isArray(LEDGER_DATA)) ? LEDGER_DATA : [];
+          if (led.length === 0) {
+            _qzReplaceMain('<div style="text-align:center;padding:80px 20px;color:rgba(244,244,245,0.4);">No transactions yet.</div>', 'Ledger', 'Transaction history', 'ledger');
+            return;
+          }
+          var html = '<div style="background:#14171d;border:1px solid rgba(255,255,255,0.06);border-radius:12px;overflow:hidden;">' +
+            '<table style="width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;">' +
+            '<thead><tr style="background:rgba(255,255,255,0.02);">' +
+              ['Date','Ticker','Type','Qty','Price','P&L'].map(function(h) {
+                return '<th style="text-align:left;padding:12px 20px;font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(244,244,245,0.42);border-bottom:1px solid rgba(255,255,255,0.06);">' + h + '</th>';
+              }).join('') +
+            '</tr></thead><tbody>';
+          led.forEach(function(t) {
+            var typeColor = t.type === 'BUY' ? '#10B981' : '#EF4444';
+            var pnlColor = String(t.pnl).startsWith('+') ? '#10B981' : '#EF4444';
+            html += '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">' +
+              '<td style="padding:14px 20px;color:rgba(244,244,245,0.7);">' + t.date + '</td>' +
+              '<td style="padding:14px 20px;font-weight:600;">' + t.ticker + '</td>' +
+              '<td style="padding:14px 20px;"><span style="color:' + typeColor + ';font-size:11px;font-weight:700;letter-spacing:0.05em;">' + t.type + '</span></td>' +
+              '<td style="padding:14px 20px;">' + t.qty + '</td>' +
+              '<td style="padding:14px 20px;">$' + t.price + '</td>' +
+              '<td style="padding:14px 20px;color:' + pnlColor + ';">' + t.pnl + '</td>' +
+            '</tr>';
+          });
+          html += '</tbody></table></div>';
+          _qzReplaceMain(html, 'Ledger', 'Transaction history · ' + led.length + ' records', 'ledger');
+        } catch(e) { _qzReplaceMain('<div style="padding:40px;color:#F87171;">Failed to render ledger.</div>', 'Ledger'); }
+      }
+
+      function _qzRenderMacro() {
+        var html = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;">';
+        [
+          {flag:'🇺🇸',country:'United States',rate:'5.25-5.50%',cpi:'3.1%',gdp:'+2.8%',unemp:'3.9%'},
+          {flag:'🇪🇺',country:'European Union',rate:'4.25%',cpi:'2.6%',gdp:'+0.4%',unemp:'6.5%'},
+          {flag:'🇬🇧',country:'United Kingdom',rate:'5.00%',cpi:'2.3%',gdp:'+0.6%',unemp:'4.2%'},
+          {flag:'🇯🇵',country:'Japan',rate:'0.50%',cpi:'2.8%',gdp:'+0.9%',unemp:'2.5%'},
+          {flag:'🇨🇳',country:'China',rate:'3.45%',cpi:'0.7%',gdp:'+4.8%',unemp:'5.1%'},
+          {flag:'🇮🇳',country:'India',rate:'6.50%',cpi:'4.9%',gdp:'+7.0%',unemp:'7.8%'},
+        ].forEach(function(c) {
+          html += '<div style="background:#14171d;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:20px 22px;">' +
+            '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;"><span style="font-size:22px;">' + c.flag + '</span><span style="font-size:15px;font-weight:600;letter-spacing:-0.012em;">' + c.country + '</span></div>' +
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-variant-numeric:tabular-nums;">' +
+              '<div><div style="font-size:10.5px;color:rgba(244,244,245,0.42);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px;">Rate</div><div style="font-size:15px;font-weight:600;color:#A78BFA;">' + c.rate + '</div></div>' +
+              '<div><div style="font-size:10.5px;color:rgba(244,244,245,0.42);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px;">CPI</div><div style="font-size:15px;font-weight:600;color:#F59E0B;">' + c.cpi + '</div></div>' +
+              '<div><div style="font-size:10.5px;color:rgba(244,244,245,0.42);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px;">GDP</div><div style="font-size:15px;font-weight:600;color:#10B981;">' + c.gdp + '</div></div>' +
+              '<div><div style="font-size:10.5px;color:rgba(244,244,245,0.42);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px;">Unemp</div><div style="font-size:15px;font-weight:600;color:rgba(244,244,245,0.85);">' + c.unemp + '</div></div>' +
+            '</div>' +
+          '</div>';
+        });
+        html += '</div>';
+        _qzReplaceMain(html, 'Macro', 'Global economic indicators · 6 major economies', 'macro');
+      }
+
+      // Map of slugs → inline render functions for Workspace pages
+      var WORKSPACE_RENDERERS = {
+        signals: _qzRenderSignals,
+        news: _qzRenderNews,
+        portfolio: _qzRenderPortfolio,
+        ledger: _qzRenderLedger,
+        macro: _qzRenderMacro,
+      };
+
       // Attach click handlers to all data-page links inside the clean dashboard
       shell.querySelectorAll('[data-page]').forEach(function(el) {
         el.addEventListener('click', function(ev) {
           ev.preventDefault();
           var slug = el.getAttribute('data-page');
           if (slug === 'dashboard') {
-            // Stay on clean dashboard
+            // Stay on clean dashboard — rebuild the welcome view
+            _qzRebuildHub();
             return;
+          }
+          // If we have an inline renderer, use it (Workspace pages)
+          if (WORKSPACE_RENDERERS[slug]) {
+            _qzShowPageSkeleton();
+            setTimeout(WORKSPACE_RENDERERS[slug], 50);
+            return;
+          }
+          // Otherwise fall through to the legacy showPage navigation
           }
           openOriginalPage(slug);
         });
