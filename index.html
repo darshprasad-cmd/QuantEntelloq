@@ -9616,6 +9616,57 @@ table tr:hover td, .table tr:hover td { background: rgba(255,255,255,0.02) !impo
     } catch(_) {}
     if (!u) return;
 
+    // ── Inject an !important stylesheet that FORCES the app layout ────
+    // This wins against any other CSS rule because we use the highest
+    // specificity practical and inject it AS THE LAST STYLE in <head>
+    // (so it appears after all other style blocks in cascade order).
+    function injectAuthCSS() {
+      if (document.getElementById('qz-auth-force-css')) return;
+      var s = document.createElement('style');
+      s.id = 'qz-auth-force-css';
+      s.textContent = [
+        'body.qz-signed-in #landing,',
+        'body.qz-signed-in #onboarding,',
+        'body.qz-signed-in #ob-boot-overlay,',
+        'body.qz-signed-in #auth-modal,',
+        'body.qz-signed-in #qz-auth-overlay,',
+        'body.qz-signed-in #tutorial-modal,',
+        'body.qz-signed-in #qe-legal-overlay { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }',
+        '',
+        'body.qz-signed-in #app { display: flex !important; flex-direction: row !important; visibility: visible !important; opacity: 1 !important; width: 100% !important; height: 100vh !important; height: calc(var(--dvh, 1vh) * 100) !important; overflow: hidden !important; pointer-events: auto !important; position: relative !important; z-index: 2 !important; }',
+        '',
+        'body.qz-signed-in #app .sidebar { display: flex !important; flex-direction: column !important; flex-shrink: 0 !important; width: 232px !important; min-width: 232px !important; height: 100% !important; overflow-y: auto !important; overflow-x: hidden !important; visibility: visible !important; opacity: 1 !important; }',
+        '',
+        'body.qz-signed-in #app .main-content { display: flex !important; flex-direction: column !important; flex: 1 1 0% !important; min-width: 0 !important; height: 100% !important; overflow: hidden !important; visibility: visible !important; opacity: 1 !important; }',
+        '',
+        'body.qz-signed-in #app .top-bar { flex-shrink: 0 !important; display: flex !important; align-items: center !important; visibility: visible !important; opacity: 1 !important; }',
+        '',
+        'body.qz-signed-in #app .page-content { display: block !important; flex: 1 1 auto !important; overflow-y: auto !important; overflow-x: hidden !important; visibility: visible !important; opacity: 1 !important; }',
+        '',
+        'body.qz-signed-in #page-dashboard { display: block !important; visibility: visible !important; opacity: 1 !important; position: relative !important; }',
+        '',
+        'body.qz-signed-in [id^="page-"]:not(#page-dashboard) { display: none !important; }',
+        '',
+        'body.qz-signed-in .ghub-wrap, body.qz-signed-in .ghub-hero, body.qz-signed-in .ghub-cards, body.qz-signed-in .ghub-card { display: block !important; visibility: visible !important; opacity: 1 !important; }',
+        'body.qz-signed-in .ghub-cards { display: grid !important; }',
+        '',
+        '@media (max-width: 720px) {',
+        '  body.qz-signed-in #app .sidebar { width: 56px !important; min-width: 56px !important; }',
+        '}',
+      ].join('\n');
+      document.head.appendChild(s);
+    }
+    injectAuthCSS();
+
+    // Mark body so the CSS above takes effect.
+    function markBody() {
+      if (document.body && !document.body.classList.contains('qz-signed-in')) {
+        document.body.classList.add('qz-signed-in');
+      }
+    }
+    if (document.body) markBody();
+    else document.addEventListener('DOMContentLoaded', markBody);
+
     // ── Force the app shell visible ───────────────────────────────────
     function forceShowApp() {
       try {
