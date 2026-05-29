@@ -5615,6 +5615,81 @@ window._QZ_GOOGLE_CLIENT_ID = '939725315910-2ght687f6733pt42nepbktfqd8ah6egk.app
     css.textContent = '#qe-grid-bg, #qe-app-orb-1, #qe-app-orb-2, #qe-app-orb-3, #qe-app-radial, ' +
       '#qe-hud-grid, #qe-hud-scan, .qe-hud-vp-corner, #qe-telemetry { display:none !important; visibility:hidden !important; opacity:0 !important; pointer-events:none !important; }';
     if (document.head) document.head.appendChild(css);
+
+    // ── SESSION RESTORE ──
+    // If a valid user is in localStorage, the user already authenticated
+    // (previous page load or sign-up reload). Force the app into view and
+    // initialize it. Without this, the static site keeps showing landing.
+    var storedUser = null;
+    try {
+      var raw = localStorage.getItem('qz_auth_user');
+      if (raw && raw !== 'null' && raw !== '{}' && raw.length > 4) {
+        try {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object' && parsed.email) storedUser = parsed;
+        } catch(_) {}
+      }
+    } catch(_) {}
+    if (!storedUser) return;
+
+    function enterApp() {
+      try {
+        // Hide landing + any overlays
+        ['landing','onboarding','ob-boot-overlay','auth-modal','qz-auth-overlay'].forEach(function(id) {
+          var el = document.getElementById(id);
+          if (!el) return;
+          el.classList.add('hidden','dismissed');
+          el.style.setProperty('display','none','important');
+        });
+        // Show #app
+        var app = document.getElementById('app');
+        if (app) {
+          app.style.setProperty('display','flex','important');
+          app.style.setProperty('visibility','visible','important');
+          app.style.setProperty('opacity','1','important');
+          app.classList.remove('hidden');
+        }
+        // Make sure dashboard page is visible inside #app
+        var dash = document.getElementById('page-dashboard');
+        if (dash) {
+          dash.classList.remove('hidden');
+          dash.style.removeProperty('display');
+        }
+        try {
+          document.querySelectorAll('[id^="page-"]').forEach(function(p) {
+            if (p.id !== 'page-dashboard' && !p.classList.contains('hidden')) p.classList.add('hidden');
+          });
+        } catch(_) {}
+        // Set window.state.user so app code works
+        try {
+          if (window.state) window.state.user = { name: storedUser.name || '', email: storedUser.email };
+          else window.state = { user: { name: storedUser.name || '', email: storedUser.email } };
+        } catch(_) {}
+        // Update visible labels
+        try {
+          var name = storedUser.name || (storedUser.email || '').split('@')[0] || 'User';
+          var initial = (name.charAt(0) || 'U').toUpperCase();
+          ['user-name-sidebar','settings-name'].forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) el.textContent = name;
+          });
+          var av = document.getElementById('user-avatar-sidebar');
+          if (av) av.textContent = initial;
+          var em = document.getElementById('settings-email');
+          if (em && storedUser.email) em.textContent = storedUser.email;
+        } catch(_) {}
+        // Run initApp once
+        if (!window._qzInitRan && typeof initApp === 'function') {
+          window._qzInitRan = true;
+          try { initApp(); } catch(e) { console.warn('[session-restore] initApp threw:', e); }
+        }
+      } catch(e) { console.warn('[session-restore] enterApp failed:', e); }
+    }
+
+    if (document.body) enterApp();
+    else document.addEventListener('DOMContentLoaded', enterApp);
+    // Re-enforce a few times in case other scripts try to undo it
+    [200, 800, 2000, 4500].forEach(function(ms) { setTimeout(enterApp, ms); });
   } catch(_) {}
 })();
 </script>
