@@ -27113,6 +27113,651 @@ setTimeout(() => {
 <!-- QuantLab + IntelEngine script removed — had multiple unfixable apostrophe parse errors in the reference. Re-add from clean source later. -->
 <script>
 /* ==================================================================== *
+ *  QUANT ENTELLOQ COPILOT — bottom-right floating AI research panel    *
+ *  Replaces the absent/weak bot with an institutional research copilot.*
+ *  Context-aware (knows current page + portfolio), streaming responses,*
+ *  quick action chips, welcome capabilities screen, mobile-friendly.   *
+ *                                                                      *
+ *  Also trims AI Studio from 10 noisy parallel agents to 4 reliable    *
+ *  specialists (hit rate-limits less, deeper individual answers).      *
+ * ==================================================================== */
+(function() {
+  'use strict';
+
+  // ─────────────────────────────────────────────────────────────────
+  //  Part A: Trim AI Studio to 4 reliable specialists
+  // ─────────────────────────────────────────────────────────────────
+  // Keep: market, quant, risk, assistant
+  // Hide: sentiment, portfolio, strategy, research, prediction, verification
+  // (Their system prompts still exist for the Copilot to draw from if asked,
+  //  but they don't render as cards in the orchestrator anymore.)
+  var KEPT_AGENTS = ['market', 'quant', 'risk', 'assistant'];
+
+  function applyAgentTrim() {
+    // Hide non-kept agent cards via CSS
+    if (!document.getElementById('qz-agent-trim-css')) {
+      var s = document.createElement('style');
+      s.id = 'qz-agent-trim-css';
+      var hideSelectors = ['sentiment','portfolio','strategy','research','prediction','verification']
+        .map(function(id) { return '#cmd-card-' + id + ',#cfn-' + id; })
+        .join(',');
+      s.textContent = hideSelectors + ' { display: none !important; }' +
+        '#cmd-flow-bar .cmd-flow-arrow:nth-of-type(n+5) { display: none; }' +
+        // Update agent count pill in tab
+        '.ais-tab-badge { content: "4"; }';
+      document.head.appendChild(s);
+    }
+
+    // Update the AGENTS ONLINE counter
+    var statEl = document.getElementById('cmd-stat-active');
+    if (statEl && statEl.textContent.indexOf('10') > -1) statEl.textContent = '4/4';
+
+    // Update the Multi-Agent tab badge from 10 → 4
+    document.querySelectorAll('.ais-tab-badge').forEach(function(b) {
+      if (b.textContent === '10') b.textContent = '4';
+    });
+
+    // Patch cmdOrchestrate to only dispatch the kept agents
+    if (typeof window.cmdOrchestrate === 'function' && !window.cmdOrchestrate._qzAgentTrim) {
+      var _origOrch = window.cmdOrchestrate;
+      var newOrch = async function() {
+        // Temporarily clip the working set so the existing orchestrator only
+        // sees our 4 agents (we patch the bare QE_AGENTS visible to the
+        // closure via a transient filter inside _cmdRunAgent's call chain).
+        // Since QE_AGENTS is const, easier path: pre-mark non-kept agents as
+        // hidden and let the orchestrator skip them. The orchestrator already
+        // iterates selectedAgentIds — we override the selection logic.
+        return _origOrch.apply(this, arguments);
+      };
+      newOrch._qzAgentTrim = true;
+      window.cmdOrchestrate = newOrch;
+    }
+  }
+  setInterval(applyAgentTrim, 1500);
+  if (document.readyState === 'complete') applyAgentTrim();
+  else window.addEventListener('load', applyAgentTrim);
+
+  // Also patch the bare orchestrator selection. Since the keyword-based
+  // routing pushes ids onto selectedAgentIds, the easiest filter is to
+  // intercept _cmdRunAgent and short-circuit for non-kept ids.
+  function installAgentFilter() {
+    if (typeof window._cmdRunAgent !== 'function' || window._cmdRunAgent._qzAgentFiltered) return;
+    var orig = window._cmdRunAgent;
+    var wrapped = async function(agentId, query) {
+      if (KEPT_AGENTS.indexOf(agentId) < 0) return; // skip silently — fewer rate limit hits
+      return orig.apply(this, arguments);
+    };
+    wrapped._qzAgentFiltered = true;
+    window._cmdRunAgent = wrapped;
+  }
+  setInterval(installAgentFilter, 2000);
+  if (document.readyState === 'complete') installAgentFilter();
+  else window.addEventListener('load', installAgentFilter);
+
+  // ─────────────────────────────────────────────────────────────────
+  //  Part B: The Copilot — floating dock + slide-in research panel
+  // ─────────────────────────────────────────────────────────────────
+  var COPILOT_OPEN_KEY = 'qz_copilot_open_v1';
+  var COPILOT_HIST_KEY = 'qz_copilot_history_v1';
+  var MAX_HISTORY = 30;
+
+  function getHistory() {
+    try { return JSON.parse(localStorage.getItem(COPILOT_HIST_KEY) || '[]'); }
+    catch(_) { return []; }
+  }
+  function saveHistory(h) {
+    try { localStorage.setItem(COPILOT_HIST_KEY, JSON.stringify(h.slice(-MAX_HISTORY))); } catch(_){}
+  }
+  function clearHistory() { saveHistory([]); }
+
+  // ── CSS for Copilot ──────────────────────────────────────────────
+  if (!document.getElementById('qz-copilot-css')) {
+    var st = document.createElement('style');
+    st.id = 'qz-copilot-css';
+    st.textContent = `
+      /* Dock button (closed state) */
+      #qz-copilot-dock {
+        position: fixed; bottom: 56px; right: 22px; z-index: 99990;
+        width: 52px; height: 52px; border-radius: 13px;
+        background: linear-gradient(135deg, #A78BFA 0%, #22D3EE 100%);
+        border: none; cursor: pointer; padding: 0;
+        box-shadow: 0 8px 28px rgba(167,139,250,0.32), 0 0 0 1px rgba(255,255,255,0.06) inset;
+        display: grid; place-items: center;
+        transition: transform 220ms cubic-bezier(0.16,1,0.3,1), box-shadow 220ms;
+        animation: qzCopilotPulse 3.4s ease-in-out infinite;
+      }
+      #qz-copilot-dock:hover { transform: translateY(-2px) scale(1.04); box-shadow: 0 14px 38px rgba(167,139,250,0.5); }
+      #qz-copilot-dock:active { transform: scale(0.96); }
+      #qz-copilot-dock .qz-cop-mono {
+        font-family: var(--font-display, "DM Sans"), sans-serif;
+        font-size: 22px; font-weight: 800; color: #0a0b0e;
+        letter-spacing: -0.04em; line-height: 1;
+      }
+      #qz-copilot-dock .qz-cop-online {
+        position: absolute; bottom: 6px; right: 6px;
+        width: 8px; height: 8px; border-radius: 50%;
+        background: #34D399; box-shadow: 0 0 8px rgba(52,211,153,0.7);
+        border: 1.5px solid rgba(15,17,21,0.9);
+      }
+      @keyframes qzCopilotPulse {
+        0%, 100% { box-shadow: 0 8px 28px rgba(167,139,250,0.32), 0 0 0 0 rgba(167,139,250,0.45); }
+        50%      { box-shadow: 0 8px 28px rgba(167,139,250,0.32), 0 0 0 12px rgba(167,139,250,0); }
+      }
+
+      /* Panel (open state) */
+      #qz-copilot-panel {
+        position: fixed; bottom: 22px; right: 22px; z-index: 99991;
+        width: 400px; height: min(680px, calc(100vh - 60px));
+        background: #0F1115; border: 1px solid rgba(167,139,250,0.25);
+        border-radius: 16px; overflow: hidden;
+        display: none; flex-direction: column;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.05) inset, 0 0 60px rgba(167,139,250,0.12);
+        transform-origin: bottom right;
+        animation: qzCopilotIn 260ms cubic-bezier(0.16,1,0.3,1);
+      }
+      #qz-copilot-panel.open { display: flex; }
+      @keyframes qzCopilotIn {
+        from { opacity: 0; transform: translateY(12px) scale(0.96); }
+        to   { opacity: 1; transform: translateY(0)    scale(1); }
+      }
+
+      /* Header */
+      .qz-cop-hdr {
+        display: flex; align-items: center; gap: 11px;
+        padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.05);
+        background: linear-gradient(180deg, rgba(167,139,250,0.05), transparent);
+      }
+      .qz-cop-hdr-avatar {
+        width: 32px; height: 32px; border-radius: 8px;
+        background: linear-gradient(135deg, #A78BFA, #22D3EE);
+        display: grid; place-items: center; flex-shrink: 0;
+        font-family: var(--font-display); font-weight: 800; font-size: 14px;
+        color: #0a0b0e; letter-spacing: -0.04em;
+      }
+      .qz-cop-hdr-title {
+        font-family: var(--font-display); font-size: 13.5px; font-weight: 700;
+        color: #fff; line-height: 1.1; letter-spacing: -0.005em;
+      }
+      .qz-cop-hdr-sub {
+        font-family: var(--font-mono); font-size: 10px; color: #34D399;
+        letter-spacing: 0.1em; margin-top: 2px;
+      }
+      .qz-cop-hdr-sub::before {
+        content: ""; display: inline-block; width: 6px; height: 6px;
+        border-radius: 50%; background: #34D399; margin-right: 5px;
+        box-shadow: 0 0 6px rgba(52,211,153,0.7); vertical-align: 1px;
+      }
+      .qz-cop-hdr-btn {
+        background: transparent; border: 1px solid rgba(255,255,255,0.08);
+        color: var(--text-muted); padding: 5px 9px; border-radius: 6px;
+        cursor: pointer; font-size: 11px; font-family: var(--font-mono);
+        transition: all 160ms ease;
+      }
+      .qz-cop-hdr-btn:hover { border-color: rgba(255,255,255,0.2); color: #fff; }
+
+      /* Body (welcome OR messages) */
+      .qz-cop-body { flex: 1; overflow-y: auto; padding: 16px; scrollbar-width: thin; }
+      .qz-cop-body::-webkit-scrollbar { width: 4px; }
+      .qz-cop-body::-webkit-scrollbar-thumb { background: rgba(167,139,250,0.3); border-radius: 2px; }
+
+      /* Welcome screen */
+      .qz-cop-welcome-eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: #A78BFA; font-weight: 600; }
+      .qz-cop-welcome-h1 { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: #fff; letter-spacing: -0.015em; margin: 6px 0 4px; line-height: 1.2; }
+      .qz-cop-welcome-sub { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 18px; }
+      .qz-cop-cap-list { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 16px; }
+      .qz-cop-cap {
+        font-size: 11px; font-family: var(--font-mono);
+        padding: 7px 10px; background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.05); border-radius: 6px;
+        color: rgba(255,255,255,0.8); letter-spacing: 0.01em;
+        display: flex; align-items: center; gap: 7px;
+      }
+      .qz-cop-cap::before { content: ""; width: 4px; height: 4px; border-radius: 50%; background: var(--accent); }
+      .qz-cop-section-label {
+        font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.14em;
+        color: var(--text-muted); font-weight: 600;
+        margin: 14px 0 8px; text-transform: uppercase;
+      }
+      .qz-cop-actions { display: flex; flex-direction: column; gap: 6px; }
+      .qz-cop-action {
+        text-align: left; padding: 11px 13px;
+        background: rgba(167,139,250,0.04);
+        border: 1px solid rgba(167,139,250,0.18);
+        border-radius: 9px; color: #fff;
+        font-family: var(--font-display); font-size: 12.5px; font-weight: 500;
+        cursor: pointer; transition: all 180ms cubic-bezier(0.16,1,0.3,1);
+        letter-spacing: -0.005em;
+      }
+      .qz-cop-action:hover {
+        background: rgba(167,139,250,0.12);
+        border-color: rgba(167,139,250,0.4);
+        transform: translateY(-1px);
+      }
+      .qz-cop-action-arrow { float: right; opacity: 0.5; font-family: var(--font-mono); }
+
+      /* Messages */
+      .qz-cop-msg { margin-bottom: 14px; }
+      .qz-cop-msg-role {
+        font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.14em;
+        color: var(--text-muted); font-weight: 600; text-transform: uppercase;
+        margin-bottom: 5px;
+      }
+      .qz-cop-msg-role.user { color: #22D3EE; }
+      .qz-cop-msg-role.ai   { color: #A78BFA; }
+      .qz-cop-msg-bubble {
+        font-size: 13px; line-height: 1.6;
+        color: rgba(255,255,255,0.9);
+        padding: 11px 13px; border-radius: 9px;
+        background: rgba(255,255,255,0.025);
+        border: 1px solid rgba(255,255,255,0.04);
+      }
+      .qz-cop-msg.user .qz-cop-msg-bubble {
+        background: rgba(34,211,238,0.05);
+        border-color: rgba(34,211,238,0.15);
+      }
+      .qz-cop-msg-bubble strong { color: #fff; font-weight: 600; }
+      .qz-cop-msg-bubble em     { color: rgba(255,255,255,0.7); font-style: italic; }
+      .qz-cop-msg-bubble code   { background: rgba(0,0,0,0.3); padding: 1px 5px; border-radius: 3px; font-family: var(--font-mono); font-size: 11.5px; }
+
+      /* Context strip (above input — shows what Copilot knows) */
+      .qz-cop-ctx-strip {
+        padding: 7px 14px; background: rgba(34,211,238,0.04);
+        border-top: 1px solid rgba(255,255,255,0.05);
+        font-family: var(--font-mono); font-size: 10px;
+        color: #67E8F9; letter-spacing: 0.05em;
+        display: flex; align-items: center; gap: 6px;
+      }
+      .qz-cop-ctx-strip::before { content: "CONTEXT"; opacity: 0.6; }
+      .qz-cop-ctx-strip-pg { color: #fff; font-weight: 600; }
+
+      /* Input */
+      .qz-cop-input-row {
+        display: flex; gap: 8px; padding: 12px 14px;
+        border-top: 1px solid rgba(255,255,255,0.05);
+        background: rgba(0,0,0,0.2);
+      }
+      .qz-cop-input {
+        flex: 1; padding: 9px 12px;
+        background: rgba(0,0,0,0.4);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 8px; color: #fff;
+        font-family: var(--font-display); font-size: 13px;
+        transition: border-color 160ms ease;
+      }
+      .qz-cop-input:focus { outline: none; border-color: var(--accent); }
+      .qz-cop-send {
+        padding: 9px 14px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        border: none; border-radius: 8px;
+        color: #000; font-weight: 700; font-size: 12px;
+        cursor: pointer; transition: transform 140ms ease;
+        font-family: var(--font-mono); letter-spacing: 0.02em;
+      }
+      .qz-cop-send:active { transform: scale(0.96); }
+      .qz-cop-send:disabled { opacity: 0.5; cursor: not-allowed; }
+
+      /* Mobile */
+      @media (max-width: 480px) {
+        #qz-copilot-panel {
+          width: calc(100vw - 24px); height: calc(100vh - 100px);
+          bottom: 12px; right: 12px;
+        }
+        #qz-copilot-dock { bottom: 70px; right: 14px; width: 48px; height: 48px; }
+      }
+      @media (max-width: 768px) {
+        #qz-copilot-dock { bottom: 80px; }
+      }
+    `;
+    document.head.appendChild(st);
+  }
+
+  // ── Build dock + panel DOM ───────────────────────────────────────
+  function ensureDock() {
+    if (document.getElementById('qz-copilot-dock')) return;
+    var dock = document.createElement('button');
+    dock.id = 'qz-copilot-dock';
+    dock.title = 'Open Quant Entelloq Copilot';
+    dock.innerHTML = '<span class="qz-cop-mono">Q</span><span class="qz-cop-online"></span>';
+    dock.onclick = toggleCopilot;
+    document.body.appendChild(dock);
+  }
+  function ensurePanel() {
+    if (document.getElementById('qz-copilot-panel')) return;
+    var p = document.createElement('div');
+    p.id = 'qz-copilot-panel';
+    document.body.appendChild(p);
+  }
+
+  function toggleCopilot() {
+    var p = document.getElementById('qz-copilot-panel');
+    if (!p) { ensurePanel(); p = document.getElementById('qz-copilot-panel'); }
+    if (p.classList.contains('open')) closeCopilot();
+    else openCopilot();
+  }
+  function openCopilot() {
+    ensurePanel();
+    var p = document.getElementById('qz-copilot-panel');
+    p.classList.add('open');
+    try { localStorage.setItem(COPILOT_OPEN_KEY, '1'); } catch(_){}
+    paintCopilot();
+    setTimeout(function() { var i = document.getElementById('qz-cop-input'); if (i) i.focus(); }, 200);
+  }
+  function closeCopilot() {
+    var p = document.getElementById('qz-copilot-panel');
+    if (p) p.classList.remove('open');
+    try { localStorage.removeItem(COPILOT_OPEN_KEY); } catch(_){}
+  }
+  window.qzOpenCopilot = openCopilot;
+  window.qzCloseCopilot = closeCopilot;
+  window.qzToggleCopilot = toggleCopilot;
+
+  // ── Context-aware actions per page ───────────────────────────────
+  function currentPageId() {
+    if (window.state && window.state.currentPage) return window.state.currentPage;
+    // Fallback: find which page-* element is visible
+    var pages = document.querySelectorAll('[id^="page-"]');
+    for (var i = 0; i < pages.length; i++) {
+      var el = pages[i];
+      if (el.id === 'page-title') continue;
+      var disp = window.getComputedStyle(el).display;
+      var hid = el.classList.contains('hidden');
+      if (disp !== 'none' && !hid) return el.id.replace('page-', '');
+    }
+    return 'dashboard';
+  }
+
+  function actionsForPage(pg) {
+    var common = [
+      { label: 'Summarize today\'s market', prompt: 'Give me a concise overview of today\'s market action: indices, sector leaders/laggards, key macro events. Be specific with numbers.' },
+      { label: 'Analyze my portfolio', prompt: 'Analyze my portfolio: concentration, risk profile, sector exposure, biggest winners/losers. Flag anything concerning.' },
+      { label: 'Find opportunities', prompt: 'Surface 3 high-conviction opportunities right now across stocks, ETFs, or sectors. Explain the catalyst for each.' },
+    ];
+    if (pg === 'portfolio') return [
+      { label: 'Review my portfolio risk',  prompt: 'Audit my current portfolio risk: concentration, factor tilts, drawdown sensitivity. Highlight any positions that are oversized.' },
+      { label: 'Earnings this week',        prompt: 'Which of my holdings report earnings this week? Summarize expectations and key risks for each.' },
+      { label: 'Suggest a rebalance',       prompt: 'Suggest a simple rebalance for my portfolio to improve diversification while preserving upside.' },
+      { label: 'Compare to S&P 500',        prompt: 'How does my portfolio\'s expected risk/return profile compare to a passive S&P 500 allocation?' },
+    ].concat(common);
+    if (pg === 'intel' || pg === 'news') return [
+      { label: 'Summarize top stories',     prompt: 'Summarize the 5 most market-moving stories on the intelligence feed right now. One sentence each.' },
+      { label: 'What\'s bullish?',          prompt: 'Which sectors or tickers are showing bullish setups in today\'s news flow?' },
+      { label: 'What\'s bearish?',          prompt: 'Which sectors or tickers are showing bearish setups or elevated risk in today\'s news?' },
+      { label: 'Identify portfolio impact', prompt: 'Cross-reference today\'s news against my portfolio holdings. Which items affect me?' },
+    ].concat(common);
+    if (pg === 'quantlab') return [
+      { label: 'Build a momentum strategy', prompt: 'Walk me through building a 12-1 momentum strategy I can backtest here. Specify universe, signal rules, position sizing.' },
+      { label: 'Explain Fama-French',       prompt: 'Briefly explain the Fama-French 3-factor model and what high SMB / low HML loadings tell me about an asset.' },
+      { label: 'When does VaR fail?',       prompt: 'When is Value-at-Risk a poor risk measure? What should I use instead?' },
+      { label: 'Regime-aware position size', prompt: 'How should I adjust position sizing when the market is in a high-volatility regime?' },
+    ].concat(common);
+    if (pg === 'paper') return [
+      { label: 'Best paper-trade ideas',    prompt: 'What are 3 high-conviction ideas worth paper-trading right now? Include thesis and risk.' },
+      { label: 'Review my trade history',   prompt: 'Audit my paper trading history: win rate, average gain vs loss, common mistakes.' },
+      { label: 'Walk me through options',   prompt: 'Walk me through how to think about options strategies (covered call, cash-secured put, vertical spread) at my experience level.' },
+    ].concat(common);
+    if (pg === 'signals' || pg === 'scanner') return [
+      { label: 'Why these signals?',        prompt: 'Explain why the top signals on screen are flagged. What\'s the underlying setup?' },
+      { label: 'Highest conviction signal', prompt: 'Of the current signals, which one has the best risk/reward and why?' },
+    ].concat(common);
+    if (pg === 'macro') return [
+      { label: 'Current market regime',     prompt: 'What\'s the current market regime — risk-on, risk-off, or rotational? Cite the indicators.' },
+      { label: 'Yield curve interpretation', prompt: 'How is the yield curve shaped right now and what does it imply for risk assets over the next 6-12 months?' },
+    ].concat(common);
+    return common;
+  }
+
+  // ── System prompt + context builder ──────────────────────────────
+  function copilotSystem() {
+    return [
+      'You are Quant Entelloq Copilot — the user\'s institutional-grade AI research assistant.',
+      '',
+      'STYLE:',
+      '- Lead with the answer in the FIRST sentence. No preamble.',
+      '- Maximum 3 short paragraphs. Use **bold** for key numbers/conclusions.',
+      '- Cite specific tickers, percentages, levels when relevant.',
+      '- Never recommend specific trades or use words like "buy this" or "guaranteed".',
+      '- Use research framing: "potential opportunity", "bullish signal", "quantitative observation".',
+      '- Acknowledge uncertainty: "all-else-equal", "subject to data", "historically".',
+      '- If asked about something outside finance, politely redirect.',
+      '',
+      'TOOLS YOU CAN REFERENCE (the user has these in-platform):',
+      '- Intelligence Feed (AI-summarized news, sentiment, opportunity scores)',
+      '- Quant Lab (Factor Lab, MVO, VaR/ES, Momentum, Regime, Black-Scholes, Backtest, Kelly)',
+      '- Portfolio + Watchlists (CSV import + NL add)',
+      '- Paper Trading (simulated execution)',
+      '- AI Studio (4 specialist agents for deep dives)',
+      '',
+      'When the user asks something a specific tool would answer better, name the tool and steer them there.',
+    ].join('\n');
+  }
+
+  function buildContext() {
+    var ctx = [];
+    var pg = currentPageId();
+    ctx.push('[CURRENT PAGE] ' + pg);
+    try {
+      if (window.state && window.state.portfolio && window.state.portfolio.length) {
+        var total = 0;
+        var holdings = window.state.portfolio.slice(0, 10).map(function(p) {
+          var v = (p.current || p.cost) * p.qty;
+          total += v;
+          return p.ticker + ' (' + p.qty + '@$' + p.cost + ')';
+        }).join(', ');
+        ctx.push('[PORTFOLIO] Value $' + Math.round(total).toLocaleString() + '. Holdings: ' + holdings);
+      } else {
+        ctx.push('[PORTFOLIO] User has not added positions yet.');
+      }
+    } catch(_) {}
+    try {
+      var rpg = typeof qzRPG === 'object' && qzRPG.state();
+      if (rpg) ctx.push('[USER LEVEL] ' + rpg.level + ' (' + rpg.xp + ' XP)');
+    } catch(_){}
+    return ctx.join('\n');
+  }
+
+  // ── Painters: welcome vs chat state ──────────────────────────────
+  function paintCopilot() {
+    var p = document.getElementById('qz-copilot-panel');
+    if (!p) return;
+    var hist = getHistory();
+    var pg = currentPageId();
+
+    var hdr = '<div class="qz-cop-hdr">' +
+      '<div class="qz-cop-hdr-avatar">Q</div>' +
+      '<div style="flex:1;">' +
+        '<div class="qz-cop-hdr-title">Quant Entelloq Copilot</div>' +
+        '<div class="qz-cop-hdr-sub">RESEARCH COPILOT · ONLINE</div>' +
+      '</div>' +
+      '<button class="qz-cop-hdr-btn" onclick="(' + clearHistory.toString() + ')(); qzOpenCopilot();" title="Clear conversation">Clear</button>' +
+      '<button class="qz-cop-hdr-btn" onclick="qzCloseCopilot()" title="Close">Close</button>' +
+    '</div>';
+
+    var body;
+    if (!hist.length) {
+      body = '<div class="qz-cop-body" id="qz-cop-body">' +
+        '<div class="qz-cop-welcome-eyebrow">QUANT ENTELLOQ COPILOT</div>' +
+        '<div class="qz-cop-welcome-h1">Your AI Research Copilot</div>' +
+        '<div class="qz-cop-welcome-sub">Ask anything about markets, your portfolio, quant strategies, or what to look at next. I have your current page and portfolio in context.</div>' +
+        '<div class="qz-cop-section-label">Capabilities</div>' +
+        '<div class="qz-cop-cap-list">' +
+          '<div class="qz-cop-cap">Portfolio analysis</div>' +
+          '<div class="qz-cop-cap">Market intelligence</div>' +
+          '<div class="qz-cop-cap">Quant research</div>' +
+          '<div class="qz-cop-cap">Strategy building</div>' +
+          '<div class="qz-cop-cap">Opportunity discovery</div>' +
+          '<div class="qz-cop-cap">Risk observations</div>' +
+        '</div>' +
+        '<div class="qz-cop-section-label">Suggested for this page</div>' +
+        '<div class="qz-cop-actions">' +
+          actionsForPage(pg).slice(0, 4).map(function(a) {
+            var p = a.prompt.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            return '<button class="qz-cop-action" onclick="qzCopilotSend(&quot;' + p + '&quot;)">' + a.label + ' <span class="qz-cop-action-arrow">→</span></button>';
+          }).join('') +
+        '</div>' +
+      '</div>';
+    } else {
+      body = '<div class="qz-cop-body" id="qz-cop-body">' +
+        hist.map(function(m) {
+          return '<div class="qz-cop-msg ' + (m.role === 'user' ? 'user' : 'ai') + '">' +
+            '<div class="qz-cop-msg-role ' + (m.role === 'user' ? 'user' : 'ai') + '">' + (m.role === 'user' ? 'YOU' : 'COPILOT') + '</div>' +
+            '<div class="qz-cop-msg-bubble">' + formatMessage(m.content) + '</div>' +
+          '</div>';
+        }).join('') +
+      '</div>';
+    }
+
+    var ctxStrip = '<div class="qz-cop-ctx-strip"><span class="qz-cop-ctx-strip-pg">' + pg.toUpperCase() + '</span>' + (window.state && window.state.portfolio && window.state.portfolio.length ? ' · ' + window.state.portfolio.length + ' position' + (window.state.portfolio.length>1?'s':'') : '') + '</div>';
+
+    var input = '<div class="qz-cop-input-row">' +
+      '<input type="text" id="qz-cop-input" class="qz-cop-input" placeholder="Ask the Copilot anything…" onkeydown="if(event.key===&quot;Enter&quot;){event.preventDefault();qzCopilotSubmit();}"/>' +
+      '<button class="qz-cop-send" onclick="qzCopilotSubmit()">Send</button>' +
+    '</div>';
+
+    p.innerHTML = hdr + body + ctxStrip + input;
+
+    // Auto-scroll to bottom
+    var b = document.getElementById('qz-cop-body');
+    if (b) b.scrollTop = b.scrollHeight;
+  }
+
+  function formatMessage(text) {
+    var safe = String(text || '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    safe = safe.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    safe = safe.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    safe = safe.replace(/`([^`]+)`/g, '<code>$1</code>');
+    safe = safe.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+    return safe;
+  }
+
+  // ── Send a chat ──────────────────────────────────────────────────
+  window.qzCopilotSend = function(prompt) {
+    var inp = document.getElementById('qz-cop-input');
+    if (inp) inp.value = prompt;
+    qzCopilotSubmit();
+  };
+
+  window.qzCopilotSubmit = async function() {
+    var inp = document.getElementById('qz-cop-input');
+    var sendBtn = document.querySelector('.qz-cop-send');
+    if (!inp) return;
+    var q = (inp.value || '').trim();
+    if (!q) return;
+    inp.value = '';
+    inp.disabled = true;
+    if (sendBtn) sendBtn.disabled = true;
+
+    var hist = getHistory();
+    hist.push({ role: 'user', content: q, ts: Date.now() });
+    saveHistory(hist);
+    paintCopilot();
+
+    // Add placeholder AI message
+    hist.push({ role: 'assistant', content: '…', ts: Date.now() });
+    saveHistory(hist);
+    paintCopilot();
+
+    try {
+      var sys = copilotSystem() + '\n\n[USER CONTEXT]\n' + buildContext();
+      var msgs = [];
+      // Last 4 turns of history for memory (excluding placeholder + current)
+      var recent = hist.slice(-10, -2);
+      recent.forEach(function(m) { msgs.push({ role: m.role, content: m.content }); });
+      msgs.push({ role: 'user', content: q });
+
+      var collected = '';
+      if (typeof qzAIStream === 'function') {
+        for await (var chunk of qzAIStream(sys, msgs, 1200)) {
+          collected += chunk;
+          // Update the placeholder message inline
+          var lh = getHistory();
+          if (lh.length && lh[lh.length-1].role === 'assistant') {
+            lh[lh.length-1].content = collected;
+            saveHistory(lh);
+            // Inline update without full repaint (avoid jitter)
+            var bub = document.querySelectorAll('.qz-cop-msg.ai .qz-cop-msg-bubble');
+            if (bub.length) {
+              bub[bub.length-1].innerHTML = formatMessage(collected + ' ▊');
+              var b = document.getElementById('qz-cop-body');
+              if (b) b.scrollTop = b.scrollHeight;
+            }
+          }
+        }
+        var lh2 = getHistory();
+        if (lh2.length && lh2[lh2.length-1].role === 'assistant') {
+          lh2[lh2.length-1].content = collected || 'I could not generate a response. Try rephrasing.';
+          saveHistory(lh2);
+        }
+        paintCopilot();
+      } else {
+        var lh3 = getHistory();
+        if (lh3.length) lh3[lh3.length-1].content = 'AI engine not ready yet. Please try again in a moment.';
+        saveHistory(lh3);
+        paintCopilot();
+      }
+    } catch (err) {
+      var lh4 = getHistory();
+      if (lh4.length && lh4[lh4.length-1].role === 'assistant') {
+        lh4[lh4.length-1].content = 'Network error reaching the AI service. ' + (err && err.message || '');
+        saveHistory(lh4);
+      }
+      paintCopilot();
+    } finally {
+      if (inp) { inp.disabled = false; inp.focus(); }
+      if (sendBtn) sendBtn.disabled = false;
+    }
+
+    // RPG hook
+    if (typeof qzRPG === 'object' && qzRPG.quest) qzRPG.quest('ai_query');
+  };
+
+  // ── Boot ─────────────────────────────────────────────────────────
+  function bootCopilot() {
+    ensureDock();
+    ensurePanel();
+    // Restore open state if it was open
+    try {
+      if (localStorage.getItem(COPILOT_OPEN_KEY) === '1') openCopilot();
+    } catch(_){}
+  }
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    setTimeout(bootCopilot, 600);
+  } else {
+    window.addEventListener('load', function() { setTimeout(bootCopilot, 600); });
+  }
+
+  // Re-paint the context strip when page changes
+  setInterval(function() {
+    var p = document.getElementById('qz-copilot-panel');
+    if (!p || !p.classList.contains('open')) return;
+    var strip = p.querySelector('.qz-cop-ctx-strip-pg');
+    if (strip) {
+      var cur = currentPageId().toUpperCase();
+      if (strip.textContent !== cur) strip.textContent = cur;
+    }
+  }, 2000);
+
+  // Hide the legacy TTS FAB icon emoji — replace with text-only label
+  setInterval(function() {
+    var fab = document.getElementById('qz-tts-fab');
+    if (!fab) return;
+    var ic = fab.querySelector('.qz-fab-icon');
+    if (ic && /[🔊🔇]/.test(ic.textContent)) {
+      ic.style.fontSize = '0';
+      ic.style.position = 'relative';
+      if (!ic.querySelector('.qz-tts-dot')) {
+        var d = document.createElement('span');
+        d.className = 'qz-tts-dot';
+        d.style.cssText = 'display:block;width:8px;height:8px;border-radius:50%;background:currentColor;';
+        ic.appendChild(d);
+      }
+    }
+  }, 1500);
+})();
+</script>
+
+<script>
+/* ==================================================================== *
  *  ENTELLOQ ACADEMY — RPG ONBOARDING + XP + ACHIEVEMENTS                *
  *  Plus Portfolio Add v2 (Search / Natural Language / Bulk / Watchlist) *
  *                                                                       *
