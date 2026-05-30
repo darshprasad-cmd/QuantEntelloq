@@ -9575,18 +9575,23 @@ function finishOnboarding() {
 
 // ==================== APP INIT ====================
 function initApp() {
-  state.portfolio = [...PORTFOLIO_DATA];
-  state.ledger = [...LEDGER_DATA];
-  document.getElementById('app').style.display = 'flex';
+  try { state.portfolio = [...(typeof PORTFOLIO_DATA !== 'undefined' ? PORTFOLIO_DATA : [])]; } catch(_) { state.portfolio = []; }
+  try { state.ledger    = [...(typeof LEDGER_DATA    !== 'undefined' ? LEDGER_DATA    : [])]; } catch(_) { state.ledger    = []; }
+  const appEl = document.getElementById('app');
+  if (appEl) appEl.style.display = 'flex';
 
-  // Set user info
+  // Set user info — null-guard every getElementById
   const name = state.user?.name || 'User';
-  document.getElementById('user-avatar-sidebar').textContent = name.charAt(0).toUpperCase();
-  document.getElementById('user-name-sidebar').textContent = name;
-  document.getElementById('settings-name').textContent = name;
-  document.getElementById('settings-email').textContent = state.user?.email || '';
+  const _avEl  = document.getElementById('user-avatar-sidebar');
+  const _nmEl  = document.getElementById('user-name-sidebar');
+  const _stNm  = document.getElementById('settings-name');
+  const _stEm  = document.getElementById('settings-email');
+  if (_avEl) _avEl.textContent = name.charAt(0).toUpperCase();
+  if (_nmEl) _nmEl.textContent = name;
+  if (_stNm) _stNm.textContent = name;
+  if (_stEm) _stEm.textContent = state.user?.email || '';
 
-  renderDashboard();
+  try { renderDashboard(); } catch(e){ console.warn('[initApp] renderDashboard', e); }
   // Each renderer is guarded — a single failing one can't crash the whole app
   try { renderSignals(); }   catch(e){ console.warn('[initApp] renderSignals', e); }
   try { renderNews(); }      catch(e){ console.warn('[initApp] renderNews', e); }
