@@ -27113,6 +27113,166 @@ setTimeout(() => {
 <!-- QuantLab + IntelEngine script removed — had multiple unfixable apostrophe parse errors in the reference. Re-add from clean source later. -->
 <script>
 /* ==================================================================== *
+ *  ENTELLOQ BRAND EMBLEM — swap Q monograms for the company logo       *
+ *                                                                      *
+ *  Detects /assets/entelloq-mark.png (head only — preferred) and       *
+ *  /assets/entelloq-logo.png (full lockup) and uses them everywhere    *
+ *  the gradient "Q" monogram appears: sidebar logo, Copilot dock,      *
+ *  mentor avatar, quest panel header, daily-challenge badge.           *
+ *                                                                      *
+ *  Adds a quiet bottom-right corner watermark on the landing using     *
+ *  the full lockup at 18% opacity.                                     *
+ *                                                                      *
+ *  GRACEFUL FALLBACK: if images aren't present in the repo yet, the    *
+ *  existing gradient Q monogram remains. No broken layout.             *
+ * ==================================================================== */
+(function() {
+  'use strict';
+
+  var MARK_PATH = 'assets/entelloq-mark.png';   // head only — for small placements
+  var LOGO_PATH = 'assets/entelloq-logo.png';   // full lockup — for watermark
+
+  // Probe both paths in parallel; apply whichever succeeds
+  function probe(path) {
+    return new Promise(function(resolve) {
+      var img = new Image();
+      img.onload  = function() { resolve({ path: path, ok: true, w: img.naturalWidth, h: img.naturalHeight }); };
+      img.onerror = function() { resolve({ path: path, ok: false }); };
+      img.src = path + '?v=' + Date.now();
+    });
+  }
+
+  Promise.all([probe(MARK_PATH), probe(LOGO_PATH)]).then(function(results) {
+    var mark = results[0];
+    var logo = results[1];
+
+    // Pick best source for small marks: prefer dedicated head crop, fall back to full logo
+    var smallMarkSrc = mark.ok ? MARK_PATH : (logo.ok ? LOGO_PATH : null);
+    var watermarkSrc = logo.ok ? LOGO_PATH : (mark.ok ? MARK_PATH : null);
+
+    // If neither exists, do nothing (Q monograms stay)
+    if (!smallMarkSrc && !watermarkSrc) {
+      console.info('[Entelloq Brand] No logo files found at /assets/. Keeping gradient Q fallback.');
+      return;
+    }
+
+    // ── For small placements: if using the FULL logo, focus on the head ──
+    // The head occupies the upper-center of the full lockup. background-position
+    // 'center 22%' shows just the head (skipping wordmark). If using a dedicated
+    // mark file, the file is already a square head crop — use 'center'.
+    var smallPos = mark.ok ? 'center center' : 'center 22%';
+    var smallSize = mark.ok ? 'cover' : '180% auto';
+
+    if (!document.getElementById('qe-brand-emblem-css')) {
+      var s = document.createElement('style');
+      s.id = 'qe-brand-emblem-css';
+      s.textContent = `
+        /* ── Sidebar brand mark ── */
+        .sidebar .sidebar-logo .logo-icon {
+          background: #0A0A0B url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
+          box-shadow:
+            0 4px 20px rgba(167,139,250,0.18),
+            0 0 0 1px rgba(244,244,240,0.06) inset !important;
+        }
+        .sidebar .sidebar-logo .logo-icon::after {
+          content: "" !important;
+          display: none !important;
+        }
+
+        /* ── Copilot floating dock ── */
+        #qz-copilot-dock {
+          background: #0A0A0B url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
+          border: 1px solid rgba(167,139,250,0.42) !important;
+          box-shadow:
+            0 8px 28px rgba(0,0,0,0.45),
+            0 0 0 1px rgba(255,255,255,0.06) inset,
+            0 0 24px rgba(167,139,250,0.22) !important;
+        }
+        #qz-copilot-dock .qz-cop-mono { display: none !important; }
+
+        /* ── Copilot header avatar ── */
+        .qz-cop-hdr-avatar {
+          background: #0A0A0B url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
+          color: transparent !important;
+          font-size: 0 !important;
+        }
+
+        /* ── Mentor walkthrough avatar ── */
+        .qz-mentor-avatar {
+          background: #0A0A0B url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
+          color: transparent !important;
+          font-size: 0 !important;
+          box-shadow: 0 4px 14px rgba(167,139,250,0.25) !important;
+        }
+
+        /* ── Quest panel level monogram ── */
+        .qz-quest-mono {
+          background: #0A0A0B url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
+          color: transparent !important;
+          font-size: 0 !important;
+        }
+
+        /* ── Daily challenge badge (RS / MT / WB etc.) — keep mono but on brand bg ── */
+        #qz-daily-challenge-card > div:first-child {
+          background: #0A0A0B url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
+          color: transparent !important;
+          font-size: 0 !important;
+        }
+
+        /* ── Quant Lab academic hero icon (was QL gradient square) ── */
+        .qz-page-hero [style*="border-radius:11px"][style*="grid"]:first-child {
+          background: #0A0A0B url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
+          color: transparent !important;
+          font-size: 0 !important;
+        }
+
+        /* ── Watermark: quiet corner emblem on landing only ── */
+        #qe-watermark {
+          position: fixed; bottom: 22px; left: 22px; z-index: 50;
+          width: 110px; height: 38px;
+          background: url('${watermarkSrc}') no-repeat center bottom / contain;
+          opacity: 0.16;
+          pointer-events: none;
+          mix-blend-mode: screen;
+          transition: opacity 400ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        #qe-watermark:hover { opacity: 0.32; }
+        /* Hide watermark inside the app (only show on marketing landing) */
+        body.qe-in-app #qe-watermark { display: none; }
+        @media (max-width: 640px) {
+          #qe-watermark { width: 80px; height: 28px; bottom: 60px; left: 12px; opacity: 0.12; }
+        }
+      `;
+      document.head.appendChild(s);
+    }
+
+    // ── Inject watermark on landing only ──
+    function syncWatermark() {
+      var landing = document.getElementById('landing');
+      var app     = document.getElementById('app');
+      var landingShown = landing && window.getComputedStyle(landing).display !== 'none';
+      if (landingShown && watermarkSrc) {
+        if (!document.getElementById('qe-watermark')) {
+          var wm = document.createElement('div');
+          wm.id = 'qe-watermark';
+          wm.title = 'Entelloq Networks';
+          document.body.appendChild(wm);
+        }
+        document.body.classList.remove('qe-in-app');
+      } else {
+        document.body.classList.add('qe-in-app');
+      }
+    }
+    setInterval(syncWatermark, 1500);
+    syncWatermark();
+
+    console.info('[Entelloq Brand] Logo emblem active. mark=' + (mark.ok ? 'ok' : 'fallback') + ', logo=' + (logo.ok ? 'ok' : 'fallback'));
+  });
+})();
+</script>
+
+<script>
+/* ==================================================================== *
  *  ATLAS-STYLE CINEMATIC + REMOVE SUBSCRIPTION UI                      *
  *                                                                      *
  *  Inspired by atlascard.com's slow, deliberate scroll choreography:   *
