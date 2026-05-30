@@ -27113,6 +27113,300 @@ setTimeout(() => {
 <!-- QuantLab + IntelEngine script removed — had multiple unfixable apostrophe parse errors in the reference. Re-add from clean source later. -->
 <script>
 /* ==================================================================== *
+ *  FINAL CLEANUP + MARKET CLOCK + DAILY CHALLENGE + DASHBOARD POLISH   *
+ *    1. Hide the legacy Quant Entelloq "orb" assistant (Saturn-ring    *
+ *       floating thing). The new Copilot dock is the single AI mark.   *
+ *    2. Add a clean institutional market-timing clock at bottom-right  *
+ *       next to the Copilot (NYSE session, live time, countdown).      *
+ *    3. RPG: add Daily Challenge card on dashboard (rotates by weekday)*
+ *    4. Dashboard: prominent Today panel (challenge + streak + level)  *
+ * ==================================================================== */
+(function() {
+  'use strict';
+
+  // ─────────────────────────────────────────────────────────────────
+  //  1. HIDE LEGACY FLOATING WIDGETS — keep only the Copilot
+  // ─────────────────────────────────────────────────────────────────
+  if (!document.getElementById('qz-orb-hide-css')) {
+    var hideCSS = document.createElement('style');
+    hideCSS.id = 'qz-orb-hide-css';
+    hideCSS.textContent = [
+      // Legacy Quant Entelloq assistant orb (the big Saturn-ring one)
+      '#qe-orb-static, #qe-panel-static, #qe-shortcuts-static { display: none !important; }',
+      // Decorative background orbs
+      '#qe-app-orb-1, #qe-app-orb-2, #qe-app-orb-3, #qe-app-radial, #qe-grid-bg { display: none !important; }',
+      // Old TTS floating dot
+      '#qz-tts-fab { display: none !important; }',
+      // Any other floating assistant orbs that might have been added
+      'elevenlabs-convai { display: none !important; }',
+    ].join('\n');
+    document.head.appendChild(hideCSS);
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  //  2. MARKET TIMING CLOCK — NYSE session + live ET time + countdown
+  // ─────────────────────────────────────────────────────────────────
+  if (!document.getElementById('qz-market-clock-css')) {
+    var cs = document.createElement('style');
+    cs.id = 'qz-market-clock-css';
+    cs.textContent = `
+      #qz-market-clock {
+        position: fixed; bottom: 56px; right: 88px; z-index: 99989;
+        background: rgba(15,17,21,0.94);
+        backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 12px;
+        padding: 10px 14px;
+        box-shadow: 0 10px 28px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04) inset;
+        font-family: var(--font-mono, "DM Mono"), monospace;
+        min-width: 188px;
+        cursor: default;
+        transition: transform 200ms cubic-bezier(0.16,1,0.3,1);
+      }
+      #qz-market-clock:hover { transform: translateY(-2px); }
+      .qz-mc-top {
+        display: flex; justify-content: space-between; align-items: center;
+        margin-bottom: 5px;
+      }
+      .qz-mc-status {
+        font-size: 9px; padding: 2px 7px;
+        border-radius: 4px; border: 1px solid;
+        letter-spacing: 0.14em; font-weight: 700;
+      }
+      .qz-mc-tz {
+        font-size: 8.5px; color: var(--text-muted);
+        letter-spacing: 0.12em;
+      }
+      .qz-mc-time {
+        font-size: 22px; font-weight: 700; color: #fff;
+        letter-spacing: -0.015em; line-height: 1;
+        font-variant-numeric: tabular-nums;
+      }
+      .qz-mc-bottom {
+        font-size: 9px; color: var(--text-muted);
+        letter-spacing: 0.06em; margin-top: 5px;
+      }
+      .qz-mc-cd { color: rgba(255,255,255,0.8); font-weight: 600; }
+      @media (max-width: 640px) {
+        #qz-market-clock { right: 78px; bottom: 80px; min-width: 160px; padding: 8px 12px; }
+        .qz-mc-time { font-size: 18px; }
+      }
+      @media (max-width: 480px) {
+        #qz-market-clock { display: none; }
+      }
+    `;
+    document.head.appendChild(cs);
+  }
+
+  function getETNow() {
+    return new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  }
+  var CLOSED = { name: 'CLOSED', color: '#9CA3AF', bg: 'rgba(156,163,175,0.10)', border: 'rgba(156,163,175,0.28)' };
+  var SESSIONS = [
+    { name: 'PREMARKET',  start: 4*60,      end: 9*60+30, color: '#FBBF24', bg: 'rgba(251,191,36,0.10)', border: 'rgba(251,191,36,0.3)' },
+    { name: 'OPEN',       start: 9*60+30,   end: 16*60,   color: '#34D399', bg: 'rgba(52,211,153,0.10)', border: 'rgba(52,211,153,0.32)' },
+    { name: 'AFTER-HRS',  start: 16*60,     end: 20*60,   color: '#FBBF24', bg: 'rgba(251,191,36,0.10)', border: 'rgba(251,191,36,0.3)' },
+  ];
+
+  function currentSession() {
+    var et = getETNow();
+    var day = et.getDay();
+    if (day === 0 || day === 6) return Object.assign({}, CLOSED, { weekend: true });
+    var mins = et.getHours() * 60 + et.getMinutes();
+    for (var i = 0; i < SESSIONS.length; i++) {
+      var s = SESSIONS[i];
+      if (mins >= s.start && mins < s.end) return s;
+    }
+    return CLOSED;
+  }
+
+  function nextTransition(sess) {
+    var et = getETNow();
+    var day = et.getDay();
+    var mins = et.getHours() * 60 + et.getMinutes();
+    if (day === 0 || day === 6) {
+      var daysToMon = day === 0 ? 1 : 2;
+      var total = daysToMon * 24 * 60 + (4 * 60 - mins);
+      return { label: 'Opens Mon Pre', mins: total };
+    }
+    if (sess.name === 'PREMARKET') return { label: 'Regular opens', mins: 9 * 60 + 30 - mins };
+    if (sess.name === 'OPEN')      return { label: 'Closes', mins: 16 * 60 - mins };
+    if (sess.name === 'AFTER-HRS') return { label: 'After-hrs ends', mins: 20 * 60 - mins };
+    if (mins < 4 * 60) return { label: 'Premarket opens', mins: 4 * 60 - mins };
+    if (day === 5 && mins >= 20 * 60) return { label: 'Opens Mon Pre', mins: 3 * 24 * 60 - mins + 4 * 60 };
+    return { label: 'Premarket opens', mins: 24 * 60 - mins + 4 * 60 };
+  }
+
+  function fmtCountdown(m) {
+    if (m < 0) return '—';
+    if (m >= 24 * 60) {
+      var d = Math.floor(m / (24 * 60));
+      var h = Math.floor((m % (24 * 60)) / 60);
+      return d + 'd ' + h + 'h';
+    }
+    if (m >= 60) {
+      var hh = Math.floor(m / 60);
+      var mm = m % 60;
+      return hh + 'h ' + (mm < 10 ? '0' : '') + mm + 'm';
+    }
+    return m + 'm';
+  }
+
+  function paintClock() {
+    var w = document.getElementById('qz-market-clock');
+    if (!w) {
+      w = document.createElement('div');
+      w.id = 'qz-market-clock';
+      w.title = 'NYSE/NASDAQ market session — US Eastern Time';
+      document.body.appendChild(w);
+    }
+    var sess = currentSession();
+    var next = nextTransition(sess);
+    var et = getETNow();
+    var hh = String(et.getHours()).padStart(2, '0');
+    var mm = String(et.getMinutes()).padStart(2, '0');
+    var ss = String(et.getSeconds()).padStart(2, '0');
+    w.innerHTML =
+      '<div class="qz-mc-top">' +
+        '<span class="qz-mc-status" style="color:' + sess.color + ';background:' + sess.bg + ';border-color:' + sess.border + ';">' + sess.name + '</span>' +
+        '<span class="qz-mc-tz">NYSE · ET</span>' +
+      '</div>' +
+      '<div class="qz-mc-time">' + hh + ':' + mm + '<span style="font-size:0.55em;opacity:0.55;">:' + ss + '</span></div>' +
+      '<div class="qz-mc-bottom">' + next.label + ' · <span class="qz-mc-cd">' + fmtCountdown(Math.max(0, next.mins)) + '</span></div>';
+  }
+  setInterval(paintClock, 1000);
+  if (document.readyState === 'complete') paintClock();
+  else window.addEventListener('load', paintClock);
+
+  // ─────────────────────────────────────────────────────────────────
+  //  3. DAILY CHALLENGE — rotates by weekday, lands on dashboard
+  // ─────────────────────────────────────────────────────────────────
+  var CHALLENGES = [
+    { day: 0, mono: 'RS', title: 'Research Sunday',     text: 'Visit Watchlists and add 3 names you want to track this week.',                  xp: 60, target: 'universe' },
+    { day: 1, mono: 'FL', title: 'Factor Lab Monday',   text: 'Run a Fama-French 3-factor regression on any ticker in Quant Lab.',              xp: 80, target: 'quantlab' },
+    { day: 2, mono: 'IT', title: 'Intelligence Tuesday',text: 'Read one bullish and one bearish item in the Intelligence feed.',                xp: 60, target: 'intel' },
+    { day: 3, mono: 'WB', title: 'Wednesday Backtest',  text: 'Run a backtest in Quant Lab — try a 5/20 SMA crossover on AAPL.',                xp: 90, target: 'quantlab' },
+    { day: 4, mono: 'RR', title: 'Risk Review',         text: 'Compute portfolio VaR + Expected Shortfall in the Quant Lab Risk tab.',          xp: 75, target: 'quantlab' },
+    { day: 5, mono: 'PT', title: 'Paper Trade Friday',  text: 'Open a paper account and place a trade — practice without consequences.',        xp: 80, target: 'paper' },
+    { day: 6, mono: 'SS', title: 'Strategy Saturday',   text: 'Open the Momentum Scanner in Quant Lab and rank 5+ tickers by 12-1 momentum.',   xp: 70, target: 'quantlab' },
+  ];
+  function todaysChallenge() {
+    return CHALLENGES.find(function(c) { return c.day === new Date().getDay(); });
+  }
+
+  function buildDailyCard() {
+    var c = todaysChallenge();
+    if (!c) return null;
+    var DC_DONE_KEY = 'qz_dc_done_' + new Date().toISOString().slice(0,10);
+    var done = false;
+    try { done = localStorage.getItem(DC_DONE_KEY) === '1'; } catch(_){}
+    var card = document.createElement('div');
+    card.id = 'qz-daily-challenge-card';
+    card.style.cssText = [
+      'margin: 14px 0 18px;',
+      'padding: 16px 20px;',
+      'background: linear-gradient(135deg, rgba(167,139,250,0.06), rgba(34,211,238,0.03));',
+      'border: 1px solid rgba(167,139,250,0.22);',
+      'border-radius: 12px;',
+      'display: flex; align-items: center; gap: 16px;',
+      'flex-wrap: wrap;',
+      done ? 'opacity: 0.72;' : '',
+    ].join('');
+    card.innerHTML =
+      '<div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#A78BFA,#22D3EE);display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:13px;color:#0a0b0e;letter-spacing:-0.04em;flex-shrink:0;">' + c.mono + '</div>' +
+      '<div style="flex:1;min-width:240px;">' +
+        '<div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.14em;color:#A78BFA;font-weight:600;">DAILY CHALLENGE · ' + (done ? 'COMPLETED' : 'ACTIVE') + '</div>' +
+        '<div style="font-family:var(--font-display);font-size:16px;font-weight:700;color:#fff;margin-top:2px;letter-spacing:-0.01em;">' + c.title + '</div>' +
+        '<div style="font-size:12.5px;color:var(--text-muted);margin-top:3px;line-height:1.5;">' + c.text + '</div>' +
+      '</div>' +
+      (done
+        ? '<div style="font-family:var(--font-mono);font-size:11px;color:#34D399;font-weight:600;letter-spacing:0.06em;flex-shrink:0;">DONE  +' + c.xp + ' XP</div>'
+        : '<button id="qz-dc-start" style="padding:10px 18px;background:linear-gradient(135deg,var(--accent),var(--accent-2));border:none;border-radius:8px;color:#000;font-weight:700;font-size:12.5px;cursor:pointer;letter-spacing:0.02em;flex-shrink:0;">Start →</button>' +
+        '<div style="font-family:var(--font-mono);font-size:11px;color:#34D399;font-weight:600;letter-spacing:0.06em;flex-shrink:0;">+' + c.xp + ' XP</div>'
+      );
+
+    // Wire the Start button
+    setTimeout(function() {
+      var btn = card.querySelector('#qz-dc-start');
+      if (btn) btn.onclick = function() {
+        if (typeof window.showPage === 'function') window.showPage(c.target);
+        // Mark done after navigation (one-shot per day)
+        try { localStorage.setItem(DC_DONE_KEY, '1'); } catch(_){}
+        if (typeof qzRPG === 'object' && qzRPG.grantXP) qzRPG.grantXP(c.xp, 'Daily Challenge: ' + c.title);
+      };
+    }, 0);
+
+    return card;
+  }
+
+  function injectDailyChallenge() {
+    var dash = document.getElementById('page-dashboard');
+    if (!dash) return;
+    if (document.getElementById('qz-daily-challenge-card')) return;
+    var card = buildDailyCard();
+    if (!card) return;
+    // Insert at the top of dashboard, AFTER the region banner if it exists
+    var insertAfter = dash.querySelector('.ent-region-banner, .ent-card-hero, .qz-page-hero, h1, h2');
+    if (insertAfter && insertAfter.parentNode === dash) {
+      insertAfter.insertAdjacentElement('afterend', card);
+    } else {
+      dash.insertBefore(card, dash.firstChild);
+    }
+  }
+  setInterval(injectDailyChallenge, 2000);
+  if (document.readyState === 'complete') injectDailyChallenge();
+  else window.addEventListener('load', injectDailyChallenge);
+
+  // ─────────────────────────────────────────────────────────────────
+  //  4. DASHBOARD POLISH — "Today" status strip showing progression
+  // ─────────────────────────────────────────────────────────────────
+  function buildTodayStrip() {
+    var strip = document.createElement('div');
+    strip.id = 'qz-today-strip';
+    strip.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:0 0 14px 0;';
+    function tile(label, value, sub, color) {
+      return '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:10px;padding:11px 14px;">' +
+        '<div style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.14em;color:var(--text-muted);font-weight:600;">' + label + '</div>' +
+        '<div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:' + (color || '#fff') + ';margin-top:3px;letter-spacing:-0.01em;">' + value + '</div>' +
+        (sub ? '<div style="font-size:10px;color:var(--text-muted);margin-top:1px;">' + sub + '</div>' : '') +
+      '</div>';
+    }
+    var rpg = (typeof qzRPG === 'object') ? qzRPG.state() : { level: 1, xp: 0 };
+    var lvl = (typeof qzRPG === 'object') ? qzRPG.levelFor(rpg.xp) : null;
+    var nxt = (typeof qzRPG === 'object') ? qzRPG.nextLevel(rpg.xp) : null;
+    var streak = (typeof qzAcademy === 'object') ? qzAcademy.streak().days : 0;
+    var sess = currentSession();
+    strip.innerHTML =
+      tile('LEVEL', 'L' + rpg.level, (lvl ? lvl.title : ''), '#A78BFA') +
+      tile('TOTAL XP', rpg.xp.toLocaleString(), (nxt ? (nxt.xp - rpg.xp).toLocaleString() + ' to next' : 'MAX'), '#22D3EE') +
+      tile('STREAK', streak + 'd', streak >= 7 ? 'on fire' : streak >= 2 ? 'keep going' : 'starting', streak >= 7 ? '#FBBF24' : streak >= 2 ? '#34D399' : 'var(--text-secondary)') +
+      tile('MARKET', sess.name, sess.weekend ? 'weekend' : 'NYSE session', sess.color);
+    return strip;
+  }
+  function injectTodayStrip() {
+    var dash = document.getElementById('page-dashboard');
+    if (!dash) return;
+    if (document.getElementById('qz-today-strip')) return;
+    var s = buildTodayStrip();
+    // Insert at very top of dashboard
+    dash.insertBefore(s, dash.firstChild);
+  }
+  setInterval(injectTodayStrip, 2200);
+  if (document.readyState === 'complete') injectTodayStrip();
+  else window.addEventListener('load', injectTodayStrip);
+
+  // Refresh today strip periodically (so it reflects level-ups, streaks, market session)
+  setInterval(function() {
+    var s = document.getElementById('qz-today-strip');
+    if (!s) return;
+    var fresh = buildTodayStrip();
+    s.innerHTML = fresh.innerHTML;
+  }, 5000);
+})();
+</script>
+
+<script>
+/* ==================================================================== *
  *  ENTELLOQ ACADEMY — Mentor Walkthroughs + Daily Quests + Streaks     *
  *                                                                      *
  *  Tutorial layer that feels like a senior analyst dropping by your    *
