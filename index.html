@@ -27113,6 +27113,351 @@ setTimeout(() => {
 <!-- QuantLab + IntelEngine script removed — had multiple unfixable apostrophe parse errors in the reference. Re-add from clean source later. -->
 <script>
 /* ==================================================================== *
+ *  PERFORMANCE + ORB KILL + SVG EMBLEM FALLBACK + RPG POLISH           *
+ *  Addresses launch feedback in one consolidated patch.                *
+ * ==================================================================== */
+(function() {
+  'use strict';
+
+  // ─────────────────────────────────────────────────────────────────
+  //  1. PERFORMANCE — pause intervals when tab hidden; remove the
+  //     page transition overlay that was adding 240ms to every nav.
+  // ─────────────────────────────────────────────────────────────────
+  var docHidden = false;
+  document.addEventListener('visibilitychange', function() {
+    docHidden = document.hidden;
+  });
+
+  // Wrap setInterval to skip callbacks while tab is hidden
+  var _origSetInterval = window.setInterval;
+  window.setInterval = function(fn, ms) {
+    return _origSetInterval.call(window, function() {
+      if (docHidden) return;
+      try { fn.apply(this, arguments); } catch(_) {}
+    }, ms);
+  };
+
+  // Disable the page-transition overlay that was wrapping showPage.
+  // The 180ms fade-in + 60ms tail added 240ms to every navigation.
+  function killPageTransition() {
+    var ov = document.getElementById('qe-page-trans');
+    if (ov) ov.remove();
+    // Unwrap the showPage if it has the transition wrapper
+    if (typeof window.showPage === 'function' && window.showPage._qePageTrans) {
+      // We can't easily unwrap, but we can override the overlay's CSS
+      // so the fade is instant
+      var fix = document.createElement('style');
+      fix.id = 'qe-perf-fix-css';
+      fix.textContent = '#qe-page-trans { display: none !important; }';
+      if (!document.getElementById('qe-perf-fix-css')) document.head.appendChild(fix);
+    }
+  }
+  setInterval(killPageTransition, 5000);
+  killPageTransition();
+
+  // ─────────────────────────────────────────────────────────────────
+  //  2. ORB KILL — aggressively hide every remaining decorative orb
+  // ─────────────────────────────────────────────────────────────────
+  if (!document.getElementById('qe-orb-kill-css')) {
+    var ok = document.createElement('style');
+    ok.id = 'qe-orb-kill-css';
+    ok.textContent = [
+      // The qe-orb assistant + all its halos / cores / rings
+      '#qe-orb, #qe-orb-tooltip, #qe-orb-static,',
+      '#qe-panel-static, #qe-shortcuts-static, #qe-immersive-overlay,',
+      '.qe-orb-halo, .qe-orb-halo-2, .qe-orb-core, .qe-orb-eye-group,',
+      '.qe-orb-glyph, .qe-orb-ring-outer, .qe-orb-ring-mid, .qe-orb-ring-inner,',
+      '.qe-orb-svg, .qe-orb-pulse,',
+      // Background decorative orbs
+      '#qe-app-orb-1, #qe-app-orb-2, #qe-app-orb-3, #qe-app-radial,',
+      // ElevenLabs convai widget if any
+      'elevenlabs-convai,',
+      // Any old TTS widgets
+      '#qz-tts-fab',
+      '{ display: none !important; visibility: hidden !important; pointer-events: none !important; opacity: 0 !important; }',
+    ].join('\n');
+    document.head.appendChild(ok);
+  }
+
+  // Belt-and-suspenders: also remove from DOM
+  function purgeOrbs() {
+    var ids = ['qe-orb', 'qe-orb-tooltip', 'qe-orb-static', 'qe-panel-static',
+               'qe-shortcuts-static', 'qe-immersive-overlay',
+               'qe-app-orb-1', 'qe-app-orb-2', 'qe-app-orb-3', 'qe-app-radial',
+               'qz-tts-fab'];
+    ids.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.remove();
+    });
+    document.querySelectorAll('elevenlabs-convai').forEach(function(el) { el.remove(); });
+  }
+  setInterval(purgeOrbs, 6000);
+  purgeOrbs();
+
+  // ─────────────────────────────────────────────────────────────────
+  //  3. INLINE SVG BRAND EMBLEM FALLBACK
+  //     Original geometric design — hexagonal frame + circuit nodes.
+  //     Used everywhere the gradient Q monogram appears, so the
+  //     emblem looks branded even before the user uploads the PNG.
+  // ─────────────────────────────────────────────────────────────────
+  // SVG data-uri (encoded once, used as background-image)
+  var SVG_EMBLEM = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">' +
+    '<defs>' +
+      '<linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
+        '<stop offset="0" stop-color="#E4A11B"/>' +
+        '<stop offset="1" stop-color="#67E8F9"/>' +
+      '</linearGradient>' +
+      '<linearGradient id="m" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0" stop-color="#F4F4F0"/>' +
+        '<stop offset="1" stop-color="#8B8B85"/>' +
+      '</linearGradient>' +
+    '</defs>' +
+    // Hexagonal frame (subtle)
+    '<polygon points="32,4 56,18 56,46 32,60 8,46 8,18" fill="none" stroke="url(#g)" stroke-width="1.2" opacity="0.55"/>' +
+    // Inner circle
+    '<circle cx="32" cy="32" r="14" fill="none" stroke="url(#g)" stroke-width="0.8" opacity="0.5"/>' +
+    // Geometric circuit traces — left side
+    '<line x1="2" y1="32" x2="14" y2="32" stroke="url(#g)" stroke-width="0.8" opacity="0.55"/>' +
+    '<line x1="6" y1="26" x2="14" y2="32" stroke="url(#g)" stroke-width="0.8" opacity="0.55"/>' +
+    '<line x1="6" y1="38" x2="14" y2="32" stroke="url(#g)" stroke-width="0.8" opacity="0.55"/>' +
+    '<circle cx="2" cy="32" r="1.5" fill="#67E8F9"/>' +
+    '<circle cx="6" cy="26" r="1.2" fill="#67E8F9"/>' +
+    '<circle cx="6" cy="38" r="1.2" fill="#67E8F9"/>' +
+    // Central node — stylized "E" inside the circle
+    '<path d="M 26 26 L 38 26 L 38 28.5 L 28.5 28.5 L 28.5 30.8 L 35 30.8 L 35 33.3 L 28.5 33.3 L 28.5 35.6 L 38 35.6 L 38 38 L 26 38 Z" fill="url(#m)"/>' +
+    // Right-side accent (mirrored circuit)
+    '<line x1="50" y1="32" x2="62" y2="32" stroke="url(#g)" stroke-width="0.8" opacity="0.35"/>' +
+    '<circle cx="62" cy="32" r="1.2" fill="#E4A11B" opacity="0.7"/>' +
+  '</svg>';
+  var SVG_DATA_URI = 'data:image/svg+xml;utf8,' + encodeURIComponent(SVG_EMBLEM);
+
+  // Probe for the real PNG. If missing, use the SVG fallback.
+  var MARK_PATH = 'assets/entelloq-mark.png';
+  var LOGO_PATH = 'assets/entelloq-logo.png';
+
+  function probeImg(path) {
+    return new Promise(function(resolve) {
+      var i = new Image();
+      i.onload = function() { resolve(true); };
+      i.onerror = function() { resolve(false); };
+      i.src = path + '?t=' + Date.now();
+    });
+  }
+
+  Promise.all([probeImg(MARK_PATH), probeImg(LOGO_PATH)]).then(function(r) {
+    var markSrc = r[0] ? MARK_PATH : (r[1] ? LOGO_PATH : SVG_DATA_URI);
+    var logoSrc = r[1] ? LOGO_PATH : (r[0] ? MARK_PATH : SVG_DATA_URI);
+    var usingFallback = !r[0] && !r[1];
+    var posSmall = r[0] ? 'center center' : (r[1] ? 'center 22%' : 'center center');
+    var sizeSmall = r[0] || usingFallback ? 'cover' : '180% auto';
+
+    if (!document.getElementById('qe-emblem-active-css')) {
+      var es = document.createElement('style');
+      es.id = 'qe-emblem-active-css';
+      es.textContent = `
+        /* Sidebar brand mark */
+        .sidebar .sidebar-logo .logo-icon {
+          background: #0A0A0B url("${markSrc}") no-repeat ${posSmall} / ${sizeSmall} !important;
+          border-radius: 7px !important;
+          box-shadow: 0 4px 18px rgba(228,161,27,0.18), 0 0 0 1px rgba(244,244,240,0.06) inset !important;
+        }
+        .sidebar .sidebar-logo .logo-icon::after { content: "" !important; display: none !important; }
+
+        /* Copilot dock */
+        #qz-copilot-dock {
+          background: #0A0A0B url("${markSrc}") no-repeat ${posSmall} / ${sizeSmall} !important;
+          border: 1px solid rgba(228,161,27,0.4) !important;
+          box-shadow: 0 8px 28px rgba(0,0,0,0.5), 0 0 24px rgba(228,161,27,0.22), 0 0 0 1px rgba(255,255,255,0.05) inset !important;
+        }
+        #qz-copilot-dock .qz-cop-mono { display: none !important; }
+
+        /* Copilot header avatar */
+        .qz-cop-hdr-avatar {
+          background: #0A0A0B url("${markSrc}") no-repeat ${posSmall} / ${sizeSmall} !important;
+          font-size: 0 !important; color: transparent !important;
+        }
+
+        /* Mentor avatar */
+        .qz-mentor-avatar {
+          background: #0A0A0B url("${markSrc}") no-repeat ${posSmall} / ${sizeSmall} !important;
+          font-size: 0 !important; color: transparent !important;
+          box-shadow: 0 4px 14px rgba(228,161,27,0.25) !important;
+        }
+
+        /* Quest panel mono */
+        .qz-quest-mono {
+          background: #0A0A0B url("${markSrc}") no-repeat ${posSmall} / ${sizeSmall} !important;
+          font-size: 0 !important; color: transparent !important;
+        }
+
+        /* Daily challenge badge */
+        #qz-daily-challenge-card > div:first-child {
+          background: #0A0A0B url("${markSrc}") no-repeat ${posSmall} / ${sizeSmall} !important;
+          font-size: 0 !important; color: transparent !important;
+        }
+      `;
+      document.head.appendChild(es);
+    }
+    console.info('[Entelloq Brand] Emblem active' + (usingFallback ? ' (SVG fallback — save assets/entelloq-mark.png to use real logo)' : ''));
+  });
+
+  // ─────────────────────────────────────────────────────────────────
+  //  4. RPG POLISH — bigger XP toast + more dramatic level-up
+  // ─────────────────────────────────────────────────────────────────
+  if (!document.getElementById('qe-rpg-polish-css')) {
+    var rp = document.createElement('style');
+    rp.id = 'qe-rpg-polish-css';
+    rp.textContent = `
+      /* Bigger, more impactful XP toast */
+      .qz-xp-toast {
+        min-width: 260px !important;
+        padding: 14px 18px !important;
+        background: linear-gradient(135deg, rgba(15,17,21,0.96), rgba(20,22,28,0.96)) !important;
+        border: 1px solid rgba(228,161,27,0.35) !important;
+        border-radius: 12px !important;
+        box-shadow: 0 16px 40px rgba(0,0,0,0.55), 0 0 24px rgba(228,161,27,0.18) !important;
+        position: relative;
+        overflow: hidden;
+      }
+      .qz-xp-toast::before {
+        content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%;
+        background: linear-gradient(180deg, #E4A11B, #67E8F9);
+      }
+      .qz-xp-toast-amt {
+        font-size: 17px !important;
+        color: #FBBF24 !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        font-weight: 700 !important;
+      }
+      .qz-xp-toast-lbl {
+        font-size: 12px !important;
+        color: rgba(244,244,240,0.85) !important;
+        font-family: 'DM Sans', sans-serif !important;
+      }
+
+      /* Bigger, slower level-up celebration */
+      .qz-lu-card {
+        padding: 48px 56px !important;
+        min-width: 440px !important;
+        border-radius: 20px !important;
+        background: rgba(10,10,11,0.98) !important;
+        box-shadow:
+          0 40px 100px rgba(0,0,0,0.65),
+          0 0 80px rgba(228,161,27,0.32),
+          0 0 0 1px rgba(228,161,27,0.4) inset !important;
+      }
+      .qz-lu-lvl {
+        font-size: 84px !important;
+        background: linear-gradient(135deg, #E4A11B 0%, #67E8F9 100%) !important;
+        -webkit-background-clip: text !important;
+        background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        letter-spacing: -0.05em !important;
+      }
+      .qz-lu-title {
+        font-family: 'Fraunces', serif !important;
+        font-size: 26px !important;
+        font-weight: 500 !important;
+        letter-spacing: -0.02em !important;
+        color: #F4F4F0 !important;
+      }
+      .qz-lu-eyebrow {
+        font-family: 'JetBrains Mono', monospace !important;
+        font-size: 11.5px !important;
+        letter-spacing: 0.24em !important;
+        color: #E4A11B !important;
+      }
+      .qz-lu-btn {
+        background: linear-gradient(180deg, #F0AC2A, #D89312) !important;
+        color: #0A0A0B !important;
+        font-family: 'DM Sans', sans-serif !important;
+        font-weight: 700 !important;
+        padding: 13px 32px !important;
+        border-radius: 7px !important;
+        box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset, 0 8px 22px -8px rgba(228,161,27,0.5) !important;
+      }
+
+      /* Confetti-style burst from center on level-up */
+      @keyframes qeConfetti {
+        0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+        20%  { opacity: 1; }
+        100% { opacity: 0; transform: translate(var(--cx), var(--cy)) scale(1.4); }
+      }
+
+      /* Progress widget — make XP bar more prominent */
+      .qz-rpg-w-bar {
+        height: 5px !important;
+        background: rgba(244,244,240,0.06) !important;
+      }
+      .qz-rpg-w-fill {
+        background: linear-gradient(90deg, #E4A11B, #67E8F9) !important;
+        box-shadow: 0 0 12px rgba(228,161,27,0.5) !important;
+      }
+      .qz-rpg-widget {
+        background: linear-gradient(135deg, rgba(228,161,27,0.05), rgba(103,232,249,0.03)) !important;
+        border-color: rgba(228,161,27,0.22) !important;
+      }
+      .qz-rpg-widget:hover {
+        border-color: rgba(228,161,27,0.4) !important;
+      }
+      .qz-rpg-w-lvl {
+        color: #E4A11B !important;
+      }
+    `;
+    document.head.appendChild(rp);
+  }
+
+  // Add a confetti burst when level-up fires
+  function watchLevelUp() {
+    if (window._qeConfettiHooked) return;
+    window._qeConfettiHooked = true;
+    var orig = window.showLevelUp;
+    if (typeof orig !== 'function') return;
+    window.showLevelUp = function(level) {
+      orig.apply(this, arguments);
+      // Burst confetti
+      setTimeout(function() {
+        var ov = document.getElementById('qz-levelup-overlay');
+        if (!ov) return;
+        for (var i = 0; i < 24; i++) {
+          var p = document.createElement('div');
+          var angle = (i / 24) * Math.PI * 2;
+          var dist = 220 + Math.random() * 160;
+          var cx = Math.cos(angle) * dist;
+          var cy = Math.sin(angle) * dist;
+          p.style.cssText =
+            'position: absolute; top: 50%; left: 50%; width: 8px; height: 8px; border-radius: 2px;' +
+            'background: ' + (i % 3 === 0 ? '#E4A11B' : (i % 3 === 1 ? '#67E8F9' : '#F4F4F0')) + ';' +
+            'pointer-events: none;' +
+            '--cx: ' + cx + 'px; --cy: ' + cy + 'px;' +
+            'animation: qeConfetti 1400ms cubic-bezier(0.22, 1, 0.36, 1) forwards;';
+          ov.appendChild(p);
+          setTimeout(function(el) { return function() { el.remove(); }; }(p), 1500);
+        }
+      }, 200);
+    };
+  }
+  setInterval(watchLevelUp, 4000);
+  setTimeout(watchLevelUp, 2000);
+
+  // ─────────────────────────────────────────────────────────────────
+  //  5. NOTICE — tell user once that PNG isn't loaded
+  // ─────────────────────────────────────────────────────────────────
+  setTimeout(function() {
+    if (window._qeBrandNoticeShown) return;
+    Promise.all([probeImg(MARK_PATH), probeImg(LOGO_PATH)]).then(function(r) {
+      if (r[0] || r[1]) return;  // logo IS there
+      window._qeBrandNoticeShown = true;
+      // Only show on dev / staging — skip on production unless ?brandhelp=1
+      if (location.search.indexOf('brandhelp=1') < 0) return;
+      console.warn('[Entelloq Brand] Using SVG fallback emblem. Save assets/entelloq-mark.png (head-only crop) for the real logo.');
+    });
+  }, 3000);
+})();
+</script>
+
+<script>
+/* ==================================================================== *
  *  CINEMATIC MOTION LAYER — Atlas-inspired scroll choreography         *
  *                                                                      *
  *  Original implementation — does not copy any third-party code.       *
