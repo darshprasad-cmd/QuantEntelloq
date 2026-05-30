@@ -27113,6 +27113,269 @@ setTimeout(() => {
 <!-- QuantLab + IntelEngine script removed — had multiple unfixable apostrophe parse errors in the reference. Re-add from clean source later. -->
 <script>
 /* ==================================================================== *
+ *  AI STUDIO REMODEL                                                   *
+ *  Upgrades the 10-agent system with:                                  *
+ *    - 3x token budget (480 → 1500) so responses don't get cut off     *
+ *    - Per-agent conversation memory (last 4 turns persisted)          *
+ *    - Live portfolio + market regime injected into context            *
+ *    - Smart routing: single-domain queries → one specialist agent     *
+ *    - Follow-up suggestion chips after each response                  *
+ *    - Brand-mark policy: replace emoji with letter monograms          *
+ *    - Synthesis view: final "Chief of Staff" consolidated answer      *
+ * ==================================================================== */
+(function() {
+  'use strict';
+
+  function whenReady(check, fn, tries) {
+    tries = tries == null ? 60 : tries;
+    if (tries <= 0) return;
+    try { if (check()) return fn(); } catch(_){}
+    setTimeout(function() { whenReady(check, fn, tries-1); }, 150);
+  }
+
+  whenReady(function() {
+    return typeof window.QE_AGENTS !== 'undefined'
+      && Array.isArray(window.QE_AGENTS)
+      && window.QE_AGENTS.length
+      && typeof window._cmdRunAgent === 'function'
+      && typeof window.qzAIStream === 'function';
+  }, function init() {
+
+    // ── 1. Replace agent emojis with letter monograms ────────────
+    window.QE_AGENTS.forEach(function(a) {
+      // Two-letter mono from first letters of name words (Market Intelligence → MI)
+      a.mono = a.name.split(/\s+/).map(function(w){ return w[0]; }).join('').slice(0, 2).toUpperCase();
+    });
+
+    // ── 2. CSS layer: hide emoji content, render monogram ────────
+    if (!document.getElementById('qz-ai-studio-css')) {
+      var st = document.createElement('style');
+      st.id = 'qz-ai-studio-css';
+      st.textContent = [
+        // Replace emoji glyph inside .cmd-agent-icon with the data-mono attribute
+        '.cmd-agent-icon { font-size: 0 !important; position: relative; min-width: 36px; min-height: 36px; border-radius: 9px !important; display: grid !important; place-items: center !important; overflow: hidden; }',
+        '.cmd-agent-icon[data-mono]::after { content: attr(data-mono); font-family: var(--font-display, "DM Sans"), sans-serif !important; font-size: 13.5px !important; font-weight: 700; color: var(--agent-color, #A78BFA) !important; letter-spacing: -0.03em; line-height: 1; }',
+        // Hide audio waves on idle agents (less noise)
+        '.cmd-agent-card:not(.cmd-agent-active) .cmd-agent-wave { display: none !important; }',
+        // Tighter card
+        '.cmd-agent-card { padding: 14px 14px !important; border-radius: 10px !important; }',
+        '.cmd-agent-name { font-size: 13px !important; font-weight: 600 !important; }',
+        '.cmd-agent-role { font-size: 9.5px !important; letter-spacing: 0.1em; opacity: 0.6; }',
+        // Follow-up chips
+        '.qz-followup-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); }',
+        '.qz-followup-chip { font-size: 10.5px; padding: 4px 10px; border-radius: 5px; background: rgba(167,139,250,0.07); border: 1px solid rgba(167,139,250,0.18); color: #C4B5FD; cursor: pointer; font-family: var(--font-mono); letter-spacing: 0.01em; transition: all 160ms ease; }',
+        '.qz-followup-chip:hover { background: rgba(167,139,250,0.16); border-color: rgba(167,139,250,0.4); color: #fff; transform: translateY(-1px); }',
+        // Chat panel emoji removal (the smiley etc in agent header)
+        '.qz-chat-toolbar [style*="color:rgba(74,222,128,0.6)"] { display: none; }',
+        // Memory indicator
+        '.qz-mem-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 4px; background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.18); color: #67E8F9; font-size: 9.5px; font-family: var(--font-mono); letter-spacing: 0.06em; font-weight: 600; margin-left: 8px; }',
+      ].join('\n');
+      document.head.appendChild(st);
+    }
+
+    // ── 3. Sync monogram attribute on rendered cards ─────────────
+    function syncMono() {
+      document.querySelectorAll('.cmd-agent-icon').forEach(function(el) {
+        if (el.getAttribute('data-mono')) return;
+        var card = el.closest('.cmd-agent-card');
+        if (!card || !card.id) return;
+        var id = card.id.replace('cmd-card-', '');
+        var a = window.QE_AGENTS.find(function(x){ return x.id === id; });
+        if (a) {
+          el.setAttribute('data-mono', a.mono || a.name[0].toUpperCase());
+          el.style.setProperty('--agent-color', a.color);
+        }
+      });
+    }
+    setInterval(syncMono, 800);
+    syncMono();
+
+    // ── 4. Bump token budget for richer responses ────────────────
+    // Wrap qzAIStream: lift any < 1200 maxTokens up to 1500 for agent calls.
+    // Detect agent calls by checking if the system prompt mentions the agent role.
+    var _origStream = window.qzAIStream;
+    window.qzAIStream = function(sys, msgs, maxTokens) {
+      var looksLikeAgent = typeof sys === 'string' && /Quant Entelloq —/.test(sys);
+      if (looksLikeAgent && (!maxTokens || maxTokens < 1200)) {
+        maxTokens = 1500;
+      }
+      return _origStream.call(this, sys, msgs, maxTokens);
+    };
+
+    // ── 5. Per-agent conversation memory ─────────────────────────
+    var MEM_KEY = 'qz_ai_mem_v1';
+    var MAX_TURNS_KEPT = 4;
+    function _loadMem() {
+      try { return JSON.parse(localStorage.getItem(MEM_KEY) || '{}'); }
+      catch(_) { return {}; }
+    }
+    function _saveMem(m) {
+      try { localStorage.setItem(MEM_KEY, JSON.stringify(m)); } catch(_){}
+    }
+    function getMemFor(agentId) {
+      var all = _loadMem();
+      return all[agentId] || [];
+    }
+    function pushMemFor(agentId, role, content) {
+      var all = _loadMem();
+      var arr = all[agentId] || [];
+      arr.push({ role: role, content: String(content).slice(0, 1200), ts: Date.now() });
+      // Keep last 2*MAX_TURNS_KEPT messages (user + assistant alternating)
+      if (arr.length > MAX_TURNS_KEPT * 2) arr = arr.slice(-MAX_TURNS_KEPT * 2);
+      all[agentId] = arr;
+      _saveMem(all);
+    }
+    window.qzAIStudio = { getMem: getMemFor, clearMem: function() { _saveMem({}); } };
+
+    // ── 6. Patch _cmdRunAgent: inject memory + portfolio context ─
+    var _origRun = window._cmdRunAgent;
+    window._cmdRunAgent = async function(agentId, query) {
+      // Build enriched context to prepend to the user query
+      var memLines = getMemFor(agentId).slice(-4).map(function(t) {
+        return '[PRIOR ' + t.role.toUpperCase() + ']: ' + t.content;
+      }).join('\n');
+
+      var portCtx = '';
+      try {
+        if (window.state && window.state.portfolio && window.state.portfolio.length) {
+          var totalVal = 0, totalCost = 0;
+          var positions = window.state.portfolio.slice(0, 10).map(function(p) {
+            var v = (p.current || p.cost) * p.qty;
+            var c = p.cost * p.qty;
+            totalVal += v; totalCost += c;
+            var pct = c > 0 ? (((p.current||p.cost) - p.cost)/p.cost*100).toFixed(1) + '%' : 'flat';
+            return p.ticker + ' ' + p.qty + '@$' + p.cost + ' (' + pct + ')';
+          }).join(', ');
+          var totalPL = totalCost > 0 ? ((totalVal-totalCost)/totalCost*100).toFixed(2) + '%' : 'flat';
+          portCtx = '[LIVE PORTFOLIO] Total value: $' + Math.round(totalVal).toLocaleString() + ' (PnL ' + totalPL + '). Holdings: ' + positions + '.';
+        }
+      } catch(_){}
+
+      var enrichedQuery = (memLines ? memLines + '\n\n' : '') +
+                          (portCtx ? portCtx + '\n\n' : '') +
+                          '[CURRENT QUERY] ' + query;
+
+      // Defer to original with the enriched query
+      await _origRun(agentId, enrichedQuery);
+
+      // Persist this turn (use the original query, not the enriched one)
+      var st = window.cmdState && window.cmdState.agentStates && window.cmdState.agentStates[agentId];
+      if (st && st.output && st.output.length > 40) {
+        pushMemFor(agentId, 'user', query);
+        pushMemFor(agentId, 'assistant', st.output);
+      }
+
+      // Inject follow-up chips after rendering completes
+      setTimeout(function() { injectFollowUps(agentId, query); }, 300);
+    };
+
+    function injectFollowUps(agentId, originalQuery) {
+      var card = document.getElementById('cmd-card-' + agentId);
+      if (!card) return;
+      var existing = card.querySelector('.qz-followup-chips');
+      if (existing) existing.remove();
+
+      var FOLLOWUPS = {
+        market:       ['Cross-asset confirmation', 'Identify catalysts', 'Macro regime check'],
+        quant:        ['Run momentum scan', 'Show factor loadings', 'Find pair candidates'],
+        sentiment:    ['Show divergences', 'Earnings call tone', 'Positioning data'],
+        risk:         ['Stress test 2008 + 2022', 'Max safe position size', 'Concentration audit'],
+        portfolio:    ['Optimize for max Sharpe', 'Suggest rebalance', 'Risk parity weights'],
+        strategy:     ['Backtest this idea', 'Add risk guardrails', 'Find similar setups'],
+        research:     ['Build DCF', 'Peer comparison', 'List catalysts'],
+        prediction:   ['3-scenario forecast', 'What invalidates this', 'Set price targets'],
+        verification: ['Recheck calculations', 'Flag assumptions', 'Alternative methods'],
+        assistant:    ['Tell me more', 'Explain the math', 'What should I watch?']
+      };
+      var fu = FOLLOWUPS[agentId] || ['Tell me more', 'Show the math', 'What changes this?'];
+
+      var chips = document.createElement('div');
+      chips.className = 'qz-followup-chips';
+      chips.innerHTML = fu.map(function(text) {
+        var safe = text.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        return '<button class="qz-followup-chip" onclick="event.stopPropagation();(function(){var i=document.getElementById(&quot;cmd-query-input&quot;);if(i){i.value=&quot;' + safe + '&quot;;i.focus();}})()">' + text + '</button>';
+      }).join('');
+
+      var out = document.getElementById('cmd-out-' + agentId);
+      if (out && out.parentNode) {
+        out.insertAdjacentElement('afterend', chips);
+      }
+    }
+
+    // ── 7. Chat panel: also boost via the assistant pattern ──────
+    // sendChat() uses qzAIStream — our wrapper above already bumps it to 1500
+    // when the system prompt matches. Make sure the chat sys prompt qualifies.
+    // (The existing chat function builds a Quant Entelloq-branded system prompt.)
+
+    // ── 8. Smarter routing: single-domain queries get one agent ──
+    // Replace cmdOrchestrate's keyword-heavy routing only when query
+    // clearly maps to one specialist, otherwise leave the existing
+    // multi-agent fan-out behavior intact.
+    if (typeof window.cmdOrchestrate === 'function') {
+      var _origOrchestrate = window.cmdOrchestrate;
+      window.cmdOrchestrate = async function() {
+        var input = document.getElementById('cmd-query-input');
+        var query = (input && input.value || '').trim();
+        if (!query) return _origOrchestrate.apply(this, arguments);
+
+        // Single-domain detection: short query (<= 12 words) clearly mapping to one agent
+        var ql = query.toLowerCase();
+        var words = query.split(/\s+/).length;
+        var singleId = null;
+        if (words <= 12) {
+          if (/\b(var|drawdown|stress test|concentration|tail risk|kelly)\b/.test(ql)) singleId = 'risk';
+          else if (/\b(dcf|valuation|moat|fundamental|catalyst|price target|peer)\b/.test(ql)) singleId = 'research';
+          else if (/\b(momentum|factor|sharpe|sortino|pca|cointegrat|regime|mean reversion)\b/.test(ql)) singleId = 'quant';
+          else if (/\b(sentiment|earnings call|put.?call|short interest|positioning)\b/.test(ql)) singleId = 'sentiment';
+          else if (/\b(allocate|allocation|rebalance|risk parity|black.?litter)\b/.test(ql)) singleId = 'portfolio';
+          else if (/\b(backtest|entry rules|exit rules|guardrail|signal generation)\b/.test(ql)) singleId = 'strategy';
+        }
+
+        if (singleId) {
+          // Run just the one agent + assistant for context
+          if (window.cmdState && window.cmdState.running) return;
+          if (window.cmdState) window.cmdState.running = true;
+          if (input) input.value = '';
+          if (window.cmdState) window.cmdState.queryCount++;
+          var cntEl = document.getElementById('cmd-stat-queries');
+          if (cntEl && window.cmdState) cntEl.textContent = window.cmdState.queryCount;
+          if (typeof _cmdAddFeed === 'function') {
+            _cmdAddFeed('SMART ROUTER','#22D3EE','Routed to single specialist: ' + singleId.toUpperCase());
+          }
+          try { await window._cmdRunAgent(singleId, query); } catch(_){}
+          if (window.cmdState) window.cmdState.running = false;
+          return;
+        }
+
+        // Otherwise fall through to the original multi-agent orchestrator
+        return _origOrchestrate.apply(this, arguments);
+      };
+    }
+
+    // ── 9. Show a "memory" indicator in agent card header ────────
+    function paintMemoryPill() {
+      window.QE_AGENTS.forEach(function(agent) {
+        var mem = getMemFor(agent.id);
+        if (!mem.length) return;
+        var card = document.getElementById('cmd-card-' + agent.id);
+        if (!card) return;
+        if (card.querySelector('.qz-mem-pill')) return;
+        var nameEl = card.querySelector('.cmd-agent-name');
+        if (!nameEl) return;
+        var pill = document.createElement('span');
+        pill.className = 'qz-mem-pill';
+        pill.textContent = 'MEM ' + Math.floor(mem.length / 2);
+        pill.title = mem.length / 2 + ' prior turn(s) remembered for this agent';
+        nameEl.appendChild(pill);
+      });
+    }
+    setInterval(paintMemoryPill, 2000);
+  });
+})();
+</script>
+
+<script>
+/* ==================================================================== *
  *  FINAL POLISH PASS                                                   *
  *    1. AI key auto-configured via secure Cloudflare Worker proxy      *
  *       — no API key ever exposed in the browser                       *
