@@ -25169,20 +25169,22 @@ setTimeout(() => {
     el.style.display = 'block';
   }
 
-  // ── Handle 401s globally (expired token) ────────────────────
-  var _origFetch = window.fetch;
-  window.fetch = function(url, opts) {
-    return _origFetch.apply(this, arguments).then(function(res) {
-      if (res.status === 401 && typeof url === 'string' &&
-          url.startsWith('/api/') &&
-          !url.startsWith('/api/auth/')) {
-        clearSession();
-        showAuth();
-        qzAuthSwitchTab('signin');
-      }
-      return res;
-    });
-  };
+  // ── Handle 401s globally (expired token) — server mode only ─────
+  if (window._QZ_SERVER_MODE) {
+    var _origFetch = window.fetch;
+    window.fetch = function(url, opts) {
+      return _origFetch.apply(this, arguments).then(function(res) {
+        if (res.status === 401 && typeof url === 'string' &&
+            url.startsWith('/api/') &&
+            !url.startsWith('/api/auth/')) {
+          clearSession();
+          showAuth();
+          qzAuthSwitchTab('signin');
+        }
+        return res;
+      });
+    };
+  }
 
   // ── On load: verify session (never auto-block landing page) ─────────
   window.addEventListener('DOMContentLoaded', function() {
@@ -25199,12 +25201,19 @@ setTimeout(() => {
       if (errEl) { errEl.textContent = decodeURIComponent(authErr); errEl.style.display = 'block'; }
     }
 
+    // STATIC MODE: never call /api/auth/me on a static host — it returns
+    // 404 HTML which would wrongly clearSession() and wipe the user's
+    // localStorage on every page load. The emergency-entry script at the
+    // top of <body> handles session restore from qz_auth_user directly.
+    if (!window._QZ_SERVER_MODE) return;
+
     fetch('/api/auth/me', { credentials: 'same-origin' })
       .then(function(r) {
         if (r.status === 401) { clearSession(); return null; }
-        // On static hosts (Netlify etc.) this returns an HTML 404 — treat as no session
+        // Defensive: if a misconfigured server returns HTML, do NOT wipe
+        // the user's session — just bail out silently.
         var ct = (r.headers && r.headers.get('content-type')) || '';
-        if (!ct.includes('application/json')) { clearSession(); return null; }
+        if (!ct.includes('application/json')) return null;
         return r.json();
       })
       .then(function(user) {
@@ -25212,16 +25221,12 @@ setTimeout(() => {
         if (user.email) {
           setSession(user);
           _onAuthSuccess(user);
-        } else {
-          clearSession();
         }
       })
       .catch(function() {
-        // Genuine network error (offline) — trust cached session for resilience
-        // Do NOT restore session if we're on a static host with no backend
+        // Genuine network error (offline) — trust cached session
         var cached = getUser();
-        if (cached && cached.email && window._QZ_SERVER_MODE) _onAuthSuccess(cached);
-        // else: no backend or no cache — leave landing page visible
+        if (cached && cached.email) _onAuthSuccess(cached);
       });
   });
 
