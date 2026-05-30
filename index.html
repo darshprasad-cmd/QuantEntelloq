@@ -24669,14 +24669,24 @@ setTimeout(() => {
 
 // ── Null-guard all chart containers to prevent crashes ──────────
 (function() {
-  var _origCreateChart = window.LightweightCharts?.createChart;
-  if (_origCreateChart) {
-    window.LightweightCharts.createChart = function(container, opts) {
-      if (!container || !document.body.contains(container)) return null;
-      try { return _origCreateChart.call(window.LightweightCharts, container, opts); }
-      catch(e) { console.warn('[Quant Entelloq] chart error:', e); return null; }
-    };
-  }
+  var lwc = window.LightweightCharts;
+  if (!lwc || typeof lwc.createChart !== 'function') return;
+  var _orig = lwc.createChart;
+  // LightweightCharts freezes its module exports, so we can't reassign in place.
+  // Wrap on a soft proxy instead — null-guarded callers should use window._qzCreateChart.
+  window._qzCreateChart = function(container, opts) {
+    if (!container || !document.body.contains(container)) return null;
+    try { return _orig.call(lwc, container, opts); }
+    catch(e) { console.warn('[Quant Entelloq] chart error:', e); return null; }
+  };
+  // Best-effort overlay on the original — silently no-op if the module is frozen
+  try {
+    Object.defineProperty(lwc, 'createChart', {
+      configurable: true,
+      writable: true,
+      value: window._qzCreateChart,
+    });
+  } catch (_) { /* frozen module — fine, _qzCreateChart still works */ }
 })();
 
 </script>
