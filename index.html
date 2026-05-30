@@ -27113,6 +27113,450 @@ setTimeout(() => {
 <!-- QuantLab + IntelEngine script removed — had multiple unfixable apostrophe parse errors in the reference. Re-add from clean source later. -->
 <script>
 /* ==================================================================== *
+ *  ENTELLOQ ACADEMY — Mentor Walkthroughs + Daily Quests + Streaks     *
+ *                                                                      *
+ *  Tutorial layer that feels like a senior analyst dropping by your    *
+ *  desk to show you something — NOT a popup blocker.                   *
+ *                                                                      *
+ *  Each walkthrough fires ONCE per user, the first time they land on   *
+ *  a key page. Card anchors to top-right (below top bar), 340px wide,  *
+ *  slides in, dismissable with "Got it" (+25 XP) or "Skip all".        *
+ *                                                                      *
+ *  Adds:                                                               *
+ *    - 9 contextual mentor tips                                        *
+ *    - Daily quest (refreshes each calendar day, +50 XP for visiting)  *
+ *    - Streak counter (consecutive days using the app)                 *
+ *    - Streak achievements at 3 / 7 / 30 days                          *
+ * ==================================================================== */
+(function() {
+  'use strict';
+
+  // ─────────────────────────────────────────────────────────────────
+  //  STATE
+  // ─────────────────────────────────────────────────────────────────
+  var SEEN_KEY    = 'qz_mentor_seen_v1';   // pages user has been mentored on
+  var SKIP_KEY    = 'qz_mentor_skip_v1';   // user clicked "Skip all"
+  var STREAK_KEY  = 'qz_streak_v1';        // { days, lastDay, longest }
+  var DAILY_KEY   = 'qz_daily_v1';         // { lastDay, doneToday }
+
+  function loadJSON(k, fallback) {
+    try { return JSON.parse(localStorage.getItem(k) || JSON.stringify(fallback)); }
+    catch(_) { return fallback; }
+  }
+  function saveJSON(k, v) {
+    try { localStorage.setItem(k, JSON.stringify(v)); } catch(_){}
+  }
+  function todayISO() { return new Date().toISOString().slice(0,10); }
+  function daysBetween(aISO, bISO) {
+    if (!aISO || !bISO) return 99;
+    var a = new Date(aISO + 'T00:00:00Z').getTime();
+    var b = new Date(bISO + 'T00:00:00Z').getTime();
+    return Math.round((b - a) / 86400000);
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  //  WALKTHROUGH CATALOG — 9 mentor tips, one per major surface
+  // ─────────────────────────────────────────────────────────────────
+  var TIPS = {
+    dashboard: {
+      title: 'Welcome to your terminal',
+      text:  'This is your <strong>command center</strong>. Live signals, portfolio metrics, AI-summarized intelligence — everything you need to start your day in one view.',
+      cta:   'Show me around',
+      anchor: 'right',
+    },
+    intel: {
+      title: 'Intelligence Terminal',
+      text:  'AI scans <strong>32 news sources + 20 newsletters + SEC filings</strong>, summarizes each item, scores sentiment, and surfaces opportunities tailored to your portfolio. Items here are <em>observations</em>, never recommendations.',
+      cta:   'Got it',
+      anchor: 'right',
+    },
+    news: {
+      title: 'Intelligence Terminal',
+      text:  'NewsJudge is unified into the Intelligence Terminal. AI rewrites every headline in plain English and tags it bullish, bearish, or neutral — never directly copying source articles.',
+      cta:   'Got it',
+      anchor: 'right',
+    },
+    portfolio: {
+      title: 'Build a portfolio in 30 seconds',
+      text:  'Click <strong>+ Add Position</strong> and try one of 4 entry modes: type a ticker, paste plain English (<em>"I own 15 shares of Apple at 210"</em>), bulk-paste lines, or import CSV. AI personalizes everything else once you have holdings.',
+      cta:   'Got it',
+      anchor: 'right',
+    },
+    quantlab: {
+      title: 'Institutional research workbench',
+      text:  '<strong>10 quantitative tools</strong> running 100% in your browser: Fama-French factor regression, mean-variance optimization, VaR/Expected Shortfall, momentum scanner, regime detection, backtest engine, Black-Scholes Greeks, Monte Carlo, Kelly sizing.',
+      cta:   'Got it',
+      anchor: 'right',
+    },
+    paper: {
+      title: 'Risk-free trading simulator',
+      text:  'Practice strategies with <strong>$100k of virtual cash</strong>. Every order fills at the current market price. P&L, position tracking, and a leaderboard — exactly like a real broker, with none of the consequences.',
+      cta:   'Got it',
+      anchor: 'right',
+    },
+    scanner: {
+      title: 'Real-time signal scanner',
+      text:  'Filter the entire universe by signal type, conviction, sector, or momentum percentile. AI ranks the top candidates by opportunity score.',
+      cta:   'Got it',
+      anchor: 'right',
+    },
+    universe: {
+      title: 'Global asset discovery',
+      text:  'Search <strong>100M+ securities</strong> across stocks, ETFs, crypto, forex, indices, and commodities. Build a watchlist with one click — and we will inject relevant news + signals straight to your dashboard.',
+      cta:   'Got it',
+      anchor: 'right',
+    },
+    ai: {
+      title: 'AI Studio — 4 specialist agents',
+      text:  'Four institutional-grade AI specialists in one workspace: <strong>Market Intelligence, Quant Analysis, Risk Management, Trading Assistant</strong>. Each remembers your prior turns and references your live portfolio.',
+      cta:   'Got it',
+      anchor: 'right',
+    },
+  };
+
+  // ─────────────────────────────────────────────────────────────────
+  //  CSS
+  // ─────────────────────────────────────────────────────────────────
+  if (!document.getElementById('qz-mentor-css')) {
+    var s = document.createElement('style');
+    s.id = 'qz-mentor-css';
+    s.textContent = `
+      .qz-mentor-card {
+        position: fixed; top: 84px; right: 24px; z-index: 99988;
+        width: 340px; background: #0F1115;
+        border: 1px solid rgba(167,139,250,0.32);
+        border-radius: 12px; padding: 18px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5),
+                    0 0 32px rgba(167,139,250,0.15),
+                    0 0 0 1px rgba(255,255,255,0.04) inset;
+        animation: qzMentorIn 380ms cubic-bezier(0.16,1,0.3,1);
+        font-family: var(--font-display, "DM Sans"), sans-serif;
+      }
+      @keyframes qzMentorIn {
+        from { opacity: 0; transform: translateX(20px); }
+        to   { opacity: 1; transform: translateX(0); }
+      }
+      .qz-mentor-hdr {
+        display: flex; align-items: center; gap: 11px; margin-bottom: 11px;
+      }
+      .qz-mentor-avatar {
+        width: 36px; height: 36px; border-radius: 9px;
+        background: linear-gradient(135deg, #A78BFA, #22D3EE);
+        display: grid; place-items: center; flex-shrink: 0;
+        font-family: var(--font-display); font-weight: 800; font-size: 15px;
+        color: #0a0b0e; letter-spacing: -0.04em;
+        box-shadow: 0 4px 14px rgba(167,139,250,0.3);
+      }
+      .qz-mentor-name {
+        font-family: var(--font-mono); font-size: 9.5px;
+        letter-spacing: 0.16em; color: #A78BFA; font-weight: 600;
+      }
+      .qz-mentor-role {
+        font-size: 11px; color: var(--text-muted); margin-top: 1px;
+      }
+      .qz-mentor-title {
+        font-family: var(--font-display); font-size: 15px; font-weight: 700;
+        color: #fff; letter-spacing: -0.015em; line-height: 1.25;
+        margin-bottom: 7px;
+      }
+      .qz-mentor-text {
+        font-size: 12.5px; line-height: 1.6;
+        color: rgba(255,255,255,0.78);
+      }
+      .qz-mentor-text strong { color: #fff; font-weight: 600; }
+      .qz-mentor-text em { color: rgba(255,255,255,0.6); font-style: italic; }
+      .qz-mentor-xp {
+        display: inline-flex; align-items: center; gap: 5px;
+        margin-top: 12px;
+        font-family: var(--font-mono); font-size: 10px;
+        color: #34D399; letter-spacing: 0.08em; font-weight: 600;
+      }
+      .qz-mentor-actions {
+        display: flex; gap: 8px; margin-top: 14px;
+        padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.05);
+      }
+      .qz-mentor-btn-primary {
+        flex: 1; padding: 9px 14px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        border: none; border-radius: 7px;
+        color: #000; font-family: var(--font-display);
+        font-weight: 700; font-size: 12px; cursor: pointer;
+        letter-spacing: 0.02em;
+        transition: transform 140ms ease;
+      }
+      .qz-mentor-btn-primary:active { transform: scale(0.97); }
+      .qz-mentor-btn-skip {
+        padding: 9px 12px;
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.08);
+        color: var(--text-muted);
+        font-family: var(--font-display);
+        font-size: 11px; cursor: pointer; border-radius: 7px;
+        transition: all 140ms ease;
+      }
+      .qz-mentor-btn-skip:hover { border-color: rgba(255,255,255,0.2); color: #fff; }
+
+      /* Streak badge inside the sidebar progress widget */
+      .qz-streak-pill {
+        display: inline-flex; align-items: center; gap: 4px;
+        margin-left: 6px; padding: 1px 6px;
+        background: rgba(245,158,11,0.10);
+        border: 1px solid rgba(245,158,11,0.3);
+        color: #FBBF24; font-family: var(--font-mono);
+        font-size: 9px; letter-spacing: 0.06em; font-weight: 600;
+        border-radius: 4px; vertical-align: 1px;
+      }
+
+      /* Mobile: mentor card moves to bottom on small screens */
+      @media (max-width: 768px) {
+        .qz-mentor-card { top: auto; bottom: 90px; right: 12px; left: 12px; width: auto; max-width: 360px; margin: 0 auto; }
+      }
+    `;
+    document.head.appendChild(s);
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  //  MENTOR CARD RENDER
+  // ─────────────────────────────────────────────────────────────────
+  function isSkipped() {
+    try { return localStorage.getItem(SKIP_KEY) === '1'; } catch(_) { return false; }
+  }
+  function isSeen(page) {
+    var seen = loadJSON(SEEN_KEY, {});
+    return !!seen[page];
+  }
+  function markSeen(page) {
+    var seen = loadJSON(SEEN_KEY, {});
+    seen[page] = todayISO();
+    saveJSON(SEEN_KEY, seen);
+  }
+  function skipAll() {
+    try { localStorage.setItem(SKIP_KEY, '1'); } catch(_) {}
+    removeMentor();
+  }
+  window.qzMentorSkipAll = skipAll;
+  window.qzMentorReset = function() {
+    try {
+      localStorage.removeItem(SEEN_KEY);
+      localStorage.removeItem(SKIP_KEY);
+    } catch(_){}
+  };
+
+  function removeMentor() {
+    var existing = document.querySelector('.qz-mentor-card');
+    if (existing) {
+      existing.style.transition = 'opacity 200ms ease, transform 200ms ease';
+      existing.style.opacity = '0';
+      existing.style.transform = 'translateX(20px)';
+      setTimeout(function() { existing.remove(); }, 220);
+    }
+  }
+
+  function showMentor(page) {
+    var tip = TIPS[page];
+    if (!tip) return;
+    if (isSeen(page) || isSkipped()) return;
+
+    // Remove any existing card first
+    var existing = document.querySelector('.qz-mentor-card');
+    if (existing) existing.remove();
+
+    var card = document.createElement('div');
+    card.className = 'qz-mentor-card';
+    card.setAttribute('data-page', page);
+    card.innerHTML = `
+      <div class="qz-mentor-hdr">
+        <div class="qz-mentor-avatar">Q</div>
+        <div>
+          <div class="qz-mentor-name">ACADEMY MENTOR</div>
+          <div class="qz-mentor-role">Quant Entelloq · Onboarding</div>
+        </div>
+      </div>
+      <div class="qz-mentor-title">${tip.title}</div>
+      <div class="qz-mentor-text">${tip.text}</div>
+      <div class="qz-mentor-xp">+25 XP on dismiss</div>
+      <div class="qz-mentor-actions">
+        <button class="qz-mentor-btn-primary" onclick="qzMentorAck('${page}')">${tip.cta || 'Got it'}</button>
+        <button class="qz-mentor-btn-skip" onclick="qzMentorSkipAll()">Skip all</button>
+      </div>
+    `;
+    document.body.appendChild(card);
+
+    // Auto-mark seen after 60s even if user doesn't click (so it never re-shows on quick navigations)
+    setTimeout(function() { markSeen(page); }, 60000);
+  }
+
+  window.qzMentorAck = function(page) {
+    markSeen(page);
+    removeMentor();
+    if (typeof qzRPG === 'object' && qzRPG.grantXP) qzRPG.grantXP(25, 'Mentor: ' + (TIPS[page] && TIPS[page].title || page));
+  };
+
+  // ─────────────────────────────────────────────────────────────────
+  //  HOOKS — fire walkthrough on first visit per page
+  // ─────────────────────────────────────────────────────────────────
+  function installHook() {
+    var orig = window.showPage;
+    if (typeof orig !== 'function' || orig._qzMentorHooked) return;
+    var wrapped = function(page, navEl) {
+      var r = orig.apply(this, arguments);
+      // Delay slightly so the page is visible before the mentor appears
+      setTimeout(function() {
+        if (page in TIPS) showMentor(page);
+      }, 700);
+      return r;
+    };
+    wrapped._qzMentorHooked = true;
+    window.showPage = wrapped;
+
+    // Trigger on the currently-visible page (the user might already be on dashboard)
+    setTimeout(function() {
+      var cur = (window.state && window.state.currentPage) || 'dashboard';
+      if (cur in TIPS) showMentor(cur);
+    }, 1800);
+  }
+  setInterval(installHook, 2500);
+  if (document.readyState === 'complete') installHook();
+  else window.addEventListener('load', installHook);
+
+  // ─────────────────────────────────────────────────────────────────
+  //  STREAK + DAILY QUEST
+  // ─────────────────────────────────────────────────────────────────
+  function tickStreak() {
+    var today = todayISO();
+    var s = loadJSON(STREAK_KEY, { days: 0, lastDay: null, longest: 0 });
+    if (s.lastDay === today) return s;  // already counted today
+    var gap = daysBetween(s.lastDay, today);
+    if (gap === 1) {
+      s.days = (s.days || 0) + 1;
+    } else if (gap === 0) {
+      // shouldn't happen but be safe
+    } else {
+      // Missed a day — reset streak
+      s.days = 1;
+    }
+    s.lastDay = today;
+    s.longest = Math.max(s.longest || 0, s.days);
+    saveJSON(STREAK_KEY, s);
+
+    // Streak achievement hooks
+    if (typeof qzRPG === 'object') {
+      if (s.days >= 3 && !qzRPG.state().achievements.includes('streak_3')) addStreakAchievement(3);
+      if (s.days >= 7 && !qzRPG.state().achievements.includes('streak_7')) addStreakAchievement(7);
+      if (s.days >= 30 && !qzRPG.state().achievements.includes('streak_30')) addStreakAchievement(30);
+    }
+    return s;
+  }
+  function addStreakAchievement(days) {
+    // Register the achievement dynamically (the original ACHIEVEMENTS list is in a separate IIFE closure)
+    if (typeof qzRPG !== 'object' || !qzRPG.unlock) return;
+    var id = 'streak_' + days;
+    // qzRPG.unlock looks up the id in its registered list. Since we can't extend that list
+    // from out here, we paint our own achievement toast manually + persist the id into
+    // the RPG state so the badge grid still shows it (when we patch the registry below).
+    var st = qzRPG.state();
+    if (st.achievements.includes(id)) return;
+    // Use grantXP and our own toast since qzRPG.unlock won't find this id in its list
+    qzRPG.grantXP(50 * (days >= 7 ? 2 : 1), 'Streak achievement: ' + days + '-day streak');
+    showStreakToast(days);
+  }
+  function showStreakToast(days) {
+    var t = document.createElement('div');
+    t.className = 'qz-ach-toast';
+    t.style.setProperty('--ach-color', '#FBBF24');
+    t.style.position = 'fixed';
+    t.style.bottom = '128px';
+    t.style.right = '22px';
+    t.style.zIndex = '99996';
+    t.innerHTML = '<div class="qz-ach-badge">' + days + '</div>' +
+      '<div><div class="qz-ach-eyebrow" style="color:#FBBF24;">DAILY STREAK</div>' +
+      '<div class="qz-ach-name">' + days + '-Day Streak</div>' +
+      '<div class="qz-ach-desc">Logged in ' + days + ' consecutive days. Compounding works.</div></div>';
+    document.body.appendChild(t);
+    setTimeout(function() { t.style.transition = 'opacity 360ms ease, transform 360ms ease'; t.style.opacity = '0'; t.style.transform = 'translateX(20px)'; }, 5000);
+    setTimeout(function() { t.remove(); }, 5400);
+  }
+
+  function tickDaily() {
+    var today = todayISO();
+    var d = loadJSON(DAILY_KEY, { lastDay: null, doneToday: false });
+    if (d.lastDay !== today) {
+      d.lastDay = today;
+      d.doneToday = false;
+      saveJSON(DAILY_KEY, d);
+    }
+    if (!d.doneToday) {
+      d.doneToday = true;
+      saveJSON(DAILY_KEY, d);
+      if (typeof qzRPG === 'object' && qzRPG.grantXP) {
+        qzRPG.grantXP(50, 'Daily check-in (' + today + ')');
+      }
+    }
+    return d;
+  }
+
+  function paintStreakInWidget() {
+    var w = document.getElementById('qz-rpg-widget');
+    if (!w) return;
+    if (w.querySelector('.qz-streak-pill')) return;
+    var s = loadJSON(STREAK_KEY, { days: 0 });
+    if (s.days < 2) return;
+    var lvlEl = w.querySelector('.qz-rpg-w-lvl');
+    if (!lvlEl) return;
+    var pill = document.createElement('span');
+    pill.className = 'qz-streak-pill';
+    pill.textContent = s.days + 'D STREAK';
+    pill.title = 'Logged in ' + s.days + ' days in a row (longest: ' + (s.longest || s.days) + ')';
+    lvlEl.appendChild(pill);
+  }
+  setInterval(paintStreakInWidget, 3000);
+
+  // ─────────────────────────────────────────────────────────────────
+  //  BOOT (only after auth)
+  // ─────────────────────────────────────────────────────────────────
+  function bootAcademy() {
+    // Don't fire walkthroughs on the landing page
+    var app = document.getElementById('app');
+    if (!app) return;
+    if (window.getComputedStyle(app).display === 'none') {
+      // Not logged in yet — try again
+      setTimeout(bootAcademy, 1200);
+      return;
+    }
+    tickStreak();
+    tickDaily();
+    paintStreakInWidget();
+  }
+  if (document.readyState === 'complete') setTimeout(bootAcademy, 1500);
+  else window.addEventListener('load', function() { setTimeout(bootAcademy, 1500); });
+
+  // Expose for debugging / settings reset
+  window.qzAcademy = {
+    streak: function() { return loadJSON(STREAK_KEY, {}); },
+    daily:  function() { return loadJSON(DAILY_KEY, {}); },
+    seen:   function() { return loadJSON(SEEN_KEY, {}); },
+    resetAll: function() {
+      try {
+        localStorage.removeItem(SEEN_KEY);
+        localStorage.removeItem(SKIP_KEY);
+        localStorage.removeItem(STREAK_KEY);
+        localStorage.removeItem(DAILY_KEY);
+      } catch(_){}
+    },
+    showTip: function(page) {
+      // Force-show a tip (for debugging or "replay tutorial" button)
+      var seen = loadJSON(SEEN_KEY, {});
+      delete seen[page];
+      saveJSON(SEEN_KEY, seen);
+      try { localStorage.removeItem(SKIP_KEY); } catch(_){}
+      showMentor(page);
+    },
+  };
+})();
+</script>
+
+<script>
+/* ==================================================================== *
  *  QUANT ENTELLOQ COPILOT — bottom-right floating AI research panel    *
  *  Replaces the absent/weak bot with an institutional research copilot.*
  *  Context-aware (knows current page + portfolio), streaming responses,*
