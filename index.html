@@ -27133,16 +27133,33 @@ setTimeout(() => {
     setTimeout(function() { whenReady(check, fn, tries-1); }, 150);
   }
 
+  // QE_AGENTS is declared via `const` at script-scope so it's NOT on window.
+  // We capture it inside the IIFE by reading the bare identifier (which works
+  // across classic <script> tags because they share the same script scope).
+  function _agentsRef() {
+    try { return typeof QE_AGENTS !== 'undefined' ? QE_AGENTS : null; } catch(_) { return null; }
+  }
+  function _runRef() {
+    try { return typeof _cmdRunAgent === 'function' ? _cmdRunAgent : null; } catch(_) { return null; }
+  }
+  function _streamRef() {
+    try { return typeof qzAIStream === 'function' ? qzAIStream : null; } catch(_) { return null; }
+  }
+  function _orchRef() {
+    try { return typeof cmdOrchestrate === 'function' ? cmdOrchestrate : null; } catch(_) { return null; }
+  }
+
   whenReady(function() {
-    return typeof window.QE_AGENTS !== 'undefined'
-      && Array.isArray(window.QE_AGENTS)
-      && window.QE_AGENTS.length
-      && typeof window._cmdRunAgent === 'function'
-      && typeof window.qzAIStream === 'function';
+    var ag = _agentsRef();
+    return ag && Array.isArray(ag) && ag.length > 0 && _runRef() && _streamRef();
   }, function init() {
 
+    var AGENTS = _agentsRef();
+    // Mirror onto window so other code in this IIFE can use window.QE_AGENTS too
+    if (!window.QE_AGENTS) window.QE_AGENTS = AGENTS;
+
     // ── 1. Replace agent emojis with letter monograms ────────────
-    window.QE_AGENTS.forEach(function(a) {
+    AGENTS.forEach(function(a) {
       // Two-letter mono from first letters of name words (Market Intelligence → MI)
       a.mono = a.name.split(/\s+/).map(function(w){ return w[0]; }).join('').slice(0, 2).toUpperCase();
     });
