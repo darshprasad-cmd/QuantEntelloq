@@ -9587,17 +9587,18 @@ function initApp() {
   document.getElementById('settings-email').textContent = state.user?.email || '';
 
   renderDashboard();
-  renderSignals();
-  renderNews();
-  renderPortfolio();
-  renderLedger();
-  renderScanner();
-  renderAlerts();
-  renderReports();
-  calcScenario();
-  calcBusiness();
+  // Each renderer is guarded — a single failing one can't crash the whole app
+  try { renderSignals(); }   catch(e){ console.warn('[initApp] renderSignals', e); }
+  try { renderNews(); }      catch(e){ console.warn('[initApp] renderNews', e); }
+  try { renderPortfolio(); } catch(e){ console.warn('[initApp] renderPortfolio', e); }
+  try { renderLedger(); }    catch(e){ console.warn('[initApp] renderLedger', e); }
+  try { renderScanner(); }   catch(e){ console.warn('[initApp] renderScanner', e); }
+  try { renderAlerts(); }    catch(e){ console.warn('[initApp] renderAlerts', e); }
+  try { renderReports(); }   catch(e){ console.warn('[initApp] renderReports', e); }
+  try { calcScenario(); }    catch(e){ console.warn('[initApp] calcScenario', e); }
+  // calcBusiness() was removed — its parent page is gone. Reference left for grep-ability.
   // Initialize regional data
-  applyRegionToApp(regionState.selectedCountry);
+  try { applyRegionToApp(regionState.selectedCountry); } catch(e){ console.warn('[initApp] applyRegion', e); }
 
   // Trial timer (24 hours → for demo, use 24 mins or skip)
   // For real: check after 24h. We'll give full access for demo.
