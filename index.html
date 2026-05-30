@@ -31648,6 +31648,271 @@ setTimeout(() => {
 
 <script>
 /* ==================================================================== *
+ *  MOBILE SIDEBAR DRAWER v2 — visible toggle, smooth open/close        *
+ *  Replaces the small/easy-to-miss hamburger with a prominent          *
+ *  always-visible toggle pill + bigger drawer + close button inside    *
+ *  the drawer + body-scroll-lock + escape key + outside-tap close.     *
+ * ==================================================================== */
+(function() {
+  'use strict';
+
+  // CSS — visible toggle pill + drawer interactions
+  if (!document.getElementById('qe-mobile-drawer-v2-css')) {
+    var s = document.createElement('style');
+    s.id = 'qe-mobile-drawer-v2-css';
+    s.textContent = `
+      /* Hide the old small hamburger */
+      .qe-mobile-menu-btn { display: none !important; }
+
+      @media (max-width: 900px) {
+        /* === Visible toggle pill at top-left === */
+        #qe-drawer-toggle {
+          position: fixed;
+          top: 14px; left: 14px;
+          z-index: 10000;
+          display: inline-flex;
+          align-items: center;
+          gap: 9px;
+          padding: 10px 14px 10px 12px;
+          background: rgba(15,15,17,0.92);
+          backdrop-filter: blur(14px);
+          -webkit-backdrop-filter: blur(14px);
+          border: 1px solid rgba(167,139,250,0.32);
+          border-radius: 10px;
+          color: #F4F4F0;
+          font-family: var(--qe-mono, 'JetBrains Mono'), monospace;
+          font-size: 11px;
+          letter-spacing: 0.14em;
+          font-weight: 600;
+          text-transform: uppercase;
+          cursor: pointer;
+          box-shadow: 0 6px 22px rgba(0,0,0,0.5), 0 0 0 1px rgba(244,244,240,0.04) inset;
+          transition: transform 200ms cubic-bezier(0.65,0,0.35,1), border-color 200ms;
+          min-height: 40px;
+        }
+        #qe-drawer-toggle:hover { border-color: rgba(167,139,250,0.6); }
+        #qe-drawer-toggle:active { transform: scale(0.96); }
+        #qe-drawer-toggle .qe-dt-icon {
+          width: 18px; height: 14px;
+          position: relative;
+          display: inline-block;
+          flex-shrink: 0;
+        }
+        #qe-drawer-toggle .qe-dt-icon::before,
+        #qe-drawer-toggle .qe-dt-icon::after,
+        #qe-drawer-toggle .qe-dt-icon span {
+          content: '';
+          position: absolute; left: 0; right: 0;
+          height: 1.8px;
+          background: #F4F4F0;
+          border-radius: 1px;
+          transition: transform 240ms cubic-bezier(0.65,0,0.35,1), opacity 200ms;
+        }
+        #qe-drawer-toggle .qe-dt-icon::before { top: 0; }
+        #qe-drawer-toggle .qe-dt-icon span { top: 6px; display: block; }
+        #qe-drawer-toggle .qe-dt-icon::after { top: 12px; }
+
+        /* Active state: X icon */
+        #qe-drawer-toggle.is-open .qe-dt-icon::before {
+          transform: translateY(6px) rotate(45deg);
+        }
+        #qe-drawer-toggle.is-open .qe-dt-icon::after {
+          transform: translateY(-6px) rotate(-45deg);
+        }
+        #qe-drawer-toggle.is-open .qe-dt-icon span { opacity: 0; transform: translateX(-12px); }
+
+        #qe-drawer-toggle.is-open {
+          background: rgba(167,139,250,0.12);
+          border-color: rgba(167,139,250,0.5);
+        }
+
+        /* === Sidebar slide-in === */
+        .sidebar {
+          position: fixed !important;
+          top: 0; left: 0; bottom: 0;
+          width: 292px !important;
+          max-width: 84vw !important;
+          z-index: 9500 !important;
+          transform: translateX(-105%) !important;
+          transition: transform 360ms cubic-bezier(0.65,0,0.35,1) !important;
+          background: var(--qe-canvas, #0E0E10) !important;
+          border-right: 1px solid rgba(244,244,240,0.08) !important;
+          box-shadow: 12px 0 60px rgba(0,0,0,0.65);
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+          padding-bottom: env(safe-area-inset-bottom, 0);
+        }
+        .sidebar.qe-mobile-open {
+          transform: translateX(0) !important;
+        }
+
+        /* Inner close button at top of drawer */
+        .qe-drawer-close {
+          position: sticky; top: 0;
+          display: flex; justify-content: space-between; align-items: center;
+          padding: 14px 18px;
+          background: var(--qe-canvas);
+          border-bottom: 1px solid rgba(244,244,240,0.06);
+          z-index: 10;
+        }
+        .qe-drawer-close-label {
+          font-family: var(--qe-mono), monospace;
+          font-size: 10px;
+          letter-spacing: 0.2em;
+          color: rgba(244,244,240,0.55);
+          text-transform: uppercase;
+        }
+        .qe-drawer-close-btn {
+          background: transparent;
+          border: 1px solid rgba(244,244,240,0.12);
+          color: var(--qe-text, #F4F4F0);
+          width: 32px; height: 32px; border-radius: 6px;
+          display: grid; place-items: center;
+          cursor: pointer;
+          font-size: 18px;
+          line-height: 1;
+          font-family: ui-sans-serif, system-ui, sans-serif;
+          padding: 0;
+          transition: border-color 180ms;
+        }
+        .qe-drawer-close-btn:hover { border-color: rgba(244,244,240,0.32); }
+
+        /* === Overlay backdrop === */
+        .qe-mobile-overlay {
+          position: fixed; inset: 0;
+          background: rgba(8,9,11,0.72);
+          backdrop-filter: blur(6px);
+          -webkit-backdrop-filter: blur(6px);
+          z-index: 9400;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 320ms cubic-bezier(0.65,0,0.35,1);
+        }
+        .qe-mobile-overlay.qe-mobile-overlay-open {
+          opacity: 1; pointer-events: auto;
+        }
+
+        /* Lock body scroll when drawer is open */
+        body.qe-drawer-open {
+          overflow: hidden;
+          position: fixed;
+          width: 100%;
+        }
+
+        /* Nudge main content over so toggle doesn't sit over the title */
+        .top-bar { padding-left: 130px !important; }
+        .top-bar-title { font-size: 17px !important; }
+      }
+
+      @media (min-width: 901px) {
+        #qe-drawer-toggle { display: none !important; }
+        .qe-drawer-close { display: none !important; }
+        .qe-mobile-overlay { display: none !important; }
+      }
+    `;
+    document.head.appendChild(s);
+  }
+
+  function ensureDrawer() {
+    if (window.innerWidth > 900) {
+      // Desktop: remove anything mobile
+      var t = document.getElementById('qe-drawer-toggle');
+      var ov = document.querySelector('.qe-mobile-overlay');
+      var cls = document.querySelector('.qe-drawer-close');
+      if (t) t.remove();
+      if (ov) ov.remove();
+      if (cls) cls.remove();
+      var sb = document.querySelector('.sidebar');
+      if (sb) sb.classList.remove('qe-mobile-open');
+      document.body.classList.remove('qe-drawer-open');
+      return;
+    }
+
+    var sidebar = document.querySelector('.sidebar');
+    if (!sidebar) return;
+
+    // 1. Toggle pill at top-left (the visible button)
+    if (!document.getElementById('qe-drawer-toggle')) {
+      var btn = document.createElement('button');
+      btn.id = 'qe-drawer-toggle';
+      btn.setAttribute('aria-label', 'Open menu');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.innerHTML = '<span class="qe-dt-icon"><span></span></span> Menu';
+      btn.onclick = function(e) { e.stopPropagation(); openDrawer(); };
+      document.body.appendChild(btn);
+    }
+
+    // 2. Close button inside drawer (sticky top)
+    if (!sidebar.querySelector('.qe-drawer-close')) {
+      var cls = document.createElement('div');
+      cls.className = 'qe-drawer-close';
+      cls.innerHTML = '<span class="qe-drawer-close-label">Menu</span><button class="qe-drawer-close-btn" aria-label="Close menu">×</button>';
+      sidebar.insertBefore(cls, sidebar.firstChild);
+      cls.querySelector('.qe-drawer-close-btn').onclick = function(e) { e.stopPropagation(); closeDrawer(); };
+    }
+
+    // 3. Backdrop overlay
+    if (!document.querySelector('.qe-mobile-overlay')) {
+      var ov = document.createElement('div');
+      ov.className = 'qe-mobile-overlay';
+      ov.onclick = closeDrawer;
+      document.body.appendChild(ov);
+    }
+
+    // 4. Auto-close drawer when a nav-item is tapped
+    sidebar.querySelectorAll('.nav-item').forEach(function(it) {
+      if (it._qeDrawerHooked) return;
+      it._qeDrawerHooked = true;
+      it.addEventListener('click', closeDrawer);
+    });
+  }
+
+  function openDrawer() {
+    var sidebar = document.querySelector('.sidebar');
+    var overlay = document.querySelector('.qe-mobile-overlay');
+    var toggle  = document.getElementById('qe-drawer-toggle');
+    if (sidebar) sidebar.classList.add('qe-mobile-open');
+    if (overlay) overlay.classList.add('qe-mobile-overlay-open');
+    if (toggle) {
+      toggle.classList.add('is-open');
+      toggle.setAttribute('aria-expanded', 'true');
+    }
+    document.body.classList.add('qe-drawer-open');
+  }
+  function closeDrawer() {
+    var sidebar = document.querySelector('.sidebar');
+    var overlay = document.querySelector('.qe-mobile-overlay');
+    var toggle  = document.getElementById('qe-drawer-toggle');
+    if (sidebar) sidebar.classList.remove('qe-mobile-open');
+    if (overlay) overlay.classList.remove('qe-mobile-overlay-open');
+    if (toggle) {
+      toggle.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+    document.body.classList.remove('qe-drawer-open');
+  }
+
+  // Expose globally so other code can trigger
+  window.qeOpenDrawer = openDrawer;
+  window.qeCloseDrawer = closeDrawer;
+
+  // Escape key closes drawer
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeDrawer();
+  });
+
+  // Run repeatedly to handle late-loading sidebar
+  setInterval(ensureDrawer, 1500);
+  if (document.readyState === 'complete') ensureDrawer();
+  else window.addEventListener('load', ensureDrawer);
+
+  // Re-check on resize
+  window.addEventListener('resize', ensureDrawer);
+})();
+</script>
+
+<script>
+/* ==================================================================== *
  *  iOS SAFARI MOBILE FIXES — prevent auto-zoom + safe-area + tap UX    *
  * ==================================================================== */
 (function() {
