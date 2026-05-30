@@ -26063,10 +26063,21 @@ setTimeout(() => {
     return null;
   }
 
-  // Monkey-patch fetch for /api/pt/* requests only
+  // Monkey-patch fetch for /api/pt/* + /health in static mode.
+  // ptInit() health-checks /health before loading accounts — without
+  // this shim it'd 404 on GitHub Pages and show "Server Not Running".
   var _origFetch = window.fetch;
   window.fetch = function(input, init) {
     var url = typeof input === 'string' ? input : (input && input.url) || '';
+
+    // /health → always OK in static mode
+    if (!window._QZ_SERVER_MODE && /^(\/health$|https?:\/\/[^\/]+\/health$)/.test(url)) {
+      return Promise.resolve(new Response(JSON.stringify({ status: 'ok', mode: 'static' }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      }));
+    }
+
     if (/^(\/api\/pt\/|https?:\/\/[^\/]+\/api\/pt\/)/.test(url)) {
       try {
         var pathOnly = url.replace(/^https?:\/\/[^\/]+/, '');
