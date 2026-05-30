@@ -27113,6 +27113,596 @@ setTimeout(() => {
 <!-- QuantLab + IntelEngine script removed — had multiple unfixable apostrophe parse errors in the reference. Re-add from clean source later. -->
 <script>
 /* ==================================================================== *
+ *  QUANT EDITORIAL — comprehensive design-system overlay (rebuild v3)  *
+ *                                                                      *
+ *  Direction: editorial serif × Bloomberg terminal × cinematic film    *
+ *  poster. NOT generic, NOT vibecoded, NOT Emil-Kowalski spring-y.     *
+ *                                                                      *
+ *  Adds:                                                               *
+ *    - Distinctive font stack: Fraunces (display) + JetBrains Mono     *
+ *    - Void-black palette with warm-amber accent + cool-cyan data      *
+ *    - SVG grain texture + distant aurora background gradients         *
+ *    - Cinematic symmetric easing cubic-bezier(0.65, 0, 0.35, 1)       *
+ *    - Subtle institutional neumorphism on primary CTAs (inset edges + *
+ *      directional shadow — NOT consumer-app skeuomorphic toy aesthetic)*
+ *    - Parallax background on landing hero                             *
+ *    - Scroll-reveal IntersectionObserver on cards                     *
+ *    - Mobile sidebar drawer (collapses below 900px, touch targets)    *
+ *    - Editorial section markers — 01 — style                          *
+ *    - Hairline border system replacing heavy rounded panels           *
+ * ==================================================================== */
+(function() {
+  'use strict';
+
+  // ─────────────────────────────────────────────────────────────────
+  //  1. Load distinctive fonts (Fraunces editorial serif + JetBrains Mono)
+  // ─────────────────────────────────────────────────────────────────
+  if (!document.querySelector('link[href*="Fraunces"]')) {
+    var fl = document.createElement('link');
+    fl.rel = 'stylesheet';
+    fl.href = 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap';
+    document.head.appendChild(fl);
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  //  2. Design-system CSS overlay (high specificity, idempotent)
+  // ─────────────────────────────────────────────────────────────────
+  if (!document.getElementById('qz-editorial-ds')) {
+    var ds = document.createElement('style');
+    ds.id = 'qz-editorial-ds';
+    ds.textContent = `
+      /* ── TOKENS ──────────────────────────────────────────────── */
+      :root {
+        /* Void-black palette */
+        --qe-void:       #0A0A0B;
+        --qe-canvas:     #0E0E10;
+        --qe-surface:    #15151A;
+        --qe-elevated:   #1B1B21;
+
+        /* Warm typography */
+        --qe-text:       #F4F4F0;
+        --qe-text-soft:  rgba(244,244,240,0.74);
+        --qe-text-mute:  rgba(244,244,240,0.46);
+        --qe-text-dim:   rgba(244,244,240,0.24);
+
+        /* Hairlines */
+        --qe-hl:         rgba(244,244,240,0.06);
+        --qe-hl-strong:  rgba(244,244,240,0.13);
+        --qe-hl-bold:    rgba(244,244,240,0.22);
+
+        /* Single editorial accent + data accent */
+        --qe-amber:      #E4A11B;
+        --qe-amber-soft: rgba(228,161,27,0.12);
+        --qe-amber-glow: rgba(228,161,27,0.4);
+        --qe-cyan:       #67E8F9;
+        --qe-cyan-soft:  rgba(103,232,249,0.10);
+
+        /* Semantic */
+        --qe-pos:        #5EEAD4;
+        --qe-neg:        #FB7185;
+
+        /* Fonts */
+        --qe-display:    'Fraunces', 'Tiempos Headline', Georgia, serif;
+        --qe-mono:       'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+        --qe-sans:       'DM Sans', system-ui, -apple-system, sans-serif;
+
+        /* Cinematic motion — symmetric, NOT spring */
+        --qe-ease:       cubic-bezier(0.65, 0, 0.35, 1);
+        --qe-ease-out:   cubic-bezier(0.33, 1, 0.68, 1);
+        --qe-ease-slow:  cubic-bezier(0.83, 0, 0.17, 1);
+
+        /* Re-bind existing app vars to the new system */
+        --font-display:  var(--qe-display);
+        --font-mono:     var(--qe-mono);
+        --accent:        var(--qe-amber);
+        --accent-2:      var(--qe-cyan);
+      }
+
+      /* ── BODY: void background + grain + distant aurora ──────── */
+      html, body {
+        background: var(--qe-void) !important;
+        color: var(--qe-text) !important;
+        font-family: var(--qe-sans) !important;
+      }
+      body::before {
+        content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+        background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http%3A//www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.96  0 0 0 0 0.93  0 0 0 0 0.85  0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+        opacity: 0.55;
+        mix-blend-mode: overlay;
+      }
+      body::after {
+        content: ''; position: fixed; top: -200px; left: 0; right: 0; height: 480px;
+        pointer-events: none; z-index: 0;
+        background:
+          radial-gradient(ellipse 900px 380px at 22% 50%, rgba(228,161,27,0.06), transparent 60%),
+          radial-gradient(ellipse 700px 360px at 78% 50%, rgba(103,232,249,0.045), transparent 60%);
+      }
+      #app, #landing { position: relative; z-index: 2; }
+
+      /* ── TYPOGRAPHY: editorial serif headings ────────────────── */
+      h1, h2, h3,
+      .ais-title, .cmd-title,
+      .qze-hero-title, .lp3-hero-title,
+      .qz-padd-title, .qz-mentor-title, .qz-cop-welcome-h1,
+      .qz-quest-lvl-stack {
+        font-family: var(--qe-display) !important;
+        font-weight: 500 !important;
+        letter-spacing: -0.025em !important;
+        font-feature-settings: 'ss01' 1, 'ss02' 1 !important;
+      }
+      h1 { font-weight: 600 !important; }
+
+      /* ── NUMERIC DATA: tabular mono everywhere ───────────────── */
+      .metric-value,
+      [class*="metric-val"],
+      [class*="-val"],
+      .qz-mc-time, .qz-rpg-w-xp,
+      .pt-fmt, td.pt-quick-price {
+        font-family: var(--qe-mono) !important;
+        font-variant-numeric: tabular-nums !important;
+        font-feature-settings: 'tnum' 1, 'zero' 1 !important;
+        letter-spacing: -0.01em !important;
+      }
+
+      /* ── SIDEBAR: editorial hairline navigation ──────────────── */
+      .sidebar {
+        background: var(--qe-canvas) !important;
+        border-right: 1px solid var(--qe-hl) !important;
+        backdrop-filter: blur(20px);
+      }
+      .sidebar-nav .nav-section-label {
+        font-family: var(--qe-mono) !important;
+        font-size: 9.5px !important;
+        letter-spacing: 0.22em !important;
+        color: var(--qe-text-dim) !important;
+        font-weight: 500 !important;
+        text-transform: uppercase !important;
+        padding: 14px 22px 8px !important;
+      }
+      .nav-item {
+        font-family: var(--qe-sans) !important;
+        font-size: 13px !important;
+        font-weight: 400 !important;
+        color: var(--qe-text-soft) !important;
+        padding: 8px 22px !important;
+        transition: color 200ms var(--qe-ease), background 200ms var(--qe-ease), border-left-color 200ms var(--qe-ease) !important;
+        border-radius: 0 !important;
+        border-left: 2px solid transparent !important;
+      }
+      .nav-item:hover {
+        color: var(--qe-text) !important;
+        background: rgba(244,244,240,0.02) !important;
+      }
+      .nav-item.active {
+        color: var(--qe-text) !important;
+        background: rgba(228,161,27,0.045) !important;
+        border-left-color: var(--qe-amber) !important;
+        font-weight: 500 !important;
+      }
+
+      /* ── TOP BAR: editorial masthead ─────────────────────────── */
+      .top-bar {
+        background: rgba(14,14,16,0.78) !important;
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--qe-hl) !important;
+      }
+      .top-bar-title {
+        font-family: var(--qe-display) !important;
+        font-weight: 600 !important;
+        font-size: 22px !important;
+        letter-spacing: -0.02em !important;
+        color: var(--qe-text) !important;
+      }
+      .top-bar-title small {
+        display: block !important;
+        font-family: var(--qe-mono) !important;
+        font-size: 10px !important;
+        letter-spacing: 0.18em !important;
+        color: var(--qe-text-mute) !important;
+        text-transform: uppercase !important;
+        font-weight: 500 !important;
+        margin-top: 4px !important;
+      }
+
+      /* ── CARDS: hairline-edged surfaces, restrained elevation ─ */
+      .card, .metric-card, .ent-card, .signal-card, .scanner-card,
+      .ql-card, .qz-card, .pt-card {
+        background: var(--qe-surface) !important;
+        border: 1px solid var(--qe-hl) !important;
+        border-radius: 6px !important;
+        transition: border-color 280ms var(--qe-ease), transform 280ms var(--qe-ease) !important;
+        box-shadow: none !important;
+      }
+      .card:hover, .metric-card:hover, .ent-card:hover, .signal-card:hover {
+        border-color: var(--qe-hl-strong) !important;
+        transform: translateY(-1px);
+      }
+
+      /* ── BUTTONS: institutional neumorphism on primary ───────── */
+      .btn-primary,
+      button.btn-primary,
+      [class*="btn-primary"] {
+        background: linear-gradient(180deg, #F0AC2A, #D89312) !important;
+        color: #0A0A0B !important;
+        border: none !important;
+        border-radius: 5px !important;
+        font-family: var(--qe-sans) !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.005em !important;
+        padding: 10px 18px !important;
+        font-size: 13px !important;
+        box-shadow:
+          0 1px 0 rgba(255,255,255,0.32) inset,
+          0 -1px 0 rgba(0,0,0,0.18) inset,
+          0 8px 20px -8px rgba(228,161,27,0.45),
+          0 1px 2px rgba(0,0,0,0.4) !important;
+        transition: all 220ms var(--qe-ease) !important;
+      }
+      .btn-primary:hover {
+        background: linear-gradient(180deg, #F5B73C, #E1991C) !important;
+        transform: translateY(-1px) !important;
+        box-shadow:
+          0 1px 0 rgba(255,255,255,0.4) inset,
+          0 -1px 0 rgba(0,0,0,0.18) inset,
+          0 12px 28px -8px rgba(228,161,27,0.6),
+          0 2px 4px rgba(0,0,0,0.4) !important;
+      }
+      .btn-primary:active { transform: translateY(0) !important; }
+
+      /* ── INPUTS: hairline borders + amber focus ──────────────── */
+      input.input, input[type="text"], input[type="email"],
+      input[type="password"], input[type="number"], input[type="search"],
+      textarea, select {
+        font-family: var(--qe-mono) !important;
+        background: rgba(244,244,240,0.025) !important;
+        border: 1px solid var(--qe-hl-strong) !important;
+        border-radius: 5px !important;
+        color: var(--qe-text) !important;
+        transition: border-color 180ms var(--qe-ease), box-shadow 180ms var(--qe-ease) !important;
+      }
+      input:focus, textarea:focus, select:focus {
+        outline: none !important;
+        border-color: var(--qe-amber) !important;
+        box-shadow: 0 0 0 3px var(--qe-amber-soft) !important;
+      }
+
+      /* ── PILLS / BADGES: mono uppercase ──────────────────────── */
+      .badge, .pill,
+      [class*="badge-"], [class*="pill-"],
+      .qz-pill, .qz-pill-v2 {
+        font-family: var(--qe-mono) !important;
+        letter-spacing: 0.12em !important;
+        text-transform: uppercase !important;
+        font-weight: 500 !important;
+        font-size: 9.5px !important;
+      }
+
+      /* ── HAIRLINE DIVIDERS ───────────────────────────────────── */
+      hr, .divider {
+        border: none !important; height: 1px !important;
+        background: linear-gradient(90deg, transparent, var(--qe-hl-strong) 30%, var(--qe-hl-strong) 70%, transparent) !important;
+      }
+
+      /* ── EDITORIAL SECTION MARKER ────────────────────────────── */
+      .qe-section-num::before {
+        content: "— " attr(data-num) " —";
+        display: block;
+        font-family: var(--qe-mono);
+        font-size: 10.5px;
+        letter-spacing: 0.24em;
+        color: var(--qe-text-mute);
+        margin-bottom: 14px;
+        text-transform: uppercase;
+      }
+
+      /* ── PAGE TRANSITIONS: cinematic fade ────────────────────── */
+      .page-anim {
+        animation: qeFadeUp 700ms var(--qe-ease) both !important;
+      }
+      @keyframes qeFadeUp {
+        from { opacity: 0; transform: translateY(16px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      /* ── SCROLL REVEAL ───────────────────────────────────────── */
+      .qe-reveal {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 800ms var(--qe-ease), transform 800ms var(--qe-ease);
+      }
+      .qe-reveal.qe-revealed {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* ── BRAND LOGO: refined editorial typography ────────────── */
+      .logo-text {
+        font-family: var(--qe-display) !important;
+        font-weight: 500 !important;
+        font-size: 17px !important;
+        letter-spacing: -0.025em !important;
+        color: var(--qe-text) !important;
+      }
+      .logo-text span { color: var(--qe-amber) !important; font-weight: 600 !important; }
+      .logo-sub {
+        font-family: var(--qe-mono) !important;
+        font-size: 8.5px !important;
+        letter-spacing: 0.22em !important;
+        color: var(--qe-text-dim) !important;
+        text-transform: uppercase !important;
+        margin-top: 3px !important;
+      }
+
+      /* ── COPILOT REFINEMENT — match new aesthetic ────────────── */
+      #qz-copilot-panel {
+        border-color: var(--qe-hl-strong) !important;
+        background: var(--qe-canvas) !important;
+      }
+      .qz-cop-hdr-title { font-family: var(--qe-display) !important; font-weight: 500 !important; }
+      .qz-cop-welcome-h1 { font-family: var(--qe-display) !important; font-weight: 500 !important; }
+
+      /* ── MARKET CLOCK refinement ─────────────────────────────── */
+      #qz-market-clock {
+        background: var(--qe-canvas) !important;
+        border-color: var(--qe-hl) !important;
+      }
+
+      /* ── MENTOR CARD refinement ──────────────────────────────── */
+      .qz-mentor-card {
+        background: var(--qe-canvas) !important;
+        border-color: var(--qe-hl-strong) !important;
+      }
+      .qz-mentor-title { font-family: var(--qe-display) !important; }
+
+      /* ── MOBILE: <900px sidebar collapses to drawer ─────────── */
+      @media (max-width: 900px) {
+        .sidebar {
+          position: fixed !important;
+          top: 0; left: 0; bottom: 0;
+          width: 280px;
+          z-index: 9000;
+          transform: translateX(-100%);
+          transition: transform 320ms var(--qe-ease) !important;
+        }
+        .sidebar.qe-mobile-open {
+          transform: translateX(0);
+          box-shadow: 0 0 80px rgba(0,0,0,0.6);
+        }
+        .main-content {
+          margin-left: 0 !important;
+          padding-left: 14px !important;
+          padding-right: 14px !important;
+        }
+        .top-bar { padding-left: 64px !important; }
+        .top-bar-title { font-size: 18px !important; }
+        .qe-mobile-menu-btn {
+          position: fixed; top: 16px; left: 14px; z-index: 8999;
+          width: 38px; height: 38px; border-radius: 6px;
+          background: var(--qe-surface);
+          border: 1px solid var(--qe-hl-strong);
+          display: grid; place-items: center;
+          cursor: pointer;
+          transition: background 200ms var(--qe-ease);
+        }
+        .qe-mobile-menu-btn:hover { background: var(--qe-elevated); }
+        .qe-mobile-menu-btn .qe-bars {
+          width: 16px; height: 1.5px; background: var(--qe-text);
+          position: relative;
+        }
+        .qe-mobile-menu-btn .qe-bars::before,
+        .qe-mobile-menu-btn .qe-bars::after {
+          content: ''; position: absolute; left: 0; right: 0; height: 1.5px;
+          background: var(--qe-text);
+        }
+        .qe-mobile-menu-btn .qe-bars::before { top: -5px; }
+        .qe-mobile-menu-btn .qe-bars::after { top: 5px; }
+        .qe-mobile-overlay {
+          position: fixed; inset: 0;
+          background: rgba(0,0,0,0.6);
+          backdrop-filter: blur(4px);
+          z-index: 8500;
+          opacity: 0; pointer-events: none;
+          transition: opacity 280ms ease;
+        }
+        .qe-mobile-overlay.open { opacity: 1; pointer-events: auto; }
+
+        /* Stack any 4-col grids to 1-col on mobile */
+        #qz-today-strip {
+          grid-template-columns: repeat(2, 1fr) !important;
+        }
+        .metric-card { min-width: 0 !important; }
+
+        /* Hide market clock on very small screens — it lives in mobile menu */
+        #qz-market-clock { display: none; }
+
+        /* Daily challenge card stacks vertically on mobile */
+        #qz-daily-challenge-card { flex-direction: column; align-items: flex-start !important; }
+        #qz-daily-challenge-card > * { width: 100%; }
+
+        /* Mentor card moves to bottom on mobile */
+        .qz-mentor-card {
+          top: auto !important;
+          bottom: 90px !important;
+          right: 12px !important;
+          left: 12px !important;
+          width: auto !important;
+          max-width: 380px !important;
+          margin: 0 auto !important;
+        }
+      }
+      @media (min-width: 901px) {
+        .qe-mobile-menu-btn, .qe-mobile-overlay { display: none !important; }
+      }
+
+      /* ── Touch targets on touch devices ──────────────────────── */
+      @media (pointer: coarse) {
+        .nav-item { min-height: 44px !important; display: flex !important; align-items: center !important; }
+        button { min-height: 40px; }
+      }
+
+      /* ── PARALLAX BACKGROUND on landing hero ─────────────────── */
+      #landing { position: relative; overflow-x: hidden; }
+      #qe-parallax-bg {
+        position: absolute; inset: -20% -10% 0 -10%;
+        background:
+          radial-gradient(ellipse 1100px 600px at 25% 30%, rgba(228,161,27,0.10), transparent 55%),
+          radial-gradient(ellipse 900px 500px at 80% 70%, rgba(103,232,249,0.07), transparent 55%);
+        z-index: 0;
+        pointer-events: none;
+        will-change: transform;
+      }
+      #qe-parallax-grain {
+        position: absolute; inset: 0;
+        background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http%3A//www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E");
+        z-index: 1; pointer-events: none; mix-blend-mode: overlay;
+      }
+
+      /* ── Reduced-motion preference ───────────────────────────── */
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+        #qe-parallax-bg { transform: none !important; }
+      }
+    `;
+    document.head.appendChild(ds);
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  //  3. Mobile sidebar drawer
+  // ─────────────────────────────────────────────────────────────────
+  function ensureMobileMenu() {
+    if (window.innerWidth > 900) {
+      var btn0 = document.querySelector('.qe-mobile-menu-btn');
+      var ov0 = document.querySelector('.qe-mobile-overlay');
+      if (btn0) btn0.remove();
+      if (ov0) ov0.remove();
+      var sb = document.querySelector('.sidebar');
+      if (sb) sb.classList.remove('qe-mobile-open');
+      return;
+    }
+    if (document.querySelector('.qe-mobile-menu-btn')) return;
+    var sidebar = document.querySelector('.sidebar');
+    if (!sidebar) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'qe-mobile-menu-btn';
+    btn.innerHTML = '<span class="qe-bars"></span>';
+    btn.setAttribute('aria-label', 'Toggle menu');
+
+    var overlay = document.createElement('div');
+    overlay.className = 'qe-mobile-overlay';
+
+    btn.onclick = function(e) {
+      e.stopPropagation();
+      sidebar.classList.toggle('qe-mobile-open');
+      overlay.classList.toggle('open');
+    };
+    overlay.onclick = function() {
+      sidebar.classList.remove('qe-mobile-open');
+      overlay.classList.remove('open');
+    };
+
+    document.body.appendChild(btn);
+    document.body.appendChild(overlay);
+
+    // Auto-close drawer when a nav item is clicked
+    sidebar.querySelectorAll('.nav-item').forEach(function(it) {
+      it.addEventListener('click', function() {
+        sidebar.classList.remove('qe-mobile-open');
+        overlay.classList.remove('open');
+      });
+    });
+  }
+  setInterval(ensureMobileMenu, 2000);
+  if (document.readyState === 'complete') ensureMobileMenu();
+  else window.addEventListener('load', ensureMobileMenu);
+  window.addEventListener('resize', ensureMobileMenu);
+
+  // ─────────────────────────────────────────────────────────────────
+  //  4. Scroll-reveal — fades cards in as they enter viewport
+  // ─────────────────────────────────────────────────────────────────
+  var revealIO = null;
+  function initReveal() {
+    if (revealIO) return;
+    revealIO = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('qe-revealed');
+          revealIO.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -50px 0px' });
+    function applyReveal() {
+      document.querySelectorAll('.metric-card, .ent-card, .ql-card, .signal-card, .scanner-card, .pt-card, #qz-daily-challenge-card, #qz-today-strip > *').forEach(function(el) {
+        if (el.classList.contains('qe-reveal')) return;
+        el.classList.add('qe-reveal');
+        revealIO.observe(el);
+      });
+    }
+    applyReveal();
+    setInterval(applyReveal, 2500);
+  }
+  setTimeout(initReveal, 1200);
+
+  // ─────────────────────────────────────────────────────────────────
+  //  5. Parallax landing hero (background drift)
+  // ─────────────────────────────────────────────────────────────────
+  function initParallax() {
+    var landing = document.getElementById('landing');
+    if (!landing) return;
+    if (!document.getElementById('qe-parallax-bg')) {
+      var bg = document.createElement('div');
+      bg.id = 'qe-parallax-bg';
+      var gr = document.createElement('div');
+      gr.id = 'qe-parallax-grain';
+      // Insert as first child of landing
+      landing.insertBefore(gr, landing.firstChild);
+      landing.insertBefore(bg, landing.firstChild);
+    }
+    var bgEl = document.getElementById('qe-parallax-bg');
+    if (!bgEl) return;
+    var ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(function() {
+        var y = window.scrollY || document.documentElement.scrollTop;
+        if (bgEl) bgEl.style.transform = 'translate3d(0,' + (y * 0.35) + 'px,0)';
+        ticking = false;
+      });
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+  setTimeout(initParallax, 800);
+
+  // ─────────────────────────────────────────────────────────────────
+  //  6. Cinematic page-load reveal: stagger cards on dashboard
+  // ─────────────────────────────────────────────────────────────────
+  function staggerDashboard() {
+    var strip = document.getElementById('qz-today-strip');
+    if (strip && !strip.dataset.staggered) {
+      strip.dataset.staggered = '1';
+      Array.from(strip.children).forEach(function(c, i) {
+        c.style.opacity = '0';
+        c.style.transform = 'translateY(16px)';
+        c.style.transition = 'opacity 700ms var(--qe-ease), transform 700ms var(--qe-ease)';
+        setTimeout(function() {
+          c.style.opacity = '1';
+          c.style.transform = 'translateY(0)';
+        }, 100 + i * 80);
+      });
+    }
+  }
+  setInterval(staggerDashboard, 2500);
+})();
+</script>
+
+<script>
+/* ==================================================================== *
  *  FINAL CLEANUP + MARKET CLOCK + DAILY CHALLENGE + DASHBOARD POLISH   *
  *    1. Hide the legacy Quant Entelloq "orb" assistant (Saturn-ring    *
  *       floating thing). The new Copilot dock is the single AI mark.   *
