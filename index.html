@@ -31648,6 +31648,775 @@ setTimeout(() => {
 
 <script>
 /* ==================================================================== *
+ *  ENTELLOQ LAUNCH REEL — cinematic in-browser sequence                *
+ *                                                                      *
+ *  Activated by visiting /?reel=1 — replaces the page with a full-     *
+ *  screen 16:9 cinematic frame that auto-plays a ~75 second reel       *
+ *  covering: Hook → Problem → Reveal → Intelligence → Quant Lab →      *
+ *  Copilot → Future → Tagline. Screen-record to MP4 for distribution.  *
+ *                                                                      *
+ *  Procedural sound design via Web Audio API (no copyrighted music).   *
+ *  Voiceover lines render as cinematic typography (dub in post).       *
+ * ==================================================================== */
+(function() {
+  if (!/[?&]reel=/.test(location.search)) return;
+  if (window._qeReelBooted) return;
+  window._qeReelBooted = true;
+
+  // ───────────────────────────────────────────────────────────────
+  //  CSS — full-screen cinematic stage
+  // ───────────────────────────────────────────────────────────────
+  var rs = document.createElement('style');
+  rs.id = 'qe-reel-css';
+  rs.textContent = `
+    /* Hide everything else */
+    body > * { display: none !important; }
+    body { background: #000 !important; margin: 0; overflow: hidden; cursor: none; }
+
+    #qe-reel-root {
+      display: block !important;
+      position: fixed; inset: 0; z-index: 999999;
+      background: #000;
+      font-family: 'Fraunces', 'Tiempos Headline', serif;
+      color: #F4F4F0;
+      overflow: hidden;
+    }
+    #qe-reel-stage {
+      position: absolute; inset: 0;
+      display: grid; place-items: center;
+      perspective: 1400px;
+    }
+    /* Cinematic letterbox bars */
+    #qe-reel-root::before, #qe-reel-root::after {
+      content: ''; position: fixed; left: 0; right: 0;
+      height: 6vh; background: #000; z-index: 1000000;
+      pointer-events: none;
+    }
+    #qe-reel-root::before { top: 0; }
+    #qe-reel-root::after { bottom: 0; }
+
+    /* Caption (voiceover-as-typography) */
+    .qe-reel-caption {
+      position: absolute; bottom: 10vh; left: 50%; transform: translateX(-50%);
+      max-width: 80vw; text-align: center;
+      font-family: 'Fraunces', serif;
+      font-size: clamp(28px, 4.2vw, 56px);
+      font-weight: 500;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      color: #F4F4F0;
+      opacity: 0;
+      transition: opacity 320ms cubic-bezier(0.65,0,0.35,1);
+      z-index: 100;
+      text-shadow: 0 4px 24px rgba(0,0,0,0.8);
+    }
+    .qe-reel-caption.show { opacity: 1; }
+    .qe-reel-caption em {
+      font-style: italic;
+      background: linear-gradient(135deg, #A78BFA, #67E8F9);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Eyebrow above caption */
+    .qe-reel-eyebrow {
+      position: absolute; bottom: calc(10vh + 90px); left: 50%; transform: translateX(-50%);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: 0.32em;
+      color: rgba(244,244,240,0.5);
+      text-transform: uppercase;
+      opacity: 0;
+      transition: opacity 320ms ease;
+      z-index: 100;
+    }
+    .qe-reel-eyebrow.show { opacity: 1; }
+
+    /* Reel control overlay */
+    #qe-reel-restart {
+      position: fixed; bottom: 7vh; right: 24px;
+      z-index: 1000001;
+      padding: 9px 16px; background: rgba(167,139,250,0.12);
+      border: 1px solid rgba(167,139,250,0.4); border-radius: 6px;
+      color: #F4F4F0; font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: 0.14em;
+      text-transform: uppercase; cursor: pointer;
+      opacity: 0; transition: opacity 400ms;
+    }
+    #qe-reel-restart.show { opacity: 1; }
+
+    /* Helper utility classes used by scene renderers */
+    .qe-flash {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: #fff; opacity: 0; mix-blend-mode: screen; z-index: 99;
+    }
+    @keyframes qeFlashAnim { 0% { opacity: 0; } 12% { opacity: 0.9; } 100% { opacity: 0; } }
+
+    /* Floating market debris */
+    @keyframes qeDebrisFloat {
+      from { opacity: 0; transform: translateY(40px) scale(0.7); }
+      30%  { opacity: 1; }
+      to   { opacity: 0; transform: translateY(-60px) scale(1.1); }
+    }
+    .qe-debris-row {
+      position: absolute; display: flex; gap: 32px; align-items: center;
+      font-family: 'JetBrains Mono', monospace; font-size: 14px;
+      white-space: nowrap; font-variant-numeric: tabular-nums;
+      animation: qeDebrisDrift 18s linear infinite;
+    }
+    @keyframes qeDebrisDrift {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* The big BRAND mark scene */
+    .qe-reel-mark {
+      width: 220px; height: 220px;
+      border-radius: 36px;
+      background: linear-gradient(135deg, #A78BFA, #67E8F9);
+      display: grid; place-items: center;
+      font-family: 'Fraunces', serif; font-weight: 700;
+      font-size: 140px; color: #0A0A0B;
+      letter-spacing: -0.04em;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.18) inset,
+        0 40px 100px rgba(167,139,250,0.45),
+        0 0 200px rgba(103,232,249,0.35);
+      animation: qeMarkPulse 3s ease-in-out infinite;
+    }
+    @keyframes qeMarkPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 1px rgba(255,255,255,0.18) inset, 0 40px 100px rgba(167,139,250,0.45), 0 0 200px rgba(103,232,249,0.35); }
+      50%      { transform: scale(1.04); box-shadow: 0 0 0 1px rgba(255,255,255,0.22) inset, 0 50px 130px rgba(167,139,250,0.6), 0 0 260px rgba(103,232,249,0.5); }
+    }
+
+    /* Big wordmark for finale */
+    .qe-reel-wordmark {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: clamp(80px, 12vw, 180px);
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: #F4F4F0;
+      text-align: center;
+    }
+    .qe-reel-wordmark em {
+      font-style: italic;
+      background: linear-gradient(135deg, #A78BFA, #67E8F9);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .qe-reel-tagline {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(11px, 1.1vw, 14px);
+      letter-spacing: 0.36em;
+      color: rgba(244,244,240,0.65);
+      margin-top: 36px;
+      text-transform: uppercase;
+    }
+    .qe-reel-url {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      letter-spacing: 0.16em;
+      color: #67E8F9;
+      margin-top: 14px;
+    }
+
+    /* Card mockups for product reveal */
+    .qe-reel-card {
+      position: absolute;
+      background: rgba(15,15,17,0.96);
+      border: 1px solid rgba(244,244,240,0.08);
+      border-radius: 10px;
+      padding: 22px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(167,139,250,0.18);
+      opacity: 0;
+      transition: opacity 600ms cubic-bezier(0.65,0,0.35,1), transform 600ms cubic-bezier(0.65,0,0.35,1);
+    }
+    .qe-reel-card.in { opacity: 1; }
+
+    /* Glow particles canvas */
+    #qe-reel-particles {
+      position: absolute; inset: 0; pointer-events: none; z-index: 2;
+    }
+    /* Reveal scanlines */
+    #qe-reel-scanlines {
+      position: absolute; inset: 0; pointer-events: none; z-index: 50;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent, transparent 2px,
+        rgba(244,244,240,0.012) 2px, rgba(244,244,240,0.012) 4px
+      );
+      mix-blend-mode: overlay;
+    }
+    /* Grain */
+    #qe-reel-grain {
+      position: absolute; inset: 0; pointer-events: none; z-index: 51;
+      background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http%3A//www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.93 0 0 0 0 0.88 0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.5; mix-blend-mode: overlay;
+    }
+  `;
+  document.head.appendChild(rs);
+
+  // ───────────────────────────────────────────────────────────────
+  //  Build the reel DOM
+  // ───────────────────────────────────────────────────────────────
+  var root = document.createElement('div');
+  root.id = 'qe-reel-root';
+  root.innerHTML = `
+    <div id="qe-reel-stage"></div>
+    <canvas id="qe-reel-particles"></canvas>
+    <div id="qe-reel-scanlines"></div>
+    <div id="qe-reel-grain"></div>
+    <div class="qe-reel-eyebrow" id="qe-reel-eyebrow"></div>
+    <div class="qe-reel-caption" id="qe-reel-caption"></div>
+    <button id="qe-reel-restart">↻ Replay</button>
+  `;
+  document.body.appendChild(root);
+
+  var stage   = document.getElementById('qe-reel-stage');
+  var caption = document.getElementById('qe-reel-caption');
+  var eyebrow = document.getElementById('qe-reel-eyebrow');
+  var restart = document.getElementById('qe-reel-restart');
+
+  // ───────────────────────────────────────────────────────────────
+  //  Web Audio — procedural sound design
+  // ───────────────────────────────────────────────────────────────
+  var actx = null;
+  function getCtx() {
+    if (actx) return actx;
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    actx = new AC();
+    return actx;
+  }
+  function whoosh(dur, startFreq, endFreq, vol) {
+    var ctx = getCtx(); if (!ctx) return;
+    dur = dur || 0.4; vol = vol || 0.18;
+    var noise = ctx.createBufferSource();
+    var b = ctx.createBuffer(1, ctx.sampleRate * dur, ctx.sampleRate);
+    var d = b.getChannelData(0);
+    for (var i = 0; i < d.length; i++) d[i] = (Math.random()*2-1) * (1 - i/d.length);
+    noise.buffer = b;
+    var filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.Q.value = 6;
+    filter.frequency.setValueAtTime(startFreq || 800, ctx.currentTime);
+    filter.frequency.exponentialRampToValueAtTime(endFreq || 200, ctx.currentTime + dur);
+    var gain = ctx.createGain();
+    gain.gain.setValueAtTime(vol, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+    noise.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+    noise.start(); noise.stop(ctx.currentTime + dur);
+  }
+  function impact(vol) {
+    var ctx = getCtx(); if (!ctx) return;
+    vol = vol || 0.45;
+    var osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(110, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(28, ctx.currentTime + 0.5);
+    var gain = ctx.createGain();
+    gain.gain.setValueAtTime(vol, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.7);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(); osc.stop(ctx.currentTime + 0.7);
+    // Add click on top
+    var click = ctx.createOscillator();
+    click.type = 'square';
+    click.frequency.value = 1800;
+    var clickGain = ctx.createGain();
+    clickGain.gain.setValueAtTime(0.08, ctx.currentTime);
+    clickGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+    click.connect(clickGain); clickGain.connect(ctx.destination);
+    click.start(); click.stop(ctx.currentTime + 0.05);
+  }
+  function tick() {
+    var ctx = getCtx(); if (!ctx) return;
+    var osc = ctx.createOscillator(); osc.type = 'square';
+    osc.frequency.value = 4200;
+    var gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.04, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.03);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(); osc.stop(ctx.currentTime + 0.03);
+  }
+  var drone = null;
+  function startDrone(freq, vol) {
+    var ctx = getCtx(); if (!ctx) return;
+    stopDrone();
+    drone = ctx.createOscillator();
+    drone.type = 'sawtooth';
+    drone.frequency.value = freq || 55;
+    var lfo = ctx.createOscillator();
+    lfo.frequency.value = 0.3;
+    var lfoGain = ctx.createGain();
+    lfoGain.gain.value = 3;
+    lfo.connect(lfoGain); lfoGain.connect(drone.frequency);
+    var filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 400;
+    var gain = ctx.createGain();
+    gain.gain.value = 0;
+    gain.gain.linearRampToValueAtTime(vol || 0.06, ctx.currentTime + 0.5);
+    drone.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+    drone._gain = gain;
+    drone.start(); lfo.start();
+  }
+  function stopDrone() {
+    if (!drone) return;
+    var ctx = getCtx();
+    if (drone._gain) drone._gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.4);
+    drone.stop(ctx.currentTime + 0.5);
+    drone = null;
+  }
+  function chord() {
+    var ctx = getCtx(); if (!ctx) return;
+    [220, 277, 329].forEach(function(f, i) {
+      var o = ctx.createOscillator();
+      o.type = 'sine';
+      o.frequency.value = f;
+      var g = ctx.createGain();
+      g.gain.setValueAtTime(0, ctx.currentTime + i * 0.05);
+      g.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 0.3 + i * 0.05);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2.5);
+      o.connect(g); g.connect(ctx.destination);
+      o.start(ctx.currentTime + i * 0.05); o.stop(ctx.currentTime + 2.6);
+    });
+  }
+
+  // ───────────────────────────────────────────────────────────────
+  //  Glow particles (Canvas)
+  // ───────────────────────────────────────────────────────────────
+  var canvas = document.getElementById('qe-reel-particles');
+  var pctx = canvas.getContext('2d');
+  function sizeCanvas() {
+    canvas.width = window.innerWidth * (window.devicePixelRatio || 1);
+    canvas.height = window.innerHeight * (window.devicePixelRatio || 1);
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+  }
+  sizeCanvas();
+  window.addEventListener('resize', sizeCanvas);
+  var particles = [];
+  function spawnParticles(n, color) {
+    for (var i = 0; i < n; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: canvas.height + Math.random() * 200,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: -1 - Math.random() * 1.8,
+        size: Math.random() * 2 + 1,
+        life: 1,
+        decay: 0.003 + Math.random() * 0.005,
+        color: color || (Math.random() > 0.5 ? '167,139,250' : '103,232,249')
+      });
+    }
+  }
+  function tickParticles() {
+    pctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (var i = particles.length - 1; i >= 0; i--) {
+      var p = particles[i];
+      p.x += p.vx; p.y += p.vy;
+      p.life -= p.decay;
+      if (p.life <= 0) { particles.splice(i, 1); continue; }
+      pctx.beginPath();
+      pctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      pctx.fillStyle = 'rgba(' + p.color + ',' + p.life + ')';
+      pctx.fill();
+    }
+    requestAnimationFrame(tickParticles);
+  }
+  tickParticles();
+
+  // ───────────────────────────────────────────────────────────────
+  //  Helpers — set caption / eyebrow / clear stage
+  // ───────────────────────────────────────────────────────────────
+  function setCaption(html, eyebrowText) {
+    caption.innerHTML = html || '';
+    caption.classList.toggle('show', !!html);
+    if (eyebrowText) {
+      eyebrow.textContent = eyebrowText;
+      eyebrow.classList.add('show');
+    } else {
+      eyebrow.classList.remove('show');
+    }
+  }
+  function clearCaption() {
+    caption.classList.remove('show');
+    eyebrow.classList.remove('show');
+  }
+  function clearStage() { stage.innerHTML = ''; }
+  function flash() {
+    var f = document.createElement('div');
+    f.className = 'qe-flash';
+    f.style.animation = 'qeFlashAnim 240ms ease-out forwards';
+    stage.appendChild(f);
+    setTimeout(function() { f.remove(); }, 250);
+  }
+
+  // ───────────────────────────────────────────────────────────────
+  //  SCENES — each is a function that paints the stage for its duration
+  // ───────────────────────────────────────────────────────────────
+  var TIMELINE = [];
+
+  function at(ms, fn) { TIMELINE.push({ t: ms, fn: fn }); }
+
+  // ── ACT 0 — HOOK: rapid flashes of market chaos ──
+  at(0, function() {
+    startDrone(48, 0.07);
+    clearStage();
+    var debris = ['AAPL +2.34%', 'NVDA -4.12%', 'TSLA +1.87%', 'BTC +3.21%', '↑ S&P 500', '⚠ FOMC ALERT', 'MOMENTUM ↑', 'VaR 95% -$1840', 'YIELD CURVE INV', 'BULL', 'BEAR', 'ALPHA 18.3%', 'SHARPE 2.84'];
+    for (var i = 0; i < 6; i++) {
+      var row = document.createElement('div');
+      row.className = 'qe-debris-row';
+      row.style.top = (10 + i * 14) + 'vh';
+      row.style.left = '0';
+      row.style.color = i % 2 === 0 ? '#A78BFA' : '#67E8F9';
+      row.style.opacity = '0.35';
+      row.style.animationDelay = (i * 0.4) + 's';
+      var content = '';
+      for (var j = 0; j < 12; j++) content += '<span>' + debris[(i + j) % debris.length] + '</span>';
+      row.innerHTML = content + content;
+      stage.appendChild(row);
+    }
+  });
+  // Rapid flashes 0-2400ms
+  for (var k = 0; k < 8; k++) {
+    (function(delay) {
+      at(150 + delay * 250, function() { flash(); tick(); });
+    })(k);
+  }
+
+  // Caption 1
+  at(800, function() {
+    setCaption('Every second, millions of signals move the market.', '— 01 —');
+  });
+  at(3800, function() {
+    setCaption('Most investors never see them.', '— 02 —');
+  });
+  // Black-out
+  at(6200, function() {
+    clearStage(); clearCaption();
+    stopDrone();
+    impact(0.65);
+  });
+
+  // ── ACT 1 — BRAND REVEAL ──
+  at(7200, function() {
+    chord();
+    var mark = document.createElement('div');
+    mark.className = 'qe-reel-mark';
+    mark.style.transform = 'scale(0.4)';
+    mark.style.opacity = '0';
+    mark.style.transition = 'transform 900ms cubic-bezier(0.22,1,0.36,1), opacity 700ms ease';
+    mark.textContent = 'Q';
+    stage.appendChild(mark);
+    spawnParticles(60);
+    setTimeout(function() {
+      mark.style.transform = 'scale(1)';
+      mark.style.opacity = '1';
+    }, 50);
+  });
+  at(8200, function() {
+    eyebrow.textContent = '— ENTELLOQ NETWORKS —';
+    eyebrow.classList.add('show');
+  });
+
+  // ── ACT 2 — PROBLEM STATEMENT ──
+  at(10500, function() {
+    clearStage(); clearCaption();
+    startDrone(60, 0.05);
+    setCaption('The market doesn\'t reward information.', '— 03 — THE PROBLEM');
+  });
+  at(13500, function() {
+    setCaption('It rewards <em>understanding</em>.', '— 03 — THE PROBLEM');
+    whoosh(0.6, 1200, 200, 0.22);
+  });
+
+  // ── ACT 3 — INTRODUCE ENTELLOQ ──
+  at(16500, function() {
+    clearStage(); clearCaption();
+    stopDrone();
+    impact(0.55);
+    // Show a dashboard-ish composition
+    var card = document.createElement('div');
+    card.className = 'qe-reel-card';
+    card.style.cssText += 'width:680px;max-width:80vw;top:50%;left:50%;transform:translate(-50%,-50%) translateY(20px) scale(0.95);';
+    card.innerHTML = `
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.22em;color:#A78BFA;text-transform:uppercase;margin-bottom:14px;">— UNITED STATES MARKET</div>
+      <div style="font-family:'Fraunces',serif;font-size:36px;font-weight:500;letter-spacing:-0.02em;line-height:1.15;color:#fff;">AAPL leads US BUYs at <strong style="color:#67E8F9;">94% confidence</strong></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px;">
+        <div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;color:rgba(244,244,240,0.5);text-transform:uppercase;">Securities</div><div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:600;color:#fff;margin-top:4px;">149</div></div>
+        <div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;color:rgba(244,244,240,0.5);text-transform:uppercase;">Exchanges</div><div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:600;color:#fff;margin-top:4px;">7</div></div>
+        <div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;color:rgba(244,244,240,0.5);text-transform:uppercase;">Sentiment</div><div style="font-family:'Fraunces',serif;font-size:22px;font-weight:500;color:#34D399;margin-top:4px;">Bullish</div></div>
+        <div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;color:rgba(244,244,240,0.5);text-transform:uppercase;">Latency</div><div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:600;color:#A78BFA;margin-top:4px;">103ms</div></div>
+      </div>
+    `;
+    stage.appendChild(card);
+    setTimeout(function() { card.classList.add('in'); card.style.transform = 'translate(-50%,-50%) translateY(0) scale(1)'; }, 30);
+    setCaption('Meet <em>Entelloq</em>.', '— 04 — INTRODUCING');
+  });
+  at(19500, function() {
+    setCaption('Your AI-powered <em>market operating system</em>.', '— 04 — INTRODUCING');
+  });
+
+  // ── ACT 4 — INTELLIGENCE ENGINE ──
+  at(23000, function() {
+    clearStage(); clearCaption();
+    impact(0.4);
+    startDrone(72, 0.05);
+    spawnParticles(40);
+    var grid = document.createElement('div');
+    grid.style.cssText = 'display:grid;grid-template-columns:repeat(3,260px);gap:18px;';
+    var cards = [
+      { tag: 'BULLISH', color: '#34D399', title: 'AI Infrastructure Momentum', body: 'NVDA, AMD, AVGO showing breakout consolidation. Capex cycle accelerating.' },
+      { tag: 'BEARISH', color: '#FB7185', title: 'Regional Banks · Credit Stress', body: 'Loan-loss provisions trending up. Watch KRE, RF, ZION.' },
+      { tag: 'MACRO',   color: '#67E8F9', title: 'Yield Curve · Steepening', body: 'Long-end selloff. Risk-on for cyclicals, drag on long-duration tech.' },
+    ];
+    cards.forEach(function(c, i) {
+      var card = document.createElement('div');
+      card.className = 'qe-reel-card';
+      card.style.cssText += 'position:relative;width:260px;opacity:0;transform:translateY(30px);transition-delay:' + (i * 150) + 'ms;';
+      card.innerHTML = `
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.18em;color:${c.color};text-transform:uppercase;margin-bottom:10px;">● ${c.tag}</div>
+        <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:500;color:#fff;letter-spacing:-0.015em;margin-bottom:8px;">${c.title}</div>
+        <div style="font-size:13px;color:rgba(244,244,240,0.7);line-height:1.5;">${c.body}</div>
+      `;
+      grid.appendChild(card);
+      setTimeout(function() { card.classList.add('in'); card.style.transform = 'translateY(0)'; tick(); }, 100 + i * 200);
+    });
+    stage.appendChild(grid);
+    setCaption('Thousands of signals. Processed. Ranked. <em>Personalized</em>.', '— 05 — INTELLIGENCE');
+  });
+
+  // ── ACT 5 — QUANT LAB ──
+  at(29500, function() {
+    clearStage(); clearCaption();
+    stopDrone();
+    startDrone(82, 0.06);
+    impact(0.4);
+    var card = document.createElement('div');
+    card.className = 'qe-reel-card';
+    card.style.cssText += 'width:760px;max-width:85vw;top:50%;left:50%;transform:translate(-50%,-50%);padding:30px;';
+    card.innerHTML = `
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.22em;color:#A78BFA;text-transform:uppercase;margin-bottom:10px;">— 06 — FAMA-FRENCH 3-FACTOR REGRESSION</div>
+      <div style="font-family:'Fraunces',serif;font-size:24px;font-weight:500;color:#fff;letter-spacing:-0.02em;margin-bottom:18px;">AAPL — Factor Loadings</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
+        <div style="background:rgba(244,244,240,0.03);border:1px solid rgba(244,244,240,0.06);border-radius:8px;padding:14px;"><div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:rgba(244,244,240,0.5);">ALPHA (α, ANNUAL)</div><div style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;color:#34D399;margin-top:4px;">19.04%<span style="font-size:14px;">***</span></div><div style="font-size:11px;color:rgba(244,244,240,0.5);margin-top:3px;">t = 2.66 · SE 7.15%</div></div>
+        <div style="background:rgba(244,244,240,0.03);border:1px solid rgba(244,244,240,0.06);border-radius:8px;padding:14px;"><div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:rgba(244,244,240,0.5);">MARKET β</div><div style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;color:#A78BFA;margin-top:4px;">1.090<span style="font-size:14px;">***</span></div><div style="font-size:11px;color:rgba(244,244,240,0.5);margin-top:3px;">t = 44.96 · n = 756</div></div>
+        <div style="background:rgba(244,244,240,0.03);border:1px solid rgba(244,244,240,0.06);border-radius:8px;padding:14px;"><div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:rgba(244,244,240,0.5);">R-SQUARED</div><div style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;color:#67E8F9;margin-top:4px;">75.2%</div><div style="font-size:11px;color:rgba(244,244,240,0.5);margin-top:3px;">variance explained</div></div>
+        <div style="background:rgba(244,244,240,0.03);border:1px solid rgba(244,244,240,0.06);border-radius:8px;padding:14px;"><div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:rgba(244,244,240,0.5);">SHARPE</div><div style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;color:#fff;margin-top:4px;">2.84</div><div style="font-size:11px;color:rgba(244,244,240,0.5);margin-top:3px;">risk-adjusted</div></div>
+      </div>
+    `;
+    stage.appendChild(card);
+    setTimeout(function() { card.classList.add('in'); }, 30);
+    setCaption('Built for thinkers. Researchers. <em>Quants</em>.', '— 06 — QUANT LAB');
+  });
+
+  // ── ACT 6 — AI COPILOT ──
+  at(35500, function() {
+    clearStage(); clearCaption();
+    var card = document.createElement('div');
+    card.className = 'qe-reel-card';
+    card.style.cssText += 'width:540px;max-width:80vw;top:50%;left:50%;transform:translate(-50%,-50%);padding:28px;';
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:18px;">
+        <div style="width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,#A78BFA,#67E8F9);display:grid;place-items:center;font-family:'Fraunces',serif;font-weight:800;font-size:15px;color:#0A0A0B;">Q</div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;color:#A78BFA;font-weight:600;">QUANT ENTELLOQ COPILOT</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#34D399;margin-top:2px;">● ONLINE</div>
+        </div>
+      </div>
+      <div style="background:rgba(103,232,249,0.05);border:1px solid rgba(103,232,249,0.15);border-radius:8px;padding:12px 14px;margin-bottom:10px;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:#67E8F9;margin-bottom:6px;">YOU</div>
+        <div style="font-size:13.5px;line-height:1.55;color:#fff;" id="qe-reel-q1"></div>
+      </div>
+      <div style="background:rgba(244,244,240,0.025);border:1px solid rgba(244,244,240,0.05);border-radius:8px;padding:12px 14px;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:#A78BFA;margin-bottom:6px;">COPILOT</div>
+        <div style="font-size:13.5px;line-height:1.55;color:rgba(244,244,240,0.9);" id="qe-reel-a1">Tech concentration is your biggest single-factor risk — <strong style="color:#fff;">68% of portfolio</strong> sits in 5 names. Sharpe is healthy at 1.84 but a 10% drawdown in NVDA alone takes 6.8% off equity. Hedge or trim.</div>
+      </div>
+    `;
+    stage.appendChild(card);
+    setTimeout(function() { card.classList.add('in'); }, 30);
+    // Type out the user question
+    var qText = 'What\'s the biggest risk in my portfolio?';
+    var qEl = document.getElementById('qe-reel-q1');
+    var idx = 0;
+    var typeInt = setInterval(function() {
+      if (idx > qText.length) { clearInterval(typeInt); return; }
+      qEl.textContent = qText.slice(0, idx) + (idx < qText.length ? '▊' : '');
+      idx++;
+      if (idx % 3 === 0) tick();
+    }, 45);
+    setCaption('An analyst. A researcher. <em>Always available</em>.', '— 07 — COPILOT');
+  });
+
+  // ── ACT 7 — RAPID MONTAGE ──
+  at(43500, function() {
+    clearStage();
+    stopDrone();
+    setCaption('The next generation won\'t use dozens of tools.', '— 08 — THE FUTURE');
+    impact(0.5);
+  });
+
+  // Rapid 12-cut montage from 44s to 50s
+  var MONTAGE = [
+    { tag: 'PORTFOLIO',    val: '$284,903', sub: '+2.30%', color: '#34D399' },
+    { tag: 'BACKTEST',     val: 'Sharpe 2.84', sub: 'SMA 10/30', color: '#A78BFA' },
+    { tag: 'OPPORTUNITY',  val: 'NVDA · 94%', sub: 'high conviction', color: '#67E8F9' },
+    { tag: 'INTELLIGENCE', val: '1,247', sub: 'items processed', color: '#FBBF24' },
+    { tag: 'VOLATILITY',   val: '18.2%', sub: 'annualized σ', color: '#FB7185' },
+    { tag: 'AI AGENTS',    val: '4 / 4', sub: 'specialists online', color: '#A78BFA' },
+    { tag: 'PAPER',        val: '$100k', sub: 'simulated cash', color: '#34D399' },
+    { tag: 'WATCHLIST',    val: '12', sub: 'symbols tracked', color: '#67E8F9' },
+    { tag: 'STREAK',       val: '7d', sub: 'on fire', color: '#FBBF24' },
+    { tag: 'LATENCY',      val: '103ms', sub: 'AI response', color: '#A78BFA' },
+    { tag: 'COVERAGE',     val: '100M+', sub: 'global assets', color: '#67E8F9' },
+    { tag: 'MODELS',       val: '10', sub: 'quant tools', color: '#34D399' },
+  ];
+  MONTAGE.forEach(function(m, i) {
+    at(44200 + i * 450, function() {
+      clearStage();
+      tick();
+      var card = document.createElement('div');
+      card.style.cssText = 'text-align:center;';
+      card.innerHTML = `
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.32em;color:rgba(244,244,240,0.5);text-transform:uppercase;margin-bottom:14px;">— ${m.tag} —</div>
+        <div style="font-family:'Fraunces',serif;font-size:96px;font-weight:500;letter-spacing:-0.04em;line-height:1;color:${m.color};">${m.val}</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:14px;letter-spacing:0.08em;color:rgba(244,244,240,0.55);margin-top:14px;">${m.sub}</div>
+      `;
+      stage.appendChild(card);
+    });
+  });
+
+  at(50000, function() {
+    clearStage();
+    setCaption('They\'ll use <em>one</em>.', '— 09 — THE FUTURE');
+    impact(0.55);
+    spawnParticles(80);
+  });
+
+  // ── ACT 8 — FINALE ──
+  at(53500, function() {
+    clearStage(); clearCaption();
+    chord();
+    var mark = document.createElement('div');
+    mark.className = 'qe-reel-mark';
+    mark.textContent = 'Q';
+    mark.style.opacity = '0';
+    mark.style.transform = 'scale(0.7)';
+    mark.style.transition = 'opacity 700ms ease, transform 900ms cubic-bezier(0.22,1,0.36,1)';
+    stage.appendChild(mark);
+    spawnParticles(120);
+    setTimeout(function() { mark.style.opacity = '1'; mark.style.transform = 'scale(1)'; }, 50);
+  });
+
+  at(55500, function() {
+    clearStage();
+    impact(0.6);
+    spawnParticles(150);
+    var wm = document.createElement('div');
+    wm.style.textAlign = 'center';
+    wm.innerHTML = `
+      <div class="qe-reel-wordmark">Quant<em>Entelloq</em></div>
+      <div class="qe-reel-tagline">— ENTELLOQ NETWORKS —</div>
+    `;
+    wm.style.opacity = '0';
+    wm.style.transition = 'opacity 800ms ease';
+    stage.appendChild(wm);
+    setTimeout(function() { wm.style.opacity = '1'; }, 50);
+  });
+
+  at(58500, function() {
+    clearStage();
+    var t = document.createElement('div');
+    t.style.cssText = 'text-align:center;';
+    t.innerHTML = `
+      <div style="font-family:'Fraunces',serif;font-size:clamp(48px,7vw,96px);font-weight:500;letter-spacing:-0.035em;line-height:1.05;color:#F4F4F0;">Understand the market.</div>
+      <div style="font-family:'Fraunces',serif;font-size:clamp(48px,7vw,96px);font-weight:500;letter-spacing:-0.035em;line-height:1.05;color:#F4F4F0;margin-top:12px;font-style:italic;background:linear-gradient(135deg,#A78BFA,#67E8F9);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">Don't chase it.</div>
+    `;
+    t.style.opacity = '0';
+    t.style.transition = 'opacity 900ms ease';
+    stage.appendChild(t);
+    setTimeout(function() { t.style.opacity = '1'; }, 50);
+    impact(0.7);
+  });
+
+  at(63500, function() {
+    clearStage();
+    chord();
+    var c = document.createElement('div');
+    c.style.cssText = 'text-align:center;';
+    c.innerHTML = `
+      <div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.36em;color:rgba(244,244,240,0.55);text-transform:uppercase;margin-bottom:24px;">JOIN THE FUTURE OF INVESTING</div>
+      <div style="font-family:'Fraunces',serif;font-size:clamp(36px,5vw,72px);font-weight:600;letter-spacing:-0.02em;color:#F4F4F0;">quant.entelloq.com</div>
+    `;
+    c.style.opacity = '0';
+    c.style.transition = 'opacity 700ms ease';
+    stage.appendChild(c);
+    setTimeout(function() { c.style.opacity = '1'; }, 50);
+    spawnParticles(60);
+  });
+
+  at(70000, function() {
+    restart.classList.add('show');
+    stopDrone();
+  });
+
+  // ───────────────────────────────────────────────────────────────
+  //  Run the timeline
+  // ───────────────────────────────────────────────────────────────
+  function runReel() {
+    restart.classList.remove('show');
+    clearStage();
+    clearCaption();
+    particles.length = 0;
+    // Resume audio context (browsers require user gesture)
+    var ctx = getCtx();
+    if (ctx && ctx.state === 'suspended') ctx.resume();
+    var start = performance.now();
+    TIMELINE.forEach(function(scene) {
+      setTimeout(scene.fn, scene.t);
+    });
+  }
+
+  restart.onclick = runReel;
+
+  // Auto-start after user gesture (or 600ms)
+  function startOnce() {
+    document.removeEventListener('click', startOnce);
+    document.removeEventListener('keydown', startOnce);
+    runReel();
+  }
+  // Show a "Click to begin" overlay because browsers require gesture for audio
+  var beginOv = document.createElement('div');
+  beginOv.style.cssText = 'position:fixed;inset:0;z-index:1000002;background:#000;display:grid;place-items:center;cursor:pointer;';
+  beginOv.innerHTML = `
+    <div style="text-align:center;">
+      <div style="font-family:'Fraunces',serif;font-size:clamp(28px,4vw,52px);font-weight:500;color:#F4F4F0;letter-spacing:-0.02em;margin-bottom:18px;">Entelloq · Launch Reel</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.28em;color:rgba(244,244,240,0.5);text-transform:uppercase;">Click anywhere to begin</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(244,244,240,0.32);margin-top:36px;">Recommended: full-screen + screen-record at 1080p / 30fps</div>
+    </div>
+  `;
+  beginOv.onclick = function() {
+    beginOv.style.transition = 'opacity 400ms ease';
+    beginOv.style.opacity = '0';
+    setTimeout(function() { beginOv.remove(); runReel(); }, 420);
+  };
+  document.body.appendChild(beginOv);
+
+  // Press R to restart, Escape to exit
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'r' || e.key === 'R') runReel();
+    if (e.key === 'Escape') {
+      window.location.search = '';
+    }
+  });
+})();
+</script>
+
+<script>
+/* ==================================================================== *
  *  MOBILE SIDEBAR DRAWER v2 — visible toggle, smooth open/close        *
  *  Replaces the small/easy-to-miss hamburger with a prominent          *
  *  always-visible toggle pill + bigger drawer + close button inside    *
