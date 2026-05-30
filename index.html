@@ -31646,5 +31646,143 @@ setTimeout(() => {
 })();
 </script>
 
+<script>
+/* ==================================================================== *
+ *  KILL THE YELLOW — final accent override                             *
+ *  Swap warm amber for cool violet/cyan to match the actual            *
+ *  Entelloq Networks brand (silver cyborg + blue circuit accents).     *
+ *  Last stylesheet on the page so it wins specificity ties.            *
+ * ==================================================================== */
+(function() {
+  if (document.getElementById('qe-no-yellow-css')) return;
+  var s = document.createElement('style');
+  s.id = 'qe-no-yellow-css';
+  s.textContent = `
+    :root {
+      --qe-amber: #67E8F9;
+      --qe-amber-soft: rgba(103,232,249,0.10);
+      --qe-amber-glow: rgba(103,232,249,0.32);
+      --qe-cyan: #67E8F9;
+      --qe-cyan-soft: rgba(103,232,249,0.10);
+      --accent: #A78BFA;
+      --accent-2: #67E8F9;
+    }
+
+    .sidebar .nav-item.active {
+      background: rgba(167,139,250,0.06) !important;
+      border-left-color: #A78BFA !important;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: #A78BFA !important;
+      box-shadow: 0 0 0 3px rgba(167,139,250,0.10) !important;
+    }
+
+    .btn-primary,
+    button.btn-primary,
+    [class*="btn-primary"] {
+      background: linear-gradient(135deg, #A78BFA, #22D3EE) !important;
+      color: #0A0A0B !important;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.22) inset,
+        0 -1px 0 rgba(0,0,0,0.18) inset,
+        0 8px 20px -8px rgba(167,139,250,0.45),
+        0 1px 2px rgba(0,0,0,0.4) !important;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #B89BFB, #38DCEC) !important;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.3) inset,
+        0 -1px 0 rgba(0,0,0,0.18) inset,
+        0 12px 28px -8px rgba(167,139,250,0.6),
+        0 2px 4px rgba(0,0,0,0.4) !important;
+    }
+
+    .logo-text span { color: #A78BFA !important; }
+
+    .qz-disclaimer-banner {
+      background: rgba(103,232,249,0.04) !important;
+      border-color: rgba(103,232,249,0.22) !important;
+      border-left-color: #67E8F9 !important;
+    }
+    .qz-disclaimer-banner strong { color: #67E8F9 !important; }
+
+    #qz-copilot-dock {
+      border-color: rgba(167,139,250,0.42) !important;
+      box-shadow:
+        0 8px 28px rgba(0,0,0,0.5),
+        0 0 24px rgba(167,139,250,0.22),
+        0 0 0 1px rgba(255,255,255,0.05) inset !important;
+    }
+
+    .sidebar .sidebar-logo .logo-icon {
+      box-shadow:
+        0 4px 18px rgba(167,139,250,0.18),
+        0 0 0 1px rgba(244,244,240,0.06) inset !important;
+    }
+
+    .qz-mentor-avatar {
+      box-shadow: 0 4px 14px rgba(167,139,250,0.25) !important;
+    }
+
+    .qz-rpg-widget {
+      background: linear-gradient(135deg, rgba(167,139,250,0.05), rgba(103,232,249,0.03)) !important;
+      border-color: rgba(167,139,250,0.22) !important;
+    }
+    .qz-rpg-widget:hover { border-color: rgba(167,139,250,0.4) !important; }
+    .qz-rpg-w-lvl { color: #A78BFA !important; }
+    .qz-rpg-w-fill {
+      background: linear-gradient(90deg, #A78BFA, #67E8F9) !important;
+      box-shadow: 0 0 12px rgba(167,139,250,0.5) !important;
+    }
+
+    .qz-xp-toast {
+      border-color: rgba(167,139,250,0.35) !important;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.55), 0 0 24px rgba(167,139,250,0.18) !important;
+    }
+    .qz-xp-toast::before {
+      background: linear-gradient(180deg, #A78BFA, #67E8F9) !important;
+    }
+    .qz-xp-toast-amt { color: #67E8F9 !important; }
+
+    .qz-lu-card {
+      box-shadow:
+        0 40px 100px rgba(0,0,0,0.65),
+        0 0 80px rgba(167,139,250,0.32),
+        0 0 0 1px rgba(167,139,250,0.4) inset !important;
+    }
+    .qz-lu-lvl {
+      background: linear-gradient(135deg, #A78BFA 0%, #67E8F9 100%) !important;
+      -webkit-background-clip: text !important;
+      background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+    }
+    .qz-lu-eyebrow { color: #67E8F9 !important; }
+    .qz-lu-btn {
+      background: linear-gradient(135deg, #A78BFA, #67E8F9) !important;
+      box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset, 0 8px 22px -8px rgba(167,139,250,0.5) !important;
+    }
+
+    #qe-scroll-progress {
+      background: linear-gradient(90deg, #A78BFA, #67E8F9) !important;
+    }
+
+    body.qe-cursor-hover #qe-cursor-ring {
+      border-color: #A78BFA !important;
+    }
+
+    body::after {
+      background:
+        radial-gradient(ellipse 900px 380px at 22% 50%, rgba(167,139,250,0.05), transparent 60%),
+        radial-gradient(ellipse 700px 360px at 78% 50%, rgba(103,232,249,0.045), transparent 60%) !important;
+    }
+
+    #qz-global-footer-disclaimer a { color: rgba(167,139,250,0.7) !important; }
+    #qz-global-footer-disclaimer a:hover { color: #A78BFA !important; }
+  `;
+  document.head.appendChild(s);
+})();
+</script>
+
 </body>
 </html>
