@@ -7289,7 +7289,7 @@ function _lp3Enter(user) {
               <div class="ent-pf-ai-stat-val" style="color:#F87171;">High</div>
             </div>
           </div>
-          <div class="ent-pf-analysis-text">Your portfolio is heavily concentrated in technology (68%). Consider diversifying into Healthcare, Financials, or Commodities to reduce sector risk. Current Sharpe Ratio: <strong style="color:#C4B5FD;">1.84</strong> — above average. Recommended action: Add 10–15% allocation to defensive sectors.</div>
+          <div class="ent-pf-analysis-text">Your portfolio is heavily concentrated in technology (68%). A more diversified allocation across Healthcare, Financials, or Commodities would reduce sector concentration risk. Current Sharpe Ratio: <strong style="color:#C4B5FD;">1.84</strong> — above average. <em style="opacity:0.85;">Quantitative observation only — not investment advice.</em></div>
         </div>
 
         <!-- Add Position Modal -->
@@ -26097,6 +26097,78 @@ setTimeout(() => {
     }
     return _origFetch.apply(this, arguments);
   };
+})();
+
+/* ==================================================================== *
+ *  COMPLIANCE — visible per-section disclaimers (Phase 19)             *
+ *  Added BEFORE polish CSS so polish never overrides.                  *
+ *  Static banner per major feature + persistent footer on every page.  *
+ * ==================================================================== */
+(function() {
+  if (document.getElementById('qz-compliance-css')) return;
+  var css = document.createElement('style');
+  css.id = 'qz-compliance-css';
+  css.textContent = [
+    '.qz-disclaimer-banner{display:flex;align-items:center;gap:10px;padding:10px 14px;margin:0 0 14px 0;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.22);border-left:3px solid #F59E0B;border-radius:8px;font-size:11.5px;color:rgba(255,255,255,0.78);line-height:1.5;letter-spacing:0.005em}',
+    '.qz-disclaimer-banner .qz-d-icon{flex-shrink:0;font-size:13px;opacity:0.85}',
+    '.qz-disclaimer-banner strong{color:#FCD34D;font-weight:600}',
+    '#qz-global-footer-disclaimer{position:fixed;bottom:0;left:0;right:0;z-index:50;padding:6px 18px;background:rgba(10,11,14,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,0.05);color:rgba(255,255,255,0.45);font-size:10.5px;letter-spacing:0.01em;text-align:center;font-family:var(--font-mono);pointer-events:none}',
+    '#qz-global-footer-disclaimer a{color:rgba(167,139,250,0.7);text-decoration:none;pointer-events:auto}',
+    '#qz-global-footer-disclaimer a:hover{color:#A78BFA}',
+    '/* Make space at the bottom of every page so footer doesnt cover content */',
+    '.page-content,#app .main-content{padding-bottom:48px !important}',
+    '@media (max-width: 768px){#qz-global-footer-disclaimer{font-size:9.5px;padding:5px 8px}}',
+  ].join('\n');
+  document.head.appendChild(css);
+
+  // Insert visible footer ONLY after auth (i.e. when app is showing) — not on landing
+  function ensureFooter() {
+    var app = document.getElementById('app');
+    if (!app || window.getComputedStyle(app).display === 'none') return;
+    if (document.getElementById('qz-global-footer-disclaimer')) return;
+    var bar = document.createElement('div');
+    bar.id = 'qz-global-footer-disclaimer';
+    bar.innerHTML = 'Quant Entelloq is a research &amp; educational tool — <strong>not investment advice</strong>. Signals are observations, not recommendations. Trading involves substantial risk of loss. <a href="#" onclick="event.preventDefault();qeShowToS&amp;&amp;qeShowToS()">Terms</a> · <a href="#" onclick="event.preventDefault();qeShowPrivacy&amp;&amp;qeShowPrivacy()">Privacy</a>';
+    document.body.appendChild(bar);
+  }
+  // Poll occasionally because the app shows up after auth (no reliable single event)
+  setInterval(ensureFooter, 1200);
+  if (document.readyState === 'complete') ensureFooter();
+  else window.addEventListener('load', ensureFooter);
+
+  // Inject per-section banners after pages render. Idempotent.
+  var BANNERS = {
+    'page-intel':    { icon: 'i', text: '<strong>Informational only.</strong> Intel feed items are AI-summarized observations — not buy/sell recommendations. Verify independently before acting.' },
+    'page-news':     { icon: 'i', text: '<strong>Informational only.</strong> News summaries are AI-rewritten for clarity and may contain inaccuracies. Always consult original sources.' },
+    'page-quantlab': { icon: '!',  text: '<strong>Backtests are simulations.</strong> Past performance, real or simulated, does not guarantee future results. Strategies shown here are research candidates, not advice.' },
+    'page-paper':    { icon: 'P',  text: '<strong>Simulated trading.</strong> Paper-traded results differ materially from live trading — no slippage, fees, or fill uncertainty are modeled. Educational use only.' },
+    'page-signals':  { icon: 'S',  text: '<strong>Signals are observations.</strong> Quantitative pattern detection — not investment advice or trade recommendations. Do your own research.' },
+    'page-ai':       { icon: 'AI', text: '<strong>AI-generated content.</strong> AI analysis may contain inaccuracies, omissions, or out-of-date information. Verify critical claims independently.' },
+    'page-portfolio':{ icon: 'i', text: '<strong>For tracking and analysis only.</strong> Portfolio metrics are educational tools — never inputs to brokerage trades.' },
+    'page-backtest': { icon: '!',  text: '<strong>Backtests do not guarantee future performance.</strong> Historical results carry no implication of forward returns.' },
+  };
+  function injectBanners() {
+    Object.keys(BANNERS).forEach(function(id) {
+      var page = document.getElementById(id);
+      if (!page) return;
+      if (page.querySelector('.qz-disclaimer-banner')) return; // already injected
+      var b = BANNERS[id];
+      var node = document.createElement('div');
+      node.className = 'qz-disclaimer-banner';
+      node.innerHTML = '<span class="qz-d-icon">[' + b.icon + ']</span><span>' + b.text + '</span>';
+      // Insert near the top — after the first hero/header if any, otherwise at top
+      var hero = page.querySelector('.qz-page-hero, .ent-card-hero, h1, h2');
+      if (hero && hero.parentNode === page) {
+        hero.insertAdjacentElement('afterend', node);
+      } else {
+        page.insertBefore(node, page.firstChild);
+      }
+    });
+  }
+  // Run after each navigation
+  setInterval(injectBanners, 1500);
+  if (document.readyState === 'complete') injectBanners();
+  else window.addEventListener('load', injectBanners);
 })();
 
 /* ==================================================================== *
