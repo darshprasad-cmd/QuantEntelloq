@@ -27381,12 +27381,14 @@ setTimeout(() => {
       }
       .qe-landing-headline {
         font-family: var(--qe-display), serif;
-        font-size: clamp(48px, 9.5vw, 132px);
+        font-size: clamp(40px, 7vw, 96px);
         font-weight: 500;
-        line-height: 0.96;
-        letter-spacing: -0.045em;
+        line-height: 1.0;
+        letter-spacing: -0.04em;
         color: var(--qe-text);
         margin: 0 0 clamp(24px, 4vh, 40px);
+        max-width: 100%;
+        overflow-wrap: break-word;
       }
       .qe-landing-headline em {
         font-style: italic;
