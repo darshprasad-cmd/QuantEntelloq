@@ -1,6 +1,15 @@
-# Node scripts used during development
+# Node scripts used during frontend development
 *.js
+!backend/**/*.js
+!backend/**/*.cjs
+
+# Dependencies + build artifacts
 node_modules/
+backend/node_modules/
+backend/dist/
+backend/coverage/
+backend/.env
+backend/.env.local
 
 # OS files
 .DS_Store
@@ -9,3 +18,4 @@ Thumbs.db
 # Editor
 .vscode/
 *.swp
+.idea/
