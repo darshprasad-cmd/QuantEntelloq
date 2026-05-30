@@ -27113,6 +27113,941 @@ setTimeout(() => {
 <!-- QuantLab + IntelEngine script removed — had multiple unfixable apostrophe parse errors in the reference. Re-add from clean source later. -->
 <script>
 /* ==================================================================== *
+ *  ENTELLOQ ACADEMY — RPG ONBOARDING + XP + ACHIEVEMENTS                *
+ *  Plus Portfolio Add v2 (Search / Natural Language / Bulk / Watchlist) *
+ *                                                                       *
+ *  Bloomberg Terminal × Duolingo × RPG progression.                     *
+ *  All state persisted to localStorage. No backend required.            *
+ * ==================================================================== */
+(function() {
+  'use strict';
+
+  // ─────────────────────────────────────────────────────────────────
+  //  STATE: LEVELS, XP, ACHIEVEMENTS
+  // ─────────────────────────────────────────────────────────────────
+  const RPG_KEY = 'qz_rpg_v1';
+
+  const LEVELS = [
+    { lvl: 1, xp: 0,     title: 'Market Explorer',    sub: 'Day-one analyst — learning the terminal' },
+    { lvl: 2, xp: 100,   title: 'Portfolio Builder',  sub: 'You hold positions' },
+    { lvl: 3, xp: 250,   title: 'Research Analyst',   sub: 'You consume intelligence daily' },
+    { lvl: 4, xp: 500,   title: 'Junior Quant',       sub: 'You run quantitative models' },
+    { lvl: 5, xp: 1000,  title: 'Portfolio Manager',  sub: 'You manage real risk' },
+    { lvl: 6, xp: 1750,  title: 'Market Strategist',  sub: 'You spot edges others miss' },
+    { lvl: 7, xp: 3000,  title: 'Quant Researcher',   sub: 'You ship backtested strategies' },
+    { lvl: 8, xp: 5000,  title: 'Quant Master',       sub: 'You lead a research book' },
+    { lvl: 9, xp: 7500,  title: 'Grandmaster',        sub: 'You define market edge' },
+    { lvl: 10, xp: 12000,title: 'Legend',             sub: 'A name they teach in textbooks' },
+  ];
+
+  const QUESTS_BY_LEVEL = {
+    1: [
+      { id:'q1_search',    text:'Search for any stock, ETF, or crypto', xp: 20, action:'search' },
+      { id:'q1_intel',     text:'Read your first intelligence brief',   xp: 20, action:'intel_read' },
+      { id:'q1_dashboard', text:'Visit your dashboard',                 xp: 10, action:'visit_dashboard' },
+    ],
+    2: [
+      { id:'q2_add_pos',   text:'Add your first portfolio position',    xp: 80, action:'portfolio_add' },
+      { id:'q2_5_pos',     text:'Reach 5 holdings (diversify)',         xp: 100, action:'portfolio_5' },
+    ],
+    3: [
+      { id:'q3_bull',      text:'Read a BULLISH-rated item',            xp: 30, action:'intel_bull' },
+      { id:'q3_bear',      text:'Read a BEARISH-rated item',            xp: 30, action:'intel_bear' },
+      { id:'q3_opp',       text:'Open the Opportunity Engine',          xp: 40, action:'intel_opps' },
+    ],
+    4: [
+      { id:'q4_quantlab',  text:'Open Quant Lab',                       xp: 30, action:'quantlab_open' },
+      { id:'q4_backtest',  text:'Run your first backtest',              xp: 120, action:'backtest_run' },
+      { id:'q4_factor',    text:'Run the Fama-French Factor Lab',       xp: 80, action:'factor_run' },
+    ],
+    5: [
+      { id:'q5_watch',     text:'Create a watchlist',                   xp: 50, action:'watchlist_create' },
+      { id:'q5_alert',     text:'Set a price alert',                    xp: 50, action:'alert_set' },
+      { id:'q5_paper',     text:'Open a paper trading account',         xp: 60, action:'paper_open' },
+    ],
+    6: [
+      { id:'q6_var',       text:'Compute portfolio VaR',                xp: 70, action:'var_run' },
+      { id:'q6_mom',       text:'Run the momentum scanner',             xp: 70, action:'momentum_run' },
+      { id:'q6_opp_act',   text:'Act on an opportunity (paper-trade)',  xp: 90, action:'paper_trade' },
+    ],
+    7: [
+      { id:'q7_optimize',  text:'Run mean-variance optimization',       xp: 80, action:'mvo_run' },
+      { id:'q7_regime',    text:'Detect the current market regime',     xp: 60, action:'regime_run' },
+      { id:'q7_ai_studio', text:'Query an AI Studio specialist agent',  xp: 50, action:'ai_query' },
+    ],
+  };
+
+  const ACHIEVEMENTS = [
+    { id:'first_position',    name:'Investor',          desc:'Add your first holding',          mono:'I',  color:'#34D399' },
+    { id:'diversifier',       name:'Diversifier',       desc:'Hold 5+ positions',               mono:'D',  color:'#A78BFA' },
+    { id:'allocator',         name:'Allocator',         desc:'Hold 10+ positions',              mono:'A',  color:'#22D3EE' },
+    { id:'quant_apprentice',  name:'Quant Apprentice',  desc:'Run your first backtest',         mono:'QA', color:'#60A5FA' },
+    { id:'quant_researcher',  name:'Quant Researcher',  desc:'Run 10 backtests',                mono:'QR', color:'#818CF8' },
+    { id:'risk_aware',        name:'Risk-Aware',        desc:'Compute VaR for your portfolio',  mono:'R',  color:'#F87171' },
+    { id:'market_analyst',    name:'Market Analyst',    desc:'Read 100 intelligence items',     mono:'MA', color:'#F59E0B' },
+    { id:'polymath',          name:'Polymath',          desc:'Use every Quant Lab tool',        mono:'P',  color:'#F472B6' },
+    { id:'sentinel',          name:'Sentinel',          desc:'Set 5 price alerts',              mono:'S',  color:'#10B981' },
+    { id:'orchestrator',      name:'Orchestrator',      desc:'Run the 10-agent orchestrator',   mono:'O',  color:'#A78BFA' },
+    { id:'strategist',        name:'Strategist',        desc:'Reach Level 5',                   mono:'L5', color:'#22D3EE' },
+    { id:'master',            name:'Quant Master',      desc:'Reach Level 8',                   mono:'L8', color:'#F59E0B' },
+  ];
+
+  function defaultState() {
+    return { xp: 0, level: 1, achievements: [], questsDone: [], counts: {}, firstSeen: Date.now() };
+  }
+  function loadState() {
+    try { var s = JSON.parse(localStorage.getItem(RPG_KEY) || 'null'); return Object.assign(defaultState(), s || {}); }
+    catch(_) { return defaultState(); }
+  }
+  function saveState(s) { try { localStorage.setItem(RPG_KEY, JSON.stringify(s)); } catch(_){} }
+
+  function levelFor(xp) {
+    var cur = LEVELS[0];
+    for (var i = 0; i < LEVELS.length; i++) if (xp >= LEVELS[i].xp) cur = LEVELS[i];
+    return cur;
+  }
+  function nextLevel(xp) {
+    for (var i = 0; i < LEVELS.length; i++) if (LEVELS[i].xp > xp) return LEVELS[i];
+    return null;
+  }
+
+  var STATE = loadState();
+
+  function grantXP(amount, label) {
+    var prevLvl = STATE.level;
+    STATE.xp += amount;
+    var newL = levelFor(STATE.xp);
+    STATE.level = newL.lvl;
+    saveState(STATE);
+    paintProgressWidget();
+    showXpToast(amount, label);
+    if (newL.lvl > prevLvl) {
+      setTimeout(function() { showLevelUp(newL); }, 700);
+      // Level milestone achievements
+      if (newL.lvl >= 5) unlockAchievement('strategist');
+      if (newL.lvl >= 8) unlockAchievement('master');
+    }
+  }
+
+  function unlockAchievement(id) {
+    if (STATE.achievements.indexOf(id) >= 0) return;
+    var ach = ACHIEVEMENTS.find(function(a){ return a.id === id; });
+    if (!ach) return;
+    STATE.achievements.push(id);
+    saveState(STATE);
+    showAchievementToast(ach);
+    grantXP(50, 'Achievement: ' + ach.name);  // bonus XP for achievement
+  }
+
+  function completeQuest(actionId, payload) {
+    // Find quest in current level (or any level) matching this action
+    var lvl = STATE.level;
+    for (var L = 1; L <= 10; L++) {
+      var quests = QUESTS_BY_LEVEL[L] || [];
+      for (var i = 0; i < quests.length; i++) {
+        var q = quests[i];
+        if (q.action === actionId && STATE.questsDone.indexOf(q.id) < 0) {
+          STATE.questsDone.push(q.id);
+          saveState(STATE);
+          grantXP(q.xp, 'Quest: ' + q.text);
+          paintQuestPanel();
+          return q;
+        }
+      }
+    }
+    return null;
+  }
+
+  function recordCount(key, delta) {
+    STATE.counts[key] = (STATE.counts[key] || 0) + (delta == null ? 1 : delta);
+    saveState(STATE);
+  }
+
+  // Expose for hooks
+  window.qzRPG = {
+    grantXP: grantXP,
+    unlock: unlockAchievement,
+    quest: completeQuest,
+    count: recordCount,
+    state: function() { return Object.assign({}, STATE); },
+    levelFor: levelFor,
+    nextLevel: nextLevel,
+    reset: function() { STATE = defaultState(); saveState(STATE); paintProgressWidget(); paintQuestPanel(); },
+  };
+
+  // ─────────────────────────────────────────────────────────────────
+  //  CSS — toasts, widgets, modal styling
+  // ─────────────────────────────────────────────────────────────────
+  if (!document.getElementById('qz-rpg-css')) {
+    var st = document.createElement('style');
+    st.id = 'qz-rpg-css';
+    st.textContent = `
+      /* ── XP toast (bottom-right slide-in) ── */
+      #qz-xp-toast-stack {
+        position: fixed; bottom: 64px; right: 18px; z-index: 99996;
+        display: flex; flex-direction: column-reverse; gap: 8px;
+        pointer-events: none;
+      }
+      .qz-xp-toast {
+        background: rgba(15, 17, 21, 0.95);
+        border: 1px solid rgba(167,139,250,0.32);
+        border-radius: 10px; padding: 10px 14px;
+        display: flex; align-items: center; gap: 10px;
+        font-family: var(--font-display, "DM Sans"), sans-serif;
+        color: #fff; min-width: 220px;
+        box-shadow: 0 12px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(167,139,250,0.15);
+        animation: qzXpSlide 360ms cubic-bezier(0.16,1,0.3,1);
+      }
+      @keyframes qzXpSlide {
+        from { transform: translateX(20px); opacity: 0; }
+        to   { transform: translateX(0);    opacity: 1; }
+      }
+      .qz-xp-toast-amt { font-family: var(--font-mono); font-weight: 700; color: #34D399; font-size: 14px; }
+      .qz-xp-toast-lbl { font-size: 11.5px; color: rgba(255,255,255,0.85); }
+
+      /* ── Achievement toast ── */
+      .qz-ach-toast {
+        background: rgba(15, 17, 21, 0.95);
+        border: 1px solid rgba(167,139,250,0.35);
+        border-radius: 12px; padding: 14px 16px;
+        display: flex; align-items: center; gap: 14px;
+        min-width: 280px;
+        box-shadow: 0 16px 40px rgba(0,0,0,0.5), 0 0 28px rgba(167,139,250,0.18);
+        animation: qzXpSlide 420ms cubic-bezier(0.16,1,0.3,1);
+      }
+      .qz-ach-badge {
+        width: 44px; height: 44px; border-radius: 10px;
+        display: grid; place-items: center; flex-shrink: 0;
+        font-family: var(--font-display); font-weight: 800; font-size: 14px;
+        background: linear-gradient(135deg, var(--ach-color, #A78BFA), color-mix(in srgb, var(--ach-color, #A78BFA) 60%, #22D3EE));
+        color: #0a0b0e; letter-spacing: -0.04em;
+        box-shadow: 0 4px 14px color-mix(in srgb, var(--ach-color, #A78BFA) 40%, transparent);
+      }
+      .qz-ach-eyebrow { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.14em; color: var(--ach-color, #A78BFA); font-weight: 600; }
+      .qz-ach-name { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: #fff; margin-top: 2px; }
+      .qz-ach-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+      /* ── Level-up celebration (center modal) ── */
+      #qz-levelup-overlay {
+        position: fixed; inset: 0; z-index: 99997;
+        background: radial-gradient(circle at center, rgba(167,139,250,0.15), rgba(8,9,11,0.92));
+        backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        display: grid; place-items: center;
+        animation: qzLuFade 320ms cubic-bezier(0.16,1,0.3,1);
+      }
+      @keyframes qzLuFade { from { opacity: 0; } to { opacity: 1; } }
+      .qz-lu-card {
+        background: rgba(15, 17, 21, 0.96);
+        border: 1px solid rgba(167,139,250,0.35);
+        border-radius: 18px; padding: 36px 44px;
+        text-align: center; min-width: 380px;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.5), 0 0 60px rgba(167,139,250,0.2);
+        animation: qzLuPop 480ms cubic-bezier(0.16,1,0.3,1);
+      }
+      @keyframes qzLuPop {
+        from { transform: scale(0.92); opacity: 0; }
+        to   { transform: scale(1);    opacity: 1; }
+      }
+      .qz-lu-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; color: #34D399; font-weight: 600; }
+      .qz-lu-lvl { font-family: var(--font-display); font-size: 64px; font-weight: 800; line-height: 1; margin: 14px 0 6px;
+        background: linear-gradient(135deg, #A78BFA 0%, #22D3EE 100%);
+        -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        letter-spacing: -0.04em; }
+      .qz-lu-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
+      .qz-lu-sub { font-size: 13px; color: var(--text-muted); margin-top: 6px; max-width: 380px; line-height: 1.5; }
+      .qz-lu-btn { margin-top: 24px; padding: 11px 28px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); border: none; border-radius: 10px; color: #000; font-weight: 700; cursor: pointer; font-size: 13px; letter-spacing: 0.02em; }
+
+      /* ── Sidebar progress widget (above user row) ── */
+      .qz-rpg-widget {
+        margin: 10px 16px 6px; padding: 11px 12px;
+        background: rgba(167,139,250,0.04);
+        border: 1px solid rgba(167,139,250,0.18);
+        border-radius: 9px;
+        cursor: pointer;
+        transition: border-color 200ms ease, transform 200ms ease;
+      }
+      .qz-rpg-widget:hover { border-color: rgba(167,139,250,0.4); transform: translateY(-1px); }
+      .qz-rpg-w-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+      .qz-rpg-w-lvl { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; color: #A78BFA; font-weight: 600; }
+      .qz-rpg-w-xp  { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); }
+      .qz-rpg-w-title { font-family: var(--font-display); font-size: 12.5px; font-weight: 600; color: #fff; margin-bottom: 8px; letter-spacing: -0.005em; }
+      .qz-rpg-w-bar { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+      .qz-rpg-w-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #A78BFA, #22D3EE);
+        border-radius: 2px;
+        transition: width 600ms cubic-bezier(0.16,1,0.3,1);
+        box-shadow: 0 0 10px rgba(167,139,250,0.4);
+      }
+
+      /* ── Quest panel modal ── */
+      #qz-quest-modal-back {
+        position: fixed; inset: 0; z-index: 99995;
+        background: rgba(8,9,11,0.78); backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        display: none; align-items: center; justify-content: center;
+        padding: 24px;
+      }
+      #qz-quest-modal-back.open { display: flex; }
+      .qz-quest-modal {
+        background: #0F1115; border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 16px; max-width: 680px; width: 100%;
+        max-height: 86vh; overflow: auto; padding: 28px;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+      }
+      .qz-quest-hdr { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
+      .qz-quest-lvl-stack { font-family: var(--font-display); font-size: 24px; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
+      .qz-quest-mono { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px;
+        border-radius: 9px; background: linear-gradient(135deg, #A78BFA, #22D3EE); color: #0a0b0e;
+        font-family: var(--font-display); font-weight: 800; font-size: 14px; letter-spacing: -0.04em; margin-right: 10px; }
+      .qz-quest-tab-row { display: flex; gap: 0; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 14px; }
+      .qz-quest-tab { padding: 10px 16px; background: transparent; border: none; cursor: pointer;
+        font-family: var(--font-display); font-size: 12.5px; font-weight: 600; color: var(--text-muted);
+        border-bottom: 2px solid transparent; }
+      .qz-quest-tab.active { color: #fff; border-bottom-color: var(--accent); }
+      .qz-quest-item {
+        display: flex; align-items: center; gap: 12px;
+        padding: 12px 14px; border-radius: 9px;
+        background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
+        margin-bottom: 8px;
+      }
+      .qz-quest-item.done { opacity: 0.55; }
+      .qz-quest-check { width: 22px; height: 22px; border-radius: 50%;
+        border: 1.5px solid rgba(167,139,250,0.4);
+        display: grid; place-items: center; flex-shrink: 0;
+        font-size: 12px; color: transparent; }
+      .qz-quest-item.done .qz-quest-check { background: #34D399; border-color: #34D399; color: #0a0b0e; }
+      .qz-quest-item.done .qz-quest-check::after { content: "✓"; font-weight: 700; }
+      .qz-quest-text { flex: 1; font-size: 13px; color: rgba(255,255,255,0.9); }
+      .qz-quest-xp { font-family: var(--font-mono); font-size: 11px; color: #A78BFA; font-weight: 600; letter-spacing: 0.04em; }
+
+      .qz-ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+      .qz-ach-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
+        border-radius: 10px; padding: 14px; text-align: center; transition: all 220ms cubic-bezier(0.16,1,0.3,1); }
+      .qz-ach-card.locked { opacity: 0.4; filter: grayscale(0.5); }
+      .qz-ach-card:not(.locked):hover { transform: translateY(-2px); border-color: rgba(167,139,250,0.3); }
+      .qz-ach-card .qz-ach-badge { margin: 0 auto 8px; }
+
+      /* ── Portfolio Add v2 Modal ── */
+      #qz-padd-back {
+        position: fixed; inset: 0; z-index: 99994;
+        background: rgba(8,9,11,0.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+        display: none; align-items: center; justify-content: center; padding: 24px;
+      }
+      #qz-padd-back.open { display: flex; }
+      .qz-padd { background: #0F1115; border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 16px; max-width: 640px; width: 100%; max-height: 90vh; overflow: auto;
+        padding: 26px; box-shadow: 0 30px 80px rgba(0,0,0,0.55); }
+      .qz-padd-hdr { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+      .qz-padd-title { font-family: var(--font-display); font-size: 19px; font-weight: 700; color: #fff; letter-spacing: -0.015em; }
+      .qz-padd-sub { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+      .qz-padd-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 16px; }
+      .qz-padd-tab { padding: 10px 14px; background: transparent; border: none; cursor: pointer;
+        font-family: var(--font-display); font-size: 12.5px; font-weight: 600; color: var(--text-muted);
+        border-bottom: 2px solid transparent; transition: all 180ms ease; }
+      .qz-padd-tab.active { color: #fff; border-bottom-color: var(--accent); }
+      .qz-padd-pane { min-height: 240px; }
+      .qz-padd-search-input { width: 100%; padding: 12px 14px; background: rgba(0,0,0,0.4);
+        border: 1px solid rgba(167,139,250,0.3); border-radius: 9px; color: #fff;
+        font-size: 14px; font-family: var(--font-display); transition: border-color 160ms; }
+      .qz-padd-search-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(167,139,250,0.1); }
+      .qz-padd-result { display: flex; align-items: center; gap: 12px; padding: 10px 12px;
+        background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
+        border-radius: 8px; margin-top: 6px; cursor: pointer; transition: all 160ms ease; }
+      .qz-padd-result:hover { background: rgba(167,139,250,0.06); border-color: rgba(167,139,250,0.25); }
+      .qz-padd-result-tk { font-family: var(--font-mono); font-weight: 700; font-size: 13px; color: #fff; min-width: 60px; }
+      .qz-padd-result-nm { flex: 1; font-size: 12.5px; color: rgba(255,255,255,0.8); }
+      .qz-padd-result-ex { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-muted); }
+      .qz-padd-textarea { width: 100%; min-height: 120px; padding: 12px 14px;
+        background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 9px; color: #fff; font-family: var(--font-mono); font-size: 12.5px; line-height: 1.6; resize: vertical; }
+      .qz-padd-textarea:focus { outline: none; border-color: var(--accent); }
+      .qz-padd-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        border: none; border-radius: 9px; color: #000; font-weight: 700; font-size: 13px; cursor: pointer;
+        margin-top: 12px; letter-spacing: 0.02em; transition: transform 160ms ease; }
+      .qz-padd-btn:active { transform: scale(0.98); }
+      .qz-padd-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+      .qz-padd-preview { margin-top: 12px; padding: 12px; background: rgba(52,211,153,0.06);
+        border: 1px solid rgba(52,211,153,0.22); border-radius: 9px; }
+      .qz-padd-preview-row { display: grid; grid-template-columns: 70px 1fr 80px 80px; gap: 10px; padding: 6px 0;
+        font-family: var(--font-mono); font-size: 12px; color: rgba(255,255,255,0.85);
+        border-bottom: 1px solid rgba(255,255,255,0.04); }
+      .qz-padd-preview-row:last-child { border-bottom: none; }
+    `;
+    document.head.appendChild(st);
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  //  UI: XP toast / Achievement toast / Level-up celebration
+  // ─────────────────────────────────────────────────────────────────
+  function ensureStack() {
+    var s = document.getElementById('qz-xp-toast-stack');
+    if (s) return s;
+    s = document.createElement('div'); s.id = 'qz-xp-toast-stack';
+    document.body.appendChild(s);
+    return s;
+  }
+  function showXpToast(amount, label) {
+    var t = document.createElement('div');
+    t.className = 'qz-xp-toast';
+    t.innerHTML = '<span class="qz-xp-toast-amt">+' + amount + ' XP</span><span class="qz-xp-toast-lbl">' + (label || 'Action complete') + '</span>';
+    ensureStack().appendChild(t);
+    setTimeout(function() { t.style.transition = 'opacity 360ms ease, transform 360ms ease'; t.style.opacity = '0'; t.style.transform = 'translateX(20px)'; }, 2600);
+    setTimeout(function() { t.remove(); }, 3000);
+  }
+  function showAchievementToast(ach) {
+    var t = document.createElement('div');
+    t.className = 'qz-ach-toast';
+    t.style.setProperty('--ach-color', ach.color);
+    t.innerHTML = '<div class="qz-ach-badge">' + ach.mono + '</div>' +
+      '<div><div class="qz-ach-eyebrow">ACHIEVEMENT UNLOCKED</div>' +
+      '<div class="qz-ach-name">' + ach.name + '</div>' +
+      '<div class="qz-ach-desc">' + ach.desc + '</div></div>';
+    ensureStack().appendChild(t);
+    setTimeout(function() { t.style.transition = 'opacity 400ms ease, transform 400ms ease'; t.style.opacity = '0'; t.style.transform = 'translateX(20px)'; }, 4500);
+    setTimeout(function() { t.remove(); }, 5000);
+  }
+  function showLevelUp(level) {
+    var existing = document.getElementById('qz-levelup-overlay');
+    if (existing) existing.remove();
+    var ov = document.createElement('div');
+    ov.id = 'qz-levelup-overlay';
+    ov.innerHTML = '<div class="qz-lu-card">' +
+      '<div class="qz-lu-eyebrow">▲ LEVEL UP</div>' +
+      '<div class="qz-lu-lvl">' + level.lvl + '</div>' +
+      '<div class="qz-lu-title">' + level.title + '</div>' +
+      '<div class="qz-lu-sub">' + level.sub + '</div>' +
+      '<button class="qz-lu-btn" onclick="document.getElementById(&quot;qz-levelup-overlay&quot;).remove()">Continue →</button>' +
+    '</div>';
+    document.body.appendChild(ov);
+    ov.addEventListener('click', function(e) { if (e.target === ov) ov.remove(); });
+    setTimeout(function() { if (document.getElementById('qz-levelup-overlay')) ov.remove(); }, 6500);
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  //  UI: Sidebar progress widget (Level + XP bar)
+  // ─────────────────────────────────────────────────────────────────
+  function ensureWidget() {
+    var w = document.getElementById('qz-rpg-widget');
+    if (w) return w;
+    var userRow = document.querySelector('.sidebar .sidebar-user');
+    if (!userRow) return null;
+    w = document.createElement('div');
+    w.id = 'qz-rpg-widget';
+    w.className = 'qz-rpg-widget';
+    w.onclick = openQuestModal;
+    userRow.parentNode.insertBefore(w, userRow);
+    return w;
+  }
+  function paintProgressWidget() {
+    var w = ensureWidget();
+    if (!w) return;
+    var cur = levelFor(STATE.xp);
+    var nxt = nextLevel(STATE.xp);
+    var pct = nxt ? Math.min(100, Math.max(0, ((STATE.xp - cur.xp) / (nxt.xp - cur.xp)) * 100)) : 100;
+    var nxtLbl = nxt ? (STATE.xp + ' / ' + nxt.xp) : 'MAX';
+    w.innerHTML =
+      '<div class="qz-rpg-w-top"><span class="qz-rpg-w-lvl">LVL ' + cur.lvl + '</span><span class="qz-rpg-w-xp">' + nxtLbl + ' XP</span></div>' +
+      '<div class="qz-rpg-w-title">' + cur.title + '</div>' +
+      '<div class="qz-rpg-w-bar"><div class="qz-rpg-w-fill" style="width:' + pct + '%;"></div></div>';
+  }
+  setInterval(paintProgressWidget, 2000);
+  if (document.readyState === 'complete') paintProgressWidget();
+  else window.addEventListener('load', paintProgressWidget);
+
+  // ─────────────────────────────────────────────────────────────────
+  //  Quest panel modal (Quests / Achievements tabs)
+  // ─────────────────────────────────────────────────────────────────
+  function ensureQuestModal() {
+    var back = document.getElementById('qz-quest-modal-back');
+    if (back) return back;
+    back = document.createElement('div'); back.id = 'qz-quest-modal-back';
+    back.onclick = function(e) { if (e.target === back) closeQuestModal(); };
+    back.innerHTML = '<div class="qz-quest-modal" id="qz-quest-modal-body"></div>';
+    document.body.appendChild(back);
+    return back;
+  }
+  function openQuestModal() {
+    ensureQuestModal().classList.add('open');
+    paintQuestPanel();
+  }
+  function closeQuestModal() {
+    var back = document.getElementById('qz-quest-modal-back');
+    if (back) back.classList.remove('open');
+  }
+  window.qzOpenQuestPanel = openQuestModal;
+  window.qzCloseQuestPanel = closeQuestModal;
+
+  var _qPanelTab = 'quests';
+  function paintQuestPanel() {
+    var body = document.getElementById('qz-quest-modal-body');
+    if (!body) return;
+    var cur = levelFor(STATE.xp);
+    var nxt = nextLevel(STATE.xp);
+    var pct = nxt ? Math.min(100, ((STATE.xp - cur.xp) / (nxt.xp - cur.xp)) * 100) : 100;
+    var titleMono = cur.title.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
+    var hdr = '<div class="qz-quest-hdr">' +
+      '<div style="display:flex;align-items:center;">' +
+        '<div class="qz-quest-mono">' + titleMono + '</div>' +
+        '<div><div class="qz-quest-lvl-stack">Level ' + cur.lvl + ' · ' + cur.title + '</div>' +
+        '<div style="font-size:11.5px;color:var(--text-muted);margin-top:3px;">' + cur.sub + '</div></div></div>' +
+      '<button onclick="qzCloseQuestPanel()" style="background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--text-muted);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;">Close</button>' +
+    '</div>' +
+    '<div style="margin-bottom:18px;">' +
+      '<div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;color:var(--text-muted);margin-bottom:4px;letter-spacing:0.05em;"><span>' + STATE.xp.toLocaleString() + ' XP TOTAL</span><span>' + (nxt ? 'NEXT: ' + nxt.title + ' @ ' + nxt.xp.toLocaleString() : 'MAX LEVEL') + '</span></div>' +
+      '<div style="height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;"><div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#A78BFA,#22D3EE);box-shadow:0 0 12px rgba(167,139,250,0.4);transition:width 600ms cubic-bezier(0.16,1,0.3,1);"></div></div>' +
+    '</div>' +
+    '<div class="qz-quest-tab-row">' +
+      '<button class="qz-quest-tab ' + (_qPanelTab==='quests'?'active':'') + '" onclick="qzQuestTab(\'quests\')">Active Quests</button>' +
+      '<button class="qz-quest-tab ' + (_qPanelTab==='achievements'?'active':'') + '" onclick="qzQuestTab(\'achievements\')">Achievements · ' + STATE.achievements.length + '/' + ACHIEVEMENTS.length + '</button>' +
+    '</div>';
+
+    var content = '';
+    if (_qPanelTab === 'quests') {
+      var quests = QUESTS_BY_LEVEL[cur.lvl] || [];
+      if (!quests.length) {
+        content = '<div style="text-align:center;padding:40px 20px;color:var(--text-muted);font-size:13px;">Level ' + cur.lvl + ' complete. Keep using the platform to earn XP and unlock the next tier.</div>';
+      } else {
+        content = quests.map(function(q) {
+          var done = STATE.questsDone.indexOf(q.id) >= 0;
+          return '<div class="qz-quest-item ' + (done ? 'done' : '') + '">' +
+            '<div class="qz-quest-check"></div>' +
+            '<div class="qz-quest-text">' + q.text + '</div>' +
+            '<div class="qz-quest-xp">+' + q.xp + ' XP</div>' +
+          '</div>';
+        }).join('');
+      }
+    } else {
+      content = '<div class="qz-ach-grid">' + ACHIEVEMENTS.map(function(a) {
+        var unlocked = STATE.achievements.indexOf(a.id) >= 0;
+        return '<div class="qz-ach-card ' + (unlocked ? '' : 'locked') + '" style="--ach-color:' + a.color + ';">' +
+          '<div class="qz-ach-badge">' + a.mono + '</div>' +
+          '<div style="font-family:var(--font-display);font-size:12px;font-weight:600;color:#fff;">' + a.name + '</div>' +
+          '<div style="font-size:10.5px;color:var(--text-muted);margin-top:3px;line-height:1.4;">' + a.desc + '</div>' +
+        '</div>';
+      }).join('') + '</div>';
+    }
+
+    body.innerHTML = hdr + content;
+  }
+  window.qzQuestTab = function(tab) { _qPanelTab = tab; paintQuestPanel(); };
+
+  // ─────────────────────────────────────────────────────────────────
+  //  PORTFOLIO ADD V2 — Search / Natural Language / Bulk / Watchlist
+  // ─────────────────────────────────────────────────────────────────
+  function ensurePAddModal() {
+    var back = document.getElementById('qz-padd-back');
+    if (back) return back;
+    back = document.createElement('div'); back.id = 'qz-padd-back';
+    back.onclick = function(e) { if (e.target === back) closePAddModal(); };
+    back.innerHTML = '<div class="qz-padd" id="qz-padd-body"></div>';
+    document.body.appendChild(back);
+    return back;
+  }
+  function openPAddModal() { ensurePAddModal().classList.add('open'); paintPAddModal(); }
+  function closePAddModal() { var b = document.getElementById('qz-padd-back'); if (b) b.classList.remove('open'); }
+  window.qzOpenAddPosition = openPAddModal;
+  window.qzClosePAdd = closePAddModal;
+
+  var _paddTab = 'search';
+  function paintPAddModal() {
+    var body = document.getElementById('qz-padd-body');
+    if (!body) return;
+    var hdr = '<div class="qz-padd-hdr"><div>' +
+      '<div class="qz-padd-title">Add Position</div>' +
+      '<div class="qz-padd-sub">Build your portfolio in under 30 seconds. Pick the entry mode that fits.</div>' +
+    '</div><button onclick="qzClosePAdd()" style="background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--text-muted);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;">Close</button></div>' +
+    '<div class="qz-padd-tabs">' +
+      '<button class="qz-padd-tab ' + (_paddTab==='search'?'active':'') + '" onclick="qzPAddTab(\'search\')">Quick Search</button>' +
+      '<button class="qz-padd-tab ' + (_paddTab==='nl'?'active':'') + '" onclick="qzPAddTab(\'nl\')">Natural Language</button>' +
+      '<button class="qz-padd-tab ' + (_paddTab==='bulk'?'active':'') + '" onclick="qzPAddTab(\'bulk\')">Bulk Paste</button>' +
+      '<button class="qz-padd-tab ' + (_paddTab==='watch'?'active':'') + '" onclick="qzPAddTab(\'watch\')">From Watchlist</button>' +
+    '</div>';
+    var pane = '<div class="qz-padd-pane" id="qz-padd-pane">' + paneFor(_paddTab) + '</div>';
+    body.innerHTML = hdr + pane;
+    afterPaint(_paddTab);
+  }
+  window.qzPAddTab = function(tab) { _paddTab = tab; paintPAddModal(); };
+
+  function paneFor(tab) {
+    if (tab === 'search') {
+      return '<input type="text" id="qz-padd-search" class="qz-padd-search-input" placeholder="Type a ticker or company name…" autocomplete="off"/>' +
+        '<div id="qz-padd-search-results" style="margin-top:8px;max-height:260px;overflow:auto;"></div>' +
+        '<div id="qz-padd-search-form" style="display:none;margin-top:14px;"></div>';
+    }
+    if (tab === 'nl') {
+      return '<div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;line-height:1.5;">Type your positions in plain English. Examples: <em>"I own 15 shares of Apple at 210"</em>, <em>"100 NVDA"</em>, <em>"bought 2 Tesla at 310"</em>.</div>' +
+        '<textarea id="qz-padd-nl" class="qz-padd-textarea" placeholder="I have 50 shares of Microsoft at $420&#10;Bought 10 AAPL at 192&#10;Hold 25 SPY shares"></textarea>' +
+        '<button class="qz-padd-btn" onclick="qzPAddNLParse()">Parse →</button>' +
+        '<div id="qz-padd-nl-preview"></div>';
+    }
+    if (tab === 'bulk') {
+      return '<div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;line-height:1.5;">Paste one position per line. Formats: <code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:3px;font-family:var(--font-mono);">AAPL 10</code> or <code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:3px;font-family:var(--font-mono);">AAPL 10 192</code> (ticker · qty · cost).</div>' +
+        '<textarea id="qz-padd-bulk" class="qz-padd-textarea" placeholder="AAPL 10 192&#10;MSFT 5 420&#10;NVDA 15 800&#10;TSLA 7 310"></textarea>' +
+        '<button class="qz-padd-btn" onclick="qzPAddBulkParse()">Preview →</button>' +
+        '<div id="qz-padd-bulk-preview"></div>';
+    }
+    if (tab === 'watch') {
+      var ids = [];
+      try { ids = JSON.parse(localStorage.getItem('qz_watchlist_default') || '[]'); } catch(_){}
+      // Fall back to STOCKS picked as "watched" if exists
+      if ((!ids || !ids.length) && typeof STOCKS !== 'undefined') {
+        ids = STOCKS.slice(0, 6).map(function(s){ return s.ticker; });
+      }
+      if (!ids.length) return '<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">No watchlist found. Create one first in the Watchlists page.</div>';
+      return '<div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">Convert any watched ticker to a portfolio position with one click.</div>' +
+        ids.map(function(t) {
+          var stock = (typeof STOCKS !== 'undefined') && STOCKS.find(function(s){return s.ticker === t;});
+          var nm = stock ? stock.name : '';
+          var ex = stock ? stock.exchange || '' : '';
+          return '<div class="qz-padd-result" onclick="qzPAddPickFromWatch(\'' + t + '\')">' +
+            '<div class="qz-padd-result-tk">' + t + '</div>' +
+            '<div class="qz-padd-result-nm">' + nm + '</div>' +
+            '<div class="qz-padd-result-ex">' + ex + '</div>' +
+            '<div style="font-size:11px;color:#A78BFA;">+ Add →</div>' +
+          '</div>';
+        }).join('');
+    }
+    return '';
+  }
+
+  function afterPaint(tab) {
+    if (tab === 'search') {
+      var inp = document.getElementById('qz-padd-search');
+      if (inp) { inp.focus(); inp.addEventListener('input', searchHandler); }
+    }
+  }
+
+  function searchHandler(e) {
+    var q = (e.target.value || '').trim().toLowerCase();
+    var res = document.getElementById('qz-padd-search-results');
+    if (!res) return;
+    if (q.length < 1) { res.innerHTML = ''; return; }
+    var matches = [];
+    if (typeof STOCKS !== 'undefined') {
+      matches = STOCKS.filter(function(s) {
+        return s.ticker.toLowerCase().startsWith(q) ||
+               (s.name && s.name.toLowerCase().indexOf(q) >= 0);
+      }).slice(0, 8);
+    }
+    if (!matches.length) {
+      res.innerHTML = '<div style="padding:14px;text-align:center;color:var(--text-muted);font-size:12px;">No matches in universe. Try a ticker symbol.</div>';
+      return;
+    }
+    res.innerHTML = matches.map(function(s) {
+      return '<div class="qz-padd-result" onclick="qzPAddPickSearch(\'' + s.ticker + '\')">' +
+        '<div class="qz-padd-result-tk">' + s.ticker + '</div>' +
+        '<div class="qz-padd-result-nm">' + (s.name || '') + '</div>' +
+        '<div class="qz-padd-result-ex">' + (s.exchange || s.asset_type || '') + '</div>' +
+        '<div style="font-size:11px;color:#A78BFA;">$' + (s.price ? s.price.toFixed(2) : '—') + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  window.qzPAddPickSearch = function(ticker) {
+    var stock = (typeof STOCKS !== 'undefined') && STOCKS.find(function(s){return s.ticker === ticker;});
+    var price = stock && stock.price ? stock.price.toFixed(2) : '0';
+    var form = document.getElementById('qz-padd-search-form');
+    var results = document.getElementById('qz-padd-search-results');
+    if (results) results.innerHTML = '';
+    if (!form) return;
+    form.style.display = '';
+    form.innerHTML =
+      '<div style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.12em;color:var(--accent);margin-bottom:10px;">SELECTED: ' + ticker + (stock ? ' · ' + stock.name : '') + '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">' +
+        '<div><label style="display:block;font-size:10.5px;color:var(--text-muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px;">Shares Owned</label><input type="number" id="qz-padd-qty" class="qz-padd-search-input" placeholder="0" step="0.0001" min="0"></div>' +
+        '<div><label style="display:block;font-size:10.5px;color:var(--text-muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px;">Avg Cost (optional)</label><input type="number" id="qz-padd-cost" class="qz-padd-search-input" placeholder="' + price + '" step="0.01" min="0"></div>' +
+      '</div>' +
+      '<button class="qz-padd-btn" onclick="qzPAddCommitSearch(\'' + ticker + '\')">Add to Portfolio →</button>';
+    setTimeout(function() { var q = document.getElementById('qz-padd-qty'); if (q) q.focus(); }, 50);
+  };
+
+  window.qzPAddCommitSearch = function(ticker) {
+    var qty = parseFloat(document.getElementById('qz-padd-qty').value);
+    var cost = parseFloat(document.getElementById('qz-padd-cost').value);
+    if (!(qty > 0)) { alert('Enter a positive quantity.'); return; }
+    var stock = (typeof STOCKS !== 'undefined') && STOCKS.find(function(s){return s.ticker === ticker;});
+    if (!cost || cost <= 0) cost = stock && stock.price ? stock.price : 100;
+    commitPositions([{ ticker: ticker, qty: qty, cost: cost }]);
+    closePAddModal();
+  };
+  window.qzPAddPickFromWatch = function(ticker) {
+    var stock = (typeof STOCKS !== 'undefined') && STOCKS.find(function(s){return s.ticker === ticker;});
+    var price = stock && stock.price ? stock.price : 100;
+    var qty = parseFloat(prompt('Shares of ' + ticker + ' owned:', '10'));
+    if (!(qty > 0)) return;
+    commitPositions([{ ticker: ticker, qty: qty, cost: price }]);
+    closePAddModal();
+  };
+
+  // ─── Natural language parser ─────────────────────────────────
+  window.qzPAddNLParse = function() {
+    var text = (document.getElementById('qz-padd-nl').value || '').trim();
+    if (!text) return;
+    var lines = text.split(/\n/).map(function(l){return l.trim();}).filter(Boolean);
+    var positions = lines.map(parseNLLine).filter(Boolean);
+    renderNLPreview(positions);
+  };
+  function parseNLLine(line) {
+    var l = line.toLowerCase();
+    // Pattern A: "I have/own/bought NUM shares of NAME at PRICE"
+    var m = l.match(/(\d+(?:\.\d+)?)\s*(?:shares?|units?|positions?)?\s*(?:of\s+)?([a-z0-9.\- ]+?)(?:\s+(?:at|@|for)\s*\$?(\d+(?:\.\d+)?))?$/);
+    if (m) {
+      var qty = parseFloat(m[1]);
+      var rawName = m[2].trim();
+      var cost = m[3] ? parseFloat(m[3]) : null;
+      var ticker = resolveTicker(rawName);
+      if (ticker) return { ticker: ticker, qty: qty, cost: cost, raw: line };
+    }
+    // Pattern B: "NAME NUM"
+    m = l.match(/^([a-z]{1,6})\s+(\d+(?:\.\d+)?)$/i);
+    if (m) {
+      var t = m[1].toUpperCase();
+      if (resolveTicker(t)) return { ticker: t, qty: parseFloat(m[2]), cost: null, raw: line };
+    }
+    return null;
+  }
+  function resolveTicker(text) {
+    text = String(text || '').trim().toUpperCase();
+    if (!text) return null;
+    if (typeof STOCKS === 'undefined') return text;
+    // Direct ticker
+    var direct = STOCKS.find(function(s){ return s.ticker.toUpperCase() === text; });
+    if (direct) return direct.ticker;
+    // Name contains
+    var byName = STOCKS.find(function(s){ return s.name && s.name.toUpperCase().indexOf(text) >= 0; });
+    if (byName) return byName.ticker;
+    // First word match
+    var first = text.split(/\s+/)[0];
+    var byFirst = STOCKS.find(function(s){ return s.name && s.name.toUpperCase().startsWith(first); });
+    if (byFirst) return byFirst.ticker;
+    return null;
+  }
+  function renderNLPreview(positions) {
+    var out = document.getElementById('qz-padd-nl-preview');
+    if (!out) return;
+    if (!positions.length) {
+      out.innerHTML = '<div style="margin-top:12px;padding:12px;background:rgba(248,113,113,0.06);border:1px solid rgba(248,113,113,0.22);border-radius:8px;color:#FCA5A5;font-size:12px;">Could not parse any positions. Try: <em>"I have 15 shares of Apple at 210"</em> or <em>"100 NVDA"</em>.</div>';
+      return;
+    }
+    var rows = positions.map(function(p) {
+      var stock = (typeof STOCKS !== 'undefined') && STOCKS.find(function(s){return s.ticker === p.ticker;});
+      var cost = p.cost != null ? '$' + p.cost.toFixed(2) : (stock && stock.price ? '$' + stock.price.toFixed(2) + ' (mkt)' : '—');
+      return '<div class="qz-padd-preview-row"><span style="color:#fff;font-weight:600;">' + p.ticker + '</span><span>' + (stock ? stock.name : '') + '</span><span style="text-align:right;">' + p.qty + ' sh</span><span style="text-align:right;color:#34D399;">' + cost + '</span></div>';
+    }).join('');
+    out.innerHTML = '<div class="qz-padd-preview"><div style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.12em;color:#34D399;margin-bottom:8px;">DETECTED ' + positions.length + ' POSITION' + (positions.length>1?'S':'') + '</div>' + rows + '<button class="qz-padd-btn" onclick="qzPAddCommitNL()">Confirm & Add →</button></div>';
+    window._qzPAddPending = positions;
+  }
+  window.qzPAddCommitNL = function() {
+    if (!window._qzPAddPending || !window._qzPAddPending.length) return;
+    commitPositions(window._qzPAddPending);
+    window._qzPAddPending = null;
+    closePAddModal();
+  };
+
+  // ─── Bulk paste parser ───────────────────────────────────────
+  window.qzPAddBulkParse = function() {
+    var text = (document.getElementById('qz-padd-bulk').value || '').trim();
+    if (!text) return;
+    var lines = text.split(/\n/).map(function(l){return l.trim();}).filter(Boolean);
+    var positions = lines.map(parseBulkLine).filter(Boolean);
+    renderBulkPreview(positions);
+  };
+  function parseBulkLine(line) {
+    // "AAPL 10" or "AAPL 10 192" or "AAPL,10,192"
+    var parts = line.split(/[\s,;]+/).filter(Boolean);
+    if (parts.length < 2) return null;
+    var ticker = String(parts[0]).toUpperCase().replace(/[^A-Z0-9.]/g, '');
+    var qty = parseFloat(parts[1]);
+    var cost = parts.length >= 3 ? parseFloat(parts[2]) : null;
+    if (!ticker || !(qty > 0)) return null;
+    return { ticker: ticker, qty: qty, cost: cost, raw: line };
+  }
+  function renderBulkPreview(positions) {
+    var out = document.getElementById('qz-padd-bulk-preview');
+    if (!out) return;
+    if (!positions.length) {
+      out.innerHTML = '<div style="margin-top:12px;padding:12px;background:rgba(248,113,113,0.06);border:1px solid rgba(248,113,113,0.22);border-radius:8px;color:#FCA5A5;font-size:12px;">Could not parse any lines. Use format: <code>AAPL 10</code> or <code>AAPL 10 192</code>.</div>';
+      return;
+    }
+    var rows = positions.map(function(p) {
+      var stock = (typeof STOCKS !== 'undefined') && STOCKS.find(function(s){return s.ticker === p.ticker;});
+      var cost = p.cost != null ? '$' + p.cost.toFixed(2) : (stock && stock.price ? '$' + stock.price.toFixed(2) + ' (mkt)' : '—');
+      return '<div class="qz-padd-preview-row"><span style="color:#fff;font-weight:600;">' + p.ticker + '</span><span>' + (stock ? stock.name : '—') + '</span><span style="text-align:right;">' + p.qty + ' sh</span><span style="text-align:right;color:#34D399;">' + cost + '</span></div>';
+    }).join('');
+    out.innerHTML = '<div class="qz-padd-preview"><div style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.12em;color:#34D399;margin-bottom:8px;">PREVIEW · ' + positions.length + ' LINE' + (positions.length>1?'S':'') + '</div>' + rows + '<button class="qz-padd-btn" onclick="qzPAddCommitBulk()">Add ' + positions.length + ' to Portfolio →</button></div>';
+    window._qzPAddPending = positions;
+  }
+  window.qzPAddCommitBulk = function() {
+    if (!window._qzPAddPending || !window._qzPAddPending.length) return;
+    commitPositions(window._qzPAddPending);
+    window._qzPAddPending = null;
+    closePAddModal();
+  };
+
+  // ─── Commit positions to state ───────────────────────────────
+  function commitPositions(positions) {
+    if (!window.state) window.state = {};
+    if (!window.state.portfolio) window.state.portfolio = [];
+    var existing = {};
+    window.state.portfolio.forEach(function(p){ existing[p.ticker] = p; });
+
+    var firstAdd = window.state.portfolio.length === 0;
+    var added = 0;
+    positions.forEach(function(p) {
+      var stock = (typeof STOCKS !== 'undefined') && STOCKS.find(function(s){return s.ticker === p.ticker;});
+      var cost = (p.cost != null && p.cost > 0) ? p.cost : (stock && stock.price ? stock.price : 100);
+      var current = stock && stock.price ? stock.price : cost;
+      var entry = {
+        ticker: p.ticker,
+        qty: p.qty,
+        cost: cost,
+        current: current,
+        signal: stock && stock.signal ? stock.signal : 'HOLD',
+        sector: stock && stock.sector ? stock.sector : '—',
+        name: stock && stock.name ? stock.name : p.ticker
+      };
+      if (existing[p.ticker]) {
+        // Merge: weighted average cost
+        var ex = existing[p.ticker];
+        var newQty = ex.qty + p.qty;
+        ex.cost = newQty > 0 ? ((ex.cost*ex.qty) + (cost*p.qty)) / newQty : cost;
+        ex.qty = newQty;
+      } else {
+        window.state.portfolio.push(entry);
+        added++;
+      }
+    });
+    try { localStorage.setItem('qz_portfolio_imported', JSON.stringify(window.state.portfolio)); } catch(_){}
+    if (typeof window.renderPortfolio === 'function') { try { window.renderPortfolio(); } catch(_){} }
+    if (typeof window.updateDashboardMetrics === 'function') { try { window.updateDashboardMetrics(); } catch(_){} }
+
+    // RPG hooks
+    completeQuest('portfolio_add');
+    if (firstAdd) {
+      unlockAchievement('first_position');
+      grantXP(100, 'First position');
+    }
+    if (window.state.portfolio.length >= 5) unlockAchievement('diversifier');
+    if (window.state.portfolio.length >= 10) unlockAchievement('allocator');
+    if (window.state.portfolio.length >= 5) completeQuest('portfolio_5');
+
+    if (added > 0) showXpToast(50 * added, added + ' position' + (added>1?'s':'') + ' added');
+    if (typeof window.showPage === 'function') setTimeout(function(){ window.showPage('portfolio'); }, 400);
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  //  Replace existing "Import from CSV" button → "+ Add Position"
+  // ─────────────────────────────────────────────────────────────────
+  function injectAddButton() {
+    var page = document.getElementById('page-portfolio');
+    if (!page) return;
+    // Remove old import-only button, add a new combined one
+    var existing = page.querySelector('.qz-padd-btn-anchor');
+    if (existing) return;
+    var oldBtn = page.querySelector('.qz-pimport-btn');
+    var anchor = page.querySelector('h1, h2, .page-title, .ent-card-hero, .qz-page-hero');
+    var btn = document.createElement('button');
+    btn.className = 'qz-padd-btn-anchor';
+    btn.textContent = '+ Add Position';
+    btn.style.cssText = 'margin:8px 0 14px 0;padding:10px 20px;background:linear-gradient(135deg,var(--accent),var(--accent-2));border:none;border-radius:8px;color:#000;font-weight:700;font-size:12.5px;cursor:pointer;letter-spacing:0.02em;display:inline-flex;align-items:center;gap:8px;transition:transform 160ms ease-out;';
+    btn.onmouseenter = function(){ btn.style.transform = 'translateY(-1px)'; };
+    btn.onmouseleave = function(){ btn.style.transform = ''; };
+    btn.onclick = openPAddModal;
+    if (anchor && anchor.parentNode === page) {
+      anchor.insertAdjacentElement('afterend', btn);
+    } else {
+      page.insertBefore(btn, page.firstChild);
+    }
+    if (oldBtn) oldBtn.style.display = 'none';
+  }
+  setInterval(injectAddButton, 1500);
+  if (document.readyState === 'complete') injectAddButton();
+  else window.addEventListener('load', injectAddButton);
+
+  // ─────────────────────────────────────────────────────────────────
+  //  AUTO-HOOKS — grant XP when existing actions fire
+  // ─────────────────────────────────────────────────────────────────
+  function installHooks() {
+    // showPage hook
+    var _origSp = window.showPage;
+    if (typeof _origSp === 'function' && !_origSp._qzRpgHooked) {
+      var newSp = function(page, navEl) {
+        var r = _origSp.apply(this, arguments);
+        if (page === 'dashboard')      completeQuest('visit_dashboard');
+        if (page === 'intel' || page === 'news') completeQuest('intel_read');
+        if (page === 'quantlab')       completeQuest('quantlab_open');
+        if (page === 'paper')          completeQuest('paper_open');
+        return r;
+      };
+      newSp._qzRpgHooked = true;
+      window.showPage = newSp;
+    }
+    // Quant Lab tool hooks (run handlers)
+    ['_qlxFactorRun','_qlxOptRun','_qlxVarRun','_qlxMomRun','_qlxRegRun','_qlRunBacktest','_qlBSCalc','_qlMCRun','_qlKellyCalc'].forEach(function(fnName) {
+      var f = window[fnName];
+      if (typeof f === 'function' && !f._qzRpgHooked) {
+        var wrap = function() {
+          var r = f.apply(this, arguments);
+          if (fnName === '_qlxFactorRun')  completeQuest('factor_run');
+          if (fnName === '_qlxVarRun')     { completeQuest('var_run'); unlockAchievement('risk_aware'); }
+          if (fnName === '_qlxMomRun')     completeQuest('momentum_run');
+          if (fnName === '_qlxOptRun')     completeQuest('mvo_run');
+          if (fnName === '_qlxRegRun')     completeQuest('regime_run');
+          if (fnName === '_qlRunBacktest') {
+            completeQuest('backtest_run');
+            recordCount('backtests');
+            if (!STATE.achievements.includes('quant_apprentice')) unlockAchievement('quant_apprentice');
+            if ((STATE.counts.backtests || 0) >= 10) unlockAchievement('quant_researcher');
+          }
+          // Polymath: used every Quant Lab tool
+          var tools = ['factor_run','var_run','momentum_run','mvo_run','regime_run','backtest_run'];
+          var usedAll = tools.every(function(t) {
+            return STATE.questsDone.indexOf(QUESTS_BY_LEVEL[Object.keys(QUESTS_BY_LEVEL).find(function(L) { return (QUESTS_BY_LEVEL[L] || []).some(function(q){return q.action===t;}); }) || 4]
+              .find(function(q){return q.action===t;})?.id) >= 0;
+          });
+          if (usedAll) unlockAchievement('polymath');
+          return r;
+        };
+        wrap._qzRpgHooked = true;
+        window[fnName] = wrap;
+      }
+    });
+    // Search box hook — grant XP when user actually searches
+    var sx = document.getElementById('qzs-input');
+    if (sx && !sx._qzRpgHooked) {
+      var t0 = 0;
+      sx.addEventListener('input', function() {
+        if (Date.now() - t0 < 8000) return;
+        if ((sx.value || '').trim().length >= 2) {
+          t0 = Date.now();
+          completeQuest('search');
+        }
+      });
+      sx._qzRpgHooked = true;
+    }
+    // AI Studio agent run hook
+    var _origRun = window._cmdRunAgent;
+    if (typeof _origRun === 'function' && !_origRun._qzRpgHooked) {
+      var wrapped = async function(agentId, query) {
+        var r = await _origRun.apply(this, arguments);
+        completeQuest('ai_query');
+        unlockAchievement('orchestrator');
+        return r;
+      };
+      wrapped._qzRpgHooked = true;
+      window._cmdRunAgent = wrapped;
+    }
+  }
+  // Install hooks repeatedly because some functions are defined late
+  setInterval(installHooks, 2500);
+  if (document.readyState === 'complete') installHooks();
+  else window.addEventListener('load', installHooks);
+})();
+</script>
+
+<script>
+/* ==================================================================== *
  *  AI STUDIO REMODEL                                                   *
  *  Upgrades the 10-agent system with:                                  *
  *    - 3x token budget (480 → 1500) so responses don't get cut off     *
