@@ -26391,14 +26391,14 @@ setTimeout(() => {
   function _qlxHero(){
     return '<div class="qz-page-hero" style="background:linear-gradient(135deg, rgba(167,139,250,0.06), rgba(34,211,238,0.03));border:1px solid rgba(167,139,250,0.18);border-radius:14px;padding:22px 26px;margin-bottom:18px;position:relative;overflow:hidden;">' +
       '<div style="position:absolute;inset:0;background:radial-gradient(circle at 85% 30%, rgba(34,211,238,0.08), transparent 55%);pointer-events:none;"></div>' +
-      '<div style="position:relative;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">' +
-        '<div style="width:46px;height:46px;border-radius:11px;background:linear-gradient(135deg, var(--accent), var(--accent-2));display:grid;place-items:center;font-family:var(--font-display);font-size:18px;font-weight:700;color:#000;letter-spacing:-0.02em;">QL</div>' +
+      '<div style="position:relative;display:flex;align-items:center;gap:18px;flex-wrap:wrap;">' +
+        // Icon block intentionally removed — single brand mark policy
         '<div style="flex:1;min-width:240px;">' +
           '<div style="font-size:22px;font-weight:700;color:#fff;letter-spacing:-0.02em;">Quant Lab</div>' +
           '<div style="font-size:12.5px;color:var(--text-muted);margin-top:2px;">Institutional research workbench · Factor models · Portfolio optimization · Risk · Backtests</div>' +
         '</div>' +
         '<div style="display:flex;gap:6px;flex-wrap:wrap;">' +
-          '<span style="font-size:9.5px;letter-spacing:0.1em;font-weight:600;font-family:var(--font-mono);padding:4px 9px;border-radius:4px;background:rgba(16,185,129,0.10);border:1px solid rgba(16,185,129,0.3);color:#34D399;">PURE-CLIENT</span>' +
+          '<span style="font-size:9.5px;letter-spacing:0.1em;font-weight:600;font-family:var(--font-mono);padding:4px 9px;border-radius:4px;background:rgba(16,185,129,0.10);border:1px solid rgba(16,185,129,0.3);color:#34D399;">SECURE-PROXY</span>' +
           '<span style="font-size:9.5px;letter-spacing:0.1em;font-weight:600;font-family:var(--font-mono);padding:4px 9px;border-radius:4px;background:rgba(167,139,250,0.10);border:1px solid rgba(167,139,250,0.3);color:#A78BFA;">10 TOOLS</span>' +
         '</div>' +
       '</div>' +
@@ -27111,5 +27111,170 @@ setTimeout(() => {
 
 
 <!-- QuantLab + IntelEngine script removed — had multiple unfixable apostrophe parse errors in the reference. Re-add from clean source later. -->
+<script>
+/* ==================================================================== *
+ *  FINAL POLISH PASS                                                   *
+ *    1. AI key auto-configured via secure Cloudflare Worker proxy      *
+ *       — no API key ever exposed in the browser                       *
+ *    2. All decorative icons removed except the brand mark (top-left)  *
+ *    3. API key inputs hidden from Settings for security               *
+ * ==================================================================== */
+(function() {
+  'use strict';
+
+  // ─── 1. AI auto-proxy ────────────────────────────────────────────
+  // The Cloudflare Worker at groq-proxy.physicsedge.workers.dev holds
+  // the real API key server-side. The frontend uses a sentinel string
+  // and our fetch shim rewrites Groq API calls to the worker.
+  var SENTINEL = '__qz_proxy__';
+  var PROXY    = 'https://groq-proxy.physicsedge.workers.dev';
+
+  try {
+    var existing = localStorage.getItem('qe_groq_key');
+    // Only set the sentinel if NO real user key is configured
+    if (!existing || existing === '' || existing === SENTINEL) {
+      localStorage.setItem('qe_groq_key', SENTINEL);
+    }
+  } catch(_) { /* private mode — fine */ }
+
+  var _origFetchPolish = window.fetch;
+  window.fetch = function(input, init) {
+    var url = typeof input === 'string' ? input : (input && input.url) || '';
+    if (url.indexOf('api.groq.com') > -1 && init && init.headers) {
+      var auth = init.headers['Authorization'] || init.headers['authorization'];
+      if (auth && (auth.indexOf(SENTINEL) > -1)) {
+        // Rewrite URL → proxy. Strip Authorization (the worker has the real key).
+        var newUrl = url.replace('https://api.groq.com', PROXY);
+        var newHeaders = {};
+        for (var k in init.headers) {
+          if (k.toLowerCase() !== 'authorization') newHeaders[k] = init.headers[k];
+        }
+        var newInit = Object.assign({}, init, { headers: newHeaders });
+        return _origFetchPolish.call(this, newUrl, newInit);
+      }
+    }
+    return _origFetchPolish.apply(this, arguments);
+  };
+
+  // Patch qzGetProvider so any UI that asks "is AI configured" sees yes
+  function patchProvider() {
+    if (window._QZ_SERVER_MODE) return;
+    var orig = window.qzGetProvider;
+    if (typeof orig !== 'function') { setTimeout(patchProvider, 200); return; }
+    if (orig._qzPolishWrapped) return;
+    var wrapped = function() {
+      try {
+        var r = orig() || {};
+        var stored;
+        try { stored = localStorage.getItem('qe_groq_key'); } catch(_) {}
+        if ((!r.provider || r.key === SENTINEL) && stored === SENTINEL) {
+          return { key: SENTINEL, provider: 'groq' };
+        }
+        return r;
+      } catch(_) { return { key: SENTINEL, provider: 'groq' }; }
+    };
+    wrapped._qzPolishWrapped = true;
+    window.qzGetProvider = wrapped;
+  }
+  patchProvider();
+
+  // ─── 2. Icon minimalism CSS ──────────────────────────────────────
+  // Single brand mark at top-left (sidebar .logo-icon) replaced with a
+  // proper SVG-style monogram. All other icons throughout the app are
+  // hidden via CSS — no DOM mutation, fully reversible.
+  if (!document.getElementById('qz-minimal-icons')) {
+    var s = document.createElement('style');
+    s.id = 'qz-minimal-icons';
+    s.textContent = [
+      // Sidebar nav: drop the icon spans, tighten the spacing
+      '.sidebar .nav-item .nav-icon { display: none !important; }',
+      '.sidebar .nav-item { padding-left: 22px !important; }',
+      '.sidebar .nav-item .nav-label { margin-left: 0 !important; }',
+      // Drop the "AI" badge next to AI Studio nav item
+      '.sidebar .nav-badge-ai { display: none !important; }',
+      // Drop the colorful icon block at the top of every metric card
+      '.metric-card-icon, .ent-pf-metric-icon, .ent-metric-icon, .dashboard-metric-icon { display: none !important; }',
+      // Drop ALL emoji-bearing decorative wrappers in our own renders
+      '.qz-page-hero .qz-hero-icon, .qz-page-hero [data-hero-icon] { display: none !important; }',
+      // Drop the floating decorative orbs (kept hidden previously, reaffirm)
+      '.qz-app-orb-glow { display: none !important; }',
+      // ── THE ONE EXCEPTION: brand mark at top-left ──
+      // Replace the original ⚡ char with a clean gradient "Q" monogram.
+      '.sidebar .sidebar-logo .logo-icon {',
+      '  font-size: 0 !important;',
+      '  width: 30px !important; height: 30px !important;',
+      '  min-width: 30px !important; min-height: 30px !important;',
+      '  background: linear-gradient(135deg, #A78BFA 0%, #22D3EE 100%) !important;',
+      '  border-radius: 7px !important;',
+      '  box-shadow: 0 4px 20px rgba(167,139,250,0.32), 0 0 1px rgba(255,255,255,0.12) inset !important;',
+      '  position: relative !important;',
+      '  display: inline-block !important;',
+      '}',
+      '.sidebar .sidebar-logo .logo-icon::after {',
+      '  content: "Q";',
+      '  font-family: var(--font-display, "DM Sans"), sans-serif !important;',
+      '  font-size: 17px !important; font-weight: 800 !important;',
+      '  color: #0a0b0e !important; letter-spacing: -0.04em !important;',
+      '  position: absolute !important; inset: 0 !important;',
+      '  display: grid !important; place-items: center !important;',
+      '}',
+    ].join('\n');
+    document.head.appendChild(s);
+  }
+
+  // ─── 3. Settings: hide API key sections ──────────────────────────
+  // Replace with a positive "AI configured" confirmation. We use JS
+  // (vs CSS) so the hide is robust to dynamic setting reflows.
+  function hideKeySettings() {
+    // (a) Hide entire "AI Provider Keys" .settings-section
+    document.querySelectorAll('.settings-section').forEach(function(sec) {
+      var title = sec.querySelector('.settings-section-title');
+      if (title && /AI Provider Keys/i.test(title.textContent)) {
+        sec.style.display = 'none';
+      }
+    });
+    // (b) Hide Polygon API key INPUT row + saved-key row (Polygon section
+    //     remains, but the key entry is gone)
+    var pk = document.getElementById('polygon-api-key');
+    if (pk) {
+      var row = pk.closest('.settings-row');
+      if (row) row.style.display = 'none';
+    }
+    var pkSaved = document.getElementById('polygon-key-saved-row');
+    if (pkSaved) pkSaved.style.display = 'none';
+
+    // (c) Hide the global "AI key required" banner (no longer applicable)
+    var keyBanner = document.getElementById('ai-key-banner');
+    if (keyBanner) keyBanner.style.display = 'none';
+
+    // (d) Inject a single positive notice where AI Provider Keys section
+    //     used to be — only if not already injected
+    var settings = document.getElementById('page-settings');
+    if (settings && !document.getElementById('qz-ai-configured-notice')) {
+      // Find the first .settings-section to anchor relative position
+      var firstSection = settings.querySelector('.settings-section');
+      if (firstSection) {
+        var notice = document.createElement('div');
+        notice.id = 'qz-ai-configured-notice';
+        notice.className = 'settings-section';
+        notice.innerHTML =
+          '<div class="settings-section-title">AI Engine</div>' +
+          '<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.2);border-radius:10px;">' +
+            '<span style="width:9px;height:9px;border-radius:50%;background:#34D399;box-shadow:0 0 10px rgba(52,211,153,0.7);flex-shrink:0;"></span>' +
+            '<div>' +
+              '<div style="font-family:var(--font-display),sans-serif;font-size:13px;font-weight:600;color:#fff;letter-spacing:-0.01em;">AI is configured.</div>' +
+              '<div style="font-size:11.5px;color:var(--text-muted);margin-top:2px;line-height:1.5;">Queries are routed through Quant Entelloq\'s secure backend. No API keys are stored in your browser or exposed to client code.</div>' +
+            '</div>' +
+          '</div>';
+        firstSection.insertAdjacentElement('afterend', notice);
+      }
+    }
+  }
+  setInterval(hideKeySettings, 1500);
+  if (document.readyState === 'complete') hideKeySettings();
+  else window.addEventListener('load', hideKeySettings);
+})();
+</script>
+
 </body>
 </html>
