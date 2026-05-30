@@ -16612,7 +16612,8 @@ window.addEventListener('resize', () => {
         if (!el.classList.contains('qe-reveal')) {
           el.classList.add('qe-reveal');
           const delay = ['','qe-reveal-d1','qe-reveal-d2','qe-reveal-d3','qe-reveal-d4'];
-          el.classList.add(delay[Math.min(i % 5, 4)]);
+          const cls = delay[Math.min(i % 5, 4)];
+          if (cls) el.classList.add(cls);  // skip empty (first card has no stagger delay)
         }
       });
     });
