@@ -27113,6 +27113,320 @@ setTimeout(() => {
 <!-- QuantLab + IntelEngine script removed — had multiple unfixable apostrophe parse errors in the reference. Re-add from clean source later. -->
 <script>
 /* ==================================================================== *
+ *  ATLAS-STYLE CINEMATIC + REMOVE SUBSCRIPTION UI                      *
+ *                                                                      *
+ *  Inspired by atlascard.com's slow, deliberate scroll choreography:   *
+ *    - Sticky-stage sections that hold while content animates          *
+ *    - Bigger reveal distances (translateY 64px) with slower curves    *
+ *    - Scroll-driven opacity on hero text as you leave the fold        *
+ *    - Custom cinematic cursor (dot + lagging outline)                 *
+ *    - Generous negative space, restrained density                     *
+ *                                                                      *
+ *  Plus: comprehensive removal of all subscription / pricing / upgrade *
+ *  UI across landing, settings, sidebar, and modals.                   *
+ * ==================================================================== */
+(function() {
+  'use strict';
+
+  // ─────────────────────────────────────────────────────────────────
+  //  PART A — Hide every subscription / pricing surface
+  // ─────────────────────────────────────────────────────────────────
+  if (!document.getElementById('qz-no-subs-css')) {
+    var ns = document.createElement('style');
+    ns.id = 'qz-no-subs-css';
+    ns.textContent = [
+      // Landing-page pricing section
+      '#lp3-pricing, .lp3-pricing, .lp3-section-sep#lp3-pricing { display: none !important; }',
+      '#lp3-pricing-sep, [id*="pricing"] { display: none !important; }',
+      'a[href="#lp3-pricing"], a[href*="pricing"] { display: none !important; }',
+      // Generic pricing cards / grids
+      '.pricing-card, .pricing-grid, .pricing-plan, .pricing-price, .pricing-period, .pricing-features { display: none !important; }',
+      '.qze-pricing-grid, .qze-plan-pro, .qze-plan-free, .qze-pricing-section { display: none !important; }',
+      // Settings → Subscription/Plans section
+      '#qz-pricing-wrap, .qz-pricing-wrap, .qz-plan-card, #qz-card-free, #qz-card-pro, .qz-plan-pill { display: none !important; }',
+      '#qz-billing-toggle-row, .qz-billing-toggle, #qz-usage-row, .qz-plan-usage { display: none !important; }',
+      // Upgrade CTAs
+      '#qz-upgrade-btn, #qz-portal-btn, .qz-upgrade-cta, .qz-upgrade-btn, [onclick*="qzInitiateUpgrade"] { display: none !important; }',
+      'button[onclick*="Upgrade"], button[onclick*="upgrade"], a[onclick*="upgrade"] { display: none !important; }',
+      // Sidebar plan label under user name
+      '.user-plan, .sidebar .user-plan { display: none !important; }',
+      // Sub tier badge in header / status bar
+      '#qz-sub-tier, #qz-sub-badge, .qz-sub-badge, .qz-sub-tier, #qz-renewal-info { display: none !important; }',
+      // "Daily AI limit" warnings
+      '.qz-quota-bar, .qz-quota-warning, #qz-quota-row { display: none !important; }',
+      // Any element with explicit "MOST POPULAR" or "Free Plan" badges
+    ].join('\n');
+    document.head.appendChild(ns);
+  }
+
+  // Hide settings sections by content match (catches the entire subscription card)
+  function hideSubSections() {
+    document.querySelectorAll('.settings-section, .lp3-section, section, .ent-card').forEach(function(sec) {
+      var title = sec.querySelector('.settings-section-title, .lp3-section-title, h2, h3, .section-title');
+      if (!title) return;
+      var t = (title.textContent || '').trim().toLowerCase();
+      if (/subscription|plan|billing|pricing|upgrade|payment|stripe/i.test(t) &&
+          !/subscriptions? alert|notification/i.test(t)) {
+        sec.style.display = 'none';
+      }
+    });
+    // Also hide any standalone "Upgrade to Pro" buttons by text
+    document.querySelectorAll('button, a').forEach(function(b) {
+      var t = (b.textContent || '').trim();
+      if (/^(upgrade to pro|subscribe now|choose plan|view plans|see pricing)/i.test(t)) {
+        b.style.display = 'none';
+      }
+    });
+  }
+  setInterval(hideSubSections, 2500);
+  if (document.readyState === 'complete') hideSubSections();
+  else window.addEventListener('load', hideSubSections);
+
+  // ─────────────────────────────────────────────────────────────────
+  //  PART B — Atlas-style cinematic scroll choreography
+  // ─────────────────────────────────────────────────────────────────
+  if (!document.getElementById('qz-atlas-cinematic-css')) {
+    var ac = document.createElement('style');
+    ac.id = 'qz-atlas-cinematic-css';
+    ac.textContent = `
+      /* Atlas-style ease — slow, deliberate, NOT spring */
+      :root {
+        --qe-atlas-ease: cubic-bezier(0.22, 1, 0.36, 1);
+        --qe-atlas-slow: cubic-bezier(0.83, 0, 0.17, 1);
+      }
+
+      /* ── Cinematic reveal — bigger distance, slower curve ── */
+      .qe-cine {
+        opacity: 0;
+        transform: translate3d(0, 64px, 0);
+        transition:
+          opacity 1100ms var(--qe-atlas-ease),
+          transform 1100ms var(--qe-atlas-ease);
+        will-change: opacity, transform;
+      }
+      .qe-cine.qe-cine-in {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+
+      /* ── Scroll-driven hero fade — content fades as you scroll past ── */
+      .qe-hero-fade { transition: opacity 80ms linear; }
+
+      /* ── Cinematic cursor (desktop only, pointer:fine) ── */
+      @media (hover: hover) and (pointer: fine) {
+        body { cursor: none; }
+        a, button, input, textarea, select, [role="button"], [onclick], .nav-item, .qz-padd-result, .qz-cop-action {
+          cursor: none;
+        }
+        #qe-cursor-dot, #qe-cursor-ring {
+          position: fixed; top: 0; left: 0; pointer-events: none;
+          z-index: 99999;
+          will-change: transform;
+          mix-blend-mode: difference;
+        }
+        #qe-cursor-dot {
+          width: 6px; height: 6px; border-radius: 50%;
+          background: #F4F4F0;
+          transform: translate3d(-100px, -100px, 0);
+          transition: width 200ms var(--qe-atlas-ease), height 200ms var(--qe-atlas-ease), background 200ms var(--qe-atlas-ease);
+        }
+        #qe-cursor-ring {
+          width: 32px; height: 32px; border-radius: 50%;
+          border: 1px solid rgba(244,244,240,0.6);
+          margin-left: -16px; margin-top: -16px;
+          transform: translate3d(-100px, -100px, 0);
+          transition: transform 400ms var(--qe-atlas-ease), width 300ms var(--qe-atlas-ease), height 300ms var(--qe-atlas-ease), border-color 300ms var(--qe-atlas-ease);
+        }
+        body.qe-cursor-hover #qe-cursor-dot {
+          width: 0; height: 0;
+        }
+        body.qe-cursor-hover #qe-cursor-ring {
+          width: 56px; height: 56px;
+          margin-left: -28px; margin-top: -28px;
+          border-color: var(--qe-amber, #E4A11B);
+          border-width: 1.5px;
+        }
+      }
+
+      /* ── Sticky stage — section that holds while content reveals ── */
+      .qe-sticky-stage {
+        position: relative;
+        min-height: 100vh;
+      }
+      .qe-sticky-stage > .qe-stage-content {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      /* ── Generous landing spacing (Atlas-like negative space) ── */
+      #landing .lp3-section,
+      #landing .qze-section,
+      #landing section {
+        padding-top: clamp(60px, 10vh, 140px) !important;
+        padding-bottom: clamp(60px, 10vh, 140px) !important;
+      }
+
+      /* ── Larger editorial headlines on landing ── */
+      #landing h1,
+      #landing .lp3-hero-title,
+      #landing .qze-hero-title {
+        font-size: clamp(48px, 9vw, 112px) !important;
+        line-height: 1.0 !important;
+        letter-spacing: -0.035em !important;
+        font-weight: 500 !important;
+      }
+
+      /* ── Quiet section eyebrows ── */
+      #landing .lp3-eyebrow,
+      #landing .qze-eyebrow {
+        font-family: var(--qe-mono) !important;
+        font-size: 11px !important;
+        letter-spacing: 0.22em !important;
+        color: var(--qe-text-mute) !important;
+        text-transform: uppercase !important;
+        margin-bottom: clamp(20px, 3vh, 40px) !important;
+      }
+
+      /* Mobile: turn off custom cursor */
+      @media (pointer: coarse), (hover: none) {
+        #qe-cursor-dot, #qe-cursor-ring { display: none !important; }
+        body { cursor: auto !important; }
+      }
+    `;
+    document.head.appendChild(ac);
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  //  Cinematic cursor — dot + lagging outline ring
+  // ─────────────────────────────────────────────────────────────────
+  function initCursor() {
+    if (window.matchMedia('(pointer: coarse)').matches) return;
+    if (document.getElementById('qe-cursor-dot')) return;
+    var dot = document.createElement('div');
+    dot.id = 'qe-cursor-dot';
+    var ring = document.createElement('div');
+    ring.id = 'qe-cursor-ring';
+    document.body.appendChild(dot);
+    document.body.appendChild(ring);
+
+    var mx = 0, my = 0;
+    var rx = 0, ry = 0;
+    window.addEventListener('mousemove', function(e) {
+      mx = e.clientX; my = e.clientY;
+      dot.style.transform = 'translate3d(' + mx + 'px,' + my + 'px,0)';
+    });
+    function animateRing() {
+      rx += (mx - rx) * 0.18;
+      ry += (my - ry) * 0.18;
+      ring.style.transform = 'translate3d(' + rx + 'px,' + ry + 'px,0)';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    // Hover state on interactive elements
+    document.addEventListener('mouseover', function(e) {
+      if (e.target.closest('a, button, [role="button"], [onclick], .nav-item, .qz-padd-result, .qz-cop-action, .qz-quest-item, input, textarea')) {
+        document.body.classList.add('qe-cursor-hover');
+      }
+    });
+    document.addEventListener('mouseout', function(e) {
+      if (e.target.closest('a, button, [role="button"], [onclick], .nav-item, .qz-padd-result, .qz-cop-action, .qz-quest-item, input, textarea')) {
+        document.body.classList.remove('qe-cursor-hover');
+      }
+    });
+  }
+  setTimeout(initCursor, 800);
+
+  // ─────────────────────────────────────────────────────────────────
+  //  Cinematic scroll-driven hero fade on landing
+  // ─────────────────────────────────────────────────────────────────
+  function initHeroFade() {
+    var landing = document.getElementById('landing');
+    if (!landing) return;
+    var hero = landing.querySelector('.lp3-hero, .qze-hero, .hero-title, h1');
+    if (!hero) return;
+    var heroContainer = hero.closest('.lp3-hero, .qze-hero, .hero, section') || hero;
+    heroContainer.classList.add('qe-hero-fade');
+
+    var ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function() {
+        var y = window.scrollY;
+        var vh = window.innerHeight;
+        // Fade from 100% to 0% over the first viewport height
+        var opacity = Math.max(0, 1 - (y / (vh * 0.7)));
+        // Translate up slightly for parallax
+        var ty = y * -0.15;
+        heroContainer.style.opacity = opacity;
+        heroContainer.style.transform = 'translate3d(0,' + ty + 'px,0)';
+        ticking = false;
+      });
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+  setTimeout(initHeroFade, 1000);
+
+  // ─────────────────────────────────────────────────────────────────
+  //  Apply cinematic reveal to landing sections
+  // ─────────────────────────────────────────────────────────────────
+  function initCinematicReveal() {
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('qe-cine-in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -80px 0px' });
+
+    function apply() {
+      // Target landing sections, feature cards, large content blocks
+      var targets = document.querySelectorAll(
+        '#landing .lp3-section > *, #landing .qze-section > *, ' +
+        '#landing .lp3-feature-card, #landing .qze-feat-card, ' +
+        '#landing .lp3-review-card, #landing .qze-review-card, ' +
+        '#landing .lp3-stat, #landing .qze-stat'
+      );
+      targets.forEach(function(el) {
+        if (el.classList.contains('qe-cine')) return;
+        el.classList.add('qe-cine');
+        io.observe(el);
+      });
+    }
+    apply();
+    // Re-apply periodically because landing may re-render
+    setInterval(apply, 3000);
+  }
+  setTimeout(initCinematicReveal, 1200);
+
+  // ─────────────────────────────────────────────────────────────────
+  //  Patch the nav-link "Pricing" anchor in landing nav
+  // ─────────────────────────────────────────────────────────────────
+  function purgePricingLinks() {
+    document.querySelectorAll('a').forEach(function(a) {
+      if (a.getAttribute('href') === '#lp3-pricing' || /pricing/i.test(a.textContent || '')) {
+        // Don't hide nav-items that are core sections (signals etc) — only true pricing
+        if (/^pricing|plans|subscribe/i.test((a.textContent || '').trim())) {
+          a.style.display = 'none';
+        }
+      }
+    });
+  }
+  setInterval(purgePricingLinks, 3000);
+  if (document.readyState === 'complete') purgePricingLinks();
+  else window.addEventListener('load', purgePricingLinks);
+})();
+</script>
+
+<script>
+/* ==================================================================== *
  *  QUANT EDITORIAL — comprehensive design-system overlay (rebuild v3)  *
  *                                                                      *
  *  Direction: editorial serif × Bloomberg terminal × cinematic film    *
