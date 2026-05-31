@@ -32417,6 +32417,185 @@ setTimeout(() => {
 
 <script>
 /* ==================================================================== *
+ *  MOBILE BUGFIXES v3                                                  *
+ *  1. Auth card no longer fades out when scrolling landing on mobile.  *
+ *     Root cause: an earlier hero-fade-on-scroll effect applied opacity*
+ *     to the WHOLE .lp3-hero — on mobile that container holds both the *
+ *     copy AND the stacked auth card, so scrolling killed the form.    *
+ *  2. Bottom-right floating MENU FAB on mobile so the sidebar is       *
+ *     always thumb-reachable (supplements the top-left pill which was  *
+ *     visually crowded by the cookie banner).                          *
+ * ==================================================================== */
+(function() {
+  'use strict';
+
+  // ─────────────────────────────────────────────────────────────────
+  //  1. KILL the hero-fade-on-scroll for the auth card on mobile
+  // ─────────────────────────────────────────────────────────────────
+  if (!document.getElementById('qe-no-hero-fade-mobile-css')) {
+    var s1 = document.createElement('style');
+    s1.id = 'qe-no-hero-fade-mobile-css';
+    s1.textContent = `
+      @media (max-width: 900px) {
+        #landing .lp3-hero,
+        #landing .qze-hero,
+        #landing section.hero {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+        #landing .lp3-card,
+        #landing #lp3-auth-inline {
+          margin-top: 24px !important;
+          margin-bottom: 60px !important;
+          width: 100% !important;
+          max-width: 480px !important;
+          align-self: center !important;
+          position: relative !important;
+        }
+        #landing .lp3-hero {
+          flex-direction: column !important;
+          align-items: stretch !important;
+          gap: 32px !important;
+          padding-bottom: 80px !important;
+        }
+        #landing .lp3-hero-copy { width: 100% !important; max-width: none !important; }
+      }
+    `;
+    document.head.appendChild(s1);
+  }
+  // Also continually reset any inline opacity/transform the old fade script keeps setting
+  function patchHeroFade() {
+    if (window.innerWidth > 900) return;
+    var hero = document.querySelector('#landing .lp3-hero');
+    if (!hero) return;
+    if (hero.style.opacity && hero.style.opacity !== '1') hero.style.opacity = '1';
+    if (hero.style.transform && hero.style.transform !== 'none') hero.style.transform = 'none';
+    hero.classList.remove('qe-hero-fade');
+  }
+  setInterval(patchHeroFade, 500);
+  if (document.readyState === 'complete') patchHeroFade();
+  else window.addEventListener('load', patchHeroFade);
+
+  // ─────────────────────────────────────────────────────────────────
+  //  2. Bottom-right floating MENU FAB on mobile (thumb-reachable)
+  // ─────────────────────────────────────────────────────────────────
+  if (!document.getElementById('qe-fab-menu-css')) {
+    var s2 = document.createElement('style');
+    s2.id = 'qe-fab-menu-css';
+    s2.textContent = `
+      @media (max-width: 900px) {
+        #qe-menu-fab {
+          position: fixed;
+          bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+          right: 20px;
+          z-index: 10001;
+          width: 60px; height: 60px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #A78BFA, #67E8F9);
+          border: none;
+          cursor: pointer;
+          display: grid; place-items: center;
+          box-shadow:
+            0 10px 30px rgba(167,139,250,0.42),
+            0 0 0 1px rgba(255,255,255,0.10) inset,
+            0 0 40px rgba(103,232,249,0.32);
+          transition: transform 220ms cubic-bezier(0.22,1,0.36,1);
+          padding: 0;
+          animation: qeFabPulse 3s ease-in-out infinite;
+        }
+        @keyframes qeFabPulse {
+          0%, 100% { box-shadow: 0 10px 30px rgba(167,139,250,0.42), 0 0 0 1px rgba(255,255,255,0.10) inset, 0 0 40px rgba(103,232,249,0.32), 0 0 0 0 rgba(167,139,250,0.4); }
+          50%      { box-shadow: 0 10px 30px rgba(167,139,250,0.42), 0 0 0 1px rgba(255,255,255,0.10) inset, 0 0 40px rgba(103,232,249,0.32), 0 0 0 14px rgba(167,139,250,0); }
+        }
+        #qe-menu-fab:active { transform: scale(0.94); }
+        #qe-menu-fab .qe-fab-bars {
+          width: 22px; height: 16px;
+          position: relative;
+          display: block;
+        }
+        #qe-menu-fab .qe-fab-bars::before,
+        #qe-menu-fab .qe-fab-bars::after,
+        #qe-menu-fab .qe-fab-bars span {
+          content: '';
+          position: absolute; left: 0; right: 0;
+          height: 2.2px;
+          background: #0A0A0B;
+          border-radius: 1px;
+          transition: transform 240ms cubic-bezier(0.22,1,0.36,1), opacity 200ms;
+        }
+        #qe-menu-fab .qe-fab-bars::before { top: 0; }
+        #qe-menu-fab .qe-fab-bars span    { top: 7px; display: block; }
+        #qe-menu-fab .qe-fab-bars::after  { top: 14px; }
+        #qe-menu-fab.is-open .qe-fab-bars::before { transform: translateY(7px) rotate(45deg); }
+        #qe-menu-fab.is-open .qe-fab-bars::after  { transform: translateY(-7px) rotate(-45deg); }
+        #qe-menu-fab.is-open .qe-fab-bars span    { opacity: 0; transform: translateX(-16px); }
+
+        body.qe-on-landing #qe-menu-fab { display: none; }
+
+        /* Push Copilot dock + market clock up so they don't overlap the FAB */
+        #qz-copilot-dock {
+          bottom: calc(98px + env(safe-area-inset-bottom, 0px)) !important;
+        }
+        #qz-market-clock {
+          bottom: calc(98px + env(safe-area-inset-bottom, 0px)) !important;
+        }
+      }
+      @media (min-width: 901px) {
+        #qe-menu-fab { display: none !important; }
+      }
+    `;
+    document.head.appendChild(s2);
+  }
+
+  function ensureFab() {
+    if (window.innerWidth > 900) {
+      var ex = document.getElementById('qe-menu-fab');
+      if (ex) ex.remove();
+      document.body.classList.remove('qe-on-landing');
+      return;
+    }
+    var landing = document.getElementById('landing');
+    var onLanding = landing && window.getComputedStyle(landing).display !== 'none';
+    document.body.classList.toggle('qe-on-landing', onLanding);
+    if (onLanding) return;
+
+    if (!document.getElementById('qe-menu-fab')) {
+      var fab = document.createElement('button');
+      fab.id = 'qe-menu-fab';
+      fab.setAttribute('aria-label', 'Open navigation menu');
+      fab.innerHTML = '<span class="qe-fab-bars"><span></span></span>';
+      fab.onclick = function(e) {
+        e.stopPropagation();
+        var sidebar = document.querySelector('.sidebar');
+        var isOpen = sidebar && sidebar.classList.contains('qe-mobile-open');
+        if (isOpen) {
+          if (typeof window.qeCloseDrawer === 'function') window.qeCloseDrawer();
+          fab.classList.remove('is-open');
+        } else {
+          if (typeof window.qeOpenDrawer === 'function') window.qeOpenDrawer();
+          fab.classList.add('is-open');
+        }
+      };
+      document.body.appendChild(fab);
+    }
+
+    // Sync FAB icon state with drawer state
+    var fab = document.getElementById('qe-menu-fab');
+    var sidebar = document.querySelector('.sidebar');
+    if (fab && sidebar) {
+      fab.classList.toggle('is-open', sidebar.classList.contains('qe-mobile-open'));
+    }
+  }
+
+  setInterval(ensureFab, 1200);
+  if (document.readyState === 'complete') ensureFab();
+  else window.addEventListener('load', ensureFab);
+  window.addEventListener('resize', ensureFab);
+})();
+</script>
+
+<script>
+/* ==================================================================== *
  *  MOBILE SIDEBAR DRAWER v2 — visible toggle, smooth open/close        *
  *  Replaces the small/easy-to-miss hamburger with a prominent          *
  *  always-visible toggle pill + bigger drawer + close button inside    *
