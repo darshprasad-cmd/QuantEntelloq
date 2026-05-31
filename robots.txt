@@ -1,0 +1,25 @@
+# Quant Entelloq — robots.txt
+# Allow all well-behaved crawlers to index everything.
+# Block aggressive AI training crawlers + content scrapers by default
+# (uncomment the specific User-agent blocks below if/when desired).
+
+User-agent: *
+Allow: /
+Disallow: /backend/
+Disallow: /assets/onboarding.mp4
+Crawl-delay: 1
+
+# Major search engines — full access
+User-agent: Googlebot
+Allow: /
+Disallow: /backend/
+
+User-agent: Bingbot
+Allow: /
+Disallow: /backend/
+
+User-agent: DuckDuckBot
+Allow: /
+
+# Sitemap
+Sitemap: https://quant.entelloq.com/sitemap.xml
