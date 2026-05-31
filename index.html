@@ -33442,6 +33442,241 @@ setTimeout(() => {
 
 <script>
 /* ==================================================================== *
+ *  MOBILE STABILITY + SEARCH FIX                                       *
+ *  1. Lock the layout so it stops shifting around on phones (kills     *
+ *     parallax drift, hero fade-on-scroll, and unstable vh units that  *
+ *     change when iOS Safari URL bar hides/shows).                     *
+ *  2. Dedicated mobile SEARCH button at top-right (the original top    *
+ *     bar search bar is too squeezed on narrow screens / covered by    *
+ *     the MENU pill).                                                  *
+ * ==================================================================== */
+(function() {
+  'use strict';
+
+  // ── CSS ──
+  if (!document.getElementById('qe-mobile-stability-css')) {
+    var s = document.createElement('style');
+    s.id = 'qe-mobile-stability-css';
+    s.textContent = `
+      @media (max-width: 900px) {
+        /* Kill the parallax background drift on mobile — it causes
+           visible layout shift as the user scrolls */
+        #qe-parallax-bg, #qe-parallax-grain { display: none !important; }
+
+        /* Use dynamic viewport units so 100vh doesn't change when
+           iOS Safari address bar slides up/down */
+        #landing, #app, .main-content {
+          min-height: 100dvh !important;
+        }
+
+        /* Prevent ANY horizontal scroll on mobile */
+        html, body {
+          overflow-x: hidden !important;
+          max-width: 100vw !important;
+          width: 100vw !important;
+        }
+
+        /* Stop scroll-anchored chrome from jumping when URL bar resizes */
+        .top-bar {
+          position: relative !important;
+          top: 0 !important;
+        }
+
+        /* Disable the cinematic cursor on touch (already done in earlier
+           CSS but force again here for stability — cursor: none on body
+           causes weird tap behavior on some Android browsers) */
+        body, button, a, input, [onclick] { cursor: auto !important; }
+        #qe-cursor-dot, #qe-cursor-ring { display: none !important; }
+
+        /* Disable scroll-progress bar (small but adds jitter) */
+        #qe-scroll-progress { display: none !important; }
+
+        /* Disable word-by-word reveals on mobile — too much DOM
+           churn during scroll on low-end phones */
+        .qe-word-reveal > span {
+          opacity: 1 !important;
+          transform: none !important;
+          transition: none !important;
+        }
+
+        /* Lock all section reveals to immediate (no scroll-driven fade) */
+        .qe-cine, .qe-section-stage, .qe-reveal {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+
+        /* Disable magnetic + tilt effects (they cause minor reflow) */
+        .qe-magnetic, .qe-tilt {
+          transform: none !important;
+          transition: none !important;
+        }
+
+        /* Tame the top-bar so it fits on narrow phones */
+        .top-bar {
+          padding-left: 14px !important;
+          padding-right: 14px !important;
+          gap: 8px !important;
+        }
+        /* Hide the cramped original top-bar search on phones (we add a
+           dedicated mobile search button below) */
+        .top-bar .search-wrap,
+        .top-bar .search-bar {
+          display: none !important;
+        }
+        /* Hide the right-controls strip too on tiny phones —
+           country selector + LIVE toggle take too much space */
+        .top-bar .country-selector-wrap,
+        .top-bar #qz-live-toggle {
+          display: none !important;
+        }
+        /* Page title shrinks */
+        .top-bar-title { font-size: 16px !important; }
+        .top-bar-title small {
+          font-size: 9px !important;
+          letter-spacing: 0.16em !important;
+        }
+      }
+
+      /* ── DEDICATED MOBILE SEARCH BUTTON (top-right, app mode only) ── */
+      #qe-mobile-search-btn {
+        display: none;
+      }
+      @media (max-width: 900px) {
+        body:not(.qe-on-landing) #qe-mobile-search-btn {
+          display: grid;
+          place-items: center;
+          position: fixed;
+          top: calc(14px + env(safe-area-inset-top, 0px));
+          right: 14px;
+          z-index: 10000;
+          width: 42px; height: 42px;
+          border-radius: 10px;
+          background: rgba(15,15,17,0.92);
+          backdrop-filter: blur(14px);
+          -webkit-backdrop-filter: blur(14px);
+          border: 1px solid rgba(167,139,250,0.32);
+          color: #F4F4F0;
+          cursor: pointer;
+          padding: 0;
+          box-shadow: 0 6px 22px rgba(0,0,0,0.5);
+          transition: border-color 200ms ease, transform 180ms cubic-bezier(0.22,1,0.36,1);
+        }
+        body:not(.qe-on-landing) #qe-mobile-search-btn:active {
+          transform: scale(0.94);
+        }
+        body:not(.qe-on-landing) #qe-mobile-search-btn:hover {
+          border-color: rgba(167,139,250,0.6);
+        }
+        #qe-mobile-search-btn svg {
+          width: 18px; height: 18px;
+          stroke: #F4F4F0;
+          stroke-width: 2;
+        }
+      }
+      @media (min-width: 901px) {
+        #qe-mobile-search-btn { display: none !important; }
+      }
+    `;
+    document.head.appendChild(s);
+  }
+
+  // ── Build the mobile search button ──
+  function ensureSearchBtn() {
+    if (window.innerWidth > 900) {
+      var ex = document.getElementById('qe-mobile-search-btn');
+      if (ex) ex.remove();
+      return;
+    }
+    // Only show in app mode (not landing)
+    var landing = document.getElementById('landing');
+    var onLanding = landing && window.getComputedStyle(landing).display !== 'none';
+    if (onLanding) {
+      var ex2 = document.getElementById('qe-mobile-search-btn');
+      if (ex2) ex2.remove();
+      return;
+    }
+
+    if (document.getElementById('qe-mobile-search-btn')) return;
+    var btn = document.createElement('button');
+    btn.id = 'qe-mobile-search-btn';
+    btn.setAttribute('aria-label', 'Search 100M+ assets');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>';
+    btn.onclick = function() {
+      // Open the existing global search overlay via the existing function
+      if (typeof window.qzSearchOpen === 'function') {
+        try { window.qzSearchOpen(''); return; } catch(_) {}
+      }
+      // Fallback: tap the original search bar's input to trigger its focus handler
+      var origInput = document.getElementById('global-search') || document.getElementById('qzs-input');
+      if (origInput) {
+        origInput.removeAttribute('readonly');
+        origInput.focus();
+        if (origInput.onclick) origInput.onclick();
+        if (origInput.onfocus) origInput.onfocus();
+      }
+    };
+    document.body.appendChild(btn);
+  }
+
+  setInterval(ensureSearchBtn, 1500);
+  if (document.readyState === 'complete') ensureSearchBtn();
+  else window.addEventListener('load', ensureSearchBtn);
+
+  // ── Make search overlay mobile-friendly when it opens ──
+  function patchSearchOverlay() {
+    if (window.innerWidth > 900) return;
+    var ov = document.getElementById('qz-search-overlay');
+    if (!ov || ov.dataset.qeMobilePatched) return;
+    ov.dataset.qeMobilePatched = '1';
+
+    // Ensure the overlay's z-index is above mobile chrome
+    ov.style.zIndex = '99998';
+
+    // When overlay opens, lock body scroll
+    var moOpen = new MutationObserver(function() {
+      if (ov.classList.contains('open')) {
+        document.body.style.overflow = 'hidden';
+        // Focus the search input
+        setTimeout(function() {
+          var inp = document.getElementById('qzs-input');
+          if (inp) inp.focus();
+        }, 200);
+      } else {
+        document.body.style.overflow = '';
+      }
+    });
+    moOpen.observe(ov, { attributes: true, attributeFilter: ['class'] });
+  }
+  setInterval(patchSearchOverlay, 2000);
+  if (document.readyState === 'complete') patchSearchOverlay();
+  else window.addEventListener('load', patchSearchOverlay);
+
+  // ── Stop layout-shifting JS animations on mobile ──
+  // The hero-fade-on-scroll JS keeps applying inline opacity even after
+  // our CSS overrides. Override it by removing the scroll listener if we
+  // can find it, OR continually reset the styles.
+  function dampenScrollEffects() {
+    if (window.innerWidth > 900) return;
+    // Reset any inline transforms that scroll handlers might be setting
+    document.querySelectorAll('#landing .lp3-hero, #qe-parallax-bg').forEach(function(el) {
+      if (el.style.transform && el.style.transform !== 'none') {
+        el.style.transform = 'none';
+      }
+      if (el.style.opacity && el.style.opacity !== '1' && el.style.opacity !== '') {
+        el.style.opacity = '1';
+      }
+    });
+  }
+  // Run during scroll to fight the existing scroll handlers
+  window.addEventListener('scroll', function() {
+    if (window.innerWidth <= 900) dampenScrollEffects();
+  }, { passive: true });
+  setInterval(dampenScrollEffects, 300);
+})();
+</script>
+
+<script>
+/* ==================================================================== *
  *  STANDALONE MOBILE DRAWER v4 — bypass the existing .sidebar entirely *
  *                                                                      *
  *  The original .sidebar element had CSS/DOM conflicts on mobile that  *
