@@ -32779,7 +32779,26 @@ setTimeout(() => {
     var sidebar = document.querySelector('.sidebar');
     if (!sidebar) return;
 
-    // 1. Toggle pill at top-left (the visible button)
+    // BUGFIX: Only show the MENU pill when in app mode. On the landing
+    // page the sidebar exists in DOM but is hidden inside #app, so
+    // opening the drawer used to show an empty black panel.
+    var app = document.getElementById('app');
+    var appVisible = app && window.getComputedStyle(app).display !== 'none';
+    if (!appVisible) {
+      // Landing — purge the pill + overlay + close button so they
+      // don't accidentally fire
+      var pillEx = document.getElementById('qe-drawer-toggle');
+      var ovEx   = document.querySelector('.qe-mobile-overlay');
+      var clsEx  = document.querySelector('.qe-drawer-close');
+      if (pillEx) pillEx.remove();
+      if (ovEx)   ovEx.remove();
+      if (clsEx)  clsEx.remove();
+      sidebar.classList.remove('qe-mobile-open');
+      document.body.classList.remove('qe-drawer-open');
+      return;
+    }
+
+    // 1. Toggle pill at top-left (the visible button) — APP MODE ONLY
     if (!document.getElementById('qe-drawer-toggle')) {
       var btn = document.createElement('button');
       btn.id = 'qe-drawer-toggle';
@@ -33168,17 +33187,48 @@ setTimeout(() => {
         display: none;
       }
       .qe-welcome-video-shell.qe-no-video .qe-welcome-video { display: none; }
+      .qe-welcome-video-shell.qe-no-video {
+        background: linear-gradient(135deg, rgba(167,139,250,0.06), rgba(103,232,249,0.04)) !important;
+        border-color: rgba(167,139,250,0.18) !important;
+      }
       .qe-welcome-video-shell.qe-no-video .qe-welcome-video-fallback {
         display: grid;
         place-items: center;
-        padding: 32px;
+        padding: 28px;
         text-align: center;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 11px;
-        letter-spacing: 0.18em;
-        color: rgba(244,244,240,0.42);
-        text-transform: uppercase;
         height: 100%;
+      }
+      .qe-welcome-video-fallback-inner {
+        max-width: 320px;
+      }
+      .qe-welcome-video-fallback-icon {
+        width: 48px; height: 48px;
+        margin: 0 auto 14px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #A78BFA, #67E8F9);
+        display: grid; place-items: center;
+        opacity: 0.85;
+      }
+      .qe-welcome-video-fallback-icon::after {
+        content: '';
+        width: 0; height: 0;
+        border-left: 12px solid #0A0A0B;
+        border-top: 8px solid transparent;
+        border-bottom: 8px solid transparent;
+        margin-left: 3px;
+      }
+      .qe-welcome-video-fallback-title {
+        font-family: 'Fraunces', serif;
+        font-size: 16px;
+        font-weight: 500;
+        letter-spacing: -0.015em;
+        color: rgba(244,244,240,0.85);
+        margin-bottom: 6px;
+      }
+      .qe-welcome-video-fallback-body {
+        font-size: 11.5px;
+        line-height: 1.55;
+        color: rgba(244,244,240,0.5);
       }
 
       .qe-welcome-actions {
@@ -33305,7 +33355,13 @@ setTimeout(() => {
           >
             <source src="${VIDEO_PATH}" type="video/mp4">
           </video>
-          <div class="qe-welcome-video-fallback">— Tutorial Video Slot —</div>
+          <div class="qe-welcome-video-fallback">
+            <div class="qe-welcome-video-fallback-inner">
+              <div class="qe-welcome-video-fallback-icon"></div>
+              <div class="qe-welcome-video-fallback-title">Tutorial video</div>
+              <div class="qe-welcome-video-fallback-body">Hit <strong style="color:rgba(244,244,240,0.85);">Add my first position</strong> below to get started. (Video walkthrough coming soon.)</div>
+            </div>
+          </div>
         </div>
 
         <div class="qe-welcome-actions">
