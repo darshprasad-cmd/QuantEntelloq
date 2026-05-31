@@ -33044,5 +33044,345 @@ setTimeout(() => {
 })();
 </script>
 
+<script>
+/* ==================================================================== *
+ *  WELCOME FLOW — first-login portfolio nudge + optional video tutorial*
+ *                                                                      *
+ *  Auto-fires once when a newly signed-up user lands in the app with   *
+ *  an empty portfolio. Shows a polished welcome overlay that:          *
+ *    1. Greets the user                                                *
+ *    2. Embeds the tutorial video (if assets/onboarding.mp4 exists)    *
+ *    3. Primary CTA → navigates to Portfolio page + opens Add Position *
+ *    4. Skip option → dismisses, never shows again                     *
+ *                                                                      *
+ *  Marker stored in localStorage qz_welcome_shown_v1 — guaranteed      *
+ *  one-time. If the user adds any positions before this fires, marker  *
+ *  is set silently so they never see the prompt.                       *
+ * ==================================================================== */
+(function() {
+  'use strict';
+
+  var WELCOME_KEY = 'qz_welcome_shown_v1';
+  var VIDEO_PATH  = 'assets/onboarding.mp4';
+
+  // ── CSS ──
+  if (!document.getElementById('qe-welcome-css')) {
+    var css = document.createElement('style');
+    css.id = 'qe-welcome-css';
+    css.textContent = `
+      #qe-welcome-overlay {
+        position: fixed; inset: 0; z-index: 99996;
+        background: rgba(8,9,11,0.88);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        display: grid; place-items: center;
+        padding: 24px;
+        animation: qeWelcomeIn 360ms cubic-bezier(0.22,1,0.36,1);
+      }
+      @keyframes qeWelcomeIn { from { opacity: 0; } to { opacity: 1; } }
+
+      .qe-welcome-card {
+        background: linear-gradient(180deg, #11111A, #0C0C12);
+        border: 1px solid rgba(167,139,250,0.32);
+        border-radius: 18px;
+        padding: 36px 40px;
+        max-width: 640px;
+        width: 100%;
+        max-height: 92vh;
+        overflow-y: auto;
+        text-align: center;
+        box-shadow:
+          0 40px 100px rgba(0,0,0,0.65),
+          0 0 80px rgba(167,139,250,0.22),
+          0 0 0 1px rgba(255,255,255,0.04) inset;
+        animation: qeWelcomePop 480ms cubic-bezier(0.22,1,0.36,1);
+        -webkit-overflow-scrolling: touch;
+      }
+      @keyframes qeWelcomePop {
+        from { opacity: 0; transform: scale(0.94) translateY(20px); }
+        to   { opacity: 1; transform: scale(1)    translateY(0); }
+      }
+
+      .qe-welcome-mark {
+        width: 64px; height: 64px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #A78BFA, #67E8F9);
+        display: grid; place-items: center;
+        margin: 0 auto 22px;
+        font-family: 'Fraunces', serif;
+        font-weight: 700;
+        font-size: 32px;
+        color: #0A0A0B;
+        letter-spacing: -0.04em;
+        box-shadow:
+          0 12px 32px rgba(167,139,250,0.32),
+          0 0 0 1px rgba(255,255,255,0.16) inset;
+      }
+      .qe-welcome-eyebrow {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.28em;
+        color: rgba(244,244,240,0.5);
+        text-transform: uppercase;
+        margin-bottom: 14px;
+      }
+      .qe-welcome-title {
+        font-family: 'Fraunces', serif;
+        font-size: clamp(28px, 4vw, 38px);
+        font-weight: 500;
+        letter-spacing: -0.025em;
+        line-height: 1.15;
+        color: #F4F4F0;
+        margin: 0 0 14px;
+      }
+      .qe-welcome-title em {
+        font-style: italic;
+        background: linear-gradient(135deg, #A78BFA, #67E8F9);
+        -webkit-background-clip: text; background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .qe-welcome-sub {
+        font-size: 14px;
+        line-height: 1.6;
+        color: rgba(244,244,240,0.74);
+        max-width: 460px;
+        margin: 0 auto 24px;
+      }
+
+      .qe-welcome-video-shell {
+        margin: 0 auto 24px;
+        max-width: 540px;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid rgba(244,244,240,0.08);
+        background: #000;
+        position: relative;
+        aspect-ratio: 16 / 9;
+      }
+      .qe-welcome-video {
+        width: 100%; height: 100%;
+        display: block;
+        background: #000;
+      }
+      .qe-welcome-video-fallback {
+        display: none;
+      }
+      .qe-welcome-video-shell.qe-no-video .qe-welcome-video { display: none; }
+      .qe-welcome-video-shell.qe-no-video .qe-welcome-video-fallback {
+        display: grid;
+        place-items: center;
+        padding: 32px;
+        text-align: center;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        color: rgba(244,244,240,0.42);
+        text-transform: uppercase;
+        height: 100%;
+      }
+
+      .qe-welcome-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-width: 360px;
+        margin: 0 auto;
+      }
+      .qe-welcome-cta {
+        padding: 14px 24px;
+        background: linear-gradient(135deg, #A78BFA, #67E8F9);
+        color: #0A0A0B;
+        border: none;
+        border-radius: 8px;
+        font-family: 'DM Sans', sans-serif;
+        font-weight: 700;
+        font-size: 13.5px;
+        letter-spacing: 0.01em;
+        cursor: pointer;
+        transition: transform 200ms cubic-bezier(0.22,1,0.36,1), box-shadow 200ms;
+        box-shadow:
+          0 1px 0 rgba(255,255,255,0.32) inset,
+          0 8px 22px -8px rgba(167,139,250,0.5);
+      }
+      .qe-welcome-cta:hover {
+        transform: translateY(-1px);
+        box-shadow:
+          0 1px 0 rgba(255,255,255,0.4) inset,
+          0 12px 30px -8px rgba(167,139,250,0.65);
+      }
+      .qe-welcome-cta:active { transform: translateY(0); }
+      .qe-welcome-skip {
+        padding: 12px 24px;
+        background: transparent;
+        color: rgba(244,244,240,0.6);
+        border: 1px solid rgba(244,244,240,0.12);
+        border-radius: 8px;
+        font-family: 'DM Sans', sans-serif;
+        font-weight: 500;
+        font-size: 12.5px;
+        cursor: pointer;
+        transition: all 200ms ease;
+      }
+      .qe-welcome-skip:hover {
+        border-color: rgba(244,244,240,0.3);
+        color: rgba(244,244,240,0.9);
+      }
+
+      .qe-welcome-hint {
+        margin-top: 18px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        color: rgba(244,244,240,0.3);
+        text-transform: uppercase;
+      }
+
+      /* Mobile */
+      @media (max-width: 640px) {
+        .qe-welcome-card { padding: 28px 22px; }
+        .qe-welcome-mark { width: 56px; height: 56px; font-size: 28px; }
+        .qe-welcome-title { font-size: 24px; }
+        .qe-welcome-sub { font-size: 13px; }
+      }
+    `;
+    document.head.appendChild(css);
+  }
+
+  // ── Detect first-login moment + show welcome ──
+  function maybeShowWelcome() {
+    // 1. Must be logged in
+    var user = null;
+    try { user = JSON.parse(localStorage.getItem('qz_auth_user') || 'null'); } catch(_) {}
+    if (!user || !user.email) return;
+
+    // 2. App must be visible (not landing page)
+    var app = document.getElementById('app');
+    if (!app || window.getComputedStyle(app).display === 'none') return;
+
+    // 3. Only show once per user
+    var shown = false;
+    try { shown = localStorage.getItem(WELCOME_KEY) === '1'; } catch(_) {}
+    if (shown) return;
+
+    // 4. Only show if portfolio is empty (don't re-prompt experienced users)
+    var portfolio = (window.state && Array.isArray(window.state.portfolio)) ? window.state.portfolio : [];
+    if (portfolio.length > 0) {
+      try { localStorage.setItem(WELCOME_KEY, '1'); } catch(_) {}
+      return;
+    }
+
+    // 5. Don't show if it's already rendered
+    if (document.getElementById('qe-welcome-overlay')) return;
+
+    showWelcomeOverlay(user);
+  }
+
+  function firstName(user) {
+    var n = (user && user.name) || '';
+    return n.split(' ')[0] || 'analyst';
+  }
+
+  function showWelcomeOverlay(user) {
+    var name = firstName(user);
+
+    var ov = document.createElement('div');
+    ov.id = 'qe-welcome-overlay';
+    ov.innerHTML = `
+      <div class="qe-welcome-card">
+        <div class="qe-welcome-mark">Q</div>
+        <div class="qe-welcome-eyebrow">— ENTELLOQ TERMINAL · DAY ONE —</div>
+        <h1 class="qe-welcome-title">Welcome aboard, <em>${name}</em>.</h1>
+        <p class="qe-welcome-sub">Let's add your first position. Once Entelloq knows what you hold, every intelligence brief, signal, and quant analysis is personalized to your actual book.</p>
+
+        <div class="qe-welcome-video-shell" id="qe-welcome-video-shell">
+          <video
+            class="qe-welcome-video"
+            id="qe-welcome-video"
+            controls
+            preload="metadata"
+            playsinline
+            muted
+          >
+            <source src="${VIDEO_PATH}" type="video/mp4">
+          </video>
+          <div class="qe-welcome-video-fallback">— Tutorial Video Slot —</div>
+        </div>
+
+        <div class="qe-welcome-actions">
+          <button class="qe-welcome-cta" id="qe-welcome-cta">Add my first position →</button>
+          <button class="qe-welcome-skip" id="qe-welcome-skip">Skip — I'll explore on my own</button>
+        </div>
+        <div class="qe-welcome-hint">YOU CAN ALWAYS ADD POSITIONS LATER FROM THE PORTFOLIO PAGE</div>
+      </div>
+    `;
+    document.body.appendChild(ov);
+
+    // Probe whether the video file exists; if not, hide the shell
+    var video = document.getElementById('qe-welcome-video');
+    var shell = document.getElementById('qe-welcome-video-shell');
+    if (video && shell) {
+      video.addEventListener('error', function() {
+        shell.classList.add('qe-no-video');
+      }, { once: true });
+      // Also check via a separate Image-style probe for the .mp4 path
+      fetch(VIDEO_PATH, { method: 'HEAD' }).then(function(r) {
+        if (!r.ok) shell.classList.add('qe-no-video');
+      }).catch(function() {
+        shell.classList.add('qe-no-video');
+      });
+    }
+
+    // Wire CTAs
+    document.getElementById('qe-welcome-cta').onclick = function() {
+      try { localStorage.setItem(WELCOME_KEY, '1'); } catch(_) {}
+      // Pause video if playing
+      try { if (video) video.pause(); } catch(_) {}
+      ov.remove();
+      // Navigate to portfolio page
+      if (typeof window.showPage === 'function') {
+        try { window.showPage('portfolio'); } catch(_) {}
+      }
+      // Open the Add Position modal after a beat so the page renders first
+      setTimeout(function() {
+        if (typeof window.qzOpenAddPosition === 'function') {
+          try { window.qzOpenAddPosition(); } catch(_) {}
+        }
+      }, 700);
+    };
+
+    document.getElementById('qe-welcome-skip').onclick = function() {
+      try { localStorage.setItem(WELCOME_KEY, '1'); } catch(_) {}
+      try { if (video) video.pause(); } catch(_) {}
+      ov.remove();
+    };
+
+    // Escape key dismisses
+    function escKey(e) {
+      if (e.key === 'Escape') {
+        document.removeEventListener('keydown', escKey);
+        var s = document.getElementById('qe-welcome-skip');
+        if (s) s.click();
+      }
+    }
+    document.addEventListener('keydown', escKey);
+  }
+
+  // Poll periodically so we catch the moment app first becomes visible
+  setInterval(maybeShowWelcome, 1500);
+  if (document.readyState === 'complete') setTimeout(maybeShowWelcome, 1200);
+  else window.addEventListener('load', function() { setTimeout(maybeShowWelcome, 1200); });
+
+  // Manual trigger (for admin / "replay welcome" feature)
+  window.qzShowWelcome = function() {
+    try { localStorage.removeItem(WELCOME_KEY); } catch(_){}
+    var ex = document.getElementById('qe-welcome-overlay');
+    if (ex) ex.remove();
+    var user = null;
+    try { user = JSON.parse(localStorage.getItem('qz_auth_user') || 'null'); } catch(_) {}
+    showWelcomeOverlay(user || { name: 'analyst' });
+  };
+})();
+</script>
+
 </body>
 </html>
