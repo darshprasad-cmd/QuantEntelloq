@@ -33440,5 +33440,377 @@ setTimeout(() => {
 })();
 </script>
 
+<script>
+/* ==================================================================== *
+ *  STANDALONE MOBILE DRAWER v4 — bypass the existing .sidebar entirely *
+ *                                                                      *
+ *  The original .sidebar element had CSS/DOM conflicts on mobile that  *
+ *  made it slide in empty (blank black panel). This module builds a    *
+ *  COMPLETELY INDEPENDENT drawer with hardcoded nav items, ignoring    *
+ *  the original sidebar so nothing can hide the content.               *
+ *                                                                      *
+ *  Hides the old MENU pill + drawer v2 + drawer v3 systems on mobile   *
+ *  (we now have ONE drawer to rule them all).                          *
+ * ==================================================================== */
+(function() {
+  'use strict';
+
+  // Nav items — mirrors the desktop sidebar exactly
+  var NAV_SECTIONS = [
+    { label: 'CORE', items: [
+      { id: 'dashboard', name: 'Dashboard' },
+      { id: 'signals',   name: 'AI Signals' },
+      { id: 'macro',     name: 'Macro' },
+    ]},
+    { label: 'INTELLIGENCE', items: [
+      { id: 'ai',        name: 'AI Studio' },
+      { id: 'quantlab',  name: 'Quant Lab' },
+      { id: 'scanner',   name: 'Scanner' },
+      { id: 'universe',  name: 'Watchlists' },
+      { id: 'intel',     name: 'Intelligence', live: true },
+    ]},
+    { label: 'PORTFOLIO', items: [
+      { id: 'portfolio', name: 'Portfolio' },
+      { id: 'paper',     name: 'Paper Trading' },
+      { id: 'ledger',    name: 'Ledger' },
+    ]},
+    { label: 'ANALYSIS', items: [
+      { id: 'scenario',  name: 'Simulations' },
+      { id: 'backtest',  name: 'Backtest' },
+      { id: 'reports',   name: 'Reports' },
+    ]},
+    { label: 'SYSTEM', items: [
+      { id: 'alerts',    name: 'Alerts' },
+      { id: 'settings',  name: 'Settings' },
+    ]},
+  ];
+
+  // ── CSS ──
+  if (!document.getElementById('qe-mdrawer-css')) {
+    var s = document.createElement('style');
+    s.id = 'qe-mdrawer-css';
+    s.textContent = `
+      @media (max-width: 900px) {
+        /* Hide ALL the previous drawer attempts so they can't conflict */
+        #qe-drawer-toggle, .qe-mobile-menu-btn, .qe-drawer-close {
+          display: none !important;
+        }
+        /* Hide the ORIGINAL .sidebar on mobile entirely — we use our own */
+        .sidebar {
+          display: none !important;
+        }
+      }
+
+      /* The new standalone drawer */
+      #qe-mdrawer {
+        position: fixed;
+        top: 0; left: 0; bottom: 0;
+        width: 300px;
+        max-width: 86vw;
+        z-index: 100000;
+        background: #0A0A0B;
+        border-right: 1px solid rgba(167,139,250,0.22);
+        transform: translateX(-105%);
+        transition: transform 320ms cubic-bezier(0.22,1,0.36,1);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        box-shadow: 16px 0 50px rgba(0,0,0,0.7);
+        padding-bottom: env(safe-area-inset-bottom, 24px);
+        display: flex;
+        flex-direction: column;
+      }
+      #qe-mdrawer.open { transform: translateX(0); }
+
+      #qe-mdrawer-hdr {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 20px 22px 18px;
+        border-bottom: 1px solid rgba(244,244,240,0.06);
+        position: sticky; top: 0;
+        background: #0A0A0B;
+        z-index: 2;
+      }
+      #qe-mdrawer-brand {
+        display: flex; align-items: center; gap: 11px;
+      }
+      #qe-mdrawer-brand-mark {
+        width: 32px; height: 32px;
+        border-radius: 7px;
+        background: linear-gradient(135deg, #A78BFA, #67E8F9);
+        display: grid; place-items: center;
+        font-family: 'Fraunces', serif;
+        font-weight: 700;
+        font-size: 17px;
+        color: #0A0A0B;
+        letter-spacing: -0.04em;
+      }
+      #qe-mdrawer-brand-text {
+        font-family: 'Fraunces', serif;
+        font-size: 15px;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        color: #F4F4F0;
+      }
+      #qe-mdrawer-brand-text em {
+        color: #A78BFA;
+        font-weight: 600;
+        font-style: normal;
+      }
+      #qe-mdrawer-close {
+        width: 34px; height: 34px;
+        border-radius: 7px;
+        background: transparent;
+        border: 1px solid rgba(244,244,240,0.12);
+        color: #F4F4F0;
+        font-size: 20px;
+        line-height: 1;
+        cursor: pointer;
+        display: grid; place-items: center;
+        padding: 0;
+        transition: border-color 180ms ease;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+      }
+      #qe-mdrawer-close:hover { border-color: rgba(244,244,240,0.32); }
+
+      .qe-mdrawer-section {
+        padding: 18px 14px 4px;
+      }
+      .qe-mdrawer-section-label {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 9.5px;
+        letter-spacing: 0.22em;
+        color: rgba(244,244,240,0.32);
+        text-transform: uppercase;
+        font-weight: 600;
+        padding: 0 10px;
+        margin-bottom: 6px;
+      }
+      .qe-mdrawer-nav {
+        display: flex; flex-direction: column;
+        gap: 1px;
+      }
+      .qe-mdrawer-item {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 12px 14px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+        color: rgba(244,244,240,0.78);
+        background: transparent;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        text-align: left;
+        transition: background 160ms ease, color 160ms ease;
+        min-height: 44px;
+      }
+      .qe-mdrawer-item:hover, .qe-mdrawer-item:active {
+        background: rgba(167,139,250,0.08);
+        color: #F4F4F0;
+      }
+      .qe-mdrawer-item.active {
+        background: rgba(167,139,250,0.12);
+        color: #F4F4F0;
+        font-weight: 500;
+        position: relative;
+      }
+      .qe-mdrawer-item.active::before {
+        content: '';
+        position: absolute; left: 0; top: 25%; bottom: 25%;
+        width: 2px;
+        background: linear-gradient(180deg, #A78BFA, #67E8F9);
+        border-radius: 1px;
+      }
+      .qe-mdrawer-live {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 8.5px;
+        letter-spacing: 0.14em;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background: rgba(52,211,153,0.12);
+        border: 1px solid rgba(52,211,153,0.3);
+        color: #34D399;
+        font-weight: 600;
+      }
+
+      #qe-mdrawer-footer {
+        margin-top: auto;
+        padding: 14px 22px;
+        border-top: 1px solid rgba(244,244,240,0.05);
+        display: flex; align-items: center; gap: 11px;
+      }
+      #qe-mdrawer-footer-avatar {
+        width: 32px; height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #A78BFA, #67E8F9);
+        display: grid; place-items: center;
+        font-family: 'DM Sans', sans-serif;
+        font-weight: 700;
+        font-size: 14px;
+        color: #0A0A0B;
+        text-transform: uppercase;
+      }
+      #qe-mdrawer-footer-name {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        color: #F4F4F0;
+      }
+      #qe-mdrawer-footer-role {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        color: rgba(244,244,240,0.45);
+        text-transform: uppercase;
+      }
+
+      /* Backdrop overlay */
+      #qe-mdrawer-back {
+        position: fixed; inset: 0;
+        background: rgba(8,9,11,0.74);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        z-index: 99999;
+        opacity: 0; pointer-events: none;
+        transition: opacity 280ms ease;
+      }
+      #qe-mdrawer-back.open { opacity: 1; pointer-events: auto; }
+
+      /* Hide entire drawer system on desktop */
+      @media (min-width: 901px) {
+        #qe-mdrawer, #qe-mdrawer-back { display: none !important; }
+      }
+
+      /* Body scroll lock when drawer open */
+      body.qe-mdrawer-open {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+      }
+    `;
+    document.head.appendChild(s);
+  }
+
+  // ── Build drawer once ──
+  function buildDrawer() {
+    if (document.getElementById('qe-mdrawer')) return;
+
+    var drawer = document.createElement('aside');
+    drawer.id = 'qe-mdrawer';
+    drawer.setAttribute('aria-label', 'Navigation menu');
+
+    var sectionsHTML = NAV_SECTIONS.map(function(sec) {
+      var itemsHTML = sec.items.map(function(it) {
+        var live = it.live ? '<span class="qe-mdrawer-live">LIVE</span>' : '';
+        return '<button class="qe-mdrawer-item" data-page="' + it.id + '">' +
+          '<span>' + it.name + '</span>' + live + '</button>';
+      }).join('');
+      return '<div class="qe-mdrawer-section">' +
+        '<div class="qe-mdrawer-section-label">' + sec.label + '</div>' +
+        '<div class="qe-mdrawer-nav">' + itemsHTML + '</div>' +
+      '</div>';
+    }).join('');
+
+    drawer.innerHTML =
+      '<div id="qe-mdrawer-hdr">' +
+        '<div id="qe-mdrawer-brand">' +
+          '<div id="qe-mdrawer-brand-mark">Q</div>' +
+          '<div id="qe-mdrawer-brand-text">Quant<em>Entelloq</em></div>' +
+        '</div>' +
+        '<button id="qe-mdrawer-close" aria-label="Close menu">×</button>' +
+      '</div>' +
+      sectionsHTML +
+      '<div id="qe-mdrawer-footer">' +
+        '<div id="qe-mdrawer-footer-avatar" data-mdrawer-avatar>Q</div>' +
+        '<div>' +
+          '<div id="qe-mdrawer-footer-name" data-mdrawer-name>You</div>' +
+          '<div id="qe-mdrawer-footer-role">MEMBER</div>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(drawer);
+
+    var back = document.createElement('div');
+    back.id = 'qe-mdrawer-back';
+    document.body.appendChild(back);
+
+    // Wire close button + backdrop
+    drawer.querySelector('#qe-mdrawer-close').onclick = closeDrawer;
+    back.onclick = closeDrawer;
+
+    // Wire nav items — uses window.showPage if available
+    drawer.querySelectorAll('.qe-mdrawer-item').forEach(function(btn) {
+      btn.onclick = function() {
+        var page = btn.getAttribute('data-page');
+        // Update active state
+        drawer.querySelectorAll('.qe-mdrawer-item').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        closeDrawer();
+        if (typeof window.showPage === 'function') {
+          setTimeout(function() {
+            try { window.showPage(page); } catch(_) {}
+          }, 200);
+        }
+      };
+    });
+
+    // Mark dashboard active by default
+    var dashBtn = drawer.querySelector('[data-page="dashboard"]');
+    if (dashBtn) dashBtn.classList.add('active');
+  }
+
+  function openDrawer() {
+    buildDrawer();
+    var d = document.getElementById('qe-mdrawer');
+    var b = document.getElementById('qe-mdrawer-back');
+    if (d) d.classList.add('open');
+    if (b) b.classList.add('open');
+    document.body.classList.add('qe-mdrawer-open');
+    syncUserInfo();
+  }
+  function closeDrawer() {
+    var d = document.getElementById('qe-mdrawer');
+    var b = document.getElementById('qe-mdrawer-back');
+    if (d) d.classList.remove('open');
+    if (b) b.classList.remove('open');
+    document.body.classList.remove('qe-mdrawer-open');
+    // Re-sync FAB icon state
+    var fab = document.getElementById('qe-menu-fab');
+    if (fab) fab.classList.remove('is-open');
+  }
+
+  // Override the existing qeOpenDrawer / qeCloseDrawer hooks so the FAB
+  // and any other entry point uses this new drawer instead of the old one
+  window.qeOpenDrawer = openDrawer;
+  window.qeCloseDrawer = closeDrawer;
+
+  function syncUserInfo() {
+    try {
+      var user = JSON.parse(localStorage.getItem('qz_auth_user') || 'null');
+      if (!user) return;
+      var name = user.name || user.email || 'You';
+      var avatar = document.querySelector('[data-mdrawer-avatar]');
+      var nameEl = document.querySelector('[data-mdrawer-name]');
+      if (avatar) avatar.textContent = name.charAt(0).toUpperCase();
+      if (nameEl) nameEl.textContent = name;
+    } catch(_) {}
+  }
+
+  // Escape key closes
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeDrawer();
+  });
+
+  // Only build + show the FAB-pairing when in app mode + mobile
+  function maybeReady() {
+    if (window.innerWidth > 900) return;
+    var app = document.getElementById('app');
+    if (!app || window.getComputedStyle(app).display === 'none') return;
+    buildDrawer();
+  }
+  setInterval(maybeReady, 1500);
+  if (document.readyState === 'complete') maybeReady();
+  else window.addEventListener('load', maybeReady);
+})();
+</script>
+
 </body>
 </html>
