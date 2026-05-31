@@ -34047,5 +34047,689 @@ setTimeout(() => {
 })();
 </script>
 
+<script>
+/* ==================================================================== *
+ *  LEDGER + SCANNER v2 — institutional inline rebuilds                 *
+ *                                                                      *
+ *  Replaces #page-ledger and #page-scanner content with polished       *
+ *  data-dense layouts: editorial section heads, summary stat strip,    *
+ *  filter row, sortable hairline table, sparkline column (scanner),    *
+ *  empty states, CSV export (ledger).                                  *
+ *                                                                      *
+ *  Re-fires on every showPage('ledger'/'scanner') so updates pick up.  *
+ *  Reads from state.ledger / STOCKS — no backend dependency.           *
+ * ==================================================================== */
+(function() {
+  'use strict';
+
+  // ─────────────────────────────────────────────────────────────
+  //  CSS — shared design tokens for both pages
+  // ─────────────────────────────────────────────────────────────
+  if (!document.getElementById('qe-ledger-scanner-css')) {
+    var s = document.createElement('style');
+    s.id = 'qe-ledger-scanner-css';
+    s.textContent = `
+      .qe-pg2 {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px clamp(14px, 3vw, 32px) 60px;
+      }
+      .qe-pg2-mast {
+        padding: 24px 0 28px;
+        border-bottom: 1px solid rgba(244,244,240,0.06);
+        margin-bottom: 22px;
+      }
+      .qe-pg2-mast-eyebrow {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.24em;
+        color: rgba(244,244,240,0.42);
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+      .qe-pg2-mast-title {
+        font-family: 'Fraunces', serif;
+        font-size: clamp(28px, 4vw, 42px);
+        font-weight: 500;
+        letter-spacing: -0.025em;
+        line-height: 1.1;
+        color: #F4F4F0;
+      }
+      .qe-pg2-mast-sub {
+        font-size: 13px;
+        color: rgba(244,244,240,0.7);
+        margin-top: 10px;
+        max-width: 640px;
+        line-height: 1.55;
+      }
+
+      .qe-pg2-tiles {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+        margin-bottom: 22px;
+      }
+      .qe-pg2-tile {
+        background: #15151A;
+        border: 1px solid rgba(244,244,240,0.06);
+        border-radius: 8px;
+        padding: 14px 16px;
+      }
+      .qe-pg2-tile-label {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 9.5px;
+        letter-spacing: 0.18em;
+        color: rgba(244,244,240,0.42);
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+      .qe-pg2-tile-val {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 24px;
+        font-weight: 600;
+        color: #F4F4F0;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -0.015em;
+        line-height: 1;
+      }
+      .qe-pg2-tile-val.pos { color: #5EEAD4; }
+      .qe-pg2-tile-val.neg { color: #FB7185; }
+      .qe-pg2-tile-sub {
+        font-size: 10.5px;
+        color: rgba(244,244,240,0.42);
+        margin-top: 6px;
+        font-family: 'JetBrains Mono', monospace;
+        letter-spacing: 0.04em;
+      }
+
+      .qe-pg2-toolbar {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+      }
+      .qe-pg2-search {
+        flex: 1;
+        min-width: 200px;
+        padding: 10px 14px;
+        background: rgba(244,244,240,0.025);
+        border: 1px solid rgba(244,244,240,0.08);
+        border-radius: 7px;
+        color: #F4F4F0;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 13px;
+        transition: border-color 180ms cubic-bezier(0.22,1,0.36,1);
+      }
+      .qe-pg2-search:focus {
+        outline: none;
+        border-color: #A78BFA;
+        box-shadow: 0 0 0 3px rgba(167,139,250,0.10);
+      }
+      .qe-pg2-chip-row {
+        display: flex; gap: 6px; flex-wrap: wrap;
+      }
+      .qe-pg2-chip {
+        padding: 8px 14px;
+        background: rgba(244,244,240,0.025);
+        border: 1px solid rgba(244,244,240,0.08);
+        border-radius: 6px;
+        color: rgba(244,244,240,0.7);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 180ms cubic-bezier(0.22,1,0.36,1);
+      }
+      .qe-pg2-chip:hover {
+        border-color: rgba(167,139,250,0.4);
+        color: #F4F4F0;
+      }
+      .qe-pg2-chip.active {
+        background: rgba(167,139,250,0.12);
+        border-color: rgba(167,139,250,0.4);
+        color: #F4F4F0;
+      }
+
+      .qe-pg2-table-shell {
+        background: #15151A;
+        border: 1px solid rgba(244,244,240,0.06);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .qe-pg2-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 13px;
+      }
+      .qe-pg2-table th {
+        background: rgba(244,244,240,0.02);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        color: rgba(244,244,240,0.55);
+        text-transform: uppercase;
+        font-weight: 600;
+        padding: 14px 16px;
+        text-align: left;
+        border-bottom: 1px solid rgba(244,244,240,0.06);
+        cursor: pointer;
+        user-select: none;
+      }
+      .qe-pg2-table th:hover { color: #F4F4F0; }
+      .qe-pg2-table th.sort-asc::after  { content: ' ↑'; color: #A78BFA; }
+      .qe-pg2-table th.sort-desc::after { content: ' ↓'; color: #A78BFA; }
+      .qe-pg2-table td {
+        padding: 13px 16px;
+        border-bottom: 1px solid rgba(244,244,240,0.03);
+        font-family: 'JetBrains Mono', monospace;
+        color: rgba(244,244,240,0.85);
+        font-variant-numeric: tabular-nums;
+      }
+      .qe-pg2-table tbody tr {
+        transition: background 160ms ease;
+      }
+      .qe-pg2-table tbody tr:hover {
+        background: rgba(167,139,250,0.04);
+      }
+      .qe-pg2-table .ta-r { text-align: right; }
+      .qe-pg2-table .ta-c { text-align: center; }
+
+      .qe-pg2-side-buy  { color: #5EEAD4; }
+      .qe-pg2-side-sell { color: #FB7185; }
+
+      .qe-pg2-signal {
+        display: inline-block;
+        padding: 3px 8px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 9.5px;
+        letter-spacing: 0.14em;
+        font-weight: 600;
+        text-transform: uppercase;
+        border-radius: 4px;
+      }
+      .qe-pg2-signal.buy {
+        background: rgba(94,234,212,0.10);
+        border: 1px solid rgba(94,234,212,0.3);
+        color: #5EEAD4;
+      }
+      .qe-pg2-signal.sell {
+        background: rgba(251,113,133,0.10);
+        border: 1px solid rgba(251,113,133,0.3);
+        color: #FB7185;
+      }
+      .qe-pg2-signal.hold {
+        background: rgba(244,244,240,0.05);
+        border: 1px solid rgba(244,244,240,0.12);
+        color: rgba(244,244,240,0.6);
+      }
+
+      .qe-pg2-conf-bar {
+        width: 60px;
+        height: 3px;
+        background: rgba(244,244,240,0.06);
+        border-radius: 2px;
+        overflow: hidden;
+        display: inline-block;
+        vertical-align: middle;
+      }
+      .qe-pg2-conf-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #A78BFA, #67E8F9);
+        transition: width 400ms cubic-bezier(0.22,1,0.36,1);
+      }
+
+      .qe-pg2-spark {
+        display: inline-block;
+        vertical-align: middle;
+        width: 64px;
+        height: 22px;
+      }
+
+      .qe-pg2-action {
+        background: transparent;
+        border: 1px solid rgba(244,244,240,0.12);
+        color: rgba(244,244,240,0.65);
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 160ms cubic-bezier(0.22,1,0.36,1);
+        margin-left: 4px;
+      }
+      .qe-pg2-action:hover {
+        border-color: rgba(167,139,250,0.4);
+        color: #F4F4F0;
+      }
+
+      .qe-pg2-empty {
+        padding: 60px 24px;
+        text-align: center;
+        color: rgba(244,244,240,0.4);
+      }
+      .qe-pg2-empty-eyebrow {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10px;
+        letter-spacing: 0.22em;
+        color: #A78BFA;
+        text-transform: uppercase;
+        margin-bottom: 14px;
+      }
+      .qe-pg2-empty-title {
+        font-family: 'Fraunces', serif;
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        color: rgba(244,244,240,0.85);
+        margin-bottom: 8px;
+      }
+      .qe-pg2-empty-sub {
+        font-size: 13px;
+        line-height: 1.55;
+        max-width: 380px;
+        margin: 0 auto;
+      }
+
+      .qe-pg2-export {
+        padding: 9px 16px;
+        background: transparent;
+        border: 1px solid rgba(244,244,240,0.12);
+        border-radius: 6px;
+        color: rgba(244,244,240,0.78);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 180ms cubic-bezier(0.22,1,0.36,1);
+      }
+      .qe-pg2-export:hover {
+        border-color: rgba(167,139,250,0.4);
+        color: #F4F4F0;
+      }
+
+      @media (max-width: 720px) {
+        .qe-pg2-tile-val { font-size: 18px; }
+        .qe-pg2-table th, .qe-pg2-table td {
+          padding: 10px 10px;
+          font-size: 12px;
+        }
+        .qe-pg2-spark { width: 44px; }
+      }
+    `;
+    document.head.appendChild(s);
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  //  LEDGER v2
+  // ─────────────────────────────────────────────────────────────
+  var ledgerState = { sortKey: 'date', sortDir: 'desc', filter: 'all', query: '' };
+
+  function getLedgerRows() {
+    var rows = (window.state && Array.isArray(window.state.ledger)) ? window.state.ledger : [];
+    return rows.slice();
+  }
+
+  function parsePnL(p) {
+    if (typeof p === 'number') return p;
+    if (!p) return 0;
+    var n = parseFloat(String(p).replace(/[^0-9.\-]/g, ''));
+    return isNaN(n) ? 0 : (String(p).indexOf('-') >= 0 ? -Math.abs(n) : n);
+  }
+
+  function renderLedger() {
+    var page = document.getElementById('page-ledger');
+    if (!page) return;
+    page.classList.add('qe-pg2');
+
+    var rows = getLedgerRows();
+    // Filter
+    var filtered = rows.filter(function(r) {
+      if (ledgerState.filter !== 'all') {
+        if (ledgerState.filter === 'buy'  && r.type !== 'BUY')  return false;
+        if (ledgerState.filter === 'sell' && r.type !== 'SELL') return false;
+      }
+      if (ledgerState.query) {
+        var q = ledgerState.query.toUpperCase();
+        if (String(r.ticker || '').toUpperCase().indexOf(q) < 0) return false;
+      }
+      return true;
+    });
+    // Sort
+    filtered.sort(function(a, b) {
+      var k = ledgerState.sortKey;
+      var av, bv;
+      if (k === 'pnl') { av = parsePnL(a.pnl); bv = parsePnL(b.pnl); }
+      else if (k === 'value') { av = (a.qty * a.price); bv = (b.qty * b.price); }
+      else { av = a[k]; bv = b[k]; }
+      if (av < bv) return ledgerState.sortDir === 'asc' ? -1 : 1;
+      if (av > bv) return ledgerState.sortDir === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    // Summary stats
+    var totalTrades = rows.length;
+    var totalVolume = rows.reduce(function(s, r) { return s + (r.qty * r.price); }, 0);
+    var totalPnL = rows.reduce(function(s, r) { return s + parsePnL(r.pnl); }, 0);
+    var winners = rows.filter(function(r) { return parsePnL(r.pnl) > 0; }).length;
+    var sells = rows.filter(function(r) { return r.type === 'SELL'; }).length;
+    var winRate = sells > 0 ? (winners / sells * 100) : 0;
+
+    var sortClass = function(k) {
+      if (ledgerState.sortKey !== k) return '';
+      return ledgerState.sortDir === 'asc' ? 'sort-asc' : 'sort-desc';
+    };
+
+    var tableHTML = filtered.length ?
+      '<table class="qe-pg2-table"><thead><tr>' +
+        '<th data-sort="date" class="' + sortClass('date') + '">Date</th>' +
+        '<th data-sort="ticker" class="' + sortClass('ticker') + '">Ticker</th>' +
+        '<th data-sort="type" class="' + sortClass('type') + '">Side</th>' +
+        '<th data-sort="qty" class="ta-r ' + sortClass('qty') + '">Qty</th>' +
+        '<th data-sort="price" class="ta-r ' + sortClass('price') + '">Price</th>' +
+        '<th data-sort="value" class="ta-r ' + sortClass('value') + '">Value</th>' +
+        '<th data-sort="pnl" class="ta-r ' + sortClass('pnl') + '">P&amp;L</th>' +
+      '</tr></thead><tbody>' +
+      filtered.map(function(r) {
+        var sideCls = r.type === 'BUY' ? 'qe-pg2-side-buy' : 'qe-pg2-side-sell';
+        var pnlNum = parsePnL(r.pnl);
+        var pnlCls = pnlNum > 0 ? 'qe-pg2-side-buy' : (pnlNum < 0 ? 'qe-pg2-side-sell' : '');
+        var pnlText = pnlNum === 0 ? '—' : (pnlNum > 0 ? '+$' : '-$') + Math.abs(pnlNum).toLocaleString();
+        var value = (r.qty * r.price);
+        return '<tr>' +
+          '<td>' + (r.date || '—') + '</td>' +
+          '<td style="color:#F4F4F0;font-weight:500;">' + (r.ticker || '—') + '</td>' +
+          '<td class="' + sideCls + '" style="font-weight:600;letter-spacing:0.04em;">' + (r.type || '—') + '</td>' +
+          '<td class="ta-r">' + r.qty + '</td>' +
+          '<td class="ta-r">$' + Number(r.price).toFixed(2) + '</td>' +
+          '<td class="ta-r" style="color:#F4F4F0;">$' + Number(value).toLocaleString(undefined, {maximumFractionDigits: 0}) + '</td>' +
+          '<td class="ta-r ' + pnlCls + '" style="font-weight:600;">' + pnlText + '</td>' +
+        '</tr>';
+      }).join('') +
+      '</tbody></table>' :
+      '<div class="qe-pg2-empty">' +
+        '<div class="qe-pg2-empty-eyebrow">— No transactions match —</div>' +
+        '<div class="qe-pg2-empty-title">Nothing in scope</div>' +
+        '<div class="qe-pg2-empty-sub">Adjust your filter or add positions from the Portfolio page to start building a transaction history.</div>' +
+      '</div>';
+
+    page.innerHTML =
+      '<div class="qe-pg2-mast">' +
+        '<div class="qe-pg2-mast-eyebrow">— LEDGER · TRANSACTION HISTORY —</div>' +
+        '<div class="qe-pg2-mast-title">Every fill, every event.</div>' +
+        '<div class="qe-pg2-mast-sub">Complete record of buys, sells, dividends, and corporate actions across your portfolio. Sort, filter, and export at any time.</div>' +
+      '</div>' +
+      '<div class="qe-pg2-tiles">' +
+        '<div class="qe-pg2-tile"><div class="qe-pg2-tile-label">Total Trades</div><div class="qe-pg2-tile-val">' + totalTrades + '</div><div class="qe-pg2-tile-sub">historical fills</div></div>' +
+        '<div class="qe-pg2-tile"><div class="qe-pg2-tile-label">Total Volume</div><div class="qe-pg2-tile-val">$' + Math.round(totalVolume).toLocaleString() + '</div><div class="qe-pg2-tile-sub">notional traded</div></div>' +
+        '<div class="qe-pg2-tile"><div class="qe-pg2-tile-label">Realized P&amp;L</div><div class="qe-pg2-tile-val ' + (totalPnL >= 0 ? 'pos' : 'neg') + '">' + (totalPnL >= 0 ? '+$' : '-$') + Math.abs(Math.round(totalPnL)).toLocaleString() + '</div><div class="qe-pg2-tile-sub">closed positions</div></div>' +
+        '<div class="qe-pg2-tile"><div class="qe-pg2-tile-label">Win Rate</div><div class="qe-pg2-tile-val ' + (winRate >= 50 ? 'pos' : '') + '">' + winRate.toFixed(0) + '%</div><div class="qe-pg2-tile-sub">' + winners + ' / ' + sells + ' sells profitable</div></div>' +
+      '</div>' +
+      '<div class="qe-pg2-toolbar">' +
+        '<input class="qe-pg2-search" id="qe-ledger-search" type="search" placeholder="Search ticker…" value="' + (ledgerState.query || '') + '">' +
+        '<div class="qe-pg2-chip-row">' +
+          ['all', 'buy', 'sell'].map(function(f) {
+            return '<button class="qe-pg2-chip ' + (ledgerState.filter === f ? 'active' : '') + '" data-filter="' + f + '">' + f + '</button>';
+          }).join('') +
+        '</div>' +
+        '<button class="qe-pg2-export" id="qe-ledger-export">Export CSV</button>' +
+      '</div>' +
+      '<div class="qe-pg2-table-shell">' + tableHTML + '</div>';
+
+    // Wire interactions
+    var srch = document.getElementById('qe-ledger-search');
+    if (srch) {
+      srch.oninput = function() {
+        ledgerState.query = srch.value;
+        var pos = srch.selectionStart;
+        renderLedger();
+        var newSrch = document.getElementById('qe-ledger-search');
+        if (newSrch) { newSrch.focus(); try { newSrch.setSelectionRange(pos, pos); } catch(_){} }
+      };
+    }
+    page.querySelectorAll('.qe-pg2-chip[data-filter]').forEach(function(b) {
+      b.onclick = function() {
+        ledgerState.filter = b.getAttribute('data-filter');
+        renderLedger();
+      };
+    });
+    page.querySelectorAll('.qe-pg2-table th[data-sort]').forEach(function(th) {
+      th.onclick = function() {
+        var k = th.getAttribute('data-sort');
+        if (ledgerState.sortKey === k) {
+          ledgerState.sortDir = ledgerState.sortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+          ledgerState.sortKey = k; ledgerState.sortDir = k === 'date' ? 'desc' : 'asc';
+        }
+        renderLedger();
+      };
+    });
+    var exp = document.getElementById('qe-ledger-export');
+    if (exp) {
+      exp.onclick = function() {
+        var hdr = ['Date','Ticker','Side','Qty','Price','Value','PnL'];
+        var lines = [hdr.join(',')].concat(rows.map(function(r) {
+          return [r.date, r.ticker, r.type, r.qty, r.price, (r.qty*r.price).toFixed(2), parsePnL(r.pnl)].join(',');
+        }));
+        var blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url; a.download = 'entelloq-ledger-' + new Date().toISOString().slice(0,10) + '.csv';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+      };
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  //  SCANNER v2
+  // ─────────────────────────────────────────────────────────────
+  var scannerState = { sortKey: 'conf', sortDir: 'desc', signal: 'all', query: '', sector: 'all' };
+
+  function getStocks() {
+    return (typeof STOCKS !== 'undefined' && Array.isArray(STOCKS)) ? STOCKS.slice() : [];
+  }
+
+  function sparkSVG(seed, color) {
+    // Deterministic 10-point sparkline based on seed
+    var h = 0;
+    for (var i = 0; i < String(seed).length; i++) h = (h * 31 + String(seed).charCodeAt(i)) | 0;
+    var pts = [];
+    for (var i = 0; i < 10; i++) {
+      var z = Math.sin(h + i * 1.7) * Math.cos(h * 0.3 + i);
+      pts.push(11 + z * 8);
+    }
+    var path = 'M0,' + pts[0].toFixed(1);
+    for (var i = 1; i < 10; i++) path += ' L' + (i * 64/9).toFixed(1) + ',' + pts[i].toFixed(1);
+    return '<svg class="qe-pg2-spark" viewBox="0 0 64 22" preserveAspectRatio="none">' +
+      '<path d="' + path + '" fill="none" stroke="' + color + '" stroke-width="1.4" stroke-linejoin="round"/>' +
+      '</svg>';
+  }
+
+  function renderScanner() {
+    var page = document.getElementById('page-scanner');
+    if (!page) return;
+    page.classList.add('qe-pg2');
+
+    var rows = getStocks();
+    // Build sector list
+    var sectors = ['all'].concat(Array.from(new Set(rows.map(function(r){return r.sector;}).filter(Boolean))).sort());
+
+    // Filter
+    var filtered = rows.filter(function(r) {
+      if (scannerState.signal !== 'all' && r.signal !== scannerState.signal.toUpperCase()) return false;
+      if (scannerState.sector !== 'all' && r.sector !== scannerState.sector) return false;
+      if (scannerState.query) {
+        var q = scannerState.query.toUpperCase();
+        if (String(r.ticker || '').toUpperCase().indexOf(q) < 0 &&
+            String(r.name || '').toUpperCase().indexOf(q) < 0) return false;
+      }
+      return true;
+    });
+    // Sort
+    filtered.sort(function(a, b) {
+      var av = a[scannerState.sortKey], bv = b[scannerState.sortKey];
+      if (typeof av === 'string') av = av.toLowerCase();
+      if (typeof bv === 'string') bv = bv.toLowerCase();
+      if (av < bv) return scannerState.sortDir === 'asc' ? -1 : 1;
+      if (av > bv) return scannerState.sortDir === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    // Summary stats
+    var buys = rows.filter(function(r){return r.signal==='BUY';}).length;
+    var sells = rows.filter(function(r){return r.signal==='SELL';}).length;
+    var holds = rows.length - buys - sells;
+    var avgConf = rows.length ? Math.round(rows.reduce(function(s,r){return s+(r.conf||0);},0)/rows.length) : 0;
+
+    var sortClass = function(k) {
+      if (scannerState.sortKey !== k) return '';
+      return scannerState.sortDir === 'asc' ? 'sort-asc' : 'sort-desc';
+    };
+
+    var tableHTML = filtered.length ?
+      '<table class="qe-pg2-table"><thead><tr>' +
+        '<th data-sort="ticker" class="' + sortClass('ticker') + '">Ticker</th>' +
+        '<th data-sort="name" class="' + sortClass('name') + '">Name</th>' +
+        '<th data-sort="price" class="ta-r ' + sortClass('price') + '">Price</th>' +
+        '<th data-sort="change" class="ta-r ' + sortClass('change') + '">Change</th>' +
+        '<th class="ta-c">Trend</th>' +
+        '<th data-sort="signal" class="ta-c ' + sortClass('signal') + '">Signal</th>' +
+        '<th data-sort="conf" class="ta-r ' + sortClass('conf') + '">Conviction</th>' +
+        '<th class="ta-r">Actions</th>' +
+      '</tr></thead><tbody>' +
+      filtered.slice(0, 50).map(function(r) {
+        var sigCls = r.signal === 'BUY' ? 'buy' : (r.signal === 'SELL' ? 'sell' : 'hold');
+        var sparkColor = r.change >= 0 ? '#5EEAD4' : '#FB7185';
+        var changeCls = r.change >= 0 ? 'qe-pg2-side-buy' : 'qe-pg2-side-sell';
+        return '<tr>' +
+          '<td style="color:#F4F4F0;font-weight:600;">' + (r.ticker || '—') + '</td>' +
+          '<td style="color:rgba(244,244,240,0.65);font-family:DM Sans,sans-serif;">' + (r.name || '—') + '</td>' +
+          '<td class="ta-r" style="color:#F4F4F0;">$' + Number(r.price || 0).toFixed(2) + '</td>' +
+          '<td class="ta-r ' + changeCls + '" style="font-weight:600;">' + (r.change >= 0 ? '+' : '') + Number(r.change || 0).toFixed(2) + '%</td>' +
+          '<td class="ta-c">' + sparkSVG(r.ticker, sparkColor) + '</td>' +
+          '<td class="ta-c"><span class="qe-pg2-signal ' + sigCls + '">' + (r.signal || 'HOLD') + '</span></td>' +
+          '<td class="ta-r"><div class="qe-pg2-conf-bar"><div class="qe-pg2-conf-fill" style="width:' + (r.conf || 0) + '%;"></div></div> <span style="color:#A78BFA;margin-left:8px;">' + (r.conf || 0) + '%</span></td>' +
+          '<td class="ta-r"><button class="qe-pg2-action" data-watch="' + r.ticker + '">Watch</button></td>' +
+        '</tr>';
+      }).join('') +
+      '</tbody></table>' :
+      '<div class="qe-pg2-empty">' +
+        '<div class="qe-pg2-empty-eyebrow">— No matches —</div>' +
+        '<div class="qe-pg2-empty-title">No tickers match your filter</div>' +
+        '<div class="qe-pg2-empty-sub">Try widening your filter or clearing the search query above.</div>' +
+      '</div>';
+
+    page.innerHTML =
+      '<div class="qe-pg2-mast">' +
+        '<div class="qe-pg2-mast-eyebrow">— SCANNER · LIVE SIGNAL UNIVERSE —</div>' +
+        '<div class="qe-pg2-mast-title">Every signal, ranked.</div>' +
+        '<div class="qe-pg2-mast-sub">Real-time scan across the tracked universe. Filter by signal type, sector, or search by ticker — sorted by conviction, momentum, or any column.</div>' +
+      '</div>' +
+      '<div class="qe-pg2-tiles">' +
+        '<div class="qe-pg2-tile"><div class="qe-pg2-tile-label">Universe</div><div class="qe-pg2-tile-val">' + rows.length + '</div><div class="qe-pg2-tile-sub">securities scanned</div></div>' +
+        '<div class="qe-pg2-tile"><div class="qe-pg2-tile-label">BUY signals</div><div class="qe-pg2-tile-val pos">' + buys + '</div><div class="qe-pg2-tile-sub">high conviction longs</div></div>' +
+        '<div class="qe-pg2-tile"><div class="qe-pg2-tile-label">SELL signals</div><div class="qe-pg2-tile-val neg">' + sells + '</div><div class="qe-pg2-tile-sub">flagged for exit</div></div>' +
+        '<div class="qe-pg2-tile"><div class="qe-pg2-tile-label">Avg Conviction</div><div class="qe-pg2-tile-val">' + avgConf + '%</div><div class="qe-pg2-tile-sub">' + holds + ' on hold</div></div>' +
+      '</div>' +
+      '<div class="qe-pg2-toolbar">' +
+        '<input class="qe-pg2-search" id="qe-scanner-search" type="search" placeholder="Search ticker or name…" value="' + (scannerState.query || '') + '">' +
+        '<div class="qe-pg2-chip-row">' +
+          ['all', 'buy', 'sell', 'hold'].map(function(f) {
+            return '<button class="qe-pg2-chip ' + (scannerState.signal === f ? 'active' : '') + '" data-sig="' + f + '">' + f + '</button>';
+          }).join('') +
+        '</div>' +
+        '<select class="qe-pg2-search" id="qe-scanner-sector" style="flex:0 0 auto;max-width:180px;cursor:pointer;">' +
+          sectors.map(function(sec) {
+            return '<option value="' + sec + '" ' + (scannerState.sector === sec ? 'selected' : '') + '>' + (sec === 'all' ? 'All sectors' : sec) + '</option>';
+          }).join('') +
+        '</select>' +
+      '</div>' +
+      '<div class="qe-pg2-table-shell">' + tableHTML + '</div>' +
+      (filtered.length > 50 ? '<div style="margin-top:14px;font-size:11px;color:rgba(244,244,240,0.45);font-family:JetBrains Mono,monospace;letter-spacing:0.08em;text-align:center;">Showing top 50 of ' + filtered.length + ' matches · refine filters to see more</div>' : '');
+
+    // Wire interactions
+    var srch = document.getElementById('qe-scanner-search');
+    if (srch) {
+      srch.oninput = function() {
+        scannerState.query = srch.value;
+        var pos = srch.selectionStart;
+        renderScanner();
+        var newSrch = document.getElementById('qe-scanner-search');
+        if (newSrch) { newSrch.focus(); try { newSrch.setSelectionRange(pos, pos); } catch(_){} }
+      };
+    }
+    page.querySelectorAll('.qe-pg2-chip[data-sig]').forEach(function(b) {
+      b.onclick = function() {
+        scannerState.signal = b.getAttribute('data-sig');
+        renderScanner();
+      };
+    });
+    var sectorSel = document.getElementById('qe-scanner-sector');
+    if (sectorSel) {
+      sectorSel.onchange = function() {
+        scannerState.sector = sectorSel.value;
+        renderScanner();
+      };
+    }
+    page.querySelectorAll('.qe-pg2-table th[data-sort]').forEach(function(th) {
+      th.onclick = function() {
+        var k = th.getAttribute('data-sort');
+        if (scannerState.sortKey === k) {
+          scannerState.sortDir = scannerState.sortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+          scannerState.sortKey = k; scannerState.sortDir = (k === 'ticker' || k === 'name') ? 'asc' : 'desc';
+        }
+        renderScanner();
+      };
+    });
+    page.querySelectorAll('.qe-pg2-action[data-watch]').forEach(function(b) {
+      b.onclick = function() {
+        var ticker = b.getAttribute('data-watch');
+        try {
+          var wl = JSON.parse(localStorage.getItem('qz_watchlist_default') || '[]');
+          if (wl.indexOf(ticker) < 0) wl.push(ticker);
+          localStorage.setItem('qz_watchlist_default', JSON.stringify(wl));
+        } catch(_) {}
+        b.textContent = 'Added';
+        b.style.color = '#5EEAD4';
+        b.style.borderColor = 'rgba(94,234,212,0.4)';
+        setTimeout(function() { b.textContent = 'Watch'; b.style.color = ''; b.style.borderColor = ''; }, 1800);
+      };
+    });
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  //  Hook showPage to fire renderers
+  // ─────────────────────────────────────────────────────────────
+  function hookShowPage() {
+    var orig = window.showPage;
+    if (typeof orig !== 'function' || orig._qeLedgerScannerHooked) {
+      setTimeout(hookShowPage, 500);
+      return;
+    }
+    var wrapped = function(page, navEl) {
+      orig.apply(this, arguments);
+      if (page === 'ledger')  setTimeout(renderLedger, 250);
+      if (page === 'scanner') setTimeout(renderScanner, 250);
+    };
+    wrapped._qeLedgerScannerHooked = true;
+    window.showPage = wrapped;
+
+    // Trigger if currently on those pages
+    var cur = (window.state && window.state.currentPage) || null;
+    if (cur === 'ledger') setTimeout(renderLedger, 300);
+    if (cur === 'scanner') setTimeout(renderScanner, 300);
+  }
+  setTimeout(hookShowPage, 1500);
+})();
+</script>
+
 </body>
 </html>
