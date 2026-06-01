@@ -36569,5 +36569,271 @@ setTimeout(() => {
 })();
 </script>
 
+<!-- ════════════════════════════════════════════════════════════════════
+     HOTFIX v3 — three follow-ups after overhaul v2
+     1. AI Studio blank state — force agents panel on open
+     2. Reports not generating — STOCKS reference (const not on window)
+     3. Bottom-right orb blocking view — add dismiss × + remember state
+     ════════════════════════════════════════════════════════════════════ -->
+<style id="qe-hotfix-v3-css">
+  /* ─── 1. AI Studio — force agents panel visible whenever page-ai is shown ── */
+  /* The chat panel is hidden via earlier CSS. If the original aiStudioTab()
+     leaves both panels hidden (its 'chat' default + our display:none),
+     the user sees nothing. This rule guarantees agents panel renders. */
+  #page-ai:not(.hidden) #ais-panel-agents {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  /* Belt and suspenders — kill chat panel hard */
+  #ais-panel-chat { display: none !important; visibility: hidden !important; }
+
+  /* ─── 3. Dismissable orb close button ──────────────────────────────────── */
+  #qe-orb,
+  #qe-orb-static {
+    position: relative !important;
+  }
+  /* Render a close button overlay anchored to the same corner */
+  #qe-orb-dismiss {
+    position: fixed;
+    bottom: 78px;
+    right: 24px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(8,8,12,0.92);
+    border: 1px solid rgba(244,244,240,0.18);
+    color: rgba(244,244,240,0.7);
+    font-size: 12px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9001;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 200ms ease, transform 200ms cubic-bezier(0.23,1,0.32,1), background 160ms ease;
+    pointer-events: auto;
+  }
+  #qe-orb-dismiss:hover {
+    background: rgba(251,113,133,0.20);
+    border-color: rgba(251,113,133,0.5);
+    color: #FB7185;
+    transform: scale(1.1);
+  }
+  /* Show the dismiss button when hovering the orb or always on mobile */
+  #qe-orb:hover ~ #qe-orb-dismiss,
+  #qe-orb-static:hover ~ #qe-orb-dismiss,
+  #qe-orb-dismiss:hover {
+    opacity: 1;
+    transform: scale(1);
+  }
+  @media (hover: none), (max-width: 768px) {
+    #qe-orb-dismiss { opacity: 1; transform: scale(1); }
+  }
+  /* Hidden state — orb + dismiss + tooltip + badge + voice panel all gone */
+  body.qe-orb-hidden #qe-orb,
+  body.qe-orb-hidden #qe-orb-static,
+  body.qe-orb-hidden #qe-orb-dismiss,
+  body.qe-orb-hidden #qe-orb-tooltip-static,
+  body.qe-orb-hidden #qe-mic-live-badge,
+  body.qe-orb-hidden #qe-voice-panel,
+  body.qe-orb-hidden #qe-wake-prompt,
+  body.qe-orb-hidden #qe-shortcuts {
+    display: none !important;
+  }
+  /* Tiny "show orb" tab when dismissed */
+  #qe-orb-restore {
+    position: fixed;
+    bottom: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(167,139,250,0.2) 0%, rgba(103,232,249,0.14) 100%);
+    border: 1px solid rgba(167,139,250,0.35);
+    color: #C4B5FD;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9001;
+    font-size: 14px;
+    line-height: 1;
+    transition: all 200ms cubic-bezier(0.23,1,0.32,1);
+    box-shadow: 0 4px 16px rgba(167,139,250,0.2);
+  }
+  body.qe-orb-hidden #qe-orb-restore { display: flex; }
+  #qe-orb-restore:hover {
+    transform: scale(1.1);
+    border-color: rgba(167,139,250,0.7);
+    color: #FFFFFF;
+  }
+</style>
+
+<script id="qe-hotfix-v3-js">
+(function(){
+  'use strict';
+
+  // ────────────────────────────────────────────────────────────────────
+  // #1 — AI Studio: every time page-ai opens, force agents panel + render
+  // ────────────────────────────────────────────────────────────────────
+  function forceAgentsOnAIStudio() {
+    var page = document.getElementById('page-ai');
+    if (!page) return;
+    // If page is visible, ensure agents panel renders
+    if (!page.classList.contains('hidden')) {
+      var agents = document.getElementById('ais-panel-agents');
+      var chat = document.getElementById('ais-panel-chat');
+      if (chat) chat.style.display = 'none';
+      if (agents) {
+        agents.style.display = 'flex';
+        agents.style.flexDirection = 'column';
+        // Trigger renderCommandCenter if it's been a while
+        if (!agents.getAttribute('data-qe-rendered') ||
+            (Date.now() - parseInt(agents.getAttribute('data-qe-rendered'), 10) > 5000)) {
+          if (typeof window.renderCommandCenter === 'function') {
+            try { window.renderCommandCenter(); } catch(_){}
+          }
+          agents.setAttribute('data-qe-rendered', String(Date.now()));
+        }
+      }
+      // Sync tab state visually
+      var tabAgents = document.getElementById('ais-tab-agents');
+      if (tabAgents) {
+        tabAgents.classList.add('ais-tab-active');
+        tabAgents.setAttribute('aria-selected', 'true');
+      }
+    }
+  }
+
+  // Hook showPage so AI Studio always opens to agents
+  function hookShowPageAI() {
+    if (window._qeAIStudioHooked) return;
+    if (typeof window.showPage !== 'function') return;
+    window._qeAIStudioHooked = true;
+    var orig = window.showPage;
+    window.showPage = function(page, el) {
+      var r = orig.apply(this, arguments);
+      try {
+        if (page === 'ai' || page === 'command') {
+          // Run immediately + on next tick to catch async DOM updates
+          forceAgentsOnAIStudio();
+          setTimeout(forceAgentsOnAIStudio, 50);
+          setTimeout(forceAgentsOnAIStudio, 200);
+          setTimeout(forceAgentsOnAIStudio, 600);
+        }
+      } catch(_){}
+      return r;
+    };
+  }
+
+  // Hook aiStudioTab so it always picks agents
+  function hookAIStudioTab() {
+    if (window._qeAIStudioTabHooked) return;
+    if (typeof window.aiStudioTab !== 'function') return;
+    window._qeAIStudioTabHooked = true;
+    var orig = window.aiStudioTab;
+    window.aiStudioTab = function(tab) {
+      // Always agents — chat tab is dead
+      return orig.call(this, 'agents');
+    };
+  }
+
+  // ────────────────────────────────────────────────────────────────────
+  // #2 — Reports: expose STOCKS to window so renderReportsV2 finds it
+  //      const STOCKS doesn't go on window; do it explicitly.
+  // ────────────────────────────────────────────────────────────────────
+  function exposeStocks() {
+    if (window.STOCKS && window.STOCKS.length) return;
+    try {
+      // Bare identifier lookup — succeeds via lexical scope chain
+      // because top-level const STOCKS is in the script scope.
+      if (typeof STOCKS !== 'undefined' && Array.isArray(STOCKS)) {
+        window.STOCKS = STOCKS;
+      }
+    } catch(_){}
+  }
+
+  // Also expose ALERTS_DATA so renderAlertsV2 can find it
+  function exposeAlerts() {
+    if (window.ALERTS_DATA && window.ALERTS_DATA.length) return;
+    try {
+      if (typeof ALERTS_DATA !== 'undefined' && Array.isArray(ALERTS_DATA)) {
+        window.ALERTS_DATA = ALERTS_DATA;
+      }
+    } catch(_){}
+  }
+
+  // ────────────────────────────────────────────────────────────────────
+  // #3 — Bottom-right orb: dismiss button + restore tab + persistence
+  // ────────────────────────────────────────────────────────────────────
+  function ensureOrbDismiss() {
+    if (document.getElementById('qe-orb-dismiss')) return;
+    var btn = document.createElement('button');
+    btn.id = 'qe-orb-dismiss';
+    btn.title = 'Hide assistant';
+    btn.setAttribute('aria-label', 'Hide AI assistant orb');
+    btn.textContent = '×';
+    btn.onclick = function(e) {
+      e.stopPropagation();
+      e.preventDefault();
+      hideOrb();
+    };
+    document.body.appendChild(btn);
+
+    var restore = document.createElement('button');
+    restore.id = 'qe-orb-restore';
+    restore.title = 'Show assistant';
+    restore.setAttribute('aria-label', 'Show AI assistant orb');
+    restore.textContent = '◉';
+    restore.onclick = function() { showOrb(); };
+    document.body.appendChild(restore);
+  }
+
+  function hideOrb() {
+    document.body.classList.add('qe-orb-hidden');
+    try { localStorage.setItem('qe_orb_hidden', '1'); } catch(_){}
+  }
+  function showOrb() {
+    document.body.classList.remove('qe-orb-hidden');
+    try { localStorage.removeItem('qe_orb_hidden'); } catch(_){}
+  }
+  function restorePref() {
+    try {
+      if (localStorage.getItem('qe_orb_hidden') === '1') {
+        document.body.classList.add('qe-orb-hidden');
+      }
+    } catch(_){}
+  }
+
+  // ────────────────────────────────────────────────────────────────────
+  // Boot — idempotent
+  // ────────────────────────────────────────────────────────────────────
+  function boot() {
+    exposeStocks();
+    exposeAlerts();
+    hookShowPageAI();
+    hookAIStudioTab();
+    ensureOrbDismiss();
+    restorePref();
+    forceAgentsOnAIStudio();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+  setInterval(boot, 1500);
+
+  window.QEHotfix = {
+    hideOrb: hideOrb,
+    showOrb: showOrb,
+    forceAgents: forceAgentsOnAIStudio,
+    exposeStocks: exposeStocks
+  };
+})();
+</script>
+
 </body>
 </html>
