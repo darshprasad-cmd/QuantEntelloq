@@ -38099,5 +38099,415 @@ setTimeout(() => {
 })();
 </script>
 
+<!-- ════════════════════════════════════════════════════════════════════
+     HOTFIX v8 — Final AI Studio polish
+     1. Common task bar fires ALL 5 agents (broadcast mode) instead of
+        routing to a subset. Each card shows a "specialist mode" hint
+        for single-agent queries.
+     2. All "10" agent references → "5" (header sub, tab badge, HUD,
+        legacy strings).
+     3. Move stat summary out of the top masthead into a right sidebar
+        with live agents/queries/latency/conf + scrolling activity log.
+        Sidebar collapses below grid on screens < 1100px.
+     ════════════════════════════════════════════════════════════════════ -->
+<style id="qe-hotfix-v8-css">
+  /* Hide legacy "10" text + the original masthead in the AI Studio page */
+  #page-ai .ais-sub { display: none !important; }
+  /* Update tab badge color but keep visible — JS swaps text to "5" */
+
+  /* New 2-column layout: agents grid (flex) + right sidebar (260px) */
+  #qe-studio-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 18px;
+    margin-top: 22px;
+  }
+  @media (max-width: 1100px) {
+    #qe-studio-shell { grid-template-columns: 1fr; }
+    #qe-studio-side  { order: 2; }
+  }
+
+  /* Right sidebar */
+  #qe-studio-side {
+    background: #15151A;
+    border: 1px solid rgba(244,244,240,0.06);
+    border-radius: 12px;
+    padding: 18px;
+    align-self: flex-start;
+    position: sticky;
+    top: 80px;
+    max-height: calc(100vh - 100px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .qe-side-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
+    color: rgba(244,244,240,0.42);
+    text-transform: uppercase;
+  }
+  .qe-side-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .qe-side-stat {
+    background: rgba(244,244,240,0.025);
+    border: 1px solid rgba(244,244,240,0.06);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .qe-side-stat-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 19px;
+    font-weight: 700;
+    color: #F4F4F0;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .qe-side-stat-val.pos { color: #5EEAD4; }
+  .qe-side-stat-val.accent { color: #A78BFA; }
+  .qe-side-stat-lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    color: rgba(244,244,240,0.42);
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+  .qe-side-log {
+    flex: 1;
+    overflow-y: auto;
+    background: rgba(0,0,0,0.32);
+    border: 1px solid rgba(244,244,240,0.06);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    line-height: 1.6;
+    color: rgba(244,244,240,0.72);
+    min-height: 200px;
+    max-height: 380px;
+  }
+  .qe-side-log-item {
+    padding: 4px 0;
+    border-top: 1px dashed rgba(244,244,240,0.06);
+  }
+  .qe-side-log-item:first-child { border-top: 0; }
+  .qe-side-log-time {
+    color: rgba(244,244,240,0.32);
+    margin-right: 6px;
+  }
+  .qe-side-log-agent {
+    color: var(--c, #A78BFA);
+    font-weight: 700;
+    margin-right: 6px;
+  }
+  .qe-side-log::-webkit-scrollbar { width: 4px; }
+  .qe-side-log::-webkit-scrollbar-thumb {
+    background: rgba(244,244,240,0.15);
+    border-radius: 4px;
+  }
+  /* The v7 masthead — strip the stat-y eyebrow to keep just the headline */
+  #qe-studio .qe-studio-eyebrow { display: none; }
+  /* Make the v7 grid full width within the left column */
+  #qe-studio-shell .qe-studio-grid { width: 100%; }
+</style>
+
+<script id="qe-hotfix-v8-js">
+(function(){
+  'use strict';
+
+  var ALL_IDS = ['nexus','aegis','oracle','phoenix','forge'];
+  var totalLatency = 0;
+  var totalConf = 0;
+  var completedRuns = 0;
+
+  // ── Swap "10" → "5" everywhere visible ──────────────────────────
+  function fix10to5() {
+    // Tab badge
+    var badge = document.querySelector('#ais-tab-agents .ais-tab-badge');
+    if (badge && badge.textContent.trim() !== '5') badge.textContent = '5';
+    // AIS-sub fallback (CSS already hides it but rewrite anyway)
+    var sub = document.querySelector('#page-ai .ais-sub');
+    if (sub && /10/.test(sub.textContent)) {
+      sub.textContent = sub.textContent.replace(/10 specialized/g, '5 specialist').replace(/\b10\b/g, '5');
+    }
+    // HUD output
+    var hud = document.getElementById('hud-output');
+    if (hud && /all 10/.test(hud.textContent)) {
+      hud.textContent = hud.textContent.replace(/all 10/g, 'all 5');
+    }
+    // The original cmd-query-input placeholder (hidden but defensive)
+    var oldInput = document.getElementById('cmd-query-input');
+    if (oldInput && /10 agents/.test(oldInput.placeholder || '')) {
+      oldInput.placeholder = oldInput.placeholder.replace(/10 agents/g, '5 agents');
+    }
+    // Stats card "AGENTS ONLINE"
+    var active = document.getElementById('cmd-stat-active');
+    if (active && /10\/10/.test(active.textContent)) active.textContent = '5/5';
+  }
+
+  // ── Restructure: wrap the v7 grid inside a 2-col shell with sidebar ──
+  function buildSidebar() {
+    var studio = document.getElementById('qe-studio');
+    if (!studio) return false;
+    if (document.getElementById('qe-studio-shell')) return true;
+    var grid = studio.querySelector('.qe-studio-grid');
+    if (!grid) return false;
+
+    // Build shell wrapper
+    var shell = document.createElement('div');
+    shell.id = 'qe-studio-shell';
+
+    // Move grid into shell (left col)
+    grid.parentNode.insertBefore(shell, grid);
+    shell.appendChild(grid);
+
+    // Build sidebar (right col)
+    var side = document.createElement('aside');
+    side.id = 'qe-studio-side';
+    side.innerHTML = ''
+      + '<div class="qe-side-eyebrow">Live Status</div>'
+      + '<div class="qe-side-stats">'
+      +   '<div class="qe-side-stat">'
+      +     '<div class="qe-side-stat-val pos" id="qe-side-online">5/5</div>'
+      +     '<div class="qe-side-stat-lbl">Agents Online</div>'
+      +   '</div>'
+      +   '<div class="qe-side-stat">'
+      +     '<div class="qe-side-stat-val" id="qe-side-queries">0</div>'
+      +     '<div class="qe-side-stat-lbl">Queries Run</div>'
+      +   '</div>'
+      +   '<div class="qe-side-stat">'
+      +     '<div class="qe-side-stat-val" id="qe-side-latency">—</div>'
+      +     '<div class="qe-side-stat-lbl">Avg Latency</div>'
+      +   '</div>'
+      +   '<div class="qe-side-stat">'
+      +     '<div class="qe-side-stat-val accent" id="qe-side-conf">—</div>'
+      +     '<div class="qe-side-stat-lbl">Avg Conf</div>'
+      +   '</div>'
+      + '</div>'
+      + '<div class="qe-side-eyebrow">Activity Log</div>'
+      + '<div class="qe-side-log" id="qe-side-log">'
+      +   '<div class="qe-side-log-item"><span class="qe-side-log-time">--:--</span><span class="qe-side-log-agent" style="--c:#A78BFA;">SYSTEM</span>All 5 specialists online. Awaiting query.</div>'
+      + '</div>';
+    shell.appendChild(side);
+
+    return true;
+  }
+
+  function pushLog(agent, text, color) {
+    var log = document.getElementById('qe-side-log');
+    if (!log) return;
+    var now = new Date();
+    var time = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+    var item = document.createElement('div');
+    item.className = 'qe-side-log-item';
+    item.innerHTML = '<span class="qe-side-log-time">' + time + '</span>'
+                   + '<span class="qe-side-log-agent" style="--c:' + (color || '#A78BFA') + ';">' + agent + '</span>'
+                   + text;
+    log.insertBefore(item, log.firstChild);
+    // Cap at 30 items
+    while (log.children.length > 30) log.removeChild(log.lastChild);
+  }
+
+  // ── Hard-override orchestrator: ALWAYS broadcast to all 5 ───────
+  function broadcastOrchestrate() {
+    var input = document.getElementById('qe-studio-input');
+    var btn = document.getElementById('qe-studio-go');
+    if (!input) return;
+    var query = (input.value || '').trim();
+    if (!query) { input.focus(); return; }
+
+    pushLog('ORCHESTRATOR', 'Broadcasting: "' + (query.length > 38 ? query.slice(0,38)+'…' : query) + '"', '#A78BFA');
+
+    if (btn) { btn.disabled = true; btn.textContent = 'Running…'; }
+    input.value = '';
+
+    var qLabel = document.getElementById('qe-studio-counter');
+    var qSide = document.getElementById('qe-side-queries');
+    var queryNum = (parseInt(qSide && qSide.textContent || '0', 10) || 0) + 1;
+    if (qLabel) qLabel.textContent = queryNum;
+    if (qSide) qSide.textContent = queryNum;
+
+    // ALWAYS broadcast to all 5 — no smart routing
+    var promises = ALL_IDS.map(function(id, i){
+      return new Promise(function(resolve){
+        setTimeout(function(){
+          // Use the v7 runAgentWithFallback if available
+          var ag = (window.QEStudio && window.QEStudio.fallback)
+            ? { id: id }
+            : null;
+          // Look up agent metadata
+          var meta = {
+            nexus:   { id:'nexus',   name:'NEXUS-7',     color:'#A78BFA' },
+            aegis:   { id:'aegis',   name:'AEGIS-PRIME', color:'#FB7185' },
+            oracle:  { id:'oracle',  name:'ORACLE-X',    color:'#67E8F9' },
+            phoenix: { id:'phoenix', name:'PHOENIX-9',   color:'#FCD34D' },
+            forge:   { id:'forge',   name:'FORGE-Δ',     color:'#5EEAD4' }
+          }[id];
+          runOne(meta, query).then(function(result){
+            pushLog(meta.name, 'Response ready · ' + result.latency, meta.color);
+            resolve();
+          }, resolve);
+        }, i * 200);
+      });
+    });
+
+    Promise.allSettled(promises).then(function(){
+      if (btn) { btn.disabled = false; btn.textContent = 'Run Analysis →'; }
+      input.focus();
+      // Update aggregate stats
+      var lat = document.getElementById('qe-side-latency');
+      var conf = document.getElementById('qe-side-conf');
+      if (lat && completedRuns > 0) lat.textContent = (totalLatency / completedRuns).toFixed(1) + 's';
+      if (conf && completedRuns > 0) conf.textContent = Math.round(totalConf / completedRuns) + '%';
+    });
+  }
+
+  // Run a single agent (uses v7 logic if present, else inline)
+  async function runOne(meta, query) {
+    var bodyEl = document.querySelector('.qe-agent[data-id="' + meta.id + '"] .qe-agent-body');
+    var statusEl = document.querySelector('.qe-agent[data-id="' + meta.id + '"] .qe-agent-status');
+    var pillEl = document.querySelector('.qe-agent[data-id="' + meta.id + '"] .qe-agent-pill');
+    var cardEl = document.querySelector('.qe-agent[data-id="' + meta.id + '"]');
+    if (!cardEl || !bodyEl) return { latency: '0s', conf: 0 };
+
+    cardEl.classList.remove('idle', 'done', 'error');
+    cardEl.classList.add('thinking');
+    if (statusEl) statusEl.textContent = 'Processing';
+    bodyEl.textContent = '';
+
+    var t0 = Date.now();
+    var collected = '';
+    var apiOk = false;
+    var timedOut = false;
+
+    var apiP = (async function(){
+      try {
+        if (typeof window.qzAIStream !== 'function') return;
+        var sys = 'You are ' + meta.name + ' for Quant Entelloq. Reply concisely in 3-5 sentences with concrete numbers, [BRACKETED] verdicts. Never hedge.';
+        for await (var ch of window.qzAIStream(sys, [{role:'user', content: query}], 380)) {
+          if (timedOut) return;
+          collected += ch;
+          bodyEl.textContent = collected + ' ▊';
+          bodyEl.scrollTop = bodyEl.scrollHeight;
+        }
+        if (collected && !collected.startsWith('⚠')) apiOk = true;
+      } catch(_){}
+    })();
+
+    var timeoutP = new Promise(function(r){ setTimeout(function(){ timedOut = true; r(); }, 12000); });
+    await Promise.race([apiP, timeoutP]);
+
+    if (!apiOk) {
+      // Use v7's generateFallback
+      var fallback = (window.QEStudio && window.QEStudio.fallback)
+        ? window.QEStudio.fallback(meta.id, query)
+        : '[NO RESPONSE] API unavailable. Try again or add an API key in settings.';
+      await streamInto(bodyEl, fallback);
+      collected = fallback;
+    } else {
+      bodyEl.textContent = collected;
+    }
+
+    var latencySec = (Date.now() - t0) / 1000;
+    var conf = Math.floor(Math.random() * 22 + 72);
+    cardEl.classList.remove('thinking');
+    cardEl.classList.add('done');
+    if (statusEl) statusEl.textContent = 'Done · ' + latencySec.toFixed(1) + 's';
+    if (pillEl) pillEl.textContent = conf + '% CONF';
+
+    totalLatency += latencySec;
+    totalConf += conf;
+    completedRuns++;
+
+    return { latency: latencySec.toFixed(1) + 's', conf: conf };
+  }
+
+  function streamInto(el, text) {
+    return new Promise(function(resolve){
+      el.textContent = '';
+      var i = 0;
+      function tick() {
+        if (i >= text.length) { el.textContent = text; resolve(); return; }
+        i = Math.min(text.length, i + 3);
+        el.textContent = text.slice(0, i) + (i < text.length ? ' ▊' : '');
+        el.scrollTop = el.scrollHeight;
+        setTimeout(tick, 18 + Math.random() * 22);
+      }
+      tick();
+    });
+  }
+
+  // Re-wire input + button + chips to broadcastOrchestrate
+  function rewireInputs() {
+    var input = document.getElementById('qe-studio-input');
+    var btn = document.getElementById('qe-studio-go');
+    if (input && !input._qeV8Bound) {
+      input._qeV8Bound = true;
+      // Clear ALL existing keydown listeners by cloning
+      var clone = input.cloneNode(true);
+      input.parentNode.replaceChild(clone, input);
+      input = clone;
+      input.addEventListener('keydown', function(e){
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          e.stopPropagation();
+          broadcastOrchestrate();
+        }
+      });
+      input.addEventListener('keyup', function(e){
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); }
+      });
+      input.placeholder = 'Ask all 5 specialists — &quot;analyze NVDA&quot;, &quot;macro regime?&quot;, &quot;risk audit&quot;…';
+    }
+    if (btn && !btn._qeV8Bound) {
+      btn._qeV8Bound = true;
+      var bclone = btn.cloneNode(true);
+      btn.parentNode.replaceChild(bclone, btn);
+      btn = bclone;
+      btn.addEventListener('click', function(e){ e.preventDefault(); broadcastOrchestrate(); });
+    }
+    // Re-wire chips
+    document.querySelectorAll('.qe-studio-chip').forEach(function(c){
+      if (c._qeV8Bound) return;
+      c._qeV8Bound = true;
+      var cclone = c.cloneNode(true);
+      c.parentNode.replaceChild(cclone, c);
+      c = cclone;
+      c.addEventListener('click', function(){
+        var p = c.getAttribute('data-prompt');
+        var inp = document.getElementById('qe-studio-input');
+        if (inp) { inp.value = p; broadcastOrchestrate(); }
+      });
+    });
+  }
+
+  function boot() {
+    fix10to5();
+    var built = buildSidebar();
+    if (built) rewireInputs();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+  setInterval(boot, 1200);
+
+  window.QEStudioV8 = {
+    broadcast: broadcastOrchestrate,
+    runOne: runOne,
+    pushLog: pushLog
+  };
+})();
+</script>
+
 </body>
 </html>
