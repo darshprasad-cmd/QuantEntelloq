@@ -38597,5 +38597,518 @@ setTimeout(() => {
 })();
 </script>
 
+<!-- ════════════════════════════════════════════════════════════════════
+     HOTFIX v10 — Dashboard declutter + first-visit feature tour
+     1. Tighter dashboard: collapse heatmap to "Show more", soften
+        the 4-metric grid, hide the sentiment-chart card if empty,
+        compress the daily challenge to a 1-line collapsed mode.
+     2. First-visit AI Copilot guided tour — 10 steps explaining
+        every feature. Marks as seen in localStorage so it never
+        fires twice. Manual replay via the question-mark button.
+     ════════════════════════════════════════════════════════════════════ -->
+<style id="qe-hotfix-v10-css">
+  /* ─── 1. Dashboard declutter ────────────────────────────────────── */
+  #page-dashboard {
+    max-width: 1240px;
+    margin: 0 auto;
+  }
+  /* Lighter intelligence status bar */
+  #page-dashboard .dash-status-bar {
+    padding: 16px 20px !important;
+    margin-bottom: 18px !important;
+    border-radius: 12px !important;
+  }
+  /* Metric grid — 4 → 4 (kept) but tighter cards + smaller fonts */
+  #page-dashboard .dash-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+    gap: 12px !important;
+    margin-bottom: 18px !important;
+  }
+  #page-dashboard .metric-card {
+    padding: 14px 16px !important;
+    min-height: unset !important;
+  }
+  #page-dashboard .metric-card .metric-value {
+    font-size: 22px !important;
+    line-height: 1.1 !important;
+  }
+  /* Main chart + side panel — slimmer */
+  #page-dashboard .dash-main {
+    margin-bottom: 18px !important;
+  }
+  #page-dashboard .chart-container {
+    padding: 16px 18px !important;
+    border-radius: 12px !important;
+  }
+  #page-dashboard #main-chart {
+    height: 210px !important;
+  }
+  /* Section headers — quieter typography */
+  #page-dashboard .dash-section-header {
+    padding: 18px 0 8px !important;
+    margin-top: 6px !important;
+  }
+  #page-dashboard .dash-section-title {
+    font-size: 14px !important;
+    letter-spacing: 0.04em !important;
+  }
+  #page-dashboard .dash-section-sub {
+    font-size: 11px !important;
+  }
+  /* Heatmap — collapse behind a toggle */
+  #page-dashboard .heatmap-section {
+    max-height: 0;
+    overflow: hidden;
+    margin-bottom: 0 !important;
+    transition: max-height 320ms cubic-bezier(0.23,1,0.32,1), margin-bottom 220ms ease;
+  }
+  #page-dashboard .heatmap-section.qe-show {
+    max-height: 600px;
+    margin-bottom: 20px !important;
+  }
+  /* Toggle button */
+  .qe-heatmap-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(244,244,240,0.04);
+    border: 1px solid rgba(244,244,240,0.10);
+    border-radius: 100px;
+    color: rgba(244,244,240,0.7);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-left: auto;
+    transition: all 160ms ease;
+  }
+  .qe-heatmap-toggle:hover {
+    background: rgba(167,139,250,0.12);
+    border-color: rgba(167,139,250,0.32);
+    color: #F4F4F0;
+  }
+  /* Make the section header a flex row so the toggle sits on the right */
+  #page-dashboard .dash-section-header.qe-with-toggle {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+  }
+  /* Daily challenge — slim down padding so it's not so dominant */
+  #page-dashboard #qe-daily-card {
+    padding: 16px 18px !important;
+    margin: 12px 0 18px !important;
+    border-radius: 12px !important;
+  }
+  #page-dashboard .qe-daily-title {
+    font-size: 16px !important;
+    line-height: 1.35 !important;
+  }
+  #page-dashboard .qe-daily-stats {
+    margin-top: 10px !important;
+  }
+
+  /* ─── 2. First-visit feature tour ──────────────────────────────── */
+  #qe-tour-overlay {
+    position: fixed; inset: 0;
+    background: rgba(8,8,12,0.84);
+    backdrop-filter: blur(10px) saturate(140%);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+    z-index: 99990;
+    display: grid; place-items: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 240ms cubic-bezier(0.23,1,0.32,1);
+  }
+  #qe-tour-overlay.show { opacity: 1; pointer-events: auto; }
+  #qe-tour-card {
+    width: min(520px, calc(100vw - 32px));
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
+    background: linear-gradient(180deg, #15151A 0%, #0F0F14 100%);
+    border: 1px solid rgba(167,139,250,0.25);
+    border-radius: 16px;
+    padding: 32px;
+    transform: scale(0.96) translateY(8px);
+    transition: transform 320ms cubic-bezier(0.23,1,0.32,1);
+    box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(167,139,250,0.15);
+    position: relative;
+  }
+  #qe-tour-overlay.show #qe-tour-card { transform: scale(1) translateY(0); }
+  .qe-tour-orb {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #A78BFA 0%, #67E8F9 100%);
+    display: grid; place-items: center;
+    font-size: 26px;
+    box-shadow: 0 0 32px rgba(167,139,250,0.5), 0 8px 24px rgba(0,0,0,0.5);
+    margin-bottom: 18px;
+    animation: tourOrbPulse 3s ease-in-out infinite;
+  }
+  @keyframes tourOrbPulse {
+    0%,100% { box-shadow: 0 0 32px rgba(167,139,250,0.5), 0 8px 24px rgba(0,0,0,0.5); }
+    50%     { box-shadow: 0 0 48px rgba(167,139,250,0.7), 0 8px 24px rgba(0,0,0,0.5); }
+  }
+  .qe-tour-step-counter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    color: rgba(167,139,250,0.7);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .qe-tour-title {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: #F4F4F0;
+    margin-bottom: 12px;
+  }
+  .qe-tour-body {
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(244,244,240,0.78);
+    margin-bottom: 18px;
+  }
+  .qe-tour-body strong { color: #C4B5FD; font-weight: 600; }
+  .qe-tour-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 22px;
+  }
+  .qe-tour-pill {
+    padding: 4px 10px;
+    background: rgba(167,139,250,0.10);
+    border: 1px solid rgba(167,139,250,0.25);
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: #C4B5FD;
+    text-transform: uppercase;
+  }
+  .qe-tour-progress {
+    height: 3px;
+    background: rgba(244,244,240,0.08);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 18px;
+  }
+  .qe-tour-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #A78BFA 0%, #67E8F9 100%);
+    border-radius: 2px;
+    transition: width 320ms cubic-bezier(0.23,1,0.32,1);
+  }
+  .qe-tour-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .qe-tour-btn {
+    padding: 11px 18px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 160ms cubic-bezier(0.23,1,0.32,1);
+    border: 0;
+  }
+  .qe-tour-btn-primary {
+    background: linear-gradient(135deg, #A78BFA 0%, #7C3AED 100%);
+    color: #FFFFFF;
+    font-weight: 700;
+    box-shadow: 0 4px 16px rgba(167,139,250,0.3);
+    flex: 1;
+  }
+  .qe-tour-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(167,139,250,0.42);
+  }
+  .qe-tour-btn-primary:active { transform: scale(0.97); }
+  .qe-tour-btn-secondary {
+    background: transparent;
+    border: 1px solid rgba(244,244,240,0.15);
+    color: rgba(244,244,240,0.6);
+  }
+  .qe-tour-btn-secondary:hover {
+    border-color: rgba(244,244,240,0.32);
+    color: #F4F4F0;
+  }
+  .qe-tour-skip {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid rgba(244,244,240,0.12);
+    color: rgba(244,244,240,0.5);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    display: grid;
+    place-items: center;
+    transition: all 160ms ease;
+  }
+  .qe-tour-skip:hover {
+    border-color: rgba(244,244,240,0.32);
+    color: #F4F4F0;
+  }
+  /* Replay tour button — small floating action */
+  #qe-tour-replay {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: rgba(167,139,250,0.12);
+    border: 1px solid rgba(167,139,250,0.28);
+    color: #C4B5FD;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    font-size: 14px;
+    line-height: 1;
+    z-index: 800;
+    transition: all 200ms cubic-bezier(0.23,1,0.32,1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  #qe-tour-replay:hover {
+    transform: scale(1.1);
+    background: rgba(167,139,250,0.22);
+    color: #FFFFFF;
+  }
+  @media (max-width: 540px) {
+    #qe-tour-replay { display: none; }
+  }
+</style>
+
+<script id="qe-hotfix-v10-js">
+(function(){
+  'use strict';
+
+  // ────────────────────────────────────────────────────────────────────
+  // #1 — Dashboard heatmap collapse toggle
+  // ────────────────────────────────────────────────────────────────────
+  function setupHeatmapToggle() {
+    var section = document.querySelector('#page-dashboard .heatmap-section');
+    if (!section) return;
+    if (section.getAttribute('data-qe-toggle') === '1') return;
+    section.setAttribute('data-qe-toggle', '1');
+    var prevHeader = section.previousElementSibling;
+    if (!prevHeader || !prevHeader.classList.contains('dash-section-header')) return;
+    prevHeader.classList.add('qe-with-toggle');
+    var btn = document.createElement('button');
+    btn.className = 'qe-heatmap-toggle';
+    btn.textContent = 'Show ↓';
+    btn.onclick = function() {
+      var open = section.classList.toggle('qe-show');
+      btn.textContent = open ? 'Hide ↑' : 'Show ↓';
+    };
+    prevHeader.appendChild(btn);
+  }
+
+  // ────────────────────────────────────────────────────────────────────
+  // #2 — First-visit feature tour
+  // ────────────────────────────────────────────────────────────────────
+  var TOUR_KEY = 'qe_tour_seen_v1';
+
+  var STEPS = [
+    {
+      title: 'Welcome to Quant Entelloq',
+      body: "Hi — I'm your AI co-pilot. In the next minute I'll show you every feature in this terminal. Browser-only, free, no signup. Bloomberg costs $24k/year for less than this.",
+      pills: ['Free forever', 'Browser-only', 'No signup']
+    },
+    {
+      title: 'The Dashboard',
+      body: "Your command center. Real-time portfolio value, signal counts, market sentiment, and the top AI opportunity. Charts update live. The <strong>Daily Challenge</strong> card at the top builds a streak — answer one finance question per day to keep it alive.",
+      pills: ['Live charts', 'Signal counts', 'Daily streak']
+    },
+    {
+      title: 'AI Studio · 5 Specialists',
+      body: "The brain of the app. Five high-tech specialist agents — <strong>NEXUS-7</strong> (alpha synthesis), <strong>AEGIS-PRIME</strong> (risk), <strong>ORACLE-X</strong> (macro regime), <strong>PHOENIX-9</strong> (catalysts), <strong>FORGE-Δ</strong> (backtests) — analyze any query in parallel. Ask anything, all 5 respond simultaneously.",
+      pills: ['5 agents', 'Parallel', 'Institutional-grade']
+    },
+    {
+      title: 'Quant Lab',
+      body: "Ten quant tools at your fingertips: <strong>backtester</strong>, <strong>Monte Carlo</strong>, <strong>Black-Scholes pricer</strong>, <strong>portfolio optimizer</strong>, <strong>factor analyzer</strong>, <strong>correlation matrix</strong>, and more. Type a strategy in plain English — the lab picks the right model and runs the math.",
+      pills: ['10 tools', 'Plain English', 'Real math']
+    },
+    {
+      title: 'Watchlists · 100M+ Securities',
+      body: "Search stocks, ETFs, crypto, forex, indices, commodities — anywhere. One-click to add to your watchlist, and we'll auto-inject relevant news + AI signals into your dashboard.",
+      pills: ['Global', 'One-click', 'Auto-feeds']
+    },
+    {
+      title: 'Portfolio + Paper Trading',
+      body: "Two ways to use the terminal: track your <strong>real portfolio</strong> (CSV import or NL add), or open a <strong>paper trading account</strong> with virtual cash and practice strategies risk-free. Both update the AI agents' context so every analysis is personalized to your holdings.",
+      pills: ['Real or paper', 'Personalized AI', 'Risk-free practice']
+    },
+    {
+      title: 'Alerts + Reports',
+      body: "<strong>Alerts</strong> stream live signal changes, breaking news, and risk flags in real time. <strong>Reports</strong> generates editorial-quality weekly intelligence reports — top movers, signal breakdown, key risks. Both update automatically.",
+      pills: ['Live alerts', 'Weekly synthesis', 'AI-written']
+    },
+    {
+      title: 'Country Switcher',
+      body: "Top-right corner. Switch between US, UK, India, Japan, EU and more — every part of the app re-skins to that region: signals, portfolio currency, alerts, reports, watchlist universe.",
+      pills: ['Global markets', 'Live re-skin', 'Native currency']
+    },
+    {
+      title: 'Voice Mode + Share',
+      body: "The orb in the bottom-right corner is your <strong>JARVIS-style voice assistant</strong> — click and talk. The Share button in the top bar lets you send Quant Entelloq to anyone in one tap (X, Reddit, LinkedIn, WhatsApp, Email).",
+      pills: ['Voice', 'One-tap share', 'JARVIS-style']
+    },
+    {
+      title: "You're all set",
+      body: "Start with the <strong>Dashboard</strong>, then try asking the agents in <strong>AI Studio</strong>. Click the small <strong>?</strong> in the bottom-left anytime to replay this tour. Welcome aboard — let's find some alpha.",
+      pills: ['Click ? to replay', 'Welcome aboard']
+    }
+  ];
+
+  var currentStep = 0;
+
+  function buildTourShell() {
+    if (document.getElementById('qe-tour-overlay')) return;
+    var overlay = document.createElement('div');
+    overlay.id = 'qe-tour-overlay';
+    overlay.innerHTML = ''
+      + '<div id="qe-tour-card">'
+      +   '<button class="qe-tour-skip" id="qe-tour-skip" aria-label="Skip tour">×</button>'
+      +   '<div class="qe-tour-orb">◉</div>'
+      +   '<div class="qe-tour-step-counter" id="qe-tour-counter">Step 1 of ' + STEPS.length + '</div>'
+      +   '<div class="qe-tour-title" id="qe-tour-title"></div>'
+      +   '<div class="qe-tour-body" id="qe-tour-body"></div>'
+      +   '<div class="qe-tour-pills" id="qe-tour-pills"></div>'
+      +   '<div class="qe-tour-progress"><div class="qe-tour-progress-fill" id="qe-tour-progress" style="width:10%"></div></div>'
+      +   '<div class="qe-tour-actions">'
+      +     '<button class="qe-tour-btn qe-tour-btn-secondary" id="qe-tour-back">← Back</button>'
+      +     '<button class="qe-tour-btn qe-tour-btn-primary" id="qe-tour-next">Got it · Next →</button>'
+      +   '</div>'
+      + '</div>';
+    document.body.appendChild(overlay);
+
+    document.getElementById('qe-tour-skip').onclick = endTour;
+    document.getElementById('qe-tour-back').onclick = function(){
+      if (currentStep > 0) { currentStep--; renderStep(); }
+    };
+    document.getElementById('qe-tour-next').onclick = function(){
+      if (currentStep < STEPS.length - 1) {
+        currentStep++; renderStep();
+      } else {
+        endTour();
+      }
+    };
+    overlay.addEventListener('click', function(e){
+      if (e.target === overlay) {
+        // Don't dismiss on backdrop click — too easy to lose progress
+      }
+    });
+    document.addEventListener('keydown', function(e){
+      var overlay = document.getElementById('qe-tour-overlay');
+      if (!overlay || !overlay.classList.contains('show')) return;
+      if (e.key === 'Escape') endTour();
+      if (e.key === 'ArrowRight' || e.key === 'Enter') {
+        if (currentStep < STEPS.length - 1) { currentStep++; renderStep(); }
+        else endTour();
+      }
+      if (e.key === 'ArrowLeft') {
+        if (currentStep > 0) { currentStep--; renderStep(); }
+      }
+    });
+  }
+
+  function renderStep() {
+    var s = STEPS[currentStep];
+    var card = document.getElementById('qe-tour-card');
+    if (!card) return;
+    var titleEl = document.getElementById('qe-tour-title');
+    var bodyEl = document.getElementById('qe-tour-body');
+    var pillsEl = document.getElementById('qe-tour-pills');
+    var counterEl = document.getElementById('qe-tour-counter');
+    var progressEl = document.getElementById('qe-tour-progress');
+    var backEl = document.getElementById('qe-tour-back');
+    var nextEl = document.getElementById('qe-tour-next');
+
+    if (titleEl) titleEl.textContent = s.title;
+    if (bodyEl) bodyEl.innerHTML = s.body;
+    if (pillsEl) {
+      pillsEl.innerHTML = (s.pills || []).map(function(p){
+        return '<span class="qe-tour-pill">' + p + '</span>';
+      }).join('');
+    }
+    if (counterEl) counterEl.textContent = 'Step ' + (currentStep + 1) + ' of ' + STEPS.length;
+    if (progressEl) progressEl.style.width = (((currentStep + 1) / STEPS.length) * 100) + '%';
+    if (backEl) backEl.style.visibility = currentStep === 0 ? 'hidden' : 'visible';
+    if (nextEl) nextEl.textContent = currentStep === STEPS.length - 1 ? 'Start exploring →' : 'Got it · Next →';
+  }
+
+  function startTour() {
+    buildTourShell();
+    currentStep = 0;
+    renderStep();
+    var overlay = document.getElementById('qe-tour-overlay');
+    if (overlay) overlay.classList.add('show');
+  }
+
+  function endTour() {
+    var overlay = document.getElementById('qe-tour-overlay');
+    if (overlay) overlay.classList.remove('show');
+    try { localStorage.setItem(TOUR_KEY, '1'); } catch(_){}
+  }
+
+  function maybeShowFirstVisit() {
+    try {
+      if (localStorage.getItem(TOUR_KEY) === '1') return;
+    } catch(_){}
+    // Wait until the app shell is rendered + user is past auth/landing
+    var app = document.getElementById('app') || document.body;
+    if (!app) return;
+    var landing = document.querySelector('.lp3-hero, #landing');
+    // If a landing page is visible, wait
+    if (landing && getComputedStyle(landing).display !== 'none' && !landing.classList.contains('hidden')) {
+      return;
+    }
+    setTimeout(startTour, 1200);
+  }
+
+  function ensureReplayButton() {
+    if (document.getElementById('qe-tour-replay')) return;
+    var btn = document.createElement('button');
+    btn.id = 'qe-tour-replay';
+    btn.title = 'Replay feature tour';
+    btn.setAttribute('aria-label', 'Replay feature tour');
+    btn.textContent = '?';
+    btn.onclick = startTour;
+    document.body.appendChild(btn);
+  }
+
+  function boot() {
+    setupHeatmapToggle();
+    ensureReplayButton();
+    maybeShowFirstVisit();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+  setInterval(boot, 1500);
+
+  window.QETour = {
+    start: startTour,
+    end: endTour,
+    reset: function(){ try { localStorage.removeItem(TOUR_KEY); } catch(_){} }
+  };
+})();
+</script>
+
 </body>
 </html>
