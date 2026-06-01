@@ -35572,5 +35572,359 @@ setTimeout(() => {
 })();
 </script>
 
+<!-- ════════════════════════════════════════════════════════════════════
+     SHARE KIT — top-bar Share button + share sheet
+     One-click X / Reddit / HN / WhatsApp / Email / native share
+     ════════════════════════════════════════════════════════════════════ -->
+<style id="qe-share-css">
+  #qe-share-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 11px;
+    background: linear-gradient(135deg, rgba(167,139,250,0.14) 0%, rgba(103,232,249,0.10) 100%);
+    border: 1px solid rgba(167,139,250,0.32);
+    border-radius: 9px;
+    color: #C4B5FD;
+    font-family: var(--font-mono, monospace);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 180ms cubic-bezier(0.23,1,0.32,1);
+    flex-shrink: 0;
+    text-transform: uppercase;
+  }
+  #qe-share-btn:hover {
+    background: linear-gradient(135deg, rgba(167,139,250,0.24) 0%, rgba(103,232,249,0.16) 100%);
+    border-color: rgba(167,139,250,0.55);
+    color: #FFFFFF;
+    transform: translateY(-1px);
+  }
+  #qe-share-btn:active { transform: scale(0.97); }
+  #qe-share-btn svg { flex-shrink: 0; }
+
+  #qe-share-overlay {
+    position: fixed; inset: 0;
+    background: rgba(8,8,12,0.78);
+    backdrop-filter: blur(8px) saturate(140%);
+    -webkit-backdrop-filter: blur(8px) saturate(140%);
+    z-index: 9998;
+    display: grid; place-items: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 220ms cubic-bezier(0.23,1,0.32,1);
+  }
+  #qe-share-overlay.show { opacity: 1; pointer-events: auto; }
+  #qe-share-sheet {
+    width: min(440px, calc(100vw - 32px));
+    background: #15151A;
+    border: 1px solid rgba(244,244,240,0.10);
+    border-radius: 14px;
+    padding: 24px;
+    transform: scale(0.96) translateY(8px);
+    transition: transform 280ms cubic-bezier(0.23,1,0.32,1);
+    box-shadow: 0 24px 56px rgba(0,0,0,0.6);
+  }
+  #qe-share-overlay.show #qe-share-sheet { transform: scale(1) translateY(0); }
+  .qe-share-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.24em;
+    color: rgba(244,244,240,0.42);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .qe-share-title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px; font-weight: 500;
+    color: #F4F4F0;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .qe-share-sub {
+    font-size: 12.5px;
+    color: rgba(244,244,240,0.62);
+    line-height: 1.55;
+    margin-bottom: 18px;
+  }
+  .qe-share-msg-wrap {
+    background: rgba(244,244,240,0.025);
+    border: 1px solid rgba(244,244,240,0.08);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+  #qe-share-msg {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: #F4F4F0;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.55;
+    resize: vertical;
+    min-height: 78px;
+    outline: none;
+  }
+  #qe-share-msg::placeholder { color: rgba(244,244,240,0.4); }
+  .qe-share-link-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 12px;
+    background: rgba(167,139,250,0.06);
+    border: 1px solid rgba(167,139,250,0.16);
+    border-radius: 7px;
+    margin-bottom: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: #C4B5FD;
+    cursor: pointer;
+    transition: all 160ms ease-out;
+  }
+  .qe-share-link-row:hover { background: rgba(167,139,250,0.12); }
+  .qe-share-link-row span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .qe-share-link-row .qe-share-copy {
+    padding: 4px 10px;
+    background: rgba(167,139,250,0.16);
+    border: 1px solid rgba(167,139,250,0.28);
+    border-radius: 4px;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #C4B5FD;
+  }
+  .qe-share-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .qe-share-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 14px 8px;
+    background: rgba(244,244,240,0.04);
+    border: 1px solid rgba(244,244,240,0.08);
+    border-radius: 8px;
+    color: rgba(244,244,240,0.85);
+    cursor: pointer;
+    transition: all 180ms cubic-bezier(0.23,1,0.32,1);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .qe-share-btn:hover {
+    background: rgba(167,139,250,0.12);
+    border-color: rgba(167,139,250,0.32);
+    color: #FFFFFF;
+    transform: translateY(-1px);
+  }
+  .qe-share-btn:active { transform: scale(0.97); }
+  .qe-share-btn-icon { font-size: 22px; line-height: 1; }
+  .qe-share-close {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid rgba(244,244,240,0.10);
+    border-radius: 7px;
+    color: rgba(244,244,240,0.6);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 160ms ease-out;
+  }
+  .qe-share-close:hover {
+    border-color: rgba(244,244,240,0.22);
+    color: #F4F4F0;
+  }
+  .qe-share-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 40px;
+    transform: translateX(-50%) translateY(20px);
+    padding: 10px 18px;
+    background: linear-gradient(135deg, #5EEAD4 0%, #67E8F9 100%);
+    color: #0A0A0B;
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    box-shadow: 0 12px 32px rgba(94,234,212,0.32);
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 220ms ease-out, transform 280ms cubic-bezier(0.23,1,0.32,1);
+  }
+  .qe-share-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  @media (max-width: 540px) {
+    #qe-share-btn span.qe-share-btn-text { display: none; }
+    #qe-share-btn { padding: 6px 8px; }
+  }
+</style>
+
+<script id="qe-share-js">
+(function(){
+  'use strict';
+
+  var URL = 'https://quant.entelloq.com/';
+  var DEFAULT_MSG = "Just found Quant Entelloq — institutional-grade financial intelligence in your browser. 10 quant tools, AI agents, paper trading, 100M+ securities. Free, no signup.";
+
+  function injectShareButton() {
+    if (document.getElementById('qe-share-btn')) return;
+    // Place next to country selector
+    var wrap = document.getElementById('country-selector-wrap');
+    if (!wrap || !wrap.parentElement) return;
+    var btn = document.createElement('button');
+    btn.id = 'qe-share-btn';
+    btn.title = 'Share Quant Entelloq';
+    btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg><span class="qe-share-btn-text">Share</span>';
+    btn.onclick = openShareSheet;
+    wrap.parentElement.insertBefore(btn, wrap);
+  }
+
+  function buildShareSheet() {
+    if (document.getElementById('qe-share-overlay')) return;
+    var overlay = document.createElement('div');
+    overlay.id = 'qe-share-overlay';
+    overlay.onclick = function(e){ if (e.target === overlay) closeShareSheet(); };
+    overlay.innerHTML = ''
+      + '<div id="qe-share-sheet" role="dialog" aria-modal="true">'
+      +   '<div class="qe-share-eyebrow">Help us grow · One tap</div>'
+      +   '<div class="qe-share-title">Share Quant Entelloq</div>'
+      +   '<div class="qe-share-sub">Edit the message below, then pick where to send it. Your link is auto-attached.</div>'
+      +   '<div class="qe-share-msg-wrap">'
+      +     '<textarea id="qe-share-msg" rows="3"></textarea>'
+      +   '</div>'
+      +   '<div class="qe-share-link-row" onclick="window.QEShare.copyLink()">'
+      +     '<span>' + URL + '</span>'
+      +     '<span class="qe-share-copy">COPY</span>'
+      +   '</div>'
+      +   '<div class="qe-share-grid">'
+      +     '<a class="qe-share-btn" id="qe-share-x"        target="_blank" rel="noopener"><span class="qe-share-btn-icon">𝕏</span>X / Twitter</a>'
+      +     '<a class="qe-share-btn" id="qe-share-reddit"   target="_blank" rel="noopener"><span class="qe-share-btn-icon">⊙</span>Reddit</a>'
+      +     '<a class="qe-share-btn" id="qe-share-hn"       target="_blank" rel="noopener"><span class="qe-share-btn-icon">Y</span>Hacker News</a>'
+      +     '<a class="qe-share-btn" id="qe-share-linkedin" target="_blank" rel="noopener"><span class="qe-share-btn-icon">in</span>LinkedIn</a>'
+      +     '<a class="qe-share-btn" id="qe-share-whatsapp" target="_blank" rel="noopener"><span class="qe-share-btn-icon">✆</span>WhatsApp</a>'
+      +     '<a class="qe-share-btn" id="qe-share-email"    target="_blank" rel="noopener"><span class="qe-share-btn-icon">✉</span>Email</a>'
+      +   '</div>'
+      +   '<button class="qe-share-close" onclick="window.QEShare.close()">Close · ESC</button>'
+      + '</div>';
+    document.body.appendChild(overlay);
+
+    var toast = document.createElement('div');
+    toast.className = 'qe-share-toast';
+    toast.id = 'qe-share-toast';
+    toast.textContent = 'Copied to clipboard';
+    document.body.appendChild(toast);
+  }
+
+  function refreshLinks() {
+    var msg = document.getElementById('qe-share-msg').value.trim() || DEFAULT_MSG;
+    var encoded = encodeURIComponent(msg);
+    var encUrl = encodeURIComponent(URL);
+    var combined = encodeURIComponent(msg + ' ' + URL);
+
+    var x  = document.getElementById('qe-share-x');
+    var rd = document.getElementById('qe-share-reddit');
+    var hn = document.getElementById('qe-share-hn');
+    var li = document.getElementById('qe-share-linkedin');
+    var wa = document.getElementById('qe-share-whatsapp');
+    var em = document.getElementById('qe-share-email');
+
+    if (x)  x.href  = 'https://twitter.com/intent/tweet?text=' + encoded + '&url=' + encUrl;
+    if (rd) rd.href = 'https://www.reddit.com/submit?url=' + encUrl + '&title=' + encodeURIComponent('Quant Entelloq — AI-native financial terminal, free in your browser');
+    if (hn) hn.href = 'https://news.ycombinator.com/submitlink?u=' + encUrl + '&t=' + encodeURIComponent('Show HN: Quant Entelloq — AI-native financial terminal, free in your browser');
+    if (li) li.href = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encUrl;
+    if (wa) wa.href = 'https://wa.me/?text=' + combined;
+    if (em) em.href = 'mailto:?subject=' + encodeURIComponent('Check out Quant Entelloq') + '&body=' + combined;
+  }
+
+  function openShareSheet() {
+    buildShareSheet();
+    var overlay = document.getElementById('qe-share-overlay');
+    var msgEl = document.getElementById('qe-share-msg');
+    if (msgEl && !msgEl.value) msgEl.value = DEFAULT_MSG;
+    if (msgEl) msgEl.oninput = refreshLinks;
+    refreshLinks();
+    overlay.classList.add('show');
+    // Bump share-counter for fun analytics
+    try {
+      var n = parseInt(localStorage.getItem('qe_share_opens') || '0', 10) + 1;
+      localStorage.setItem('qe_share_opens', String(n));
+    } catch(_){}
+    // ESC key closes
+    document.addEventListener('keydown', escClose);
+  }
+
+  function escClose(e) {
+    if (e.key === 'Escape') closeShareSheet();
+  }
+
+  function closeShareSheet() {
+    var overlay = document.getElementById('qe-share-overlay');
+    if (overlay) overlay.classList.remove('show');
+    document.removeEventListener('keydown', escClose);
+  }
+
+  function copyLink() {
+    var text = URL;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(showToast).catch(fallbackCopy);
+    } else {
+      fallbackCopy();
+    }
+    function fallbackCopy() {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); showToast(); } catch(_){}
+      document.body.removeChild(ta);
+    }
+  }
+
+  function showToast() {
+    var t = document.getElementById('qe-share-toast');
+    if (!t) return;
+    t.classList.add('show');
+    setTimeout(function(){ t.classList.remove('show'); }, 1800);
+  }
+
+  // Native share API takeover on mobile if available
+  function tryNativeShare() {
+    if (navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {
+      var msg = document.getElementById('qe-share-msg');
+      navigator.share({
+        title: 'Quant Entelloq',
+        text: (msg && msg.value) || DEFAULT_MSG,
+        url: URL
+      }).catch(function(){});
+    }
+  }
+
+  // Idempotent boot
+  function boot() { injectShareButton(); }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+  setInterval(boot, 1500);
+
+  window.QEShare = {
+    open: openShareSheet,
+    close: closeShareSheet,
+    copyLink: copyLink,
+    tryNative: tryNativeShare
+  };
+})();
+</script>
+
 </body>
 </html>
