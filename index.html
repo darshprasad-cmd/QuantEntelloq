@@ -26789,8 +26789,8 @@ setTimeout(() => {
       var aid = new URL(url, location.origin).searchParams.get('accountId');
       return (s.orders[aid] || []).slice().reverse();
     }
-    // POST /api/pt/order — place order
-    if (/^\/api\/pt\/order$/.test(url) && opts && opts.method === 'POST') {
+    // POST /api/pt/orders — place order (plural per ptPlaceOrder)
+    if (/^\/api\/pt\/orders?$/.test(url) && opts && opts.method === 'POST') {
       var b = opts.body ? JSON.parse(opts.body) : {};
       var acct = s.accounts.find(function(a){ return a.id === b.accountId; });
       if (!acct) return { error: 'account_not_found' };
@@ -34884,6 +34884,691 @@ setTimeout(() => {
     v.setAttribute('width', '100%');
     v.style.aspectRatio = '16 / 9';
   });
+})();
+</script>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     USER FEEDBACK BATCH v1 — six fixes from real-user testing
+     1. Dropdown contrast (was white-on-white)
+     2. AI Studio multi-agent declutter (center column, hide feed <1280px)
+     3. JARVIS-style mic for single-agent chat (prominent + pulsing)
+     4. Alerts v2 + Reports v2 (qe-pg2 editorial design tokens)
+     5. Country selector — broadcasts beyond original modules
+     6. Watchlist data clarity (demo-data ribbon when data isn't live)
+     (#7 Paper Trading regex was patched inline at line ~26793)
+     ════════════════════════════════════════════════════════════════════ -->
+<style id="qe-feedback-v1-css">
+  /* ─── 1. Dropdown contrast — kill white-on-white ────────────────── */
+  select,
+  .select,
+  select.input,
+  .input[type="select"],
+  .qe-pg2-search[type="select"],
+  select.qe-pg2-search {
+    background-color: #15151A !important;
+    color: #F4F4F0 !important;
+    border: 1px solid rgba(244,244,240,0.10) !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M3 4.5L6 7.5L9 4.5' stroke='%23A78BFA' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 10px center !important;
+    background-size: 12px 12px !important;
+    padding-right: 30px !important;
+    cursor: pointer !important;
+  }
+  select:focus,
+  select.qe-pg2-search:focus {
+    outline: none !important;
+    border-color: #A78BFA !important;
+    box-shadow: 0 0 0 3px rgba(167,139,250,0.10) !important;
+  }
+  /* The option list itself — browser-rendered; force dark colors */
+  select option,
+  select optgroup,
+  .select option {
+    background-color: #15151A !important;
+    color: #F4F4F0 !important;
+  }
+  select option:checked,
+  select option:hover {
+    background-color: rgba(167,139,250,0.18) !important;
+    color: #FFFFFF !important;
+  }
+
+  /* ─── 2. AI Studio multi-agent — center text column ─────────────── */
+  /* User feedback: layout is cluttered. Reduce activity-feed dominance
+     and centre the agent grid. Below 1280px, hide the side feed entirely. */
+  @media (min-width: 1280px) {
+    #ais-panel-agents .cmd-main {
+      grid-template-columns: minmax(0, 1fr) 280px !important;
+      max-width: 1280px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+  @media (max-width: 1279px) {
+    #ais-panel-agents .cmd-main {
+      grid-template-columns: 1fr !important;
+      max-width: 1100px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #ais-panel-agents .cmd-feed {
+      display: none !important;
+    }
+  }
+  /* Tighter agent grid: max 3 across, centered */
+  #ais-panel-agents .cmd-agents-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+    max-width: 100%;
+  }
+  /* Tighter top region — flow bar can scroll on mobile */
+  #ais-panel-agents .cmd-flow {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+  #ais-panel-agents .cmd-header {
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  #ais-panel-agents .cmd-query-bar {
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ─── 3. JARVIS-style mic for single-agent chat ─────────────────── */
+  /* Make #chat-mic-btn the focal point — it's how users should drive AI Chat. */
+  #chat-mic-btn {
+    width: 56px !important;
+    height: 56px !important;
+    font-size: 22px !important;
+    border-radius: 50% !important;
+    border: 2px solid rgba(167,139,250,0.40) !important;
+    background: linear-gradient(135deg, rgba(167,139,250,0.20) 0%, rgba(103,232,249,0.12) 100%) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 0 0 0 rgba(167,139,250,0.45);
+    animation: qeJarvisIdle 2.4s ease-in-out infinite;
+    transition: transform 180ms cubic-bezier(0.23,1,0.32,1), box-shadow 240ms ease-out;
+    flex-shrink: 0;
+    z-index: 2;
+  }
+  #chat-mic-btn:hover {
+    transform: scale(1.06);
+    border-color: rgba(167,139,250,0.7) !important;
+    background: linear-gradient(135deg, rgba(167,139,250,0.32) 0%, rgba(103,232,249,0.20) 100%) !important;
+  }
+  #chat-mic-btn:active { transform: scale(0.97); }
+  #chat-mic-btn.listening {
+    background: linear-gradient(135deg, rgba(239,68,68,0.32) 0%, rgba(167,139,250,0.20) 100%) !important;
+    border-color: rgba(239,68,68,0.7) !important;
+    animation: qeJarvisActive 1s ease-in-out infinite !important;
+  }
+  @keyframes qeJarvisIdle {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(167,139,250,0.35), 0 4px 16px rgba(167,139,250,0.18); }
+    50%      { box-shadow: 0 0 0 10px rgba(167,139,250,0), 0 8px 24px rgba(167,139,250,0.28); }
+  }
+  @keyframes qeJarvisActive {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.45); }
+    50%      { box-shadow: 0 0 0 12px rgba(239,68,68,0); }
+  }
+  /* Hint label appears once, fades out after first interaction */
+  #qz-jarvis-hint {
+    position: absolute;
+    right: 12px;
+    bottom: 100%;
+    margin-bottom: 8px;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, rgba(167,139,250,0.16) 0%, rgba(103,232,249,0.10) 100%);
+    border: 1px solid rgba(167,139,250,0.28);
+    border-radius: 20px;
+    font-size: 11px;
+    font-family: var(--font-mono, monospace);
+    color: #C4B5FD;
+    letter-spacing: 0.06em;
+    pointer-events: none;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 320ms ease-out, transform 320ms cubic-bezier(0.23,1,0.32,1);
+    z-index: 3;
+  }
+  #qz-jarvis-hint.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── 4. Alerts v2 + Reports v2 — editorial reskin ──────────────── */
+  .qe-pg2v {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px clamp(14px, 3vw, 32px) 60px;
+  }
+  .qe-pg2v-mast {
+    padding: 24px 0 28px;
+    border-bottom: 1px solid rgba(244,244,240,0.06);
+    margin-bottom: 22px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .qe-pg2v-mast-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.24em;
+    color: rgba(244,244,240,0.42);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .qe-pg2v-mast-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    color: #F4F4F0;
+  }
+  .qe-pg2v-mast-sub {
+    font-size: 13px;
+    color: rgba(244,244,240,0.7);
+    margin-top: 10px;
+    max-width: 640px;
+    line-height: 1.55;
+  }
+  .qe-pg2v-chip-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+  .qe-pg2v-chip {
+    padding: 8px 14px;
+    background: rgba(244,244,240,0.025);
+    border: 1px solid rgba(244,244,240,0.08);
+    border-radius: 6px;
+    color: rgba(244,244,240,0.7);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 180ms cubic-bezier(0.22,1,0.36,1);
+  }
+  .qe-pg2v-chip:hover { border-color: rgba(167,139,250,0.4); color: #F4F4F0; }
+  .qe-pg2v-chip.active { background: rgba(167,139,250,0.12); border-color: rgba(167,139,250,0.4); color: #F4F4F0; }
+  .qe-pg2v-tile-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+  .qe-pg2v-tile {
+    background: #15151A;
+    border: 1px solid rgba(244,244,240,0.06);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .qe-pg2v-tile-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px; letter-spacing: 0.18em;
+    color: rgba(244,244,240,0.42);
+    text-transform: uppercase; font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .qe-pg2v-tile-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px; font-weight: 600;
+    color: #F4F4F0;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.015em; line-height: 1;
+  }
+  .qe-pg2v-tile-val.pos { color: #5EEAD4; }
+  .qe-pg2v-tile-val.neg { color: #FB7185; }
+  .qe-pg2v-tile-sub {
+    font-size: 10.5px; color: rgba(244,244,240,0.42); margin-top: 6px;
+    font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em;
+  }
+  .qe-pg2v-card {
+    background: #15151A;
+    border: 1px solid rgba(244,244,240,0.06);
+    border-radius: 10px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+  }
+  .qe-pg2v-card-title {
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
+    font-weight: 500;
+    color: #F4F4F0;
+    letter-spacing: -0.015em;
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .qe-pg2v-card-title .qe-pg2v-pill {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.14em;
+    color: rgba(244,244,240,0.55);
+    padding: 4px 8px;
+    background: rgba(244,244,240,0.04);
+    border: 1px solid rgba(244,244,240,0.08);
+    border-radius: 5px;
+    text-transform: uppercase;
+  }
+  .qe-pg2v-row {
+    display: grid;
+    grid-template-columns: 28px 1fr auto auto;
+    gap: 12px; align-items: center;
+    padding: 12px 0;
+    border-top: 1px solid rgba(244,244,240,0.04);
+    font-size: 13px;
+  }
+  .qe-pg2v-row:first-of-type { border-top: 0; }
+  .qe-pg2v-row-icon { color: rgba(167,139,250,0.7); font-family: 'JetBrains Mono', monospace; font-size: 14px; }
+  .qe-pg2v-row-title { color: #F4F4F0; }
+  .qe-pg2v-row-sub { color: rgba(244,244,240,0.55); font-size: 11.5px; margin-top: 2px; line-height: 1.4; }
+  .qe-pg2v-row-meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: rgba(244,244,240,0.55); letter-spacing: 0.04em; text-align: right; }
+  .qe-pg2v-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.12em;
+    padding: 3px 8px; border-radius: 4px;
+    text-transform: uppercase; font-weight: 600;
+  }
+  .qe-pg2v-badge.green { color: #5EEAD4; background: rgba(94,234,212,0.10); border: 1px solid rgba(94,234,212,0.22); }
+  .qe-pg2v-badge.red   { color: #FB7185; background: rgba(251,113,133,0.10); border: 1px solid rgba(251,113,133,0.22); }
+  .qe-pg2v-badge.amber { color: #FCD34D; background: rgba(252,211,77,0.10); border: 1px solid rgba(252,211,77,0.22); }
+  .qe-pg2v-badge.violet{ color: #C4B5FD; background: rgba(167,139,250,0.10); border: 1px solid rgba(167,139,250,0.22); }
+  .qe-pg2v-empty {
+    text-align: center;
+    padding: 56px 24px;
+    color: rgba(244,244,240,0.5);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; letter-spacing: 0.08em;
+  }
+  .qe-pg2v-body-text {
+    font-size: 13.5px; line-height: 1.75; color: rgba(244,244,240,0.78);
+  }
+  .qe-pg2v-body-text strong { color: #F4F4F0; }
+  .qe-pg2v-action {
+    padding: 9px 16px;
+    background: rgba(167,139,250,0.10);
+    border: 1px solid rgba(167,139,250,0.30);
+    border-radius: 7px;
+    color: #C4B5FD;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 160ms ease-out;
+  }
+  .qe-pg2v-action:hover { background: rgba(167,139,250,0.18); color: #F4F4F0; transform: translateY(-1px); }
+  .qe-pg2v-action:active { transform: scale(0.97); }
+
+  /* ─── 6. Watchlist demo-data ribbon ──────────────────────────────── */
+  .qe-data-ribbon {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; margin: 0 0 12px 0;
+    background: rgba(252,211,77,0.06);
+    border: 1px solid rgba(252,211,77,0.20);
+    border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.10em;
+    color: #FCD34D;
+    text-transform: uppercase;
+  }
+  .qe-data-ribbon::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: #FCD34D; opacity: 0.6;
+  }
+</style>
+
+<script id="qe-feedback-v1-js">
+(function(){
+  'use strict';
+
+  // ────────────────────────────────────────────────────────────────────
+  // #5 — Alerts v2 + Reports v2 (overlay-rebuild)
+  // ────────────────────────────────────────────────────────────────────
+  function escapeHtml(s) {
+    return String(s || '').replace(/[&<>"']/g, function(c){
+      return ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c];
+    });
+  }
+
+  var alertsFilter = 'all';
+
+  function renderAlertsV2() {
+    var page = document.getElementById('page-alerts');
+    if (!page) return;
+    // Wipe legacy markup once, swap to v2 shell
+    if (!page.querySelector('.qe-pg2v')) {
+      page.innerHTML = ''
+        + '<div class="qe-pg2v">'
+        +   '<div class="qe-pg2v-mast">'
+        +     '<div>'
+        +       '<div class="qe-pg2v-mast-eyebrow">Live · Signal-driven</div>'
+        +       '<div class="qe-pg2v-mast-title">Alerts</div>'
+        +       '<div class="qe-pg2v-mast-sub">Real-time signal changes, breaking catalysts, and sell-side moves across the names you track. Cleared automatically after 24 hours.</div>'
+        +     '</div>'
+        +     '<button class="qe-pg2v-action" onclick="(function(){ window.QEFeedback && QEFeedback.clearAlertsV2(); })()">Clear All</button>'
+        +   '</div>'
+        +   '<div class="qe-pg2v-chip-row" id="qe-alerts-chips">'
+        +     '<button class="qe-pg2v-chip active" data-f="all" onclick="window.QEFeedback.setAlertsFilter(\'all\', this)">All</button>'
+        +     '<button class="qe-pg2v-chip"        data-f="signals" onclick="window.QEFeedback.setAlertsFilter(\'signals\', this)">Signals</button>'
+        +     '<button class="qe-pg2v-chip"        data-f="news"    onclick="window.QEFeedback.setAlertsFilter(\'news\', this)">News</button>'
+        +     '<button class="qe-pg2v-chip"        data-f="risk"    onclick="window.QEFeedback.setAlertsFilter(\'risk\', this)">Risk</button>'
+        +   '</div>'
+        +   '<div id="qe-alerts-tiles" class="qe-pg2v-tile-row"></div>'
+        +   '<div id="qe-alerts-feed"></div>'
+        + '</div>';
+    }
+
+    // Build alerts from upstream sources if present, else fall back
+    var alerts = [];
+    try {
+      if (typeof _buildLiveAlerts === 'function') {
+        alerts = _buildLiveAlerts() || [];
+      } else if (Array.isArray(window.ALERTS_DATA)) {
+        alerts = window.ALERTS_DATA.slice();
+      }
+    } catch (_) { alerts = []; }
+
+    // Filter
+    var filtered = alerts;
+    if (alertsFilter !== 'all') {
+      filtered = alerts.filter(function(a){ return (a.type || '').toLowerCase() === alertsFilter; });
+    }
+
+    // Stats
+    var counts = { signals: 0, news: 0, risk: 0 };
+    alerts.forEach(function(a){
+      var t = (a.type || '').toLowerCase();
+      if (counts[t] !== undefined) counts[t]++;
+    });
+    var tiles = document.getElementById('qe-alerts-tiles');
+    if (tiles) {
+      tiles.innerHTML = ''
+        + '<div class="qe-pg2v-tile"><div class="qe-pg2v-tile-label">Today</div><div class="qe-pg2v-tile-val">' + alerts.length + '</div><div class="qe-pg2v-tile-sub">total alerts</div></div>'
+        + '<div class="qe-pg2v-tile"><div class="qe-pg2v-tile-label">Signals</div><div class="qe-pg2v-tile-val pos">' + counts.signals + '</div><div class="qe-pg2v-tile-sub">conviction shifts</div></div>'
+        + '<div class="qe-pg2v-tile"><div class="qe-pg2v-tile-label">News</div><div class="qe-pg2v-tile-val">' + counts.news + '</div><div class="qe-pg2v-tile-sub">catalysts</div></div>'
+        + '<div class="qe-pg2v-tile"><div class="qe-pg2v-tile-label">Risk</div><div class="qe-pg2v-tile-val neg">' + counts.risk + '</div><div class="qe-pg2v-tile-sub">flags raised</div></div>';
+    }
+
+    var feed = document.getElementById('qe-alerts-feed');
+    if (!feed) return;
+    if (!filtered.length) {
+      feed.innerHTML = '<div class="qe-pg2v-card"><div class="qe-pg2v-empty">No alerts in this category. The orchestrator is monitoring — new signals will appear here automatically.</div></div>';
+      return;
+    }
+    // Group by type
+    var byType = {};
+    filtered.forEach(function(a){
+      var t = (a.type || 'other').toLowerCase();
+      byType[t] = byType[t] || [];
+      byType[t].push(a);
+    });
+    var html = '';
+    Object.keys(byType).forEach(function(t){
+      var label = t.charAt(0).toUpperCase() + t.slice(1);
+      var items = byType[t];
+      var badgeClass = (t === 'signals') ? 'violet' : (t === 'news') ? 'green' : (t === 'risk') ? 'red' : 'amber';
+      html += '<div class="qe-pg2v-card">'
+            +   '<div class="qe-pg2v-card-title">' + escapeHtml(label) + '<span class="qe-pg2v-pill">' + items.length + '</span></div>';
+      items.forEach(function(a){
+        var icon = a.icon ? escapeHtml(a.icon) : '◆';
+        html += '<div class="qe-pg2v-row">'
+              +   '<div class="qe-pg2v-row-icon">' + icon + '</div>'
+              +   '<div>'
+              +     '<div class="qe-pg2v-row-title">' + escapeHtml(a.title || '—') + '</div>'
+              +     '<div class="qe-pg2v-row-sub">' + escapeHtml(a.sub || '') + '</div>'
+              +   '</div>'
+              +   '<span class="qe-pg2v-badge ' + badgeClass + '">' + escapeHtml(label) + '</span>'
+              +   '<div class="qe-pg2v-row-meta">' + escapeHtml(a.time || 'now') + '</div>'
+              + '</div>';
+      });
+      html += '</div>';
+    });
+    feed.innerHTML = html;
+  }
+
+  function clearAlertsV2() {
+    var feed = document.getElementById('qe-alerts-feed');
+    if (feed) feed.innerHTML = '<div class="qe-pg2v-card"><div class="qe-pg2v-empty">No alerts. Cleared.</div></div>';
+    var tiles = document.getElementById('qe-alerts-tiles');
+    if (tiles) tiles.querySelectorAll('.qe-pg2v-tile-val').forEach(function(v){ v.textContent = '0'; });
+  }
+
+  function setAlertsFilter(f, btn) {
+    alertsFilter = f;
+    document.querySelectorAll('#qe-alerts-chips .qe-pg2v-chip').forEach(function(c){ c.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
+    renderAlertsV2();
+  }
+
+  function _reportWeekLabelLocal() {
+    try {
+      if (typeof _reportWeekLabel === 'function') return _reportWeekLabel();
+    } catch(_){}
+    var d = new Date();
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function renderReportsV2() {
+    var page = document.getElementById('page-reports');
+    if (!page) return;
+    if (!page.querySelector('.qe-pg2v')) {
+      page.innerHTML = ''
+        + '<div class="qe-pg2v">'
+        +   '<div class="qe-pg2v-mast">'
+        +     '<div>'
+        +       '<div class="qe-pg2v-mast-eyebrow">AI-generated · Weekly</div>'
+        +       '<div class="qe-pg2v-mast-title">Reports</div>'
+        +       '<div class="qe-pg2v-mast-sub">Editorial-grade intelligence reports synthesized by the orchestrator pipeline. Updated automatically each Friday after market close.</div>'
+        +     '</div>'
+        +     '<button class="qe-pg2v-action" onclick="(function(){ var b = this; window.QEFeedback && QEFeedback.regenerateReportV2(); }).call(this)">Generate New</button>'
+        +   '</div>'
+        +   '<div id="qe-reports-body"></div>'
+        + '</div>';
+    }
+
+    var body = document.getElementById('qe-reports-body');
+    if (!body) return;
+
+    var STOCKS = window.STOCKS || [];
+    if (!STOCKS.length) {
+      body.innerHTML = '<div class="qe-pg2v-card"><div class="qe-pg2v-empty">Stock universe not yet loaded. Refresh in a moment.</div></div>';
+      return;
+    }
+
+    var gainers = STOCKS.filter(function(s){ return s.change > 0; }).sort(function(a,b){ return b.change - a.change; });
+    var losers  = STOCKS.filter(function(s){ return s.change < 0; }).sort(function(a,b){ return a.change - b.change; });
+    var topG = gainers[0] || {}, topL = losers[0] || {};
+    var buyCount  = STOCKS.filter(function(s){ return s.signal === 'BUY'; }).length;
+    var holdCount = STOCKS.filter(function(s){ return s.signal === 'HOLD'; }).length;
+    var sellCount = STOCKS.filter(function(s){ return s.signal === 'SELL'; }).length;
+    var avgConf   = Math.round(STOCKS.reduce(function(a,s){ return a + (s.conf || 0); }, 0) / STOCKS.length);
+    var avgMom    = Math.round(STOCKS.reduce(function(a,s){ return a + (s.momentum || 0); }, 0) / STOCKS.length);
+    var avgSent   = Math.round(STOCKS.reduce(function(a,s){ return a + (s.sentiment || 0); }, 0) / STOCKS.length);
+    var bullPct   = Math.round((gainers.length / STOCKS.length) * 100);
+    var mktSent   = avgSent > 70 ? 'strongly bullish' : avgSent > 55 ? 'moderately bullish' : avgSent > 45 ? 'neutral' : avgSent > 30 ? 'cautiously bearish' : 'strongly bearish';
+    var topBuys   = STOCKS.filter(function(s){ return s.signal === 'BUY'; }).sort(function(a,b){ return (b.conf||0) - (a.conf||0); }).slice(0,4);
+    var topSells  = STOCKS.filter(function(s){ return s.signal === 'SELL'; }).slice(0,2);
+
+    var html = ''
+      + '<div class="qe-pg2v-tile-row">'
+      +   '<div class="qe-pg2v-tile"><div class="qe-pg2v-tile-label">Universe</div><div class="qe-pg2v-tile-val">' + STOCKS.length + '</div><div class="qe-pg2v-tile-sub">securities tracked</div></div>'
+      +   '<div class="qe-pg2v-tile"><div class="qe-pg2v-tile-label">Bullish</div><div class="qe-pg2v-tile-val pos">' + bullPct + '%</div><div class="qe-pg2v-tile-sub">advancing</div></div>'
+      +   '<div class="qe-pg2v-tile"><div class="qe-pg2v-tile-label">Avg Conf</div><div class="qe-pg2v-tile-val">' + avgConf + '%</div><div class="qe-pg2v-tile-sub">across signals</div></div>'
+      +   '<div class="qe-pg2v-tile"><div class="qe-pg2v-tile-label">Sentiment</div><div class="qe-pg2v-tile-val">' + avgSent + '</div><div class="qe-pg2v-tile-sub">/ 100</div></div>'
+      + '</div>'
+      + '<div class="qe-pg2v-card">'
+      +   '<div class="qe-pg2v-card-title">Weekly Market Summary<span class="qe-pg2v-pill">Week of ' + escapeHtml(_reportWeekLabelLocal()) + '</span></div>'
+      +   '<div class="qe-pg2v-body-text">Quant Entelloq AI tracked <strong>' + STOCKS.length + ' securities</strong> this week. Aggregate market sentiment is <strong>' + mktSent + '</strong>, with ' + bullPct + '% of tracked names advancing. Average signal confidence: <strong>' + avgConf + '%</strong>. Momentum composite at ' + avgMom + '/100 with sentiment at ' + avgSent + '/100.</div>'
+      + '</div>'
+      + '<div class="qe-pg2v-card">'
+      +   '<div class="qe-pg2v-card-title">Top AI Opportunities<span class="qe-pg2v-pill">' + (topBuys.length + topSells.length) + ' picks</span></div>';
+
+    topBuys.concat(topSells).forEach(function(s){
+      var badge = s.signal === 'BUY' ? 'green' : 'red';
+      var reason = (s.reason || '').split('.')[0] || '—';
+      html += '<div class="qe-pg2v-row">'
+            +   '<div class="qe-pg2v-row-icon">◆</div>'
+            +   '<div>'
+            +     '<div class="qe-pg2v-row-title"><strong>' + escapeHtml(s.ticker) + '</strong> — ' + escapeHtml(reason) + '</div>'
+            +     '<div class="qe-pg2v-row-sub">' + escapeHtml(s.name || '') + '</div>'
+            +   '</div>'
+            +   '<span class="qe-pg2v-badge ' + badge + '">' + s.signal + ' ' + (s.conf || 0) + '%</span>'
+            +   '<div class="qe-pg2v-row-meta">' + (s.change > 0 ? '+' : '') + (s.change || 0) + '%</div>'
+            + '</div>';
+    });
+    html += '</div>'
+
+      + '<div class="qe-pg2v-card">'
+      +   '<div class="qe-pg2v-card-title">Signal Breakdown<span class="qe-pg2v-pill">' + STOCKS.length + ' analyzed</span></div>'
+      +   '<div class="qe-pg2v-row"><div class="qe-pg2v-row-icon">↑</div><div><div class="qe-pg2v-row-title">BUY signals</div></div><span class="qe-pg2v-badge green">' + buyCount + '</span><div class="qe-pg2v-row-meta">' + Math.round(buyCount/STOCKS.length*100) + '%</div></div>'
+      +   '<div class="qe-pg2v-row"><div class="qe-pg2v-row-icon">→</div><div><div class="qe-pg2v-row-title">HOLD signals</div></div><span class="qe-pg2v-badge amber">' + holdCount + '</span><div class="qe-pg2v-row-meta">' + Math.round(holdCount/STOCKS.length*100) + '%</div></div>'
+      +   '<div class="qe-pg2v-row"><div class="qe-pg2v-row-icon">↓</div><div><div class="qe-pg2v-row-title">SELL signals</div></div><span class="qe-pg2v-badge red">' + sellCount + '</span><div class="qe-pg2v-row-meta">' + Math.round(sellCount/STOCKS.length*100) + '%</div></div>'
+      +   '<div class="qe-pg2v-row"><div class="qe-pg2v-row-icon">●</div><div><div class="qe-pg2v-row-title">Avg momentum</div></div><span class="qe-pg2v-badge violet">' + avgMom + '/100</span><div class="qe-pg2v-row-meta"></div></div>'
+      +   '<div class="qe-pg2v-row"><div class="qe-pg2v-row-icon">●</div><div><div class="qe-pg2v-row-title">Avg sentiment</div></div><span class="qe-pg2v-badge violet">' + avgSent + '/100</span><div class="qe-pg2v-row-meta"></div></div>'
+      + '</div>'
+
+      + '<div class="qe-pg2v-card">'
+      +   '<div class="qe-pg2v-card-title">Top Movers<span class="qe-pg2v-pill">Daily</span></div>'
+      +   '<div class="qe-pg2v-row"><div class="qe-pg2v-row-icon">↑</div><div><div class="qe-pg2v-row-title">Top performer</div><div class="qe-pg2v-row-sub">' + escapeHtml(topG.name || '') + '</div></div><span class="qe-pg2v-badge green">' + escapeHtml(topG.ticker || '—') + '</span><div class="qe-pg2v-row-meta">' + (topG.change ? '+' + topG.change + '%' : '—') + '</div></div>'
+      +   '<div class="qe-pg2v-row"><div class="qe-pg2v-row-icon">↓</div><div><div class="qe-pg2v-row-title">Worst performer</div><div class="qe-pg2v-row-sub">' + escapeHtml(topL.name || '') + '</div></div><span class="qe-pg2v-badge red">' + escapeHtml(topL.ticker || '—') + '</span><div class="qe-pg2v-row-meta">' + (topL.change !== undefined ? topL.change + '%' : '—') + '</div></div>'
+      + '</div>'
+
+      + '<div class="qe-pg2v-card">'
+      +   '<div class="qe-pg2v-card-title">Key Risks to Monitor<span class="qe-pg2v-pill">Watchlist</span></div>'
+      +   '<div class="qe-pg2v-row"><div class="qe-pg2v-row-icon">1</div><div><div class="qe-pg2v-row-title">Federal Reserve policy trajectory</div><div class="qe-pg2v-row-sub">Forward rate guidance and dot-plot revisions</div></div><span class="qe-pg2v-badge amber">Macro</span><div class="qe-pg2v-row-meta">High</div></div>'
+      +   '<div class="qe-pg2v-row"><div class="qe-pg2v-row-icon">2</div><div><div class="qe-pg2v-row-title">Earnings revision cycle</div><div class="qe-pg2v-row-sub">Watch for guidance downgrades into Q3</div></div><span class="qe-pg2v-badge amber">Fundamentals</span><div class="qe-pg2v-row-meta">Med</div></div>'
+      +   '<div class="qe-pg2v-row"><div class="qe-pg2v-row-icon">3</div><div><div class="qe-pg2v-row-title">Geopolitical risk premium</div><div class="qe-pg2v-row-sub">Energy + commodity supply chains</div></div><span class="qe-pg2v-badge red">Geo</span><div class="qe-pg2v-row-meta">High</div></div>'
+      +   '<div class="qe-pg2v-row"><div class="qe-pg2v-row-icon">4</div><div><div class="qe-pg2v-row-title">USD strength impact</div><div class="qe-pg2v-row-sub">International earnings translation</div></div><span class="qe-pg2v-badge amber">FX</span><div class="qe-pg2v-row-meta">Med</div></div>'
+      +   '<div class="qe-pg2v-row"><div class="qe-pg2v-row-icon">5</div><div><div class="qe-pg2v-row-title">AI capex sustainability</div><div class="qe-pg2v-row-sub">Revenue realization timeline</div></div><span class="qe-pg2v-badge violet">Sector</span><div class="qe-pg2v-row-meta">Watch</div></div>'
+      + '</div>';
+
+    body.innerHTML = html;
+  }
+
+  function regenerateReportV2() {
+    var body = document.getElementById('qe-reports-body');
+    if (!body) return;
+    body.style.opacity = '0.4';
+    body.style.transition = 'opacity 240ms ease';
+    setTimeout(function(){
+      renderReportsV2();
+      body.style.opacity = '1';
+    }, 700);
+  }
+
+  // ────────────────────────────────────────────────────────────────────
+  // Hook into showPage so Alerts/Reports rebuild whenever opened
+  // ────────────────────────────────────────────────────────────────────
+  function _hookPageRouting() {
+    if (typeof window.showPage !== 'function' || window._qeFeedbackShowPageHooked) return;
+    window._qeFeedbackShowPageHooked = true;
+    var orig = window.showPage;
+    window.showPage = function(page, el) {
+      var r = orig.apply(this, arguments);
+      try {
+        if (page === 'alerts')  setTimeout(renderAlertsV2, 40);
+        if (page === 'reports') setTimeout(renderReportsV2, 40);
+      } catch(_){}
+      return r;
+    };
+  }
+
+  // ────────────────────────────────────────────────────────────────────
+  // #3 — JARVIS hint label injection for #chat-mic-btn
+  // ────────────────────────────────────────────────────────────────────
+  function injectJarvisHint() {
+    var btn = document.getElementById('chat-mic-btn');
+    if (!btn || document.getElementById('qz-jarvis-hint')) return;
+    var parent = btn.parentElement;
+    if (!parent) return;
+    if (getComputedStyle(parent).position === 'static') parent.style.position = 'relative';
+    var hint = document.createElement('div');
+    hint.id = 'qz-jarvis-hint';
+    hint.textContent = '◀  TAP MIC TO SPEAK';
+    parent.appendChild(hint);
+    // Show once after a short beat
+    setTimeout(function(){ hint.classList.add('show'); }, 800);
+    // Auto-hide once user clicks the mic
+    btn.addEventListener('click', function(){
+      hint.classList.remove('show');
+      setTimeout(function(){ try { hint.remove(); } catch(_){} }, 400);
+    }, { once: true });
+  }
+
+  // ────────────────────────────────────────────────────────────────────
+  // #6 — Country selector — extend broadcast surface
+  //      The original code dispatches 'region-changed' on selectCountry().
+  //      Some modules don't listen; re-broadcast as 'qz:country-changed'
+  //      and force-refresh known data surfaces.
+  // ────────────────────────────────────────────────────────────────────
+  window.addEventListener('region-changed', function(ev){
+    var detail = (ev && ev.detail) || {};
+    try { window.dispatchEvent(new CustomEvent('qz:country-changed', { detail: detail })); } catch(_){}
+
+    // Refresh known modules if available
+    try { if (typeof renderAlertsV2 === 'function') renderAlertsV2(); } catch(_){}
+    try { if (typeof renderReportsV2 === 'function') renderReportsV2(); } catch(_){}
+    try { if (typeof renderWatchlist === 'function') renderWatchlist(); } catch(_){}
+    try { if (typeof renderDashboard === 'function') renderDashboard(); } catch(_){}
+    try { if (typeof updateUniverseFilters === 'function') updateUniverseFilters(detail.code); } catch(_){}
+
+    // Visual signal in any country-aware top-bar pill
+    var pill = document.getElementById('top-bar-flag');
+    if (pill) {
+      pill.style.transition = 'transform 260ms cubic-bezier(0.23,1,0.32,1)';
+      pill.style.transform = 'scale(1.08)';
+      setTimeout(function(){ pill.style.transform = 'scale(1)'; }, 260);
+    }
+  });
+
+  // ────────────────────────────────────────────────────────────────────
+  // #7 — Watchlist demo-data ribbon
+  // ────────────────────────────────────────────────────────────────────
+  function addDataRibbon() {
+    // The Watchlists nav routes to the 'universe' page in this app
+    var page = document.getElementById('page-universe');
+    if (!page) return;
+    if (page.querySelector('.qe-data-ribbon')) return;
+    var ribbon = document.createElement('div');
+    ribbon.className = 'qe-data-ribbon';
+    ribbon.title = 'Static universe is illustrative. Live tickers refresh inside Portfolio + Paper Trading via the price feed.';
+    ribbon.textContent = 'Illustrative universe · Live prices via Portfolio';
+    // Insert at top of the universe page
+    page.insertBefore(ribbon, page.firstChild);
+  }
+
+  // ────────────────────────────────────────────────────────────────────
+  // Boot — idempotent polling so we attach even after late renders
+  // ────────────────────────────────────────────────────────────────────
+  function boot() {
+    _hookPageRouting();
+    injectJarvisHint();
+    addDataRibbon();
+  }
+  // Initial boot
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+  // Late-render safety net (Alerts/Reports DOM, chat tab switches, universe injection)
+  setInterval(boot, 1500);
+
+  // Expose for inline onclick handlers
+  window.QEFeedback = {
+    renderAlertsV2: renderAlertsV2,
+    renderReportsV2: renderReportsV2,
+    clearAlertsV2: clearAlertsV2,
+    setAlertsFilter: setAlertsFilter,
+    regenerateReportV2: regenerateReportV2
+  };
 })();
 </script>
 
