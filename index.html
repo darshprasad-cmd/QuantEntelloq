@@ -36835,5 +36835,190 @@ setTimeout(() => {
 })();
 </script>
 
+<!-- ════════════════════════════════════════════════════════════════════
+     HOTFIX v4 — AI Studio HARD RENDER
+     Root cause: cmdState is a `const` at script scope (not on window).
+     My replaceAgents reset was using window.cmdState (undefined),
+     so cmdState.agentStates kept the OLD 10 IDs while QE_AGENTS held
+     the NEW 5 IDs → renderCommandCenter threw on st.status access.
+     This block bypasses the original renderer entirely and builds
+     the agent grid directly from NEW_AGENTS data.
+     ════════════════════════════════════════════════════════════════════ -->
+<script id="qe-hotfix-v4-js">
+(function(){
+  'use strict';
+
+  // Mirror script-scope consts onto window so other code can find them
+  function exposeScriptScope() {
+    try { if (typeof cmdState !== 'undefined') window.cmdState = cmdState; } catch(_){}
+    try { if (typeof QE_AGENTS !== 'undefined') window.QE_AGENTS = QE_AGENTS; } catch(_){}
+    try { if (typeof STOCKS !== 'undefined') window.STOCKS = STOCKS; } catch(_){}
+  }
+
+  // The same 5 agents (mirrored from qe-overhaul-v2) so this block
+  // is self-sufficient even if overhaul-v2 hasn't booted yet.
+  var NEW_AGENTS = [
+    { id:'nexus',   name:'NEXUS-7',     mono:'NX', role:'ALPHA SYNTHESIS ENGINE',     emoji:'◆', color:'#A78BFA', tagline:'Multi-modal alpha synthesis · technicals + fundamentals + sentiment + flow' },
+    { id:'aegis',   name:'AEGIS-PRIME', mono:'AG', role:'RISK QUANTIFICATION MATRIX', emoji:'◈', color:'#FB7185', tagline:'VaR · CVaR · stress tests · Kelly sizing' },
+    { id:'oracle',  name:'ORACLE-X',    mono:'OR', role:'MACRO REGIME DETECTOR',      emoji:'◉', color:'#67E8F9', tagline:'8-regime classifier · cross-asset confirmation' },
+    { id:'phoenix', name:'PHOENIX-9',   mono:'PX', role:'CATALYST DISCOVERY SYSTEM',  emoji:'◇', color:'#FCD34D', tagline:'Event-driven · earnings · M&A · FDA · insider clusters' },
+    { id:'forge',   name:'FORGE-Δ',     mono:'FG', role:'STRATEGY BACKTEST ENGINE',   emoji:'◊', color:'#5EEAD4', tagline:'Walk-forward · Monte Carlo · regime decomposition' }
+  ];
+
+  function ensureAgentStates() {
+    exposeScriptScope();
+    if (!window.cmdState || !window.cmdState.agentStates) return false;
+    // If states already have the new IDs, skip
+    if (window.cmdState.agentStates.nexus) return true;
+    // Reset with new agent IDs
+    window.cmdState.agentStates = {};
+    NEW_AGENTS.forEach(function(a){
+      window.cmdState.agentStates[a.id] = { status:'idle', output:'Standing by — awaiting query…', conf:0, latency:'—' };
+    });
+    return true;
+  }
+
+  function hardRenderAgentGrid() {
+    var grid = document.getElementById('cmd-agents-grid');
+    if (!grid) return false;
+
+    // Always re-render to guarantee fresh state
+    var html = NEW_AGENTS.map(function(agent){
+      var safeName = agent.name.replace(/"/g,'&quot;');
+      var safeRole = agent.role.replace(/"/g,'&quot;');
+      var safeTag  = agent.tagline.replace(/"/g,'&quot;');
+      return ''
+        + '<div class="cmd-agent-card" id="cmd-card-' + agent.id + '"'
+        +      ' style="--agent-color:' + agent.color + ';"'
+        +      ' onclick="(window.cmdOpenAgent||window.QEHotfix4.openAgent)(\'' + agent.id + '\')"'
+        +      ' role="button" tabindex="0">'
+        +   '<div class="cmd-agent-head">'
+        +     '<div class="cmd-agent-icon" data-mono="' + agent.mono + '" '
+        +          'style="--agent-color:' + agent.color + ';border-color:' + agent.color + ';color:' + agent.color + ';">'
+        +     '</div>'
+        +     '<div style="flex:1;min-width:0;">'
+        +       '<div class="cmd-agent-name">' + safeName + '</div>'
+        +       '<div class="cmd-agent-role">' + safeRole + '</div>'
+        +     '</div>'
+        +     '<div class="cmd-agent-wave" id="cmd-wave-' + agent.id + '" style="color:' + agent.color + ';">'
+        +       '<span></span><span></span><span></span><span></span><span></span>'
+        +     '</div>'
+        +   '</div>'
+        +   '<div class="cmd-agent-status-row">'
+        +     '<span class="cmd-agent-status-dot idle"></span>'
+        +     '<span class="cmd-agent-status-text">Idle</span>'
+        +     '<span class="cmd-agent-latency" style="margin-left:auto;">—</span>'
+        +   '</div>'
+        +   '<div class="cmd-agent-output" id="cmd-out-' + agent.id + '" '
+        +        'style="background:rgba(0,0,0,0.4);border-left:2px solid ' + agent.color + ';border-radius:0 6px 6px 0;padding:10px 12px;font-family:JetBrains Mono,monospace;font-size:11.5px;line-height:1.55;color:rgba(244,244,240,0.78);">'
+        +     safeTag
+        +   '</div>'
+        +   '<div class="cmd-agent-conf-bar"><div class="cmd-agent-conf-fill" style="width:0%;background:' + agent.color + ';"></div></div>'
+        +   '<div class="cmd-agent-footer">'
+        +     '<span class="cmd-agent-latency" style="color:' + agent.color + ';font-size:10px;"></span>'
+        +     '<button class="cmd-agent-query-btn" '
+        +             'onclick="event.stopPropagation();(window.cmdOpenAgent||window.QEHotfix4.openAgent)(\'' + agent.id + '\')">'
+        +       'Query →'
+        +     '</button>'
+        +   '</div>'
+        + '</div>';
+    }).join('');
+
+    grid.innerHTML = html;
+    grid.setAttribute('data-qe-hard-rendered', '1');
+    return true;
+  }
+
+  // Fallback open-agent handler if original cmdOpenAgent is broken
+  function openAgentFallback(agentId) {
+    var ag = NEW_AGENTS.find(function(a){ return a.id === agentId; });
+    if (!ag) return;
+    // Try the original first
+    if (typeof window.cmdOpenAgent === 'function') {
+      try { window.cmdOpenAgent(agentId); return; } catch(_){}
+    }
+    // Otherwise focus the query bar
+    var q = document.getElementById('cmd-query-input');
+    if (q) { q.focus(); q.placeholder = 'Query ' + ag.name + ' — ' + ag.role + '…'; }
+  }
+
+  // Force the agents panel visible whenever AI Studio page is open
+  function forceAgentsPanelVisible() {
+    var page = document.getElementById('page-ai');
+    if (!page || page.classList.contains('hidden')) return false;
+    var agents = document.getElementById('ais-panel-agents');
+    var chat = document.getElementById('ais-panel-chat');
+    if (chat) chat.style.display = 'none';
+    if (agents) {
+      agents.style.display = 'flex';
+      agents.style.flexDirection = 'column';
+    }
+    return true;
+  }
+
+  // Wrap showPage so AI Studio open triggers hard-render
+  function hookShowPage() {
+    if (window._qeHotfix4Hooked) return;
+    if (typeof window.showPage !== 'function') return;
+    window._qeHotfix4Hooked = true;
+    var orig = window.showPage;
+    window.showPage = function(page, el) {
+      var r = orig.apply(this, arguments);
+      if (page === 'ai' || page === 'command') {
+        runFix();
+        setTimeout(runFix, 40);
+        setTimeout(runFix, 200);
+        setTimeout(runFix, 600);
+      }
+      return r;
+    };
+  }
+
+  function runFix() {
+    exposeScriptScope();
+    ensureAgentStates();
+    forceAgentsPanelVisible();
+    hardRenderAgentGrid();
+  }
+
+  // Boot
+  function boot() {
+    exposeScriptScope();
+    hookShowPage();
+    // If already on AI Studio, render now
+    var page = document.getElementById('page-ai');
+    if (page && !page.classList.contains('hidden')) runFix();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+  // Heartbeat — runs every second so any router refresh re-applies
+  setInterval(function(){
+    exposeScriptScope();
+    var page = document.getElementById('page-ai');
+    if (page && !page.classList.contains('hidden')) {
+      ensureAgentStates();
+      forceAgentsPanelVisible();
+      var grid = document.getElementById('cmd-agents-grid');
+      if (grid && (!grid.children.length || grid.querySelector('.cmd-agent-card[id="cmd-card-market"]'))) {
+        // Empty OR still showing old agents — force re-render
+        hardRenderAgentGrid();
+      }
+    }
+  }, 1000);
+
+  window.QEHotfix4 = {
+    render: hardRenderAgentGrid,
+    agents: NEW_AGENTS,
+    expose: exposeScriptScope,
+    openAgent: openAgentFallback,
+    fix: runFix
+  };
+})();
+</script>
+
 </body>
 </html>
