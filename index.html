@@ -35926,5 +35926,648 @@ setTimeout(() => {
 })();
 </script>
 
+<!-- ════════════════════════════════════════════════════════════════════
+     HIGH-TECH OVERHAUL v2
+     1. Reports tab — force v2 render on every visit
+     2. Remove single-agent AI Chat tab — agents-only
+     3. Replace 10 agents with 5 high-tech specialists
+     4. Daily question + streak system on dashboard
+     ════════════════════════════════════════════════════════════════════ -->
+<style id="qe-overhaul-v2-css">
+  /* ─── 2. Hide single-agent AI Chat tab + panel ──────────────────── */
+  #ais-tab-chat { display: none !important; }
+  #ais-panel-chat { display: none !important; }
+  /* Centre the single remaining tab in the tab strip */
+  .ais-tabs { justify-content: flex-start !important; }
+  #ais-tab-agents { pointer-events: none; opacity: 1; }
+
+  /* ─── 3. High-tech agent grid overhaul ──────────────────────────── */
+  /* Bigger, more "command center" cards, neural-network background */
+  #ais-panel-agents .cmd-agents-grid {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important;
+    gap: 14px !important;
+  }
+  /* Agent card neural-net background — subtle scanline */
+  #ais-panel-agents .cmd-agent-card {
+    background: linear-gradient(135deg, rgba(8,8,12,0.96) 0%, rgba(16,16,24,0.94) 100%) !important;
+    border: 1px solid rgba(244,244,240,0.08) !important;
+    border-top: 2px solid var(--agent-color, #A78BFA) !important;
+    border-radius: 12px !important;
+    padding: 18px 18px 14px !important;
+    position: relative;
+    overflow: hidden;
+  }
+  #ais-panel-agents .cmd-agent-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--agent-color, #A78BFA) 50%, transparent 100%);
+    opacity: 0.6;
+    pointer-events: none;
+    animation: agentScan 4s ease-in-out infinite;
+  }
+  @keyframes agentScan {
+    0%, 100% { opacity: 0.3; transform: translateY(0); }
+    50%      { opacity: 0.8; transform: translateY(1px); }
+  }
+  /* Agent monogram styling — bigger, more codename feel */
+  #ais-panel-agents .cmd-agent-icon {
+    width: 44px !important; height: 44px !important;
+    border-radius: 10px !important;
+    background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.6)) !important;
+    border: 1px solid var(--agent-color, #A78BFA) !important;
+    box-shadow: 0 0 18px -4px var(--agent-color, #A78BFA);
+  }
+  #ais-panel-agents .cmd-agent-icon[data-mono]::after {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 12.5px !important;
+    font-weight: 700 !important;
+    color: var(--agent-color, #A78BFA) !important;
+    letter-spacing: 0.04em !important;
+    text-shadow: 0 0 8px var(--agent-color);
+  }
+  #ais-panel-agents .cmd-agent-name {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.12em !important;
+    color: #F4F4F0 !important;
+    text-transform: uppercase;
+  }
+  #ais-panel-agents .cmd-agent-role {
+    font-size: 10px !important;
+    letter-spacing: 0.12em !important;
+    opacity: 0.55 !important;
+    margin-top: 3px;
+  }
+  /* Output area: tighter "terminal" feel */
+  #ais-panel-agents .cmd-agent-output {
+    background: rgba(0,0,0,0.4) !important;
+    border-left: 2px solid var(--agent-color, #A78BFA) !important;
+    border-radius: 0 6px 6px 0 !important;
+    padding: 10px 12px !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 11.5px !important;
+    line-height: 1.55 !important;
+    color: rgba(244,244,240,0.8) !important;
+  }
+  /* Hi-tech master header for the agents panel */
+  #ais-panel-agents .cmd-title {
+    font-family: 'Fraunces', serif !important;
+    font-size: clamp(28px, 4vw, 38px) !important;
+    font-weight: 500 !important;
+    letter-spacing: -0.02em !important;
+  }
+  #ais-panel-agents .cmd-eyebrow {
+    font-family: 'JetBrains Mono', monospace !important;
+    letter-spacing: 0.24em !important;
+    text-transform: uppercase !important;
+    color: rgba(167,139,250,0.7) !important;
+    font-size: 10.5px !important;
+  }
+
+  /* ─── 4. Daily Streak card ──────────────────────────────────────── */
+  #qe-daily-card {
+    background: linear-gradient(135deg, rgba(167,139,250,0.12) 0%, rgba(103,232,249,0.08) 50%, rgba(167,139,250,0.08) 100%);
+    border: 1px solid rgba(167,139,250,0.24);
+    border-radius: 14px;
+    padding: 20px 22px;
+    margin: 16px 0 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  #qe-daily-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -20%;
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(167,139,250,0.18) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .qe-daily-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+    position: relative; z-index: 1;
+  }
+  .qe-daily-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    color: rgba(244,244,240,0.55);
+    text-transform: uppercase;
+  }
+  .qe-daily-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(18px, 2.4vw, 24px);
+    font-weight: 500;
+    color: #F4F4F0;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+    margin-top: 4px;
+  }
+  .qe-streak-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px;
+    background: linear-gradient(135deg, rgba(252,211,77,0.18) 0%, rgba(251,113,133,0.14) 100%);
+    border: 1px solid rgba(252,211,77,0.32);
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: #FCD34D;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .qe-streak-pill .qe-streak-flame {
+    font-size: 16px; line-height: 1;
+    filter: drop-shadow(0 0 4px rgba(252,211,77,0.6));
+    animation: qeFlame 1.4s ease-in-out infinite;
+  }
+  @keyframes qeFlame {
+    0%, 100% { transform: scale(1) rotate(-2deg); }
+    50%      { transform: scale(1.08) rotate(2deg); }
+  }
+  .qe-daily-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 14px;
+    position: relative; z-index: 1;
+  }
+  @media (max-width: 540px) {
+    .qe-daily-options { grid-template-columns: 1fr; }
+  }
+  .qe-daily-opt {
+    padding: 12px 14px;
+    background: rgba(244,244,240,0.04);
+    border: 1px solid rgba(244,244,240,0.10);
+    border-radius: 8px;
+    color: rgba(244,244,240,0.85);
+    font-size: 13px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 160ms cubic-bezier(0.23,1,0.32,1);
+    font-family: inherit;
+    line-height: 1.4;
+  }
+  .qe-daily-opt:hover {
+    background: rgba(167,139,250,0.10);
+    border-color: rgba(167,139,250,0.30);
+    color: #FFFFFF;
+    transform: translateY(-1px);
+  }
+  .qe-daily-opt:active { transform: scale(0.98); }
+  .qe-daily-opt.correct {
+    background: rgba(94,234,212,0.14) !important;
+    border-color: rgba(94,234,212,0.42) !important;
+    color: #5EEAD4 !important;
+  }
+  .qe-daily-opt.wrong {
+    background: rgba(251,113,133,0.14) !important;
+    border-color: rgba(251,113,133,0.42) !important;
+    color: #FB7185 !important;
+  }
+  .qe-daily-opt[disabled] { cursor: default; }
+  .qe-daily-explanation {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: rgba(0,0,0,0.32);
+    border: 1px solid rgba(244,244,240,0.08);
+    border-left: 3px solid #A78BFA;
+    border-radius: 0 8px 8px 0;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: rgba(244,244,240,0.78);
+    position: relative; z-index: 1;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 300ms ease-out, max-height 400ms cubic-bezier(0.23,1,0.32,1), margin 300ms ease-out, padding 300ms ease-out;
+  }
+  .qe-daily-explanation.show {
+    opacity: 1;
+    max-height: 280px;
+    padding: 12px 14px;
+  }
+  .qe-daily-done {
+    text-align: center;
+    padding: 14px;
+    color: rgba(94,234,212,0.85);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    background: rgba(94,234,212,0.06);
+    border: 1px solid rgba(94,234,212,0.20);
+    border-radius: 8px;
+    position: relative; z-index: 1;
+  }
+  .qe-daily-stats {
+    display: flex; gap: 18px; margin-top: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: rgba(244,244,240,0.55);
+    letter-spacing: 0.06em;
+    position: relative; z-index: 1;
+  }
+  .qe-daily-stats span strong {
+    color: #F4F4F0;
+    font-weight: 700;
+    font-size: 13px;
+    margin-right: 4px;
+  }
+</style>
+
+<script id="qe-overhaul-v2-js">
+(function(){
+  'use strict';
+
+  // ────────────────────────────────────────────────────────────────────
+  // #3 — Five high-tech multi-agents replacing the original 10
+  // ────────────────────────────────────────────────────────────────────
+  var NEW_AGENTS = [
+    {
+      id: 'nexus',
+      name: 'NEXUS-7',
+      mono: 'NX',
+      role: 'ALPHA SYNTHESIS ENGINE',
+      emoji: '◆',
+      color: '#A78BFA',
+      flowNode: 'cfn-ingest',
+      domain: 'multi-modal alpha synthesis combining technicals, fundamentals, sentiment, and flow',
+      systemPrompt: "You are NEXUS-7 — the Alpha Synthesis Engine for Quant Entelloq. Your function is to fuse signals from technical (momentum, mean-reversion, breakout, volume profile), fundamental (valuation multiples, revisions, quality factors), sentiment (news NLP, options skew, positioning), and flow (dark pool prints, block trades, ETF creations) into a single unified ALPHA SCORE from -100 (max short) to +100 (max long). Output format: lead with [ALPHA SCORE: ±X] [CONVICTION: LOW/MED/HIGH/EXTREME] [HORIZON: 1D/1W/1M/3M], then a 3-line synthesis explaining which signal sets dominate and which dissent. Never hedge with 'it depends' — every output ends with a concrete BUY/SELL/HOLD with target price + stop. Cite the dominant factor weight (e.g., 'momentum 42%, sentiment 28%, valuation 18%, flow 12%').",
+      suggestions: [
+        'Generate alpha score for AAPL',
+        'What are the top 3 alpha names today?',
+        'Synthesize signals for the QQQ basket'
+      ]
+    },
+    {
+      id: 'aegis',
+      name: 'AEGIS-PRIME',
+      mono: 'AG',
+      role: 'RISK QUANTIFICATION MATRIX',
+      emoji: '◈',
+      color: '#FB7185',
+      flowNode: 'cfn-risk',
+      domain: 'risk decomposition, stress testing, tail-risk, correlation regimes',
+      systemPrompt: "You are AEGIS-PRIME — the Risk Quantification Matrix for Quant Entelloq, operating to Tier-1 prime broker standards. For any portfolio or trade, you produce a complete risk decomposition: (1) parametric + Monte Carlo VaR at 95% and 99%, 1-day and 10-day; (2) Expected Shortfall (CVaR) in the tail; (3) max drawdown under 4 historical regimes — 2008 GFC, 2020 COVID, 2022 rate shock, 2018 vol-pocalypse; (4) factor exposure decomposition (market beta, size, value, momentum, quality); (5) correlation matrix shift under stress; (6) Kelly fraction + recommended position size. Output format: start with [RISK VERDICT: APPROVED / WARNING / BLOCK] in caps, then a numeric breakdown. Block any single position above 20% NAV or any sector above 40% without explicit hedge. Never suggest sizing above 0.5x Kelly without a written justification.",
+      suggestions: [
+        'Run full risk audit on my portfolio',
+        'Stress test my positions against 2008 + 2022',
+        'What is max safe size for a NVDA position?'
+      ]
+    },
+    {
+      id: 'oracle',
+      name: 'ORACLE-X',
+      mono: 'OR',
+      role: 'MACRO REGIME DETECTOR',
+      emoji: '◉',
+      color: '#67E8F9',
+      flowNode: 'cfn-reasoner',
+      domain: 'cross-asset macro regimes, central bank policy, geopolitics, liquidity cycles',
+      systemPrompt: "You are ORACLE-X — the Macro Regime Detector for Quant Entelloq. You classify the global macro environment into one of eight regimes (Reflation / Disinflation / Stagflation / Recession / Recovery / Late Cycle / Crisis / Goldilocks) using inputs from rate curves (UST 2s10s, 3m10y, real yields), credit (IG/HY spreads, CDX), FX (DXY regime, EM stress), commodities (oil + copper + gold ratios), and volatility (VIX term structure, MOVE index). Output: lead with [REGIME: ...] [PHASE TRANSITION PROB: X%], then the 3 dominant macro forces, the 2-3 highest-confidence trades that historically work in this regime (with hit rate from prior cycles), and a watchlist of 3 macro indicators whose flip would change the regime call. Include forward-looking Fed/ECB/BoJ policy expectations baked into pricing. Never give a regime call without a hit-rate citation from analogous periods.",
+      suggestions: [
+        'What macro regime are we in right now?',
+        'Show cross-asset confirmation/divergence signals',
+        'Map current setup to closest historical analog'
+      ]
+    },
+    {
+      id: 'phoenix',
+      name: 'PHOENIX-9',
+      mono: 'PX',
+      role: 'CATALYST DISCOVERY SYSTEM',
+      emoji: '◇',
+      color: '#FCD34D',
+      flowNode: 'cfn-prediction',
+      domain: 'event-driven catalysts, earnings, M&A, FDA, central bank decisions',
+      systemPrompt: "You are PHOENIX-9 — the Catalyst Discovery System for Quant Entelloq. You identify and rank upcoming binary or asymmetric-payoff events across earnings (with whisper number + implied move from straddle), M&A (deal arb spreads, regulatory risk), FDA / clinical readouts (probability of approval + impact magnitude), central bank decisions (priced-in vs market expectation gap), and unscheduled catalysts (activist filings, insider buying clusters, technical breakouts in volume). For every catalyst output: [EVENT] [DATE/TIME] [IMPLIED MOVE %] [DIRECTIONAL BIAS] [PAYOFF ASYMMETRY: e.g., 3:1 upside] [STRATEGY: long stock / long straddle / sell premium / pairs]. Rank by expected value, not just probability. Always note the catalyst-implied options strategy and the historical batting average for similar setups. Flag any catalyst with > 8% implied move that lacks an obvious hedge.",
+      suggestions: [
+        'List top catalysts in the next 7 days',
+        'What is the highest EV earnings setup this week?',
+        'Find unscheduled catalysts — insider clusters + breakouts'
+      ]
+    },
+    {
+      id: 'forge',
+      name: 'FORGE-Δ',
+      mono: 'FG',
+      role: 'STRATEGY BACKTEST ENGINE',
+      emoji: '◊',
+      color: '#5EEAD4',
+      flowNode: 'cfn-quant',
+      domain: 'systematic backtesting, signal engineering, walk-forward, regime-aware optimization',
+      systemPrompt: "You are FORGE-Δ — the Strategy Backtest Engine for Quant Entelloq. You translate any trading idea into a precise rule-based strategy and quantify its expected performance using walk-forward optimization, Monte Carlo simulation, and regime-segmented backtests. For every strategy request: (1) restate the idea as a precise IF-THEN-ELSE rule with explicit entry, exit, position size, and risk controls; (2) report Sharpe, Sortino, Calmar, max drawdown, hit rate, profit factor, and worst 5 trades; (3) decompose returns by market regime (bull / bear / range / crisis); (4) flag overfitting risk via in-sample vs out-of-sample Sharpe gap; (5) recommend the next variant to test (e.g., 'add a volatility filter — this strategy underperforms when VIX > 25'). Reject any strategy with hit rate < 35% AND profit factor < 1.3 — those are noise. Always report sample size and warn if N < 50 trades.",
+      suggestions: [
+        'Backtest: long SPY when 20D > 200D, exit on cross-under',
+        'Optimize a momentum strategy on tech sector',
+        'Test mean-reversion on overnight gaps'
+      ]
+    }
+  ];
+
+  var NEW_FLOW = [
+    { id: 'cfn-nexus',   label: 'Synthesize' },
+    { id: 'cfn-aegis',   label: 'Risk' },
+    { id: 'cfn-oracle',  label: 'Macro' },
+    { id: 'cfn-phoenix', label: 'Catalyst' },
+    { id: 'cfn-forge',   label: 'Backtest' },
+    { id: 'cfn-output',  label: 'Output' }
+  ];
+
+  function replaceAgents() {
+    if (typeof window.QE_AGENTS === 'undefined' && typeof QE_AGENTS === 'undefined') return false;
+    var arr = window.QE_AGENTS || QE_AGENTS;
+    if (!Array.isArray(arr)) return false;
+    // Don't keep re-replacing
+    if (arr.length === NEW_AGENTS.length && arr[0] && arr[0].id === 'nexus') return true;
+
+    // Wipe + repopulate
+    arr.length = 0;
+    NEW_AGENTS.forEach(function(a){ arr.push(a); });
+
+    // Reset cmdState if present
+    try {
+      if (window.cmdState && window.cmdState.agentStates) {
+        window.cmdState.agentStates = {};
+        NEW_AGENTS.forEach(function(a){
+          window.cmdState.agentStates[a.id] = { status:'idle', output:'Standing by — awaiting query…', conf:0, latency:'—' };
+        });
+        window.cmdState.queryCount = window.cmdState.queryCount || 0;
+        window.cmdState.running = false;
+      }
+    } catch(_){}
+
+    return true;
+  }
+
+  function rebuildFlowBar() {
+    var bar = document.getElementById('cmd-flow-bar');
+    if (!bar) return;
+    if (bar.getAttribute('data-qe-overhauled') === '1') return;
+    var html = '';
+    NEW_FLOW.forEach(function(node, i){
+      var active = (node.id === 'cfn-output') ? ' active' : ' idle';
+      html += '<div class="cmd-flow-node' + active + '" id="' + node.id + '"><span class="cmd-flow-dot' + active + '"></span>' + node.label + '</div>';
+      if (i < NEW_FLOW.length - 1) html += '<span class="cmd-flow-arrow">→</span>';
+    });
+    bar.innerHTML = html;
+    bar.setAttribute('data-qe-overhauled', '1');
+  }
+
+  function forceAgentsTab() {
+    // The tab strip still exists, but #ais-tab-chat is hidden via CSS.
+    // If the chat panel ever becomes visible, force-switch to agents.
+    var chatPanel = document.getElementById('ais-panel-chat');
+    var agentsPanel = document.getElementById('ais-panel-agents');
+    if (chatPanel) chatPanel.style.display = 'none';
+    if (agentsPanel && agentsPanel.style.display === 'none') {
+      // Default to agents whenever AI Studio is open
+      var aiPage = document.getElementById('page-ai');
+      if (aiPage && !aiPage.classList.contains('hidden')) {
+        agentsPanel.style.display = '';
+        if (typeof window.renderCommandCenter === 'function') {
+          try { window.renderCommandCenter(); } catch(_){}
+        }
+      }
+    }
+  }
+
+  // ────────────────────────────────────────────────────────────────────
+  // #1 — Reports tab: hard-wrap renderReports so v2 ALWAYS wins
+  // ────────────────────────────────────────────────────────────────────
+  function lockInReportsV2() {
+    if (window._qeReportsLocked) return;
+    if (typeof window.renderReports !== 'function') return;
+    if (!window.QEFeedback || typeof window.QEFeedback.renderReportsV2 !== 'function') return;
+    window._qeReportsLocked = true;
+    var origRender = window.renderReports;
+    window.renderReports = function() {
+      // Always delegate to v2 if the v2 page anchor exists
+      try {
+        var page = document.getElementById('page-reports');
+        if (page) {
+          // Force-clear legacy markup so v2 always re-shells
+          var v2 = page.querySelector('.qe-pg2v');
+          if (!v2) page.innerHTML = '';
+          window.QEFeedback.renderReportsV2();
+          return;
+        }
+      } catch(_){}
+      return origRender.apply(this, arguments);
+    };
+    // Also wrap renderAlerts the same way
+    if (typeof window.renderAlerts === 'function' && window.QEFeedback.renderAlertsV2) {
+      var origAlerts = window.renderAlerts;
+      window.renderAlerts = function() {
+        try {
+          var page = document.getElementById('page-alerts');
+          if (page) {
+            var v2 = page.querySelector('.qe-pg2v');
+            if (!v2) page.innerHTML = '';
+            window.QEFeedback.renderAlertsV2();
+            return;
+          }
+        } catch(_){}
+        return origAlerts.apply(this, arguments);
+      };
+    }
+    // Trigger now if user is currently on reports/alerts
+    try {
+      var rp = document.getElementById('page-reports');
+      var ap = document.getElementById('page-alerts');
+      if (rp && !rp.classList.contains('hidden')) window.QEFeedback.renderReportsV2();
+      if (ap && !ap.classList.contains('hidden')) window.QEFeedback.renderAlertsV2();
+    } catch(_){}
+  }
+
+  // ────────────────────────────────────────────────────────────────────
+  // #4 — Daily question + streak
+  // ────────────────────────────────────────────────────────────────────
+  var QUESTIONS = [
+    { q: "If a stock has a P/E of 25 and earnings growing at 30%, what is its PEG ratio?", opts: ["0.83", "1.20", "1.50", "0.75"], correct: 0, explain: "PEG = P/E ÷ growth rate = 25 ÷ 30 = 0.83. PEG below 1.0 is often considered undervalued for growth names." },
+    { q: "Which Greek measures an option's sensitivity to time decay?", opts: ["Delta", "Gamma", "Theta", "Vega"], correct: 2, explain: "Theta represents the rate at which an option's value decays as expiration approaches. Long options have negative theta." },
+    { q: "If the 2s10s yield curve inverts, what does this historically signal?", opts: ["Stock rally", "Recession risk", "Higher inflation", "Stronger dollar"], correct: 1, explain: "An inverted 2s10s has preceded every U.S. recession since 1955, with a typical lag of 12-18 months." },
+    { q: "What is the Sharpe ratio of a portfolio with 12% return, 3% risk-free rate, and 15% volatility?", opts: ["0.40", "0.60", "0.80", "1.00"], correct: 1, explain: "Sharpe = (Return − Risk-free) ÷ Volatility = (12 − 3) ÷ 15 = 0.60. Above 1.0 is excellent; below 0.5 is mediocre." },
+    { q: "The VIX is at 35. What does this typically indicate?", opts: ["Calm market", "Moderate volatility", "Elevated fear", "All-time low"], correct: 2, explain: "VIX above 30 indicates elevated fear and is often a contrarian buy signal historically — though not always immediately." },
+    { q: "Which factor in the Fama-French 3-factor model is NOT included?", opts: ["Market (MKT)", "Size (SMB)", "Value (HML)", "Momentum (MOM)"], correct: 3, explain: "The original 3-factor model has MKT, SMB, HML. Momentum (UMD) was added later as Carhart's 4-factor extension." },
+    { q: "If a company has $10B revenue and $2B net income, what is its net margin?", opts: ["10%", "15%", "20%", "25%"], correct: 2, explain: "Net margin = Net Income ÷ Revenue = $2B ÷ $10B = 20%. Tech companies often have 20%+ net margins." },
+    { q: "The Kelly criterion suggests betting what fraction of bankroll when you have a 60% edge with even odds?", opts: ["10%", "20%", "30%", "60%"], correct: 1, explain: "Kelly = edge ÷ odds = 20% / 1 = 20%. Most pros use half-Kelly (10%) to reduce drawdown." },
+    { q: "What does a put/call ratio of 1.5 typically indicate?", opts: ["Bullish sentiment", "Bearish sentiment", "Neutral market", "Low volatility"], correct: 1, explain: "Put/call > 1.0 means more puts than calls, signaling bearish sentiment. Extreme readings (>1.5) can be contrarian bullish." },
+    { q: "Which order type guarantees execution but not price?", opts: ["Limit order", "Stop order", "Market order", "Stop-limit"], correct: 2, explain: "Market orders execute immediately at the best available price — slippage can be significant in illiquid names." },
+    { q: "If a bond's yield rises from 4% to 5%, what happens to its price?", opts: ["Rises", "Falls", "Stays flat", "Depends on credit rating"], correct: 1, explain: "Bond prices and yields move inversely. The magnitude depends on duration — long-duration bonds fall most." },
+    { q: "The S&P 500's average annual return since 1928 is approximately:", opts: ["6%", "8%", "10%", "12%"], correct: 2, explain: "Roughly 10% nominal (~7% real after inflation). This is a key benchmark for evaluating any investment strategy." },
+    { q: "What is the Black-Scholes formula primarily used for?", opts: ["Bond pricing", "Stock valuation", "Option pricing", "FX hedging"], correct: 2, explain: "Black-Scholes prices European options using stock price, strike, time, volatility, and risk-free rate. Earned Scholes + Merton the 1997 Nobel." },
+    { q: "If a hedge fund charges '2 and 20', what does the 20 refer to?", opts: ["20% management fee", "20% performance fee", "20% lock-up", "20% allocation cap"], correct: 1, explain: "2/20 = 2% management fee on AUM + 20% performance fee on profits above a high-water mark." },
+    { q: "Which metric is most useful for comparing companies of different sizes?", opts: ["Net income", "Revenue", "EV/EBITDA", "Free cash flow"], correct: 2, explain: "EV/EBITDA normalizes for capital structure and scale, making cross-company comparison cleaner than absolute metrics." },
+    { q: "A 'death cross' technical pattern is when:", opts: ["50DMA crosses above 200DMA", "50DMA crosses below 200DMA", "Volume drops 50%", "RSI hits 30"], correct: 1, explain: "Death cross = 50-day moving average crosses BELOW 200-day moving average. The inverse is a 'golden cross' (bullish)." },
+    { q: "What does VaR (Value at Risk) measure?", opts: ["Expected return", "Worst loss in a normal day", "Average drawdown", "Sharpe ratio"], correct: 1, explain: "VaR estimates the maximum expected loss over a time horizon at a confidence level (e.g., 95% 1-day VaR of $100K means 5% chance of losing more than $100K in a day)." },
+    { q: "Which sector typically performs best during late-cycle expansion?", opts: ["Utilities", "Consumer staples", "Energy", "Healthcare"], correct: 2, explain: "Energy and materials lead late-cycle as commodity demand peaks. Defensives outperform in recession." },
+    { q: "Modern Portfolio Theory was pioneered by:", opts: ["Warren Buffett", "Harry Markowitz", "Benjamin Graham", "Eugene Fama"], correct: 1, explain: "Markowitz's 1952 paper introduced mean-variance optimization. He won the 1990 Nobel Prize for it." },
+    { q: "If implied volatility is 30% and realized volatility is 20%, the option is:", opts: ["Underpriced", "Overpriced", "Fairly priced", "Need more data"], correct: 1, explain: "When IV > realized vol, options are 'expensive' — favor selling premium (covered calls, iron condors)." },
+    { q: "Which is NOT one of the Big Three credit rating agencies?", opts: ["Moody's", "S&P", "Fitch", "Bloomberg"], correct: 3, explain: "Moody's, S&P Global Ratings, and Fitch are the Big Three. Bloomberg provides data but not credit ratings." },
+    { q: "What is 'beta' in finance?", opts: ["Annual return", "Volatility vs. market", "Dividend yield", "Default risk"], correct: 1, explain: "Beta measures a stock's volatility relative to the market. Beta of 1.5 means stock moves 50% more than the market on average." },
+    { q: "A flat yield curve typically signals:", opts: ["Strong growth ahead", "Policy uncertainty", "Hyperinflation", "Currency crisis"], correct: 1, explain: "A flat curve suggests transition — markets are uncertain whether the next move is growth (steepening) or recession (inversion)." },
+    { q: "The dividend discount model (DDM) values a stock based on:", opts: ["Earnings growth", "PV of future dividends", "Book value", "Free cash flow"], correct: 1, explain: "DDM: Price = Dividend / (Required Return − Growth Rate). Best for stable dividend payers like utilities." },
+    { q: "Which is a leading economic indicator?", opts: ["Unemployment rate", "GDP growth", "Building permits", "Inflation rate"], correct: 2, explain: "Building permits lead the economy by ~6 months. Unemployment and GDP are lagging/coincident indicators." },
+    { q: "A stock split 2-for-1 means:", opts: ["Price doubles", "Share count doubles, price halves", "Dividend doubles", "Market cap doubles"], correct: 1, explain: "Splits don't change market cap or fundamental value — they just adjust the share count and price proportionally." },
+    { q: "Which event preceded the 2008 financial crisis?", opts: ["Tech bubble burst", "Subprime mortgage collapse", "European debt crisis", "Asian currency crisis"], correct: 1, explain: "Mass subprime mortgage defaults triggered MBS losses, which cascaded through leveraged investment banks (Bear, Lehman)." },
+    { q: "The Treynor ratio differs from Sharpe by using:", opts: ["Standard deviation", "Beta", "Skewness", "Tracking error"], correct: 1, explain: "Treynor = (Return − Risk-free) / Beta. Useful for evaluating diversified portfolios where systematic risk dominates." },
+    { q: "What does 'mean reversion' assume?", opts: ["Trends persist", "Prices return to average", "Volatility is constant", "Markets are random"], correct: 1, explain: "Mean reversion strategies bet on prices returning to a long-term average — opposite of momentum strategies." },
+    { q: "Which is the most liquid currency pair globally?", opts: ["GBP/JPY", "EUR/USD", "USD/CHF", "AUD/USD"], correct: 1, explain: "EUR/USD is the most traded pair (~24% of FX volume). Followed by USD/JPY, GBP/USD, AUD/USD." }
+  ];
+
+  function _today() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
+  function _streak() {
+    try {
+      var raw = localStorage.getItem('qe_daily_streak');
+      return raw ? JSON.parse(raw) : { lastDate: null, streak: 0, total: 0, correct: 0, history: [] };
+    } catch(_) {
+      return { lastDate: null, streak: 0, total: 0, correct: 0, history: [] };
+    }
+  }
+
+  function _saveStreak(s) {
+    try { localStorage.setItem('qe_daily_streak', JSON.stringify(s)); } catch(_){}
+  }
+
+  function _questionForToday() {
+    // Deterministic per-day question using day-of-year
+    var d = new Date();
+    var start = new Date(d.getFullYear(), 0, 0);
+    var diff = d - start;
+    var dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
+    return QUESTIONS[dayOfYear % QUESTIONS.length];
+  }
+
+  function injectDailyCard() {
+    var dash = document.getElementById('page-dashboard');
+    if (!dash) return;
+    if (document.getElementById('qe-daily-card')) return;
+
+    var s = _streak();
+    var today = _today();
+    var alreadyDone = s.lastDate === today;
+    var q = _questionForToday();
+
+    var card = document.createElement('div');
+    card.id = 'qe-daily-card';
+
+    var optionsHtml = q.opts.map(function(opt, i){
+      return '<button class="qe-daily-opt" data-i="' + i + '">' + (i+1) + '. ' + opt + '</button>';
+    }).join('');
+
+    card.innerHTML = ''
+      + '<div class="qe-daily-head">'
+      +   '<div>'
+      +     '<div class="qe-daily-eyebrow">Daily Challenge · ' + today + '</div>'
+      +     '<div class="qe-daily-title">' + q.q + '</div>'
+      +   '</div>'
+      +   '<div class="qe-streak-pill"><span class="qe-streak-flame">🔥</span><span>' + s.streak + ' day streak</span></div>'
+      + '</div>'
+      + (alreadyDone
+          ? '<div class="qe-daily-done">✓ ANSWERED TODAY · Come back tomorrow to keep your streak alive</div>'
+          : '<div class="qe-daily-options" id="qe-daily-options">' + optionsHtml + '</div>')
+      + '<div class="qe-daily-explanation" id="qe-daily-explanation"></div>'
+      + '<div class="qe-daily-stats">'
+      +   '<span><strong>' + s.total + '</strong>answered</span>'
+      +   '<span><strong>' + (s.total > 0 ? Math.round(s.correct/s.total*100) : 0) + '%</strong>accuracy</span>'
+      +   '<span><strong>' + s.streak + '</strong>current streak</span>'
+      + '</div>';
+
+    // Place after the dash-status-bar (or first child if not present)
+    var statusBar = dash.querySelector('.dash-status-bar');
+    if (statusBar && statusBar.nextSibling) {
+      dash.insertBefore(card, statusBar.nextSibling);
+    } else {
+      dash.insertBefore(card, dash.firstChild);
+    }
+
+    // Wire up options
+    if (!alreadyDone) {
+      var opts = card.querySelectorAll('.qe-daily-opt');
+      opts.forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var idx = parseInt(btn.getAttribute('data-i'), 10);
+          var isCorrect = (idx === q.correct);
+          // Visual feedback
+          opts.forEach(function(b, i){
+            b.setAttribute('disabled', 'true');
+            if (i === q.correct) b.classList.add('correct');
+            if (i === idx && !isCorrect) b.classList.add('wrong');
+          });
+          // Show explanation
+          var exp = document.getElementById('qe-daily-explanation');
+          if (exp) {
+            exp.innerHTML = (isCorrect ? '<strong style="color:#5EEAD4;">✓ Correct.</strong> ' : '<strong style="color:#FB7185;">✗ Not quite.</strong> ')
+                          + '<strong>' + q.opts[q.correct] + '</strong> — ' + q.explain;
+            exp.classList.add('show');
+          }
+          // Update streak
+          var st = _streak();
+          var yest = new Date(); yest.setDate(yest.getDate() - 1);
+          var yestStr = yest.getFullYear() + '-' + String(yest.getMonth()+1).padStart(2,'0') + '-' + String(yest.getDate()).padStart(2,'0');
+          if (st.lastDate === yestStr) {
+            st.streak += 1;
+          } else if (st.lastDate !== today) {
+            st.streak = 1;
+          }
+          st.lastDate = today;
+          st.total = (st.total || 0) + 1;
+          if (isCorrect) st.correct = (st.correct || 0) + 1;
+          st.history = (st.history || []).concat([{ d: today, c: isCorrect, q: q.q }]).slice(-90);
+          _saveStreak(st);
+
+          // Update streak pill live
+          var pill = card.querySelector('.qe-streak-pill span:last-child');
+          if (pill) pill.textContent = st.streak + ' day streak';
+
+          // Update stats
+          var stats = card.querySelector('.qe-daily-stats');
+          if (stats) {
+            stats.innerHTML = ''
+              + '<span><strong>' + st.total + '</strong>answered</span>'
+              + '<span><strong>' + (st.total > 0 ? Math.round(st.correct/st.total*100) : 0) + '%</strong>accuracy</span>'
+              + '<span><strong>' + st.streak + '</strong>current streak</span>';
+          }
+        });
+      });
+    }
+  }
+
+  // ────────────────────────────────────────────────────────────────────
+  // Boot loop — idempotent, runs every 1.2s
+  // ────────────────────────────────────────────────────────────────────
+  function boot() {
+    replaceAgents();
+    rebuildFlowBar();
+    forceAgentsTab();
+    lockInReportsV2();
+    injectDailyCard();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+  setInterval(boot, 1200);
+
+  // Expose
+  window.QEOverhaul = {
+    agents: NEW_AGENTS,
+    flow: NEW_FLOW,
+    questions: QUESTIONS,
+    streak: _streak,
+    rebuild: boot
+  };
+})();
+</script>
+
 </body>
 </html>
