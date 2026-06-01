@@ -37255,5 +37255,211 @@ setTimeout(() => {
 })();
 </script>
 
+<!-- ════════════════════════════════════════════════════════════════════
+     HOTFIX v6 — Replace cmdOrchestrate so queries reach the NEW agents
+     The original cmdOrchestrate routes keywords to old agent IDs
+     (risk, portfolio, sentiment, market, research, prediction, strategy,
+     assistant). After our replacement those IDs don't exist, so
+     _cmdRunAgent silently returns and NO agent responds.
+     This wraps cmdOrchestrate with a router that maps keywords to the
+     NEW 5 agent IDs (nexus, aegis, oracle, phoenix, forge).
+     ════════════════════════════════════════════════════════════════════ -->
+<script id="qe-hotfix-v6-js">
+(function(){
+  'use strict';
+
+  var NEW_IDS = ['nexus','aegis','oracle','phoenix','forge'];
+
+  // Smart router — maps keywords to the new agent IDs
+  function routeQuery(query) {
+    var ql = String(query || '').toLowerCase();
+    var matched = [];
+    // AEGIS — risk
+    if (/\b(risk|drawdown|var|cvar|tail|stress|hedge|exposure|kelly|sizing|loss|safe|danger|concentration)\b/.test(ql)) {
+      matched.push('aegis');
+    }
+    // ORACLE — macro
+    if (/\b(macro|regime|fed|fomc|cpi|inflation|yield|curve|recession|cycle|dxy|geopolit|policy|liquidity)\b/.test(ql)) {
+      matched.push('oracle');
+    }
+    // PHOENIX — catalyst / event
+    if (/\b(catalyst|earning|earnings|m&a|merger|fda|approval|guidance|event|insider|activist|breakout)\b/.test(ql)) {
+      matched.push('phoenix');
+    }
+    // FORGE — backtest / strategy
+    if (/\b(backtest|strategy|sharpe|sortino|calmar|signal|momentum|mean.?revers|factor|walk.?forward|monte.?carlo|optimi[sz]e)\b/.test(ql)) {
+      matched.push('forge');
+    }
+    // NEXUS — alpha / synthesis / general analysis
+    if (/\b(alpha|score|signal|sentiment|news|technical|fundamental|valuation|price target|buy|sell|long|short)\b/.test(ql)) {
+      matched.push('nexus');
+    }
+    // Default — broad query → all 5
+    if (!matched.length) matched = NEW_IDS.slice();
+    // Always include NEXUS for synthesis if 2+ matched but no nexus
+    if (matched.length >= 2 && matched.indexOf('nexus') < 0) matched.push('nexus');
+    return matched.filter(function(id, i, arr){ return arr.indexOf(id) === i; });
+  }
+
+  // Render an inline error in the card output if streaming fails
+  function showCardError(agentId, msg) {
+    var outEl = document.getElementById('cmd-out-' + agentId);
+    if (outEl) outEl.textContent = '⚠ ' + msg;
+    var card = document.getElementById('cmd-card-' + agentId);
+    if (card) card.classList.remove('cmd-agent-active');
+  }
+
+  // Build a hard-replacement cmdOrchestrate that uses NEW IDs
+  function installOrchestrator() {
+    // Wait until we have the basic functions exposed
+    if (typeof window._cmdRunAgent !== 'function') return false;
+    if (window._qeV6OrchInstalled) return true;
+    window._qeV6OrchInstalled = true;
+
+    window.cmdOrchestrate = async function() {
+      var input = document.getElementById('cmd-query-input');
+      var query = (input && input.value || '').trim();
+      if (!query) return;
+
+      // Get cmdState via window (we've exposed it in v4/v5)
+      var cs = window.cmdState;
+      if (!cs) {
+        console.warn('[QEHotfix6] cmdState not available');
+        return;
+      }
+      if (cs.running) return;
+      cs.running = true;
+      if (input) input.value = '';
+      cs.queryCount = (cs.queryCount || 0) + 1;
+      var cnt = document.getElementById('cmd-stat-queries');
+      if (cnt) cnt.textContent = cs.queryCount;
+
+      var ids = routeQuery(query);
+
+      // Activity feed
+      try {
+        if (typeof window._cmdAddFeed === 'function') {
+          window._cmdAddFeed('ORCHESTRATOR', '#A78BFA',
+            'Dispatching ' + ids.length + ' specialist' + (ids.length===1?'':'s') + ': ' + ids.map(function(i){return i.toUpperCase();}).join(' · '));
+        }
+      } catch(_){}
+
+      // Mark all selected as thinking
+      ids.forEach(function(id){
+        if (!cs.agentStates[id]) cs.agentStates[id] = { status:'idle', output:'', conf:0, latency:'—' };
+        cs.agentStates[id].status = 'thinking';
+        cs.agentStates[id].output = '';
+        cs.agentStates[id].latency = '…';
+        if (typeof window._cmdUpdateCard === 'function') {
+          try { window._cmdUpdateCard(id); } catch(_){}
+        }
+      });
+
+      // Fan out with 180ms stagger
+      var promises = ids.map(function(id, i){
+        return new Promise(function(resolve){
+          setTimeout(function(){
+            try {
+              window._cmdRunAgent(id, query).then(resolve, function(err){
+                console.warn('[QEHotfix6] Agent ' + id + ' failed:', err);
+                showCardError(id, 'Agent failed — check console (F12) for details');
+                resolve();
+              });
+            } catch(err) {
+              console.warn('[QEHotfix6] _cmdRunAgent threw for ' + id + ':', err);
+              showCardError(id, 'Pipeline error — see console');
+              resolve();
+            }
+          }, i * 180);
+        });
+      });
+
+      try { await Promise.allSettled(promises); } catch(_){}
+
+      cs.running = false;
+    };
+
+    // Mark the override so other wrappers don't double-wrap
+    window.cmdOrchestrate._qeV6Override = true;
+    return true;
+  }
+
+  // Also override _cmdRunAgent's "agent not found" silent return — give visible error
+  function wrapRunAgent() {
+    if (window._qeV6RunWrapped) return;
+    if (typeof window._cmdRunAgent !== 'function') return;
+    window._qeV6RunWrapped = true;
+    var orig = window._cmdRunAgent;
+    window._cmdRunAgent = async function(agentId, query) {
+      // If agent doesn't exist, redirect to the closest new agent
+      var agents = window.QE_AGENTS || [];
+      if (!agents.find(function(a){ return a.id === agentId; })) {
+        // Map old IDs → new
+        var map = {
+          risk: 'aegis', portfolio: 'aegis', verification: 'aegis',
+          market: 'oracle', macro: 'oracle',
+          sentiment: 'nexus', news: 'nexus', research: 'nexus',
+          prediction: 'phoenix', catalyst: 'phoenix',
+          quant: 'forge', strategy: 'forge',
+          assistant: 'nexus'
+        };
+        var redirect = map[agentId] || 'nexus';
+        console.warn('[QEHotfix6] Redirecting ' + agentId + ' → ' + redirect);
+        agentId = redirect;
+      }
+      try { return await orig.call(this, agentId, query); }
+      catch (err) {
+        console.error('[QEHotfix6] Agent ' + agentId + ' threw:', err);
+        showCardError(agentId, 'Streaming error — see console');
+      }
+    };
+  }
+
+  function boot() {
+    // Re-expose in case earlier hooks haven't run
+    try { if (typeof cmdState !== 'undefined') window.cmdState = cmdState; } catch(_){}
+    try { if (typeof QE_AGENTS !== 'undefined') window.QE_AGENTS = QE_AGENTS; } catch(_){}
+    try { if (typeof _cmdRunAgent !== 'undefined') window._cmdRunAgent = _cmdRunAgent; } catch(_){}
+    try { if (typeof cmdOrchestrate !== 'undefined' && !window._qeV6OrchInstalled) window.cmdOrchestrate = cmdOrchestrate; } catch(_){}
+
+    wrapRunAgent();
+    installOrchestrator();
+
+    // Verify the bottom-bar Enter wiring uses the new cmdOrchestrate
+    var input = document.getElementById('cmd-query-input');
+    if (input && !input._qeV6Bound) {
+      input._qeV6Bound = true;
+      input.addEventListener('keydown', function(e){
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          if (typeof window.cmdOrchestrate === 'function') window.cmdOrchestrate();
+        }
+      });
+    }
+    var btn = document.querySelector('.cmd-orch-btn');
+    if (btn && !btn._qeV6Bound) {
+      btn._qeV6Bound = true;
+      btn.addEventListener('click', function(e){
+        e.preventDefault();
+        if (typeof window.cmdOrchestrate === 'function') window.cmdOrchestrate();
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+  setInterval(boot, 1500);
+
+  window.QEHotfix6 = {
+    route: routeQuery,
+    install: installOrchestrator,
+    orchestrate: function(){ if (typeof window.cmdOrchestrate === 'function') window.cmdOrchestrate(); }
+  };
+})();
+</script>
+
 </body>
 </html>
