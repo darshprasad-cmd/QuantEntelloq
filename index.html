@@ -39900,5 +39900,286 @@ setTimeout(() => {
 })();
 </script>
 
+<!-- ════════════════════════════════════════════════════════════════════
+     HOTFIX v12 — Tour stuck on step 1
+     Root cause: boot() runs every 1.5s. maybeShowFirstVisit() saw
+     no localStorage flag (because tour was still open, not yet
+     completed) and re-scheduled startTour() which set
+     currentStep = 0. So clicking Next briefly advanced to step 2,
+     then the next boot iteration snapped it back to step 1.
+     Fix: track session-level "tour open" + "tour shown this session"
+     flags and bail early if either is true.
+     ════════════════════════════════════════════════════════════════════ -->
+<script id="qe-hotfix-v12-js">
+(function(){
+  'use strict';
+
+  if (!window.QETour) return;
+
+  // Wrap maybeShowFirstVisit so it never re-fires while tour is open
+  // or after it's been shown this session.
+  var origStart = window.QETour.start;
+
+  function isTourOpen() {
+    var overlay = document.getElementById('qe-tour-overlay');
+    return !!(overlay && overlay.classList.contains('show'));
+  }
+
+  function alreadyShownThisSession() {
+    return window._qeTourShownThisSession === true;
+  }
+
+  // Replace QETour.start so it marks the session flag when fired
+  window.QETour.start = function() {
+    window._qeTourShownThisSession = true;
+    return origStart.apply(this, arguments);
+  };
+
+  // The original v10 maybeShowFirstVisit is INSIDE its IIFE, not on
+  // window. We can't disable it directly. Instead, set the session
+  // flag IMMEDIATELY so its check `if (existing.classList.contains('show'))`
+  // becomes irrelevant — we intercept by making the original startTour
+  // safe to re-call:
+  //   - If overlay is already in the DOM AND visible, DO NOT reset
+  //     currentStep.
+  var origEnd = window.QETour.end;
+
+  // Patch the global "next" / "back" click handlers to be resilient.
+  // The original v10 set onclick handlers in buildTourShell once. They
+  // should still be intact. But the v10 boot loop's setTimeout
+  // (startTour) was overriding currentStep.
+  // The actual robust fix: monkey-patch the overlay so clicking Next
+  // ALWAYS advances by reading data-step instead of a closure variable.
+
+  // Strategy: every 200ms while the tour is open, if data-step is set
+  // on the card, mirror it onto the next/back handlers via fresh
+  // listeners that read from data-step rather than a closure.
+
+  var STEPS_TOTAL = 10;
+  var liveStep = 0; // session-scoped step counter
+
+  function renderStepFromDataAttr() {
+    var card = document.getElementById('qe-tour-card');
+    if (!card) return;
+    // Mirror liveStep into UI: update counter, progress, back visibility,
+    // next text. (The v10 step content is filled by its own renderStep,
+    // but we can re-invoke it by simulating the original logic.)
+    if (typeof window._qeV12RenderStep === 'function') {
+      window._qeV12RenderStep(liveStep);
+    }
+  }
+
+  // Wait for v10 STEPS to settle, then capture the renderer via the
+  // exposed window.QETour. v10 didn't expose renderStep. We'll bind
+  // our own based on the same STEPS data.
+  var STEPS = [
+    {
+      title: 'Welcome to Quant Entelloq',
+      body: "Hi — I'm your AI co-pilot. In the next minute I'll show you every feature in this terminal. Browser-only, free, no signup. Bloomberg costs $24k/year for less than this.",
+      pills: ['Free forever', 'Browser-only', 'No signup']
+    },
+    {
+      title: 'The Dashboard',
+      body: "Your command center. Real-time portfolio value, signal counts, market sentiment, and the top AI opportunity. Charts update live. The <strong>Daily Challenge</strong> card at the top builds a streak — answer one finance question per day to keep it alive.",
+      pills: ['Live charts', 'Signal counts', 'Daily streak']
+    },
+    {
+      title: 'AI Studio · 5 Specialists',
+      body: "The brain of the app. Five high-tech specialist agents — <strong>NEXUS-7</strong> (alpha synthesis), <strong>AEGIS-PRIME</strong> (risk), <strong>ORACLE-X</strong> (macro regime), <strong>PHOENIX-9</strong> (catalysts), <strong>FORGE-Δ</strong> (backtests) — analyze any query in parallel. Ask anything, all 5 respond simultaneously.",
+      pills: ['5 agents', 'Parallel', 'Institutional-grade']
+    },
+    {
+      title: 'Quant Lab',
+      body: "Ten quant tools at your fingertips: <strong>backtester</strong>, <strong>Monte Carlo</strong>, <strong>Black-Scholes pricer</strong>, <strong>portfolio optimizer</strong>, <strong>factor analyzer</strong>, <strong>correlation matrix</strong>, and more. Type a strategy in plain English — the lab picks the right model and runs the math.",
+      pills: ['10 tools', 'Plain English', 'Real math']
+    },
+    {
+      title: 'Watchlists · 100M+ Securities',
+      body: "Search stocks, ETFs, crypto, forex, indices, commodities — anywhere. One-click to add to your watchlist, and we'll auto-inject relevant news + AI signals into your dashboard.",
+      pills: ['Global', 'One-click', 'Auto-feeds']
+    },
+    {
+      title: 'Portfolio + Paper Trading',
+      body: "Two ways to use the terminal: track your <strong>real portfolio</strong> (CSV import or NL add), or open a <strong>paper trading account</strong> with virtual cash and practice strategies risk-free. Both update the AI agents' context so every analysis is personalized to your holdings.",
+      pills: ['Real or paper', 'Personalized AI', 'Risk-free practice']
+    },
+    {
+      title: 'Alerts + Reports',
+      body: "<strong>Alerts</strong> stream live signal changes, breaking news, and risk flags in real time. <strong>Reports</strong> generates editorial-quality weekly intelligence reports — top movers, signal breakdown, key risks. Both update automatically.",
+      pills: ['Live alerts', 'Weekly synthesis', 'AI-written']
+    },
+    {
+      title: 'Country Switcher',
+      body: "Top-right corner. Switch between US, UK, India, Japan, EU and more — every part of the app re-skins to that region: signals, portfolio currency, alerts, reports, watchlist universe.",
+      pills: ['Global markets', 'Live re-skin', 'Native currency']
+    },
+    {
+      title: 'Voice Mode + Share',
+      body: "The orb in the bottom-right corner is your <strong>JARVIS-style voice assistant</strong> — click and talk. The Share button in the top bar lets you send Quant Entelloq to anyone in one tap (X, Reddit, LinkedIn, WhatsApp, Email).",
+      pills: ['Voice', 'One-tap share', 'JARVIS-style']
+    },
+    {
+      title: "You're all set",
+      body: "Start with the <strong>Dashboard</strong>, then try asking the agents in <strong>AI Studio</strong>. Click the small <strong>?</strong> in the bottom-left anytime to replay this tour. Welcome aboard — let's find some alpha.",
+      pills: ['Click ? to replay', 'Welcome aboard']
+    }
+  ];
+
+  window._qeV12RenderStep = function(idx) {
+    if (idx < 0) idx = 0;
+    if (idx >= STEPS.length) idx = STEPS.length - 1;
+    var s = STEPS[idx];
+    var titleEl = document.getElementById('qe-tour-title');
+    var bodyEl = document.getElementById('qe-tour-body');
+    var pillsEl = document.getElementById('qe-tour-pills');
+    var counterEl = document.getElementById('qe-tour-counter');
+    var progressEl = document.getElementById('qe-tour-progress');
+    var backEl = document.getElementById('qe-tour-back');
+    var nextEl = document.getElementById('qe-tour-next');
+    if (titleEl) titleEl.textContent = s.title;
+    if (bodyEl) bodyEl.innerHTML = s.body;
+    if (pillsEl) {
+      pillsEl.innerHTML = (s.pills || []).map(function(p){
+        return '<span class="qe-tour-pill">' + p + '</span>';
+      }).join('');
+    }
+    if (counterEl) counterEl.textContent = 'Step ' + (idx + 1) + ' of ' + STEPS.length;
+    if (progressEl) progressEl.style.width = (((idx + 1) / STEPS.length) * 100) + '%';
+    if (backEl) backEl.style.visibility = idx === 0 ? 'hidden' : 'visible';
+    if (nextEl) nextEl.textContent = idx === STEPS.length - 1 ? 'Start exploring →' : 'Got it · Next →';
+  };
+
+  // Hard-rebind Next + Back buttons using v12's liveStep variable.
+  // Use addEventListener with capture so we beat any stale v10 handler.
+  function rebindButtons() {
+    var nextBtn = document.getElementById('qe-tour-next');
+    var backBtn = document.getElementById('qe-tour-back');
+    var skipBtn = document.getElementById('qe-tour-skip');
+    if (nextBtn && !nextBtn.dataset.v12) {
+      nextBtn.dataset.v12 = '1';
+      // Nuke v10 handler by setting onclick to null
+      nextBtn.onclick = null;
+      nextBtn.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+        if (liveStep < STEPS.length - 1) {
+          liveStep++;
+          window._qeV12RenderStep(liveStep);
+        } else {
+          finishTour();
+        }
+      }, true);
+    }
+    if (backBtn && !backBtn.dataset.v12) {
+      backBtn.dataset.v12 = '1';
+      backBtn.onclick = null;
+      backBtn.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+        if (liveStep > 0) {
+          liveStep--;
+          window._qeV12RenderStep(liveStep);
+        }
+      }, true);
+    }
+    if (skipBtn && !skipBtn.dataset.v12) {
+      skipBtn.dataset.v12 = '1';
+      skipBtn.onclick = null;
+      skipBtn.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        finishTour();
+      }, true);
+    }
+  }
+
+  function finishTour() {
+    var overlay = document.getElementById('qe-tour-overlay');
+    if (overlay) overlay.classList.remove('show');
+    try { localStorage.setItem('qe_tour_seen_v1', '1'); } catch(_){}
+    liveStep = 0;
+  }
+
+  // When overlay opens, reset liveStep to current visible step.
+  // If the overlay was JUST opened (counter shows "Step 1"), liveStep
+  // syncs to 0 cleanly.
+  function syncFromCounter() {
+    var counter = document.getElementById('qe-tour-counter');
+    if (!counter) return;
+    var m = counter.textContent.match(/Step (\d+)/);
+    if (m) {
+      var visibleStep = parseInt(m[1], 10) - 1;
+      // Only sync UP if visible is ahead of liveStep (i.e. v10 hasn't
+      // reset us). If they match or v12 is ahead, keep v12's value
+      // and force re-render.
+      if (visibleStep !== liveStep) {
+        // Heuristic: if v10 just snapped to 0 but v12 was ahead, v12 wins
+        if (visibleStep === 0 && liveStep > 0) {
+          window._qeV12RenderStep(liveStep);
+        } else {
+          liveStep = visibleStep;
+        }
+      }
+    }
+  }
+
+  // Heartbeat
+  setInterval(function(){
+    if (!isTourOpen()) return;
+    rebindButtons();
+    syncFromCounter();
+  }, 200);
+
+  // Also: replace the original startTour to set the session flag so
+  // boot's maybeShowFirstVisit early-bails on subsequent ticks.
+  // (Already done above via the wrapper.)
+
+  // ────────────────────────────────────────────────────────────────────
+  // BLOCK v10's repeated re-scheduling of startTour.
+  // v10 calls setTimeout(startTour, 1200) every boot iteration when
+  // localStorage flag is missing. We monkey-patch setTimeout to swallow
+  // any startTour call after the first one this session.
+  // ────────────────────────────────────────────────────────────────────
+  var origSetTimeout = window.setTimeout;
+  window.setTimeout = function(fn, ms) {
+    if (typeof fn === 'function' && fn.toString && fn === window.QETour.start) {
+      // Direct startTour call — only allow first
+      if (window._qeTourShownThisSession) {
+        return 0;
+      }
+    }
+    // Detect anonymous wrapper that calls startTour
+    if (typeof fn === 'function' && ms === 1200 && window._qeTourShownThisSession) {
+      // The v10 boot uses setTimeout(startTour, 1200) — same shape.
+      // Inspect function source if possible.
+      try {
+        var src = fn.toString();
+        if (/startTour\b/.test(src)) {
+          return 0;
+        }
+      } catch(_){}
+    }
+    return origSetTimeout.apply(this, arguments);
+  };
+
+  // If the tour is already on-screen when v12 loads, mark session flag
+  // so further auto-restarts are suppressed.
+  if (isTourOpen()) {
+    window._qeTourShownThisSession = true;
+    // Bind v12 controls immediately
+    rebindButtons();
+  }
+
+  window.QETourV12 = {
+    next: function(){ liveStep++; window._qeV12RenderStep(liveStep); },
+    back: function(){ liveStep--; window._qeV12RenderStep(liveStep); },
+    finish: finishTour,
+    step: function(){ return liveStep; }
+  };
+})();
+</script>
+
 </body>
 </html>
