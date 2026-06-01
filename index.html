@@ -38509,5 +38509,93 @@ setTimeout(() => {
 })();
 </script>
 
+<!-- ════════════════════════════════════════════════════════════════════
+     HOTFIX v9 — Input typing broken (cloneNode wiped text every 1.2s)
+     v8 was cloning the input node on every heartbeat to clear stale
+     listeners — but cloneNode doesn't copy expando properties, so the
+     "_qeV8Bound" flag I set on the ORIGINAL input wasn't on the CLONE.
+     Each boot iteration found the un-flagged clone, cloned it again,
+     wiping any text the user was typing and breaking focus.
+     This v9 uses data-* attributes (preserved by cloneNode AND
+     directly readable as HTML) and NEVER clones — just adds capture-
+     phase listeners on top of whatever v7 attached.
+     ════════════════════════════════════════════════════════════════════ -->
+<script id="qe-hotfix-v9-js">
+(function(){
+  'use strict';
+
+  function broadcast() {
+    if (window.QEStudioV8 && typeof window.QEStudioV8.broadcast === 'function') {
+      window.QEStudioV8.broadcast();
+    }
+  }
+
+  function rewire() {
+    var input = document.getElementById('qe-studio-input');
+    if (input && input.getAttribute('data-v9-wired') !== '1') {
+      input.setAttribute('data-v9-wired', '1');
+      // Plain-text placeholder (v8 had HTML entities showing literally)
+      input.placeholder = 'Ask all 5 specialists — "analyze NVDA", "macro regime?", "risk audit"…';
+      // Capture-phase keydown so we fire FIRST and prevent any conflicting handlers
+      input.addEventListener('keydown', function(e){
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+          broadcast();
+        }
+      }, true);
+    }
+    var btn = document.getElementById('qe-studio-go');
+    if (btn && btn.getAttribute('data-v9-wired') !== '1') {
+      btn.setAttribute('data-v9-wired', '1');
+      btn.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+        broadcast();
+      }, true);
+    }
+    document.querySelectorAll('.qe-studio-chip').forEach(function(c){
+      if (c.getAttribute('data-v9-wired') === '1') return;
+      c.setAttribute('data-v9-wired', '1');
+      c.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+        var p = c.getAttribute('data-prompt');
+        var inp = document.getElementById('qe-studio-input');
+        if (inp) { inp.value = p; broadcast(); }
+      }, true);
+    });
+  }
+
+  // Disarm v8's clone-on-boot so it doesn't keep wiping focus
+  function neutralizeV8Cloning() {
+    var input = document.getElementById('qe-studio-input');
+    if (input) input._qeV8Bound = true;
+    var btn = document.getElementById('qe-studio-go');
+    if (btn) btn._qeV8Bound = true;
+    document.querySelectorAll('.qe-studio-chip').forEach(function(c){
+      c._qeV8Bound = true;
+    });
+  }
+
+  function boot() {
+    neutralizeV8Cloning();
+    rewire();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+  setInterval(boot, 1200);
+
+  window.QEFixInput = { rewire: rewire, broadcast: broadcast };
+})();
+</script>
+
 </body>
 </html>
