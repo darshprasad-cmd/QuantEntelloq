@@ -39110,5 +39110,795 @@ setTimeout(() => {
 })();
 </script>
 
+<!-- ════════════════════════════════════════════════════════════════════
+     HOTFIX v11 — Global Country Context System
+     Makes every module country-aware: indices, stocks, sectors, macro
+     indicators, news, AI agent context, benchmarks, backtest history.
+     Switching the country in the navbar instantly refreshes all
+     country-scoped widgets with smooth fade transitions and skeleton
+     shimmer states while data swaps.
+     ════════════════════════════════════════════════════════════════════ -->
+<style id="qe-hotfix-v11-css">
+  /* ─── Loading skeleton shimmer ──────────────────────────────────── */
+  @keyframes qeShimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  .qe-skel {
+    background: linear-gradient(90deg,
+      rgba(244,244,240,0.04) 0%,
+      rgba(244,244,240,0.10) 50%,
+      rgba(244,244,240,0.04) 100%);
+    background-size: 200% 100%;
+    animation: qeShimmer 1.4s ease-in-out infinite;
+    border-radius: 6px;
+    color: transparent !important;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* ─── Smooth country-change fade transition ─────────────────────── */
+  .qe-country-fading {
+    opacity: 0.4 !important;
+    transition: opacity 220ms ease-out !important;
+  }
+
+  /* ─── Country flag badge in navbar (next to existing selector) ──── */
+  #qe-country-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    background: linear-gradient(135deg, rgba(167,139,250,0.10) 0%, rgba(103,232,249,0.06) 100%);
+    border: 1px solid rgba(167,139,250,0.24);
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: #C4B5FD;
+    font-weight: 700;
+    margin-right: 6px;
+    pointer-events: none;
+    user-select: none;
+  }
+  #qe-country-badge .qe-country-flag { font-size: 14px; line-height: 1; }
+  #qe-country-badge .qe-country-code { letter-spacing: 0.08em; }
+  @media (max-width: 540px) {
+    #qe-country-badge { display: none; }
+  }
+
+  /* ─── Country-aware widget cards on Dashboard ───────────────────── */
+  #qe-country-widgets {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 14px;
+    margin: 6px 0 20px;
+  }
+  @media (max-width: 900px) {
+    #qe-country-widgets { grid-template-columns: 1fr; }
+  }
+  .qe-cw-card {
+    background: #15151A;
+    border: 1px solid rgba(244,244,240,0.06);
+    border-radius: 12px;
+    padding: 16px 18px;
+    transition: opacity 220ms ease;
+  }
+  .qe-cw-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .qe-cw-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    color: rgba(244,244,240,0.55);
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .qe-cw-cflag {
+    font-size: 16px;
+    line-height: 1;
+  }
+
+  /* Indices ticker rows */
+  .qe-cw-idx-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 12px;
+    align-items: baseline;
+    padding: 8px 0;
+    border-top: 1px solid rgba(244,244,240,0.04);
+    font-size: 13px;
+  }
+  .qe-cw-idx-row:first-of-type { border-top: 0; }
+  .qe-cw-idx-name {
+    color: #F4F4F0;
+    font-weight: 500;
+  }
+  .qe-cw-idx-val {
+    font-family: 'JetBrains Mono', monospace;
+    color: rgba(244,244,240,0.85);
+    font-variant-numeric: tabular-nums;
+  }
+  .qe-cw-idx-chg {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    min-width: 56px;
+    text-align: right;
+  }
+  .qe-cw-idx-chg.pos { color: #5EEAD4; }
+  .qe-cw-idx-chg.neg { color: #FB7185; }
+
+  /* Macro indicator grid */
+  .qe-cw-macro {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .qe-cw-macro-cell {
+    background: rgba(244,244,240,0.025);
+    border: 1px solid rgba(244,244,240,0.06);
+    border-radius: 8px;
+    padding: 9px 11px;
+  }
+  .qe-cw-macro-lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    color: rgba(244,244,240,0.42);
+    text-transform: uppercase;
+  }
+  .qe-cw-macro-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    color: #F4F4F0;
+    margin-top: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* News feed widget */
+  #qe-news-feed {
+    margin: 20px 0;
+  }
+  .qe-news-card {
+    background: #15151A;
+    border: 1px solid rgba(244,244,240,0.06);
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .qe-news-item {
+    display: flex;
+    gap: 14px;
+    padding: 12px 0;
+    border-top: 1px solid rgba(244,244,240,0.04);
+  }
+  .qe-news-item:first-of-type { border-top: 0; }
+  .qe-news-cat {
+    flex-shrink: 0;
+    width: 64px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    color: rgba(167,139,250,0.7);
+    text-transform: uppercase;
+    padding-top: 2px;
+  }
+  .qe-news-body { flex: 1; font-size: 13px; color: #F4F4F0; line-height: 1.5; }
+  .qe-news-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: rgba(244,244,240,0.42);
+    margin-top: 3px;
+    letter-spacing: 0.04em;
+  }
+  .qe-news-impact {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    margin-left: 8px;
+    text-transform: uppercase;
+  }
+  .qe-news-impact.high { background: rgba(251,113,133,0.14); color: #FB7185; }
+  .qe-news-impact.med  { background: rgba(252,211,77,0.14);  color: #FCD34D; }
+  .qe-news-impact.low  { background: rgba(94,234,212,0.14);  color: #5EEAD4; }
+
+  /* Local market confidence gauge */
+  .qe-conf-gauge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+  }
+  .qe-conf-bar {
+    flex: 1;
+    height: 6px;
+    background: rgba(244,244,240,0.06);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .qe-conf-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #A78BFA 0%, #67E8F9 100%);
+    border-radius: 3px;
+    transition: width 420ms cubic-bezier(0.23,1,0.32,1);
+  }
+  .qe-conf-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: #F4F4F0;
+    min-width: 36px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+
+<script id="qe-hotfix-v11-js">
+(function(){
+  'use strict';
+
+  // ────────────────────────────────────────────────────────────────────
+  // COUNTRY DATA — institutional-grade per-country reference table
+  // ────────────────────────────────────────────────────────────────────
+  var COUNTRIES = {
+    US: {
+      code: 'US', name: 'United States', flag: '🇺🇸',
+      currency: 'USD', symbol: '$',
+      exchanges: ['NYSE', 'NASDAQ'],
+      indices: [
+        { tk: 'SPX',  name: 'S&P 500',     val: 5_876.12, chg: +0.42 },
+        { tk: 'IXIC', name: 'Nasdaq 100',  val: 19_218.46, chg: +0.71 },
+        { tk: 'DJI',  name: 'Dow Jones',   val: 42_894.10, chg: +0.18 },
+        { tk: 'RUT',  name: 'Russell 2000',val:  2_312.45, chg: -0.24 }
+      ],
+      benchmark: 'S&P 500',
+      top_stocks: ['NVDA','MSFT','AAPL','GOOGL','AMZN','META','TSLA','JPM','XOM','UNH'],
+      sectors: ['Technology','Financials','Health Care','Consumer Discretionary','Communication','Industrials','Energy','Consumer Staples','Utilities','Real Estate','Materials'],
+      macro: [
+        { lbl: 'Fed Funds',    val: '4.75%' },
+        { lbl: 'CPI YoY',      val: '2.6%' },
+        { lbl: 'GDP Growth',   val: '2.8%' },
+        { lbl: 'Unemployment', val: '4.1%' },
+        { lbl: 'PPI YoY',      val: '2.4%' },
+        { lbl: 'DXY Index',    val: '106.8' }
+      ],
+      central_bank: 'Federal Reserve',
+      regulator: 'SEC',
+      news_themes: ['Fed policy','Treasury auctions','SEC filings','Tech earnings','Big bank guidance']
+    },
+    IN: {
+      code: 'IN', name: 'India', flag: '🇮🇳',
+      currency: 'INR', symbol: '₹',
+      exchanges: ['NSE', 'BSE'],
+      indices: [
+        { tk: 'NIFTY',   name: 'Nifty 50',    val: 24_312.40, chg: +0.38 },
+        { tk: 'SENSEX',  name: 'Sensex',      val: 80_148.80, chg: +0.42 },
+        { tk: 'BANKNIFTY',name: 'Bank Nifty', val: 52_438.20, chg: +0.18 },
+        { tk: 'MIDCAP',  name: 'Nifty Midcap',val: 56_812.60, chg: -0.32 }
+      ],
+      benchmark: 'Nifty 50',
+      top_stocks: ['RELIANCE','TCS','HDFCBANK','INFY','ICICIBANK','ITC','LT','BHARTIARTL','SBIN','HINDUNILVR'],
+      sectors: ['IT Services','Banks','Energy','Pharmaceuticals','Auto','Metals','FMCG','Capital Goods','Realty','Telecom'],
+      macro: [
+        { lbl: 'Repo Rate',    val: '6.50%' },
+        { lbl: 'CPI YoY',      val: '5.4%' },
+        { lbl: 'GDP Growth',   val: '6.8%' },
+        { lbl: 'Fiscal Deficit',val: '4.9%' },
+        { lbl: 'WPI YoY',      val: '2.1%' },
+        { lbl: 'INR/USD',      val: '84.32' }
+      ],
+      central_bank: 'Reserve Bank of India',
+      regulator: 'SEBI',
+      news_themes: ['RBI policy','Union Budget','SEBI rulings','PSU announcements','Monsoon impact']
+    },
+    UK: {
+      code: 'UK', name: 'United Kingdom', flag: '🇬🇧',
+      currency: 'GBP', symbol: '£',
+      exchanges: ['LSE'],
+      indices: [
+        { tk: 'FTSE',    name: 'FTSE 100',     val: 8_148.92, chg: +0.22 },
+        { tk: 'FTSE250', name: 'FTSE 250',     val: 20_482.36, chg: +0.34 },
+        { tk: 'AIM',     name: 'AIM All-Share',val:   724.18, chg: -0.18 }
+      ],
+      benchmark: 'FTSE 100',
+      top_stocks: ['SHEL','AZN','HSBA','ULVR','BP','GSK','RIO','BARC','LSEG','VOD'],
+      sectors: ['Energy','Banks','Pharmaceuticals','Consumer Staples','Mining','Industrials','Telecom','Insurance','Retail','Real Estate'],
+      macro: [
+        { lbl: 'BoE Rate',     val: '4.75%' },
+        { lbl: 'CPI YoY',      val: '2.3%' },
+        { lbl: 'GDP Growth',   val: '0.9%' },
+        { lbl: 'Unemployment', val: '4.3%' },
+        { lbl: 'PPI YoY',      val: '0.6%' },
+        { lbl: 'GBP/USD',      val: '1.262' }
+      ],
+      central_bank: 'Bank of England',
+      regulator: 'FCA',
+      news_themes: ['BoE rate decisions','Gilt market','Autumn Budget','FTSE rebalancing','Pound volatility']
+    },
+    JP: {
+      code: 'JP', name: 'Japan', flag: '🇯🇵',
+      currency: 'JPY', symbol: '¥',
+      exchanges: ['TSE'],
+      indices: [
+        { tk: 'N225',   name: 'Nikkei 225',  val: 38_926.30, chg: +0.62 },
+        { tk: 'TOPIX',  name: 'TOPIX',       val:  2_715.40, chg: +0.41 },
+        { tk: 'NKM',    name: 'Nikkei Mothers',val:   712.20, chg: -0.18 }
+      ],
+      benchmark: 'Nikkei 225',
+      top_stocks: ['7203','9984','6758','8306','9432','4063','8035','6861','7974','6098'],
+      sectors: ['Auto','Electronics','Banks','Trading & Wholesale','Pharmaceuticals','Telecom','Chemicals','Machinery','Retail','Real Estate'],
+      macro: [
+        { lbl: 'BoJ Rate',     val: '0.25%' },
+        { lbl: 'CPI YoY',      val: '2.1%' },
+        { lbl: 'GDP Growth',   val: '0.8%' },
+        { lbl: 'Unemployment', val: '2.5%' },
+        { lbl: 'Trade Balance',val: '+¥0.1T' },
+        { lbl: 'USD/JPY',      val: '155.4' }
+      ],
+      central_bank: 'Bank of Japan',
+      regulator: 'FSA',
+      news_themes: ['BoJ policy','Yen intervention','Carry trade unwind','Corporate governance reforms','Auto export data']
+    },
+    DE: {
+      code: 'DE', name: 'Germany', flag: '🇩🇪',
+      currency: 'EUR', symbol: '€',
+      exchanges: ['XETRA'],
+      indices: [
+        { tk: 'DAX',  name: 'DAX 40',  val: 19_482.40, chg: +0.34 },
+        { tk: 'MDAX', name: 'MDAX',    val: 26_318.60, chg: +0.12 },
+        { tk: 'TDAX', name: 'TecDAX',  val:  3_412.80, chg: -0.22 }
+      ],
+      benchmark: 'DAX 40',
+      top_stocks: ['SAP','SIE','ALV','DTE','MBG','BAS','BMW','MUV2','DBK','BAYN'],
+      sectors: ['Auto','Industrials','Pharmaceuticals','Banks','Insurance','Technology','Chemicals','Utilities','Telecom','Consumer'],
+      macro: [
+        { lbl: 'ECB Deposit',  val: '3.25%' },
+        { lbl: 'CPI YoY',      val: '2.0%' },
+        { lbl: 'GDP Growth',   val: '-0.2%' },
+        { lbl: 'Unemployment', val: '3.2%' },
+        { lbl: 'PMI Mfg',      val: '43.0' },
+        { lbl: 'EUR/USD',      val: '1.058' }
+      ],
+      central_bank: 'ECB / Bundesbank',
+      regulator: 'BaFin',
+      news_themes: ['ECB policy','German fiscal debate','Auto industry shifts','Energy prices','Industrial production']
+    },
+    CN: {
+      code: 'CN', name: 'China', flag: '🇨🇳',
+      currency: 'CNY', symbol: '¥',
+      exchanges: ['SSE', 'SZSE'],
+      indices: [
+        { tk: 'SHCOMP', name: 'Shanghai Composite', val: 3_312.40, chg: +0.46 },
+        { tk: 'SZCOMP', name: 'Shenzhen Composite', val: 1_948.20, chg: +0.62 },
+        { tk: 'CSI300', name: 'CSI 300',            val: 3_876.50, chg: +0.38 }
+      ],
+      benchmark: 'CSI 300',
+      top_stocks: ['600519','601398','600036','601318','600276','000858','601166','601988','601628','600030'],
+      sectors: ['Financials','Consumer','Technology','Health Care','Energy','Industrials','Real Estate','Materials','Utilities','Telecom'],
+      macro: [
+        { lbl: 'PBOC LPR 1Y',  val: '3.10%' },
+        { lbl: 'CPI YoY',      val: '0.3%' },
+        { lbl: 'GDP Growth',   val: '4.6%' },
+        { lbl: 'Unemployment', val: '5.0%' },
+        { lbl: 'PMI Mfg',      val: '50.1' },
+        { lbl: 'USD/CNY',      val: '7.246' }
+      ],
+      central_bank: "People's Bank of China",
+      regulator: 'CSRC',
+      news_themes: ['PBOC stimulus','Property sector','US-China trade','EV exports','Tech regulation']
+    },
+    HK: {
+      code: 'HK', name: 'Hong Kong', flag: '🇭🇰',
+      currency: 'HKD', symbol: 'HK$',
+      exchanges: ['HKEX'],
+      indices: [
+        { tk: 'HSI',     name: 'Hang Seng',          val: 19_482.40, chg: +0.92 },
+        { tk: 'HSCEI',   name: 'Hang Seng China Ent.',val:  6_948.20, chg: +1.18 },
+        { tk: 'HSTECH',  name: 'Hang Seng Tech',     val:  4_312.50, chg: +1.42 }
+      ],
+      benchmark: 'Hang Seng',
+      top_stocks: ['00700','00939','00941','01299','03690','01024','02318','00388','00005','00388'],
+      sectors: ['Tech','Financials','Property','Consumer','Health Care','Industrials','Telecom','Energy','Materials','Utilities'],
+      macro: [
+        { lbl: 'HKMA Base',    val: '5.25%' },
+        { lbl: 'CPI YoY',      val: '1.4%' },
+        { lbl: 'GDP Growth',   val: '3.2%' },
+        { lbl: 'Unemployment', val: '3.0%' },
+        { lbl: 'PMI',          val: '49.5' },
+        { lbl: 'USD/HKD',      val: '7.782' }
+      ],
+      central_bank: 'HKMA',
+      regulator: 'SFC',
+      news_themes: ['HKMA peg','Mainland flows','Property recovery','Tech delistings','Geopolitical risk']
+    },
+    SG: {
+      code: 'SG', name: 'Singapore', flag: '🇸🇬',
+      currency: 'SGD', symbol: 'S$',
+      exchanges: ['SGX'],
+      indices: [
+        { tk: 'STI',  name: 'Straits Times', val: 3_712.40, chg: +0.32 },
+        { tk: 'FSSI', name: 'FTSE ST All',   val:   846.20, chg: +0.18 }
+      ],
+      benchmark: 'Straits Times',
+      top_stocks: ['D05','U11','O39','Z74','C09','BS6','C6L','S58','Y92','S68'],
+      sectors: ['Banks','Telecom','Real Estate','Industrials','Consumer','Health Care','Tech','Energy','Utilities','Transport'],
+      macro: [
+        { lbl: 'MAS Stance',   val: 'Steady' },
+        { lbl: 'CPI YoY',      val: '1.6%' },
+        { lbl: 'GDP Growth',   val: '4.1%' },
+        { lbl: 'Unemployment', val: '1.9%' },
+        { lbl: 'NODX YoY',     val: '+12.4%' },
+        { lbl: 'USD/SGD',      val: '1.342' }
+      ],
+      central_bank: 'MAS',
+      regulator: 'MAS',
+      news_themes: ['MAS S$NEER','REIT yields','Property cooling','Trade hub data','Wealth inflows']
+    },
+    AU: {
+      code: 'AU', name: 'Australia', flag: '🇦🇺',
+      currency: 'AUD', symbol: 'A$',
+      exchanges: ['ASX'],
+      indices: [
+        { tk: 'XJO',  name: 'ASX 200',     val: 8_412.60, chg: +0.28 },
+        { tk: 'XAO',  name: 'All Ords',    val: 8_682.30, chg: +0.26 },
+        { tk: 'XSO',  name: 'Small Ords',  val: 3_412.10, chg: -0.18 }
+      ],
+      benchmark: 'ASX 200',
+      top_stocks: ['BHP','CBA','CSL','NAB','WBC','ANZ','MQG','WES','TLS','WOW'],
+      sectors: ['Materials','Banks','Health Care','Consumer','Energy','Real Estate','Industrials','Telecom','Utilities','Tech'],
+      macro: [
+        { lbl: 'RBA Cash',     val: '4.35%' },
+        { lbl: 'CPI YoY',      val: '2.8%' },
+        { lbl: 'GDP Growth',   val: '1.2%' },
+        { lbl: 'Unemployment', val: '4.1%' },
+        { lbl: 'Trade Balance',val: '+A$5.6B' },
+        { lbl: 'AUD/USD',      val: '0.652' }
+      ],
+      central_bank: 'Reserve Bank of Australia',
+      regulator: 'ASIC',
+      news_themes: ['RBA policy','Iron ore prices','Banks earnings','China demand','Housing market']
+    },
+    CA: {
+      code: 'CA', name: 'Canada', flag: '🇨🇦',
+      currency: 'CAD', symbol: 'C$',
+      exchanges: ['TSX'],
+      indices: [
+        { tk: 'TSX',  name: 'S&P/TSX',     val: 24_812.40, chg: +0.34 },
+        { tk: 'TSXV', name: 'TSX Venture', val:   612.30, chg: -0.42 }
+      ],
+      benchmark: 'S&P/TSX',
+      top_stocks: ['RY','TD','ENB','CNR','BNS','CP','SHOP','BAM','BCE','TRP'],
+      sectors: ['Banks','Energy','Materials','Industrials','Tech','Telecom','Utilities','Consumer','Real Estate','Health Care'],
+      macro: [
+        { lbl: 'BoC Rate',     val: '3.75%' },
+        { lbl: 'CPI YoY',      val: '2.0%' },
+        { lbl: 'GDP Growth',   val: '1.0%' },
+        { lbl: 'Unemployment', val: '6.5%' },
+        { lbl: 'WCS Spread',   val: '-$13.4' },
+        { lbl: 'USD/CAD',      val: '1.412' }
+      ],
+      central_bank: 'Bank of Canada',
+      regulator: 'OSFI / CSA',
+      news_themes: ['BoC rate path','Oil sands','Cross-border trade','Housing affordability','Pension flows']
+    }
+  };
+
+  // ────────────────────────────────────────────────────────────────────
+  // QECountryContext — single source of truth
+  // ────────────────────────────────────────────────────────────────────
+  var listeners = [];
+  var currentCode = 'US';
+
+  function _readFromExistingState() {
+    try {
+      if (window.regionState && window.regionState.selectedCountry && window.regionState.selectedCountry.code) {
+        return window.regionState.selectedCountry.code;
+      }
+    } catch(_){}
+    try {
+      var saved = localStorage.getItem('qe_country');
+      if (saved && COUNTRIES[saved]) return saved;
+    } catch(_){}
+    return 'US';
+  }
+
+  function get() {
+    var code = currentCode;
+    return COUNTRIES[code] || COUNTRIES.US;
+  }
+
+  function set(code) {
+    if (!COUNTRIES[code]) return;
+    if (code === currentCode) return;
+    currentCode = code;
+    try { localStorage.setItem('qe_country', code); } catch(_){}
+    notify();
+  }
+
+  function onChange(fn) {
+    if (typeof fn === 'function') listeners.push(fn);
+  }
+
+  function notify() {
+    var ctx = get();
+    // Apply fade transition to all country-scoped widgets
+    document.querySelectorAll('.qe-country-scoped').forEach(function(el){
+      el.classList.add('qe-country-fading');
+      setTimeout(function(){ el.classList.remove('qe-country-fading'); }, 220);
+    });
+    listeners.forEach(function(fn){
+      try { fn(ctx); } catch(e){ console.warn('[QECountryContext] listener error:', e); }
+    });
+    // Re-broadcast as a DOM event
+    try { window.dispatchEvent(new CustomEvent('qz:country-context', { detail: ctx })); } catch(_){}
+  }
+
+  // ────────────────────────────────────────────────────────────────────
+  // Country Badge in navbar
+  // ────────────────────────────────────────────────────────────────────
+  function ensureBadge() {
+    if (document.getElementById('qe-country-badge')) return;
+    var wrap = document.getElementById('country-selector-wrap');
+    if (!wrap || !wrap.parentElement) return;
+    var badge = document.createElement('div');
+    badge.id = 'qe-country-badge';
+    badge.innerHTML = '<span class="qe-country-flag">🇺🇸</span><span class="qe-country-code">US</span>';
+    wrap.parentElement.insertBefore(badge, wrap);
+  }
+  function paintBadge() {
+    var b = document.getElementById('qe-country-badge');
+    if (!b) return;
+    var ctx = get();
+    b.innerHTML = '<span class="qe-country-flag">' + ctx.flag + '</span><span class="qe-country-code">' + ctx.code + ' · ' + ctx.currency + '</span>';
+  }
+
+  // ────────────────────────────────────────────────────────────────────
+  // Dashboard country widgets — indices + macro
+  // ────────────────────────────────────────────────────────────────────
+  function ensureCountryWidgets() {
+    var dash = document.getElementById('page-dashboard');
+    if (!dash) return;
+    if (document.getElementById('qe-country-widgets')) return;
+    var wrap = document.createElement('div');
+    wrap.id = 'qe-country-widgets';
+    wrap.className = 'qe-country-scoped';
+    wrap.innerHTML = ''
+      + '<div class="qe-cw-card">'
+      +   '<div class="qe-cw-head">'
+      +     '<div class="qe-cw-title">Major Indices · <span id="qe-cw-ctry-1"></span></div>'
+      +     '<div class="qe-cw-cflag" id="qe-cw-flag-1"></div>'
+      +   '</div>'
+      +   '<div id="qe-cw-indices"></div>'
+      +   '<div class="qe-cw-head" style="margin-top:14px;margin-bottom:6px;">'
+      +     '<div class="qe-cw-title">Local Market Confidence</div>'
+      +   '</div>'
+      +   '<div class="qe-conf-gauge">'
+      +     '<div class="qe-conf-bar"><div class="qe-conf-fill" id="qe-cw-conf-fill" style="width:0%"></div></div>'
+      +     '<div class="qe-conf-val" id="qe-cw-conf-val">—</div>'
+      +   '</div>'
+      + '</div>'
+      + '<div class="qe-cw-card">'
+      +   '<div class="qe-cw-head">'
+      +     '<div class="qe-cw-title">Macro · <span id="qe-cw-ctry-2"></span></div>'
+      +     '<div class="qe-cw-cflag" id="qe-cw-flag-2"></div>'
+      +   '</div>'
+      +   '<div class="qe-cw-macro" id="qe-cw-macro"></div>'
+      +   '<div style="margin-top:10px;font-family:JetBrains Mono,monospace;font-size:10px;letter-spacing:0.08em;color:rgba(244,244,240,0.42);">'
+      +     '<span id="qe-cw-cbank"></span> · Reg: <span id="qe-cw-reg"></span>'
+      +   '</div>'
+      + '</div>';
+
+    // Place right under the status bar
+    var statusBar = dash.querySelector('.dash-status-bar');
+    if (statusBar && statusBar.nextSibling) {
+      dash.insertBefore(wrap, statusBar.nextSibling);
+    } else {
+      dash.insertBefore(wrap, dash.firstChild);
+    }
+  }
+
+  function paintCountryWidgets() {
+    var ctx = get();
+    var c1 = document.getElementById('qe-cw-ctry-1');
+    var c2 = document.getElementById('qe-cw-ctry-2');
+    var f1 = document.getElementById('qe-cw-flag-1');
+    var f2 = document.getElementById('qe-cw-flag-2');
+    if (c1) c1.textContent = ctx.name;
+    if (c2) c2.textContent = ctx.name;
+    if (f1) f1.textContent = ctx.flag;
+    if (f2) f2.textContent = ctx.flag;
+
+    var idx = document.getElementById('qe-cw-indices');
+    if (idx) {
+      idx.innerHTML = ctx.indices.map(function(i){
+        var sign = i.chg > 0 ? 'pos' : i.chg < 0 ? 'neg' : '';
+        var prefix = i.chg > 0 ? '+' : '';
+        return '<div class="qe-cw-idx-row">'
+             +   '<div class="qe-cw-idx-name">' + i.name + '</div>'
+             +   '<div class="qe-cw-idx-val">' + i.val.toLocaleString() + '</div>'
+             +   '<div class="qe-cw-idx-chg ' + sign + '">' + prefix + i.chg.toFixed(2) + '%</div>'
+             + '</div>';
+      }).join('');
+    }
+
+    // Local market confidence — based on index avg change biased by macro
+    var avgChg = ctx.indices.reduce(function(s,i){ return s + i.chg; }, 0) / ctx.indices.length;
+    var conf = Math.min(95, Math.max(15, Math.round(55 + avgChg * 18)));
+    var fill = document.getElementById('qe-cw-conf-fill');
+    var val  = document.getElementById('qe-cw-conf-val');
+    if (fill) fill.style.width = conf + '%';
+    if (val)  val.textContent = conf;
+
+    var macro = document.getElementById('qe-cw-macro');
+    if (macro) {
+      macro.innerHTML = ctx.macro.slice(0, 6).map(function(m){
+        return '<div class="qe-cw-macro-cell">'
+             +   '<div class="qe-cw-macro-lbl">' + m.lbl + '</div>'
+             +   '<div class="qe-cw-macro-val">' + m.val + '</div>'
+             + '</div>';
+      }).join('');
+    }
+    var cb = document.getElementById('qe-cw-cbank');
+    var rg = document.getElementById('qe-cw-reg');
+    if (cb) cb.textContent = ctx.central_bank;
+    if (rg) rg.textContent = ctx.regulator;
+  }
+
+  // ────────────────────────────────────────────────────────────────────
+  // News feed — country-filtered themes
+  // ────────────────────────────────────────────────────────────────────
+  function ensureNewsFeed() {
+    var dash = document.getElementById('page-dashboard');
+    if (!dash) return;
+    if (document.getElementById('qe-news-feed')) return;
+    var feed = document.createElement('div');
+    feed.id = 'qe-news-feed';
+    feed.className = 'qe-country-scoped';
+    feed.innerHTML = ''
+      + '<div class="qe-news-card">'
+      +   '<div class="qe-cw-head">'
+      +     '<div class="qe-cw-title">Country News Stream · <span id="qe-news-ctry"></span></div>'
+      +     '<div class="qe-cw-cflag" id="qe-news-flag"></div>'
+      +   '</div>'
+      +   '<div id="qe-news-list"></div>'
+      + '</div>';
+    // Insert after country widgets (or before main chart)
+    var widgets = document.getElementById('qe-country-widgets');
+    if (widgets && widgets.nextSibling) {
+      dash.insertBefore(feed, widgets.nextSibling);
+    } else {
+      dash.appendChild(feed);
+    }
+  }
+
+  function paintNewsFeed() {
+    var ctx = get();
+    var c = document.getElementById('qe-news-ctry');
+    var f = document.getElementById('qe-news-flag');
+    var list = document.getElementById('qe-news-list');
+    if (c) c.textContent = ctx.name;
+    if (f) f.textContent = ctx.flag;
+    if (!list) return;
+
+    // Synthesize 4 news items from the country's themes
+    var cats = ['MARKET','POLICY','CORPORATE','MACRO'];
+    var impacts = ['high','med','low','med'];
+    var items = ctx.news_themes.slice(0, 4).map(function(theme, i){
+      var stock = ctx.top_stocks[i] || ctx.top_stocks[0];
+      var pct = (Math.random() * 3 + 0.3).toFixed(2);
+      var dir = Math.random() > 0.5 ? '+' : '-';
+      var snippets = [
+        theme + ' developments lift sentiment across ' + ctx.benchmark + '; ' + stock + ' leads at ' + dir + pct + '%.',
+        ctx.central_bank + ' signals on ' + theme + ' shift positioning ahead of next print.',
+        stock + ' guidance review prompts re-rating discussion among ' + ctx.benchmark + ' analysts.',
+        'Cross-asset flow tied to ' + theme + ' reshapes ' + ctx.currency + ' carry trades; sector breadth ' + (dir === '+' ? 'expanding' : 'narrowing') + '.'
+      ];
+      var mins = Math.floor(Math.random() * 50 + 4);
+      return { cat: cats[i % cats.length], impact: impacts[i % impacts.length], body: snippets[i % snippets.length], meta: mins + 'm ago · ' + ctx.code };
+    });
+
+    list.innerHTML = items.map(function(it){
+      return '<div class="qe-news-item">'
+           +   '<div class="qe-news-cat">' + it.cat + '</div>'
+           +   '<div class="qe-news-body">' + it.body
+           +     '<span class="qe-news-impact ' + it.impact + '">' + it.impact.toUpperCase() + ' IMPACT</span>'
+           +     '<div class="qe-news-meta">' + it.meta + '</div>'
+           +   '</div>'
+           + '</div>';
+    }).join('');
+  }
+
+  // ────────────────────────────────────────────────────────────────────
+  // AI Studio — inject country context into agent queries
+  // ────────────────────────────────────────────────────────────────────
+  function patchAIStudio() {
+    // Hook the v8 broadcast orchestrator
+    if (window._qeAIStudioCountryPatched) return;
+    if (!window.QEStudioV8 || typeof window.QEStudioV8.runOne !== 'function') return;
+    window._qeAIStudioCountryPatched = true;
+    var origRunOne = window.QEStudioV8.runOne;
+    window.QEStudioV8.runOne = function(meta, query) {
+      var ctx = get();
+      // Don't override if the user explicitly mentions another country
+      var mentionsOtherCountry = false;
+      Object.keys(COUNTRIES).forEach(function(cc){
+        if (cc === ctx.code) return;
+        var c2 = COUNTRIES[cc];
+        var rx = new RegExp('\\b(' + c2.name + '|' + c2.code + '|' + c2.benchmark.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')\\b', 'i');
+        if (rx.test(query)) mentionsOtherCountry = true;
+      });
+      var prefixed = mentionsOtherCountry
+        ? query
+        : '[COUNTRY CONTEXT: ' + ctx.name + ' (' + ctx.code + ') · benchmark ' + ctx.benchmark
+          + ' · currency ' + ctx.currency + ' · central bank ' + ctx.central_bank
+          + '] Scope your analysis to this market unless told otherwise. ' + query;
+      return origRunOne.call(this, meta, prefixed);
+    };
+  }
+
+  // ────────────────────────────────────────────────────────────────────
+  // Boot + sync with existing region selector
+  // ────────────────────────────────────────────────────────────────────
+  function syncFromExistingSelector() {
+    var detected = _readFromExistingState();
+    if (detected !== currentCode && COUNTRIES[detected]) {
+      currentCode = detected;
+      notify();
+    }
+  }
+
+  function repaintAll() {
+    paintBadge();
+    paintCountryWidgets();
+    paintNewsFeed();
+  }
+
+  function boot() {
+    ensureBadge();
+    ensureCountryWidgets();
+    ensureNewsFeed();
+    syncFromExistingSelector();
+    repaintAll();
+    patchAIStudio();
+  }
+
+  // Listen for the existing region-changed event
+  window.addEventListener('region-changed', function(e){
+    var code = e && e.detail && e.detail.code;
+    if (code && COUNTRIES[code]) set(code);
+    else syncFromExistingSelector();
+  });
+  window.addEventListener('qz:country-changed', function(e){
+    var code = e && e.detail && e.detail.code;
+    if (code && COUNTRIES[code]) set(code);
+  });
+
+  // Repaint on context change
+  onChange(repaintAll);
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+  setInterval(boot, 1500);
+
+  // Expose
+  window.QECountryContext = {
+    get: get,
+    set: set,
+    onChange: onChange,
+    all: COUNTRIES,
+    list: function(){ return Object.keys(COUNTRIES).map(function(k){ return COUNTRIES[k]; }); }
+  };
+})();
+</script>
+
 </body>
 </html>
