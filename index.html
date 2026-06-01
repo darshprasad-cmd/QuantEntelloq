@@ -37020,5 +37020,240 @@ setTimeout(() => {
 })();
 </script>
 
+<!-- ════════════════════════════════════════════════════════════════════
+     HOTFIX v5 — Wire agents to actually respond + clean layout
+     The v4 hard-render gave us cards but bypassed the original
+     pipeline, so click + query did nothing. Now we restore the
+     original renderCommandCenter (which works now that cmdState is
+     properly exposed) so cmdOpenAgent + cmdOrchestrate + _cmdRunAgent
+     all wire up cleanly.
+     ════════════════════════════════════════════════════════════════════ -->
+<style id="qe-hotfix-v5-css">
+  /* Clean, predictable grid layout */
+  #ais-panel-agents .cmd-agents-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
+    gap: 14px !important;
+    max-width: 1180px !important;
+    margin: 0 auto !important;
+  }
+  @media (max-width: 700px) {
+    #ais-panel-agents .cmd-agents-grid {
+      grid-template-columns: 1fr !important;
+    }
+  }
+  /* Agent card — uniform height, predictable spacing */
+  #ais-panel-agents .cmd-agent-card {
+    min-height: 220px;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px;
+    padding: 16px 16px 12px !important;
+  }
+  #ais-panel-agents .cmd-agent-head {
+    display: flex; align-items: center; gap: 12px;
+  }
+  #ais-panel-agents .cmd-agent-output {
+    flex: 1; min-height: 60px;
+    overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+  }
+  #ais-panel-agents .cmd-agent-footer {
+    display: flex; align-items: center; gap: 8px; margin-top: auto;
+  }
+  /* Query button — clear primary action */
+  #ais-panel-agents .cmd-agent-query-btn {
+    margin-left: auto;
+    padding: 8px 14px !important;
+    background: rgba(167,139,250,0.14) !important;
+    border: 1px solid rgba(167,139,250,0.34) !important;
+    border-radius: 6px !important;
+    color: #C4B5FD !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 10.5px !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 160ms cubic-bezier(0.23,1,0.32,1);
+  }
+  #ais-panel-agents .cmd-agent-query-btn:hover {
+    background: rgba(167,139,250,0.26) !important;
+    color: #FFFFFF !important;
+    transform: translateY(-1px);
+  }
+  #ais-panel-agents .cmd-agent-query-btn:active { transform: scale(0.97); }
+  /* Hide the speak-aloud button — clutter */
+  #ais-panel-agents .cmd-agent-speak-btn { display: none !important; }
+  /* Hide wave dots on idle cards (only show during streaming) */
+  #ais-panel-agents .cmd-agent-card:not(.cmd-agent-active) .cmd-agent-wave {
+    visibility: hidden;
+  }
+  /* Query bar at bottom — make obvious */
+  #ais-panel-agents .cmd-query-bar {
+    background: linear-gradient(135deg, rgba(167,139,250,0.10) 0%, rgba(103,232,249,0.06) 100%) !important;
+    border: 1px solid rgba(167,139,250,0.28) !important;
+    border-radius: 12px !important;
+    padding: 12px 14px !important;
+    margin-top: 16px !important;
+    gap: 10px !important;
+  }
+  #ais-panel-agents .cmd-query-input {
+    background: rgba(0,0,0,0.3) !important;
+    border: 1px solid rgba(244,244,240,0.10) !important;
+    color: #F4F4F0 !important;
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    font-size: 13px !important;
+  }
+  #ais-panel-agents .cmd-query-input::placeholder { color: rgba(244,244,240,0.42) !important; }
+  #ais-panel-agents .cmd-orch-btn {
+    background: linear-gradient(135deg, #A78BFA 0%, #7C3AED 100%) !important;
+    border: 0 !important;
+    color: #FFFFFF !important;
+    padding: 10px 18px !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 11px !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase;
+    border-radius: 8px !important;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(167,139,250,0.30);
+    transition: all 160ms cubic-bezier(0.23,1,0.32,1);
+  }
+  #ais-panel-agents .cmd-orch-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(167,139,250,0.42);
+  }
+  #ais-panel-agents .cmd-orch-btn:active { transform: scale(0.97); }
+</style>
+
+<script id="qe-hotfix-v5-js">
+(function(){
+  'use strict';
+
+  // Re-expose script-scope consts to window (cmdState, QE_AGENTS, STOCKS)
+  function expose() {
+    try { if (typeof cmdState !== 'undefined') window.cmdState = cmdState; } catch(_){}
+    try { if (typeof QE_AGENTS !== 'undefined') window.QE_AGENTS = QE_AGENTS; } catch(_){}
+    try { if (typeof STOCKS !== 'undefined') window.STOCKS = STOCKS; } catch(_){}
+    try { if (typeof cmdOpenAgent !== 'undefined') window.cmdOpenAgent = cmdOpenAgent; } catch(_){}
+    try { if (typeof cmdOrchestrate !== 'undefined') window.cmdOrchestrate = cmdOrchestrate; } catch(_){}
+    try { if (typeof renderCommandCenter !== 'undefined') window.renderCommandCenter = renderCommandCenter; } catch(_){}
+    try { if (typeof _cmdRunAgent !== 'undefined') window._cmdRunAgent = _cmdRunAgent; } catch(_){}
+  }
+
+  // Ensure cmdState.agentStates has entries for all current QE_AGENTS IDs
+  function syncStatesToAgents() {
+    expose();
+    if (!window.cmdState || !window.cmdState.agentStates) return;
+    if (!window.QE_AGENTS || !Array.isArray(window.QE_AGENTS)) return;
+    var changed = false;
+    window.QE_AGENTS.forEach(function(a){
+      if (!window.cmdState.agentStates[a.id]) {
+        window.cmdState.agentStates[a.id] = { status:'idle', output:'Standing by — awaiting query…', conf:0, latency:'—' };
+        changed = true;
+      }
+    });
+    // Prune states for agents that no longer exist
+    Object.keys(window.cmdState.agentStates).forEach(function(id){
+      if (!window.QE_AGENTS.some(function(a){ return a.id === id; })) {
+        delete window.cmdState.agentStates[id];
+        changed = true;
+      }
+    });
+    return changed;
+  }
+
+  // Trigger the ORIGINAL renderCommandCenter (now works with proper cmdState)
+  function renderProperly() {
+    expose();
+    syncStatesToAgents();
+    if (typeof window.renderCommandCenter !== 'function') return false;
+    try {
+      window.renderCommandCenter();
+      // Strip the data-qe-hard-rendered marker so we know native render ran
+      var grid = document.getElementById('cmd-agents-grid');
+      if (grid) grid.setAttribute('data-qe-native', '1');
+      return true;
+    } catch(e) {
+      console.warn('[QEHotfix5] renderCommandCenter failed, falling back:', e);
+      // Fall back to hard render
+      if (window.QEHotfix4 && typeof window.QEHotfix4.render === 'function') {
+        window.QEHotfix4.render();
+      }
+      return false;
+    }
+  }
+
+  // On AI Studio open: expose → sync states → render → done
+  function fullFix() {
+    expose();
+    syncStatesToAgents();
+    var page = document.getElementById('page-ai');
+    if (page && !page.classList.contains('hidden')) {
+      var agents = document.getElementById('ais-panel-agents');
+      var chat = document.getElementById('ais-panel-chat');
+      if (chat) chat.style.display = 'none';
+      if (agents) { agents.style.display = 'flex'; agents.style.flexDirection = 'column'; }
+      renderProperly();
+    }
+  }
+
+  // Hook showPage one more time (idempotent)
+  function hookShowPage() {
+    if (window._qeHotfix5ShowPageHooked) return;
+    if (typeof window.showPage !== 'function') return;
+    window._qeHotfix5ShowPageHooked = true;
+    var orig = window.showPage;
+    window.showPage = function(page, el) {
+      var r = orig.apply(this, arguments);
+      if (page === 'ai' || page === 'command') {
+        fullFix();
+        setTimeout(fullFix, 60);
+        setTimeout(fullFix, 220);
+      }
+      return r;
+    };
+  }
+
+  function boot() {
+    expose();
+    hookShowPage();
+    var page = document.getElementById('page-ai');
+    if (page && !page.classList.contains('hidden')) fullFix();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+
+  // Heartbeat — re-sync states + re-render if needed
+  setInterval(function(){
+    expose();
+    var page = document.getElementById('page-ai');
+    if (!page || page.classList.contains('hidden')) return;
+    var changed = syncStatesToAgents();
+    var grid = document.getElementById('cmd-agents-grid');
+    // Re-render if grid is empty, has wrong agents, or states changed
+    if (changed || !grid || !grid.children.length ||
+        grid.querySelector('#cmd-card-market') ||
+        grid.querySelector('#cmd-card-sentiment')) {
+      renderProperly();
+    }
+  }, 1500);
+
+  window.QEHotfix5 = {
+    fix: fullFix,
+    render: renderProperly,
+    expose: expose,
+    syncStates: syncStatesToAgents
+  };
+})();
+</script>
+
 </body>
 </html>
