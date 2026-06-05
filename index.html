@@ -23482,7 +23482,14 @@ function renderCommandCenter() {
   if (!grid) return;
 
   grid.innerHTML = QE_AGENTS.map(agent => {
-    const st = cmdState.agentStates[agent.id];
+    // Defensive: agentStates may not yet have this agent's entry (e.g.
+    // after the country swap or agent-replacement overlays). Default to
+    // an idle stub instead of throwing on st.status access.
+    let st = cmdState.agentStates[agent.id];
+    if (!st) {
+      st = { status: 'idle', output: 'Standing by…', conf: 0, latency: '—' };
+      cmdState.agentStates[agent.id] = st;
+    }
     const cls = st.status === 'thinking' ? 'thinking' : st.status === 'responding' ? 'responding' : st.status === 'done' ? 'done' : 'idle';
     const statusLabel = st.status === 'thinking' ? 'Processing…' : st.status === 'responding' ? 'Streaming…' : st.status === 'done' ? 'Done' : 'Idle';
     return `
@@ -23527,7 +23534,13 @@ function renderCommandCenter() {
 function _cmdUpdateCard(agentId) {
   const agent = QE_AGENTS.find(a => a.id === agentId);
   if (!agent) return;
-  const st = cmdState.agentStates[agentId];
+  // Defensive: ensure state exists before touching st.status (Clarity
+  // showed 31% of sessions hit "evaluating 'st.status'" TypeError here)
+  let st = cmdState.agentStates[agentId];
+  if (!st) {
+    st = { status: 'idle', output: 'Standing by…', conf: 0, latency: '—' };
+    cmdState.agentStates[agentId] = st;
+  }
   const card = document.getElementById('cmd-card-'+agentId);
   if (!card) return;
   const cls = st.status==='thinking'?'thinking':st.status==='responding'?'responding':st.status==='done'?'done':'idle';
