@@ -40767,6 +40767,36 @@ setTimeout(() => {
 (function(){
   'use strict';
 
+  // ── URL FORCE-SHOW ─────────────────────────────────────────────
+  // ?landing on the URL forces the cinematic landing visible,
+  // overriding any auth state. Bypasses the "logged in → app only"
+  // routing. Useful for screenshots / testing the landing without
+  // having to clear localStorage.
+  function forceLanding() {
+    if (!/[?&]landing\b/.test(location.search)) return;
+    var landing = document.getElementById('landing');
+    var app = document.getElementById('app');
+    if (landing) {
+      landing.classList.remove('hidden');
+      landing.style.removeProperty('display');
+      landing.style.setProperty('display', 'flex', 'important');
+      landing.style.setProperty('position', 'fixed', 'important');
+      landing.style.setProperty('inset', '0', 'important');
+      landing.style.setProperty('z-index', '99990', 'important');
+      landing.style.setProperty('overflow-y', 'auto', 'important');
+    }
+    if (app) {
+      app.style.setProperty('display', 'none', 'important');
+    }
+    // Mount cinema if not already mounted
+    if (window.QECinema && typeof window.QECinema.mount === 'function') {
+      try { window.QECinema.mount(); } catch(_){}
+    }
+  }
+  forceLanding();
+  // Heartbeat in case auth modules try to override
+  setInterval(forceLanding, 500);
+
   // KILL the welcome overlay immediately AND mark it as seen so it
   // never tries to re-render. Was blanking laptop screens.
   function killWelcome() {
