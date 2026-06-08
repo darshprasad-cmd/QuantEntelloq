@@ -40768,12 +40768,13 @@ setTimeout(() => {
   'use strict';
 
   // ── URL FORCE-SHOW ─────────────────────────────────────────────
-  // ?landing on the URL forces the cinematic landing visible,
-  // overriding any auth state. Bypasses the "logged in → app only"
-  // routing. Useful for screenshots / testing the landing without
-  // having to clear localStorage.
+  // ?landing on the URL forces the cinematic landing visible. We
+  // detect it ONCE at script load and persist a flag so subsequent
+  // checks (URL rewrites, viewport changes, etc) don't drop it.
+  var _qeForceLandingSticky = /[?&]landing\b/.test(location.search);
+
   function forceLanding() {
-    if (!/[?&]landing\b/.test(location.search)) return;
+    if (!_qeForceLandingSticky) return;
     var landing = document.getElementById('landing');
     var app = document.getElementById('app');
     if (landing) {
@@ -40856,6 +40857,54 @@ setTimeout(() => {
   forceLanding();
   // Heartbeat in case auth modules try to override
   setInterval(forceLanding, 500);
+
+  // INJECT a permanent CSS rule with maximum specificity that
+  // defeats any other rule (media-query, hidden class, inline style)
+  // when sticky force-landing is on.
+  if (_qeForceLandingSticky && !document.getElementById('qe-force-landing-css')) {
+    var fs = document.createElement('style');
+    fs.id = 'qe-force-landing-css';
+    fs.textContent = ''
+      // Maximum specificity: html body #landing#landing
+      + 'html body #landing#landing,'
+      + 'html body #landing#landing.hidden {'
+      + '  display: flex !important;'
+      + '  flex-direction: column !important;'
+      + '  position: fixed !important;'
+      + '  inset: 0 !important;'
+      + '  z-index: 99990 !important;'
+      + '  overflow-y: auto !important;'
+      + '  visibility: visible !important;'
+      + '  opacity: 1 !important;'
+      + '  pointer-events: auto !important;'
+      + '}'
+      + 'html body #qe-cine-fallback,'
+      + 'html body #qe-cine {'
+      + '  display: flex !important;'
+      + '  visibility: visible !important;'
+      + '  opacity: 1 !important;'
+      + '}'
+      // Hide #app so it doesn't fight
+      + 'html body #app#app {'
+      + '  display: none !important;'
+      + '  visibility: hidden !important;'
+      + '}';
+    document.head.appendChild(fs);
+  }
+
+  // Defend against viewport-resize / DevTools-close hide events.
+  // Some media-query rule or resize handler might toggle display:none.
+  // The heartbeat above catches it at 500ms but we add immediate
+  // reactions to resize too.
+  if (_qeForceLandingSticky) {
+    window.addEventListener('resize', function(){
+      forceLanding();
+      // Also one tick later in case the resize triggers a rerender
+      requestAnimationFrame(forceLanding);
+    });
+    window.addEventListener('focus', forceLanding);
+    document.addEventListener('visibilitychange', forceLanding);
+  }
 
   // KILL the welcome overlay immediately AND mark it as seen so it
   // never tries to re-render. Was blanking laptop screens.
