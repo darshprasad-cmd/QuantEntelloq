@@ -40714,9 +40714,74 @@ setTimeout(() => {
      Bigger 104px title, dramatic gradient, Light Italic sub copy,
      bigger stat numbers, stronger primary button shadow.
      ════════════════════════════════════════════════════════════════════ -->
-<!-- Cinema v2 reverted — see commit log. Cinema v1 (working) is the active landing. -->
-<style id="qe-cinema-v2-css">/* reverted */</style>
-<script id="qe-cinema-v2-js">/* reverted */</script>
+<!-- ════════════════════════════════════════════════════════════════════
+     CINEMA v3 — FORCE-VISIBLE FIX
+     User reported the cinematic landing was invisible on laptop —
+     screenshot showed dark void background + bottom-right widgets
+     but the hero/agents/mockup were all missing. Root cause: every
+     section uses .qe-cine-reveal which starts at opacity:0 waiting
+     for IntersectionObserver to add .in. If the IO fails for ANY
+     reason (timing, error in another hotfix, etc), content stays
+     invisible forever — no fallback.
+     v3 inverts the contract: reveals show by default, animate
+     ONLY when explicit .qe-cine-anim class is on the page (added
+     by JS after IO setup proves it's working). Browsers without
+     JS or with errors get a static-but-visible landing.
+     ════════════════════════════════════════════════════════════════════ -->
+<style id="qe-cinema-v3-css">
+  /* DEFAULT: reveals are VISIBLE. */
+  #qe-cine .qe-cine-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  /* If page is marked .qe-cine-animate, opt into the start-hidden state.
+     The animate class is added by JS only after it verifies IO works. */
+  html.qe-cine-animate #qe-cine .qe-cine-reveal:not(.in) {
+    opacity: 0 !important;
+    transform: translateY(24px) !important;
+    transition: opacity 700ms cubic-bezier(0.23,1,0.32,1), transform 700ms cubic-bezier(0.23,1,0.32,1);
+  }
+  html.qe-cine-animate #qe-cine .qe-cine-reveal.in {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Belt-and-suspenders: force the landing + cinema shell to display */
+  body #landing:not(.hidden) { display: flex !important; }
+  body #landing:not(.hidden) #qe-cine { display: block !important; }
+  body #landing:not(.hidden) .lp3-nav { display: block !important; }
+</style>
+<script id="qe-cinema-v3-js">
+(function(){
+  'use strict';
+  // After we've confirmed IntersectionObserver is alive AND the cinema
+  // boot has had a moment to run, opt into the animate-on-scroll behavior.
+  // If anything fails before this point, reveals stay visible — the user
+  // can still see the landing.
+  function enableAnimate() {
+    if (!('IntersectionObserver' in window)) return; // never animate
+    // Wait until the cinema shell is in the DOM
+    if (!document.getElementById('qe-cine')) return;
+    document.documentElement.classList.add('qe-cine-animate');
+    // Then immediately add .in to ALL reveals so they fade-in once
+    // from their now-hidden state on the next frame.
+    requestAnimationFrame(function(){
+      document.querySelectorAll('#qe-cine .qe-cine-reveal').forEach(function(el){
+        // Trigger entrance after a tiny stagger so it feels intentional
+        setTimeout(function(){ el.classList.add('in'); }, 20);
+      });
+    });
+  }
+  // Wait a beat past DOMContentLoaded so cinema v1 boot can mount
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function(){
+      setTimeout(enableAnimate, 600);
+    });
+  } else {
+    setTimeout(enableAnimate, 600);
+  }
+})();
+</script>
 
 </body>
 </html>
