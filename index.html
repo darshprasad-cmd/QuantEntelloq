@@ -40788,10 +40788,70 @@ setTimeout(() => {
     if (app) {
       app.style.setProperty('display', 'none', 'important');
     }
-    // Mount cinema if not already mounted
+    // Mount cinema if not already mounted (best effort)
     if (window.QECinema && typeof window.QECinema.mount === 'function') {
       try { window.QECinema.mount(); } catch(_){}
     }
+    // FALLBACK: if cinema still didn't mount after 200ms, inject a
+    // hardcoded inline hero so the user sees SOMETHING
+    setTimeout(function(){
+      if (document.getElementById('qe-cine')) return;
+      if (document.getElementById('qe-cine-fallback')) return;
+      var landing = document.getElementById('landing');
+      if (!landing) return;
+      var hero = document.createElement('div');
+      hero.id = 'qe-cine-fallback';
+      hero.style.cssText = 'position:relative;z-index:5;width:100%;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px clamp(20px,5vw,64px);text-align:center;color:#F4F4F0;font-family:Fraunces,Georgia,serif;background:radial-gradient(ellipse 80% 60% at 75% 25%,rgba(167,139,250,0.16) 0%,transparent 60%),radial-gradient(ellipse 70% 50% at 20% 80%,rgba(103,232,249,0.10) 0%,transparent 60%),linear-gradient(180deg,#04030A 0%,#08070F 100%);';
+      hero.innerHTML = ''
+        + '<div style="display:inline-flex;align-items:center;gap:8px;padding:8px 18px;background:linear-gradient(135deg,rgba(167,139,250,0.14) 0%,rgba(103,232,249,0.08) 100%);border:1px solid rgba(167,139,250,0.32);border-radius:100px;font-family:JetBrains Mono,monospace;font-size:11px;letter-spacing:0.20em;color:#C4B5FD;text-transform:uppercase;margin-bottom:28px;">'
+        +   '<span style="width:7px;height:7px;border-radius:50%;background:#5EEAD4;box-shadow:0 0 10px #5EEAD4;"></span>'
+        +   'AI-NATIVE · INSTITUTIONAL GRADE · FREE IN BROWSER'
+        + '</div>'
+        + '<h1 style="font-family:Fraunces,Georgia,serif;font-weight:400;font-size:clamp(48px,8vw,96px);line-height:0.96;letter-spacing:-0.04em;margin:0 auto 24px;max-width:14ch;color:#F4F4F0;">'
+        +   'Quant intelligence,<br>'
+        +   '<em style="font-style:italic;background:linear-gradient(110deg,#A78BFA 0%,#C4B5FD 50%,#67E8F9 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;">institutional grade.</em>'
+        + '</h1>'
+        + '<p style="font-family:Fraunces,Georgia,serif;font-style:italic;font-weight:300;font-size:clamp(16px,1.8vw,20px);line-height:1.55;color:rgba(244,244,240,0.75);max-width:640px;margin:0 auto 40px;">Five AI specialist agents. Ten quant tools. 100M+ securities across 10 markets. Live signals, paper trading, macro intelligence — all in your browser. Zero signup. Zero cost.</p>'
+        + '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:48px;">'
+        +   '<a href="/" style="text-decoration:none;padding:16px 32px;border-radius:100px;background:linear-gradient(135deg,#A78BFA 0%,#7C3AED 100%);color:#FFFFFF;font-family:JetBrains Mono,monospace;font-size:12px;letter-spacing:0.10em;text-transform:uppercase;font-weight:700;box-shadow:0 12px 40px -12px rgba(167,139,250,0.7),0 0 0 1px rgba(167,139,250,0.5) inset;">Start free →</a>'
+        +   '<a href="#agents" onclick="document.getElementById(\'qe-cine-agents\').scrollIntoView({behavior:\'smooth\'});return false;" style="text-decoration:none;padding:16px 32px;border-radius:100px;background:rgba(244,244,240,0.04);border:1px solid rgba(244,244,240,0.18);color:#F4F4F0;font-family:JetBrains Mono,monospace;font-size:12px;letter-spacing:0.10em;text-transform:uppercase;font-weight:700;">See the agents</a>'
+        + '</div>'
+        + '<div style="display:flex;justify-content:center;gap:clamp(28px,6vw,64px);flex-wrap:wrap;font-family:JetBrains Mono,monospace;">'
+        +   '<div style="display:flex;flex-direction:column;gap:4px;"><strong style="font-size:clamp(28px,3.4vw,36px);color:#F4F4F0;font-weight:700;letter-spacing:-0.02em;">5</strong><span style="font-size:10px;letter-spacing:0.18em;color:rgba(244,244,240,0.5);text-transform:uppercase;">AI Agents</span></div>'
+        +   '<div style="display:flex;flex-direction:column;gap:4px;"><strong style="font-size:clamp(28px,3.4vw,36px);color:#F4F4F0;font-weight:700;letter-spacing:-0.02em;">10</strong><span style="font-size:10px;letter-spacing:0.18em;color:rgba(244,244,240,0.5);text-transform:uppercase;">Quant Tools</span></div>'
+        +   '<div style="display:flex;flex-direction:column;gap:4px;"><strong style="font-size:clamp(28px,3.4vw,36px);color:#F4F4F0;font-weight:700;letter-spacing:-0.02em;">100M+</strong><span style="font-size:10px;letter-spacing:0.18em;color:rgba(244,244,240,0.5);text-transform:uppercase;">Securities</span></div>'
+        +   '<div style="display:flex;flex-direction:column;gap:4px;"><strong style="font-size:clamp(28px,3.4vw,36px);color:#F4F4F0;font-weight:700;letter-spacing:-0.02em;">10</strong><span style="font-size:10px;letter-spacing:0.18em;color:rgba(244,244,240,0.5);text-transform:uppercase;">Markets</span></div>'
+        + '</div>'
+
+        // Agent ring
+        + '<div id="qe-cine-agents" style="margin-top:120px;width:100%;max-width:1180px;">'
+        +   '<div style="font-family:JetBrains Mono,monospace;font-size:11px;letter-spacing:0.24em;color:rgba(167,139,250,0.7);text-transform:uppercase;text-align:center;margin-bottom:14px;">The Crew</div>'
+        +   '<h2 style="font-family:Fraunces,Georgia,serif;font-weight:400;font-size:clamp(28px,4vw,40px);line-height:1.1;letter-spacing:-0.02em;color:#F4F4F0;text-align:center;margin:0 auto 56px;max-width:18ch;">Five <em style="font-style:italic;color:#C4B5FD;">specialists</em>, running in parallel</h2>'
+        +   '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;">'
+        +     [
+              { id:'nx', name:'NEXUS-7',     role:'Alpha Synthesis',     c:'#A78BFA' },
+              { id:'ag', name:'AEGIS-PRIME', role:'Risk Matrix',         c:'#FB7185' },
+              { id:'or', name:'ORACLE-X',    role:'Macro Regime',        c:'#67E8F9' },
+              { id:'px', name:'PHOENIX-9',   role:'Catalyst Discovery',  c:'#FCD34D' },
+              { id:'fg', name:'FORGE-Δ',     role:'Strategy Engine',     c:'#5EEAD4' }
+            ].map(function(a){
+              return '<div style="background:linear-gradient(180deg,rgba(8,8,12,0.95) 0%,rgba(16,16,24,0.92) 100%);border:1px solid rgba(244,244,240,0.08);border-top:2px solid '+a.c+';border-radius:14px;padding:22px 18px;text-align:center;">'
+                +   '<div style="width:50px;height:50px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(255,255,255,0.4) 0%,'+a.c+' 30%,rgba(0,0,0,0.6) 100%);margin:0 auto 14px;box-shadow:0 0 24px '+a.c+',0 0 0 1px '+a.c+' inset;"></div>'
+                +   '<div style="font-family:JetBrains Mono,monospace;font-size:12px;font-weight:700;letter-spacing:0.10em;color:#F4F4F0;text-transform:uppercase;">'+a.name+'</div>'
+                +   '<div style="font-size:10.5px;letter-spacing:0.10em;color:rgba(244,244,240,0.5);text-transform:uppercase;margin-top:4px;">'+a.role+'</div>'
+                + '</div>';
+            }).join('')
+        +   '</div>'
+        + '</div>'
+
+        // Bloomberg CTA
+        + '<div style="margin-top:100px;padding-bottom:40px;">'
+        +   '<h2 style="font-family:Fraunces,Georgia,serif;font-weight:400;font-size:clamp(28px,4.5vw,48px);line-height:1.1;letter-spacing:-0.025em;color:#F4F4F0;margin-bottom:16px;">Bloomberg costs <em style="font-style:italic;color:#FB7185;">$24,000/year</em>. This is <em style="font-style:italic;color:#5EEAD4;">free</em>.</h2>'
+        +   '<p style="font-family:Fraunces,Georgia,serif;font-style:italic;font-weight:300;font-size:16px;color:rgba(244,244,240,0.65);margin-bottom:32px;">Open a tab. Pick a market. Ask the agents. Place a paper trade.</p>'
+        +   '<a href="/" style="text-decoration:none;padding:18px 36px;border-radius:100px;background:linear-gradient(135deg,#A78BFA 0%,#7C3AED 100%);color:#FFFFFF;font-family:JetBrains Mono,monospace;font-size:13px;letter-spacing:0.10em;text-transform:uppercase;font-weight:700;display:inline-block;box-shadow:0 12px 40px -12px rgba(167,139,250,0.7);">Start free now →</a>'
+        + '</div>';
+      landing.appendChild(hero);
+    }, 200);
   }
   forceLanding();
   // Heartbeat in case auth modules try to override
