@@ -4,29 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5, user-scalable=yes, viewport-fit=cover">
 
-<!-- ════════════════════════════════════════════════════════════════════
-     ROOT REDIRECT — runs BEFORE anything else
-     /                → /launch.html  (unauthenticated visitors)
-     /                → /dashboard.html  (logged-in users)
-     /?app or /?app=1 → bypass redirect, load the full SPA
-     /?landing        → bypass redirect, stay on SPA-rendered landing
-     Anything other than /  → leave alone (no redirect)
-     ════════════════════════════════════════════════════════════════════ -->
-<script>
-(function(){
-  try {
-    var p = location.pathname;
-    var isRoot = (p === '/' || p === '/index.html' || p === '');
-    if (!isRoot) return;
-    var qs = location.search || '';
-    if (/[?&](app|skiplaunch|landing|signin|signup)\b/i.test(qs)) return;
-    var hasAuth = false;
-    try { hasAuth = !!localStorage.getItem('qz_auth_user'); } catch(_){}
-    var target = hasAuth ? '/dashboard.html' : '/launch.html';
-    location.replace(target);
-  } catch(_){}
-})();
-</script>
+<!-- Root redirect removed — / now loads the SPA as before.
+     /launch.html and /dashboard.html remain available as direct URLs. -->
+
 
 <!-- ============================================================================
      SECURITY HEADERS (OWASP-aligned, single-page-app friendly)
