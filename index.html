@@ -40729,6 +40729,11 @@ setTimeout(() => {
      JS or with errors get a static-but-visible landing.
      ════════════════════════════════════════════════════════════════════ -->
 <style id="qe-cinema-v3-css">
+  /* KILL the welcome overlay permanently. It was blanking the screen
+     on laptop because something blocked dismissal. The feature can
+     come back later in a non-blocking form. */
+  #qe-welcome-overlay { display: none !important; }
+
   /* DEFAULT: reveals are VISIBLE. */
   #qe-cine .qe-cine-reveal {
     opacity: 1 !important;
@@ -40754,6 +40759,24 @@ setTimeout(() => {
 <script id="qe-cinema-v3-js">
 (function(){
   'use strict';
+
+  // KILL the welcome overlay immediately AND mark it as seen so it
+  // never tries to re-render. Was blanking laptop screens.
+  function killWelcome() {
+    var ov = document.getElementById('qe-welcome-overlay');
+    if (ov) ov.remove();
+    try {
+      // Set every plausible welcome flag so the source code's
+      // maybeShowWelcome() guard short-circuits.
+      ['qe_welcome_seen', 'qe_welcome_seen_v1', 'qz_welcome_seen', 'qe-welcome-seen'].forEach(function(k){
+        try { localStorage.setItem(k, '1'); } catch(_){}
+      });
+    } catch(_){}
+  }
+  killWelcome();
+  // Heartbeat — if some module re-creates it, kill again immediately
+  setInterval(killWelcome, 500);
+
   // After we've confirmed IntersectionObserver is alive AND the cinema
   // boot has had a moment to run, opt into the animate-on-scroll behavior.
   // If anything fails before this point, reveals stay visible — the user
