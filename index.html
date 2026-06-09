@@ -40708,5 +40708,275 @@ setTimeout(() => {
 })();
 </script>
 
+
+<!-- ════════════════════════════════════════════════════════════════════
+     DASHBOARD LAYOUT v1 — editorial rework (CSS-only, no DOM change)
+     Goal: kill the "vibecoded" feel — make Portfolio Value the single
+     visual anchor, demote everything else into supporting roles, give
+     real whitespace and a clean asymmetric grid.
+
+     Net visual change:
+       ┌──────────────────────────────────────────┐
+       │ status strip (compact eyebrow)            │
+       ├──────────────────────────────────────────┤
+       │  PORTFOLIO VALUE (60-88px Fraunces)       │
+       │  ↳ Day change · Active signals · TopOpp   │  ← inline ticker strip
+       ├──────────────────────────────────────────┤
+       │  Performance chart (full width, 320px)    │
+       ├────────────────────────┬─────────────────┤
+       │  Signals (vertical list) │ Sentiment       │
+       │                          │ AI Intelligence │
+       ├────────────────────────┴─────────────────┤
+       │  Heatmap (full width, compact)            │
+       └──────────────────────────────────────────┘
+     ════════════════════════════════════════════════════════════════════ -->
+<style id="qe-dash-layout-v1">
+  /* ─── Page shell ──────────────────────────────────────────────── */
+  #page-dashboard {
+    max-width: 1320px !important;
+    margin: 0 auto !important;
+    padding: 28px clamp(20px, 4vw, 48px) 80px !important;
+  }
+
+  /* ─── 1. Status bar — demote to thin eyebrow strip ───────────── */
+  #page-dashboard .dash-status-bar {
+    padding: 10px 16px !important;
+    margin-bottom: 28px !important;
+    border-radius: 100px !important;
+    background: rgba(244,244,240,0.025) !important;
+    border: 1px solid rgba(244,244,240,0.06) !important;
+    min-height: 0 !important;
+  }
+  #page-dashboard .dash-status-flag { font-size: 16px !important; }
+  #page-dashboard .dash-status-label {
+    font-size: 9.5px !important;
+    letter-spacing: 0.18em !important;
+    color: rgba(244,244,240,0.4) !important;
+  }
+  #page-dashboard .dash-status-title {
+    font-size: 12.5px !important;
+    color: rgba(244,244,240,0.7) !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    letter-spacing: 0.02em !important;
+  }
+  #page-dashboard .dash-pill {
+    padding: 4px 11px !important;
+    font-size: 10.5px !important;
+    background: transparent !important;
+    border: 1px solid rgba(244,244,240,0.08) !important;
+  }
+
+  /* ─── 2. Metric grid — promote Portfolio Value to HERO ───────── */
+  #page-dashboard .dash-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+    margin-bottom: 32px !important;
+    background: linear-gradient(180deg, rgba(15,15,22,0.62), rgba(8,8,14,0.62)) !important;
+    border: 1px solid rgba(167,139,250,0.18) !important;
+    border-radius: 16px !important;
+    padding: 36px clamp(28px, 4vw, 48px) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    box-shadow: 0 32px 80px -32px rgba(167,139,250,0.20) !important;
+  }
+  #page-dashboard .dash-grid::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -40% !important; right: -10% !important;
+    width: 520px !important; height: 520px !important;
+    background: radial-gradient(circle, rgba(167,139,250,0.12) 0%, transparent 65%) !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+  }
+  #page-dashboard .dash-grid > .metric-card {
+    background: transparent !important;
+    border: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    position: relative !important;
+    z-index: 1 !important;
+  }
+  /* HERO card — Portfolio Value */
+  #page-dashboard .dash-grid > .metric-card:nth-child(1) {
+    margin-bottom: 24px !important;
+    padding-bottom: 24px !important;
+    border-bottom: 1px solid rgba(244,244,240,0.06) !important;
+  }
+  #page-dashboard .dash-grid > .metric-card:nth-child(1) .metric-card-icon {
+    display: none !important;
+  }
+  #page-dashboard .dash-grid > .metric-card:nth-child(1) .metric-label {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 10.5px !important;
+    letter-spacing: 0.22em !important;
+    color: rgba(244,244,240,0.42) !important;
+    text-transform: uppercase !important;
+    margin-bottom: 12px !important;
+  }
+  #page-dashboard .dash-grid > .metric-card:nth-child(1) .metric-value {
+    font-family: 'Fraunces', Georgia, serif !important;
+    font-weight: 400 !important;
+    font-size: clamp(48px, 7vw, 88px) !important;
+    line-height: 0.95 !important;
+    letter-spacing: -0.03em !important;
+    font-variant-numeric: tabular-nums !important;
+    color: #F4F4F0 !important;
+    margin-bottom: 12px !important;
+  }
+  #page-dashboard .dash-grid > .metric-card:nth-child(1) .metric-change {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 13px !important;
+    letter-spacing: 0.04em !important;
+  }
+
+  /* Supporting metrics — 3 inline pills below the hero */
+  #page-dashboard .dash-grid > .metric-card:nth-child(n+2) {
+    display: inline-flex !important;
+    flex-direction: column !important;
+  }
+  /* Force the 3 supporting cards into a 3-col flex row via wrapping */
+  #page-dashboard .dash-grid {
+    /* keep parent as grid; create child row via gap trick */
+  }
+  /* Use CSS Grid to lay out cards 2-4 in a row below card 1 */
+  #page-dashboard .dash-grid {
+    grid-template-columns: 1fr 1fr 1fr !important;
+    grid-template-rows: auto auto !important;
+    column-gap: clamp(24px, 4vw, 56px) !important;
+    row-gap: 0 !important;
+  }
+  #page-dashboard .dash-grid > .metric-card:nth-child(1) {
+    grid-column: 1 / -1 !important;
+  }
+  #page-dashboard .dash-grid > .metric-card:nth-child(n+2) .metric-card-icon {
+    width: 28px !important; height: 28px !important;
+    font-size: 14px !important;
+    margin-bottom: 10px !important;
+    border-radius: 7px !important;
+  }
+  #page-dashboard .dash-grid > .metric-card:nth-child(n+2) .metric-label {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 9.5px !important;
+    letter-spacing: 0.16em !important;
+    color: rgba(244,244,240,0.4) !important;
+    text-transform: uppercase !important;
+    margin-bottom: 6px !important;
+  }
+  #page-dashboard .dash-grid > .metric-card:nth-child(n+2) .metric-value {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.015em !important;
+    color: #F4F4F0 !important;
+    line-height: 1.1 !important;
+    font-variant-numeric: tabular-nums !important;
+  }
+  #page-dashboard .dash-grid > .metric-card:nth-child(n+2) .metric-change {
+    font-size: 11px !important;
+    color: rgba(244,244,240,0.5) !important;
+    margin-top: 4px !important;
+  }
+  @media (max-width: 720px) {
+    #page-dashboard .dash-grid {
+      grid-template-columns: 1fr !important;
+      padding: 28px 22px !important;
+    }
+  }
+
+  /* ─── 3. Main chart — make full width, demote sidebar below ──── */
+  #page-dashboard .dash-main {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+    margin-bottom: 36px !important;
+  }
+  #page-dashboard .dash-main > .chart-container {
+    background: rgba(15,15,22,0.55) !important;
+    border: 1px solid rgba(244,244,240,0.06) !important;
+    border-radius: 14px !important;
+    padding: 22px 26px !important;
+  }
+  #page-dashboard .dash-main #main-chart {
+    height: 320px !important;
+  }
+  #page-dashboard .chart-title {
+    font-family: 'Fraunces', Georgia, serif !important;
+    font-weight: 500 !important;
+    font-size: 19px !important;
+    letter-spacing: -0.015em !important;
+    color: #F4F4F0 !important;
+  }
+  #page-dashboard .chart-period {
+    background: rgba(244,244,240,0.04) !important;
+    border-radius: 100px !important;
+    padding: 3px !important;
+  }
+  #page-dashboard .period-btn {
+    padding: 6px 14px !important;
+    font-size: 10.5px !important;
+    letter-spacing: 0.08em !important;
+    border-radius: 100px !important;
+    color: rgba(244,244,240,0.55) !important;
+    background: transparent !important;
+    border: 0 !important;
+    cursor: pointer !important;
+    font-family: 'JetBrains Mono', monospace !important;
+  }
+  #page-dashboard .period-btn.active {
+    background: rgba(167,139,250,0.18) !important;
+    color: #C4B5FD !important;
+  }
+  /* Move the sentiment + AI sidebar BELOW the chart, as 2-col flex */
+  #page-dashboard .dash-main > div:not(.chart-container) {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 14px !important;
+  }
+  @media (max-width: 880px) {
+    #page-dashboard .dash-main > div:not(.chart-container) {
+      grid-template-columns: 1fr !important;
+    }
+  }
+
+  /* ─── 4. Section headers — editorial typography ─────────────── */
+  #page-dashboard .dash-section-header {
+    margin-top: 36px !important;
+    margin-bottom: 18px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: baseline !important;
+    gap: 14px !important;
+  }
+  #page-dashboard .dash-section-title {
+    font-family: 'Fraunces', Georgia, serif !important;
+    font-weight: 500 !important;
+    font-size: 22px !important;
+    letter-spacing: -0.02em !important;
+    color: #F4F4F0 !important;
+  }
+  #page-dashboard .dash-section-sub {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 10.5px !important;
+    letter-spacing: 0.12em !important;
+    color: rgba(244,244,240,0.45) !important;
+    text-transform: uppercase !important;
+  }
+
+  /* ─── 5. Heatmap → demoted, compact ───────────────────────────── */
+  #page-dashboard .heatmap-section {
+    background: rgba(15,15,22,0.55) !important;
+    border: 1px solid rgba(244,244,240,0.05) !important;
+    border-radius: 14px !important;
+    padding: 18px !important;
+  }
+
+  /* ─── 6. Signals grid — vertical list (not cards) ────────────── */
+  #page-dashboard .dash-signals {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+    gap: 10px !important;
+  }
+</style>
 </body>
 </html>
