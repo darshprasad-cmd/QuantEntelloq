@@ -40710,6 +40710,331 @@ setTimeout(() => {
 
 
 <!-- ════════════════════════════════════════════════════════════════════
+     APP SHELL v1 — Linear/Vercel-style sidebar + topbar rework
+     Slim 232px sidebar, consistent mono monograms instead of random
+     unicode glyphs, tighter sections, editorial topbar typography.
+     CSS only — zero DOM change, every nav onclick handler stays put.
+     ════════════════════════════════════════════════════════════════════ -->
+<style id="qe-shell-v1-css">
+  /* ─── Sidebar shell ───────────────────────────────────────────── */
+  .sidebar {
+    width: 232px !important;
+    background: rgba(8,8,12,0.85) !important;
+    border-right: 1px solid rgba(244,244,240,0.06) !important;
+    backdrop-filter: saturate(160%) blur(20px) !important;
+    -webkit-backdrop-filter: saturate(160%) blur(20px) !important;
+  }
+  /* Logo block — calmer, more editorial */
+  .sidebar-logo {
+    padding: 22px 20px 18px !important;
+    border-bottom: 1px solid rgba(244,244,240,0.05) !important;
+  }
+  .sidebar-logo .logo-mark {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+  .sidebar-logo .logo-icon {
+    width: 26px !important; height: 26px !important;
+    border-radius: 7px !important;
+    background: linear-gradient(135deg, #A78BFA 0%, #67E8F9 100%) !important;
+    color: #04030A !important;
+    display: grid !important; place-items: center !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.02em !important;
+  }
+  .sidebar-logo .logo-text {
+    font-family: 'Fraunces', Georgia, serif !important;
+    font-size: 18px !important;
+    font-weight: 500 !important;
+    letter-spacing: -0.02em !important;
+    color: #F4F4F0 !important;
+    line-height: 1.1 !important;
+  }
+  .sidebar-logo .logo-text span {
+    font-style: italic !important;
+    background: linear-gradient(110deg, #A78BFA, #67E8F9) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    color: transparent !important;
+  }
+  .sidebar-logo .logo-sub {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 9px !important;
+    letter-spacing: 0.14em !important;
+    color: rgba(244,244,240,0.32) !important;
+    text-transform: uppercase !important;
+    margin-top: 6px !important;
+    margin-left: 36px !important;
+  }
+
+  /* Nav — tighter, more editorial spacing */
+  .sidebar-nav {
+    padding: 14px 12px !important;
+    gap: 2px !important;
+  }
+  .nav-section-label {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 9px !important;
+    letter-spacing: 0.20em !important;
+    color: rgba(244,244,240,0.32) !important;
+    text-transform: uppercase !important;
+    padding: 18px 12px 6px !important;
+    font-weight: 600 !important;
+  }
+  .nav-section-label:first-child { padding-top: 8px !important; }
+
+  .nav-item {
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.02em !important;
+    color: rgba(244,244,240,0.7) !important;
+    transition: background 140ms ease, color 140ms ease !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    position: relative !important;
+  }
+  .nav-item:hover {
+    background: rgba(244,244,240,0.04) !important;
+    color: #F4F4F0 !important;
+  }
+  .nav-item.active {
+    background: rgba(167,139,250,0.10) !important;
+    color: #C4B5FD !important;
+  }
+  .nav-item.active::before {
+    content: '' !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 8px !important; bottom: 8px !important;
+    width: 2px !important;
+    background: linear-gradient(180deg, #A78BFA, #67E8F9) !important;
+    border-radius: 0 2px 2px 0 !important;
+  }
+
+  /* Replace random unicode icons with consistent mono monograms.
+     We hide the original icon and inject a clean 2-letter mono via
+     attr() — the data-mono attribute is added by JS overlay below. */
+  .nav-item .nav-icon {
+    width: 22px !important; height: 22px !important;
+    border-radius: 5px !important;
+    background: rgba(244,244,240,0.04) !important;
+    border: 1px solid rgba(244,244,240,0.06) !important;
+    color: rgba(244,244,240,0.55) !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.02em !important;
+    display: grid !important;
+    place-items: center !important;
+    flex-shrink: 0 !important;
+    opacity: 1 !important;
+  }
+  .nav-item.active .nav-icon {
+    background: rgba(167,139,250,0.18) !important;
+    border-color: rgba(167,139,250,0.40) !important;
+    color: #C4B5FD !important;
+  }
+  /* When data-mono attr is set, swap unicode for letterform */
+  .nav-item .nav-icon[data-mono] {
+    font-size: 0 !important;
+  }
+  .nav-item .nav-icon[data-mono]::after {
+    content: attr(data-mono) !important;
+    font-size: 9.5px !important;
+    color: inherit !important;
+  }
+  .nav-item .nav-label {
+    flex: 1 !important;
+    color: inherit !important;
+  }
+  .nav-badge-ai,
+  .nav-item [style*="background:rgba(16,185,129"] {
+    background: rgba(167,139,250,0.14) !important;
+    border-color: rgba(167,139,250,0.30) !important;
+    color: #C4B5FD !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 8px !important;
+    letter-spacing: 0.10em !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+  }
+
+  /* User card at bottom — slimmer */
+  .sidebar-user {
+    padding: 14px !important;
+    border-top: 1px solid rgba(244,244,240,0.05) !important;
+    background: transparent !important;
+  }
+  .sidebar-user .user-row {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 8px !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: background 120ms ease !important;
+  }
+  .sidebar-user .user-row:hover { background: rgba(244,244,240,0.04) !important; }
+  .sidebar-user .user-avatar {
+    width: 28px !important; height: 28px !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, #A78BFA 0%, #67E8F9 100%) !important;
+    color: #04030A !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    display: grid !important;
+    place-items: center !important;
+  }
+  .sidebar-user .user-name {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 12px !important;
+    color: #F4F4F0 !important;
+    letter-spacing: 0.01em !important;
+  }
+  .sidebar-user .user-plan {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 9px !important;
+    letter-spacing: 0.14em !important;
+    color: rgba(244,244,240,0.4) !important;
+    text-transform: uppercase !important;
+    margin-top: 2px !important;
+  }
+
+  /* ─── Top bar — editorial typography ──────────────────────────── */
+  .top-bar {
+    background: rgba(8,8,12,0.55) !important;
+    border-bottom: 1px solid rgba(244,244,240,0.05) !important;
+    backdrop-filter: saturate(160%) blur(20px) !important;
+    -webkit-backdrop-filter: saturate(160%) blur(20px) !important;
+    padding: 0 28px !important;
+    min-height: 60px !important;
+  }
+  .top-bar-title {
+    font-family: 'Fraunces', Georgia, serif !important;
+    font-weight: 500 !important;
+    font-size: 22px !important;
+    letter-spacing: -0.02em !important;
+    color: #F4F4F0 !important;
+    background: none !important;
+    -webkit-text-fill-color: #F4F4F0 !important;
+  }
+  .top-bar-title small {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 9.5px !important;
+    letter-spacing: 0.18em !important;
+    color: rgba(244,244,240,0.4) !important;
+    text-transform: uppercase !important;
+    font-weight: 400 !important;
+    display: block !important;
+    margin-top: 2px !important;
+  }
+  .search-bar {
+    background: rgba(244,244,240,0.03) !important;
+    border: 1px solid rgba(244,244,240,0.08) !important;
+    border-radius: 8px !important;
+    padding: 8px 14px !important;
+    transition: border-color 160ms ease !important;
+  }
+  .search-bar:focus-within { border-color: rgba(167,139,250,0.4) !important; }
+  .search-bar input {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 12px !important;
+    color: #F4F4F0 !important;
+  }
+  .search-bar input::placeholder {
+    color: rgba(244,244,240,0.35) !important;
+    font-size: 11.5px !important;
+  }
+  .country-selector {
+    padding: 7px 12px !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 11px !important;
+    background: rgba(244,244,240,0.03) !important;
+    border-color: rgba(244,244,240,0.08) !important;
+  }
+
+  /* ─── Main content padding ────────────────────────────────────── */
+  .main-content {
+    background: linear-gradient(180deg, #04030A 0%, #08070F 100%) !important;
+  }
+  .main-content > .page-anim:not(.hidden) {
+    animation: qzShellFade 320ms cubic-bezier(0.22,1,0.36,1);
+  }
+  @keyframes qzShellFade {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Mobile: collapse sidebar on small screens (existing media query
+     handles icon-only state at <980px, we just tighten our overrides) */
+  @media (max-width: 980px) {
+    .sidebar { width: 64px !important; }
+    .sidebar-logo .logo-sub { display: none !important; }
+    .sidebar-user .user-name, .sidebar-user .user-plan { display: none !important; }
+    .nav-item { justify-content: center !important; padding: 10px !important; }
+    .nav-item .nav-label { display: none !important; }
+  }
+</style>
+
+<script id="qe-shell-v1-js">
+(function(){
+  'use strict';
+  // Inject consistent 2-letter monograms onto every nav-icon so we
+  // stop relying on the random unicode glyphs.
+  var MONOGRAMS = {
+    'Dashboard':       'DB',
+    'AI Signals':      'SG',
+    'Macro':           'MA',
+    'AI Studio':       'AI',
+    'Quant Lab':       'QL',
+    'Scanner':         'SC',
+    'Watchlists':      'WL',
+    'Intelligence':    'IN',
+    'Portfolio':       'PF',
+    'Paper Trading':   'PT',
+    'Ledger':          'LD',
+    'Simulations':     'SM',
+    'Backtest':        'BT',
+    'Reports':         'RP',
+    'Alerts':          'AL',
+    'Settings':        'SE'
+  };
+  function apply() {
+    document.querySelectorAll('.sidebar .nav-item').forEach(function(item){
+      var icon = item.querySelector('.nav-icon');
+      var lbl = item.querySelector('.nav-label');
+      if (!icon || !lbl) return;
+      if (icon.hasAttribute('data-mono')) return;
+      var name = lbl.textContent.trim();
+      var mono = MONOGRAMS[name];
+      if (mono) icon.setAttribute('data-mono', mono);
+    });
+    // Update Pro Plan tag if the user is on free
+    var planEl = document.querySelector('.sidebar-user .user-plan');
+    if (planEl && planEl.textContent === 'Pro Plan') {
+      // Just use "Member" — less aspirational, less wrong
+      planEl.textContent = 'Member';
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', apply);
+  } else {
+    apply();
+  }
+  setInterval(apply, 1500);
+})();
+</script>
+
+<!-- ════════════════════════════════════════════════════════════════════
      DASHBOARD LAYOUT v1 — editorial rework (CSS-only, no DOM change)
      Goal: kill the "vibecoded" feel — make Portfolio Value the single
      visual anchor, demote everything else into supporting roles, give
