@@ -41725,5 +41725,533 @@ setTimeout(() => {
   window.QEShellV2 = { go: go, rebuild: build };
 })();
 </script>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     VISUALS v1 — candlestick charts in Paper Trading + editorial polish
+     across all subsections.
+     · Paper Trading gets a live candlestick panel (TradingView
+       Lightweight Charts, already loaded at line 5604): per-ticker
+       candles + volume histogram + 20-period MA + timeframe chips.
+       Follows the order-ticket ticker; click any position row to load
+       that ticker's chart.
+     · Editorial CSS pass: pt-* cards/tabs/buttons, generic tables,
+       metric cards, page headers.
+     ════════════════════════════════════════════════════════════════════ -->
+<style id="qe-visual-v1-css">
+  /* ─── Paper Trading: editorial reskin ─────────────────────────── */
+  #page-paper .pt-title {
+    font-family: 'Fraunces', Georgia, serif !important;
+    font-weight: 400 !important;
+    font-size: clamp(30px, 4vw, 42px) !important;
+    letter-spacing: -0.025em !important;
+    color: #F4F4F0 !important;
+  }
+  #page-paper .pt-eyebrow {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 10px !important;
+    letter-spacing: 0.22em !important;
+    color: rgba(244,244,240,0.45) !important;
+    text-transform: uppercase !important;
+  }
+  #page-paper .pt-sub {
+    font-size: 13px !important;
+    color: rgba(244,244,240,0.55) !important;
+  }
+  #page-paper .pt-acct-card {
+    background: linear-gradient(180deg, rgba(15,15,22,0.96) 0%, rgba(8,8,14,0.96)) !important;
+    border: 1px solid rgba(167,139,250,0.20) !important;
+    border-radius: 16px !important;
+    padding: 26px 30px !important;
+    position: relative !important;
+    overflow: hidden !important;
+    box-shadow: 0 32px 72px -32px rgba(167,139,250,0.18) !important;
+  }
+  #page-paper .pt-acct-card::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -50% !important; right: -8% !important;
+    width: 420px !important; height: 420px !important;
+    background: radial-gradient(circle, rgba(167,139,250,0.12) 0%, transparent 65%) !important;
+    pointer-events: none !important;
+  }
+  #page-paper .pt-acct-card-name {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 10px !important;
+    letter-spacing: 0.22em !important;
+    color: rgba(244,244,240,0.42) !important;
+  }
+  #page-paper .pt-acct-equity {
+    font-family: 'Fraunces', Georgia, serif !important;
+    font-weight: 400 !important;
+    font-size: clamp(38px, 5vw, 56px) !important;
+    letter-spacing: -0.03em !important;
+    line-height: 1 !important;
+    color: #F4F4F0 !important;
+    font-variant-numeric: tabular-nums !important;
+  }
+  #page-paper .pt-acct-detail strong {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 16px !important;
+    font-variant-numeric: tabular-nums !important;
+  }
+  #page-paper .pt-stat {
+    background: rgba(15,15,22,0.55) !important;
+    border: 1px solid rgba(244,244,240,0.06) !important;
+    border-radius: 12px !important;
+  }
+  #page-paper .pt-stat-val {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 21px !important;
+    font-weight: 700 !important;
+    font-variant-numeric: tabular-nums !important;
+  }
+  #page-paper .pt-stat-lbl {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 9px !important;
+    letter-spacing: 0.18em !important;
+    color: rgba(244,244,240,0.42) !important;
+  }
+  #page-paper .pt-card {
+    background: rgba(15,15,22,0.55) !important;
+    border: 1px solid rgba(244,244,240,0.06) !important;
+    border-radius: 14px !important;
+  }
+  #page-paper .pt-card-title {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 10.5px !important;
+    letter-spacing: 0.18em !important;
+    text-transform: uppercase !important;
+    color: rgba(244,244,240,0.55) !important;
+    font-weight: 600 !important;
+  }
+  #page-paper .pt-tabs {
+    background: rgba(244,244,240,0.04) !important;
+    border-radius: 100px !important;
+    padding: 3px !important;
+    display: inline-flex !important;
+    gap: 2px !important;
+    border: 0 !important;
+  }
+  #page-paper .pt-tab {
+    border-radius: 100px !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 11px !important;
+    letter-spacing: 0.06em !important;
+    padding: 7px 16px !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: rgba(244,244,240,0.6) !important;
+  }
+  #page-paper .pt-tab.active {
+    background: rgba(167,139,250,0.16) !important;
+    color: #C4B5FD !important;
+  }
+  #page-paper .pt-side-btn {
+    border-radius: 10px !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.08em !important;
+    transition: all 160ms cubic-bezier(0.23,1,0.32,1) !important;
+  }
+  #page-paper .pt-side-btn.buy-active {
+    background: linear-gradient(135deg, rgba(94,234,212,0.22), rgba(94,234,212,0.10)) !important;
+    border: 1px solid rgba(94,234,212,0.45) !important;
+    color: #5EEAD4 !important;
+    box-shadow: 0 0 24px -8px rgba(94,234,212,0.5) !important;
+  }
+  #page-paper .pt-side-btn.sell-active {
+    background: linear-gradient(135deg, rgba(251,113,133,0.22), rgba(251,113,133,0.10)) !important;
+    border: 1px solid rgba(251,113,133,0.45) !important;
+    color: #FB7185 !important;
+    box-shadow: 0 0 24px -8px rgba(251,113,133,0.5) !important;
+  }
+  #page-paper .pt-type-btn.active {
+    background: rgba(167,139,250,0.16) !important;
+    border-color: rgba(167,139,250,0.4) !important;
+    color: #C4B5FD !important;
+  }
+
+  /* ─── Candlestick chart card ──────────────────────────────────── */
+  #qe-ptc-card {
+    margin-bottom: 16px !important;
+    padding: 18px 20px 10px !important;
+  }
+  .qe-ptc-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .qe-ptc-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.20em;
+    color: rgba(244,244,240,0.42);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .qe-ptc-ticker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: #F4F4F0;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .qe-ptc-ticker .qe-ptc-price {
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(244,244,240,0.8);
+    font-variant-numeric: tabular-nums;
+  }
+  .qe-ptc-ticker .qe-ptc-chg {
+    font-size: 12px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .qe-ptc-chg.pos { color: #5EEAD4; }
+  .qe-ptc-chg.neg { color: #FB7185; }
+  .qe-ptc-tfs {
+    display: inline-flex;
+    gap: 2px;
+    background: rgba(244,244,240,0.04);
+    border-radius: 100px;
+    padding: 3px;
+  }
+  .qe-ptc-tf {
+    padding: 5px 12px;
+    border-radius: 100px;
+    border: 0;
+    background: transparent;
+    color: rgba(244,244,240,0.55);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 140ms ease;
+  }
+  .qe-ptc-tf:hover { color: #F4F4F0; }
+  .qe-ptc-tf.active {
+    background: rgba(167,139,250,0.16);
+    color: #C4B5FD;
+  }
+  #qe-ptc-chart {
+    width: 100%;
+    height: 300px;
+    position: relative;
+  }
+  #qe-ptc-hint {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.08em;
+    color: rgba(244,244,240,0.3);
+    text-align: right;
+    padding: 6px 2px 4px;
+    text-transform: uppercase;
+  }
+
+  /* ─── Generic subsection polish (all pages) ───────────────────── */
+  .page-anim table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(244,244,240,0.45);
+    font-weight: 600;
+  }
+  .page-anim table td {
+    font-variant-numeric: tabular-nums;
+  }
+  .page-anim .metric-card {
+    border-radius: 12px;
+    border-color: rgba(244,244,240,0.06);
+  }
+  .page-anim .metric-card .metric-value {
+    font-variant-numeric: tabular-nums;
+  }
+  .page-anim select, .page-anim input.input {
+    font-family: 'JetBrains Mono', monospace !important;
+    border-radius: 8px !important;
+  }
+  .page-anim .badge {
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.08em;
+  }
+</style>
+
+<script id="qe-visual-v1-js">
+(function(){
+  'use strict';
+
+  // ─── Deterministic per-ticker candle generator ──────────────────
+  function seedRng(str) {
+    var h = 2166136261;
+    for (var i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return function() {
+      h ^= h << 13; h ^= h >>> 17; h ^= h << 5;
+      return ((h >>> 0) % 100000) / 100000;
+    };
+  }
+
+  function hashPrice(ticker) {
+    var rnd = seedRng('px:' + ticker);
+    return +(18 + rnd() * 560 + rnd()).toFixed(2);
+  }
+
+  // Random-walk OHLCV, normalized so the last close lands on basePrice
+  function genCandles(ticker, basePrice, count, intervalSec) {
+    var rnd = seedRng(ticker + '@' + intervalSec);
+    var t = Math.floor(Date.now() / 1000);
+    t -= t % intervalSec;
+    var start = t - intervalSec * count;
+    var vol = 0.006 + rnd() * 0.014;            // per-candle volatility
+    var drift = (rnd() - 0.48) * 0.001;          // slight trend bias
+    var candles = [], price = basePrice;
+    for (var i = 0; i < count; i++) {
+      var open = price;
+      var change = (rnd() - 0.5) * 2 * vol * open + drift * open;
+      var close = Math.max(0.5, open + change);
+      var hi = Math.max(open, close) * (1 + rnd() * 0.005);
+      var lo = Math.min(open, close) * (1 - rnd() * 0.005);
+      candles.push({
+        time: start + i * intervalSec,
+        open: +open.toFixed(2), high: +hi.toFixed(2),
+        low: +lo.toFixed(2), close: +close.toFixed(2),
+        volume: Math.round(200000 + rnd() * 4800000)
+      });
+      price = close;
+    }
+    // Normalize so final close == basePrice
+    var factor = basePrice / candles[candles.length - 1].close;
+    candles.forEach(function(c) {
+      c.open = +(c.open * factor).toFixed(2);
+      c.high = +(c.high * factor).toFixed(2);
+      c.low  = +(c.low  * factor).toFixed(2);
+      c.close= +(c.close* factor).toFixed(2);
+    });
+    return candles;
+  }
+
+  function sma(candles, period) {
+    var out = [], sum = 0;
+    for (var i = 0; i < candles.length; i++) {
+      sum += candles[i].close;
+      if (i >= period) sum -= candles[i - period].close;
+      if (i >= period - 1) out.push({ time: candles[i].time, value: +(sum / period).toFixed(2) });
+    }
+    return out;
+  }
+
+  // ─── Chart state ────────────────────────────────────────────────
+  var TFS = [
+    { key: '1D', count: 78,  sec: 300 },
+    { key: '1W', count: 70,  sec: 1800 },
+    { key: '1M', count: 22,  sec: 86400 },
+    { key: '3M', count: 66,  sec: 86400 },
+    { key: '1Y', count: 52,  sec: 604800 }
+  ];
+  var state = { ticker: 'AAPL', tf: '1M', chart: null, candleSeries: null, volSeries: null, maSeries: null, lastKey: '' };
+
+  function ensureCard() {
+    if (document.getElementById('qe-ptc-card')) return true;
+    var grid = document.getElementById('pt-main-grid');
+    if (!grid) return false;
+    var leftCol = grid.querySelector(':scope > div:first-child');
+    if (!leftCol) return false;
+
+    var card = document.createElement('div');
+    card.className = 'pt-card';
+    card.id = 'qe-ptc-card';
+    card.innerHTML = ''
+      + '<div class="qe-ptc-head">'
+      +   '<div>'
+      +     '<div class="qe-ptc-eyebrow">Price Action · Simulated Feed</div>'
+      +     '<div class="qe-ptc-ticker"><span id="qe-ptc-sym">—</span>'
+      +       '<span class="qe-ptc-price" id="qe-ptc-price"></span>'
+      +       '<span class="qe-ptc-chg" id="qe-ptc-chg"></span>'
+      +     '</div>'
+      +   '</div>'
+      +   '<div class="qe-ptc-tfs" id="qe-ptc-tfs">'
+      +     TFS.map(function(t){
+              return '<button type="button" class="qe-ptc-tf' + (t.key === state.tf ? ' active' : '') + '" data-tf="' + t.key + '">' + t.key + '</button>';
+            }).join('')
+      +   '</div>'
+      + '</div>'
+      + '<div id="qe-ptc-chart"></div>'
+      + '<div id="qe-ptc-hint">Click a position row to load its chart · Type a ticker in the order ticket</div>';
+
+    leftCol.insertBefore(card, leftCol.firstChild);
+
+    document.getElementById('qe-ptc-tfs').addEventListener('click', function(e){
+      var b = e.target.closest('.qe-ptc-tf');
+      if (!b) return;
+      state.tf = b.getAttribute('data-tf');
+      document.querySelectorAll('.qe-ptc-tf').forEach(function(x){
+        x.classList.toggle('active', x.getAttribute('data-tf') === state.tf);
+      });
+      render(true);
+    });
+
+    // Click any position row → load that ticker
+    var posBody = document.getElementById('pt-positions-body');
+    if (posBody) {
+      posBody.addEventListener('click', function(e){
+        var txt = (e.target.closest('tr, [class*="pos-row"], div') || {}).textContent || '';
+        var m = txt.match(/\b([A-Z]{1,6})(?:-USD)?\b/);
+        if (m && m[1] && m[1] !== 'USD') {
+          state.ticker = m[1];
+          render(true);
+        }
+      });
+    }
+    return true;
+  }
+
+  function activeTf() {
+    for (var i = 0; i < TFS.length; i++) if (TFS[i].key === state.tf) return TFS[i];
+    return TFS[2];
+  }
+
+  function currentBasePrice() {
+    // Prefer the live fetched price in the order ticket
+    var disp = document.getElementById('pt-price-display');
+    if (disp) {
+      var m = (disp.textContent || '').replace(/,/g, '').match(/\$?\s*([0-9]+(?:\.[0-9]+)?)/);
+      if (m) return parseFloat(m[1]);
+    }
+    return hashPrice(state.ticker);
+  }
+
+  function render(force) {
+    if (typeof LightweightCharts === 'undefined') return;
+    var el = document.getElementById('qe-ptc-chart');
+    if (!el || el.clientWidth < 40) return;
+
+    var tf = activeTf();
+    var base = currentBasePrice();
+    var key = state.ticker + '|' + state.tf + '|' + base;
+    if (!force && key === state.lastKey) return;
+    state.lastKey = key;
+
+    if (!state.chart) {
+      state.chart = LightweightCharts.createChart(el, {
+        width: el.clientWidth,
+        height: 300,
+        layout: {
+          background: { color: 'transparent' },
+          textColor: 'rgba(244,244,240,0.5)',
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: 10
+        },
+        grid: {
+          vertLines: { color: 'rgba(244,244,240,0.03)' },
+          horzLines: { color: 'rgba(244,244,240,0.045)' }
+        },
+        timeScale: { borderColor: 'rgba(244,244,240,0.08)', timeVisible: true, secondsVisible: false },
+        rightPriceScale: { borderColor: 'rgba(244,244,240,0.08)' },
+        crosshair: { mode: 1 }
+      });
+      state.candleSeries = state.chart.addCandlestickSeries({
+        upColor: '#5EEAD4',
+        downColor: '#FB7185',
+        borderUpColor: '#5EEAD4',
+        borderDownColor: '#FB7185',
+        wickUpColor: 'rgba(94,234,212,0.65)',
+        wickDownColor: 'rgba(251,113,133,0.65)'
+      });
+      state.volSeries = state.chart.addHistogramSeries({
+        priceFormat: { type: 'volume' },
+        priceScaleId: ''
+      });
+      state.chart.priceScale('').applyOptions({ scaleMargins: { top: 0.84, bottom: 0 } });
+      state.maSeries = state.chart.addLineSeries({
+        color: '#A78BFA',
+        lineWidth: 1.5,
+        priceLineVisible: false,
+        lastValueVisible: false,
+        crosshairMarkerVisible: false
+      });
+      window.addEventListener('resize', function(){
+        var el2 = document.getElementById('qe-ptc-chart');
+        if (el2 && state.chart) state.chart.applyOptions({ width: el2.clientWidth });
+      });
+    }
+
+    var candles = genCandles(state.ticker, base, tf.count, tf.sec);
+    state.candleSeries.setData(candles);
+    state.volSeries.setData(candles.map(function(c){
+      return {
+        time: c.time,
+        value: c.volume,
+        color: c.close >= c.open ? 'rgba(94,234,212,0.18)' : 'rgba(251,113,133,0.18)'
+      };
+    }));
+    state.maSeries.setData(sma(candles, 20));
+    state.chart.timeScale().fitContent();
+
+    // Header readout
+    var first = candles[0], last = candles[candles.length - 1];
+    var chg = ((last.close - first.open) / first.open) * 100;
+    var sym = document.getElementById('qe-ptc-sym');
+    var px  = document.getElementById('qe-ptc-price');
+    var ch  = document.getElementById('qe-ptc-chg');
+    if (sym) sym.textContent = state.ticker;
+    if (px)  px.textContent = '$' + last.close.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    if (ch) {
+      ch.textContent = (chg >= 0 ? '+' : '') + chg.toFixed(2) + '% · ' + state.tf;
+      ch.className = 'qe-ptc-chg ' + (chg >= 0 ? 'pos' : 'neg');
+    }
+  }
+
+  // Follow the order-ticket ticker input
+  function syncTickerFromInput() {
+    var inp = document.getElementById('pt-ticker-input');
+    if (!inp) return;
+    var v = (inp.value || '').trim().toUpperCase();
+    if (v && /^[A-Z.\-]{1,8}$/.test(v) && v !== state.ticker) {
+      state.ticker = v;
+      render(true);
+    }
+  }
+
+  // Re-render shortly after a price fetch so the chart anchors to it
+  if (typeof window.ptFetchPrice === 'function' && !window._qePtFetchWrapped) {
+    window._qePtFetchWrapped = true;
+    var origFetch = window.ptFetchPrice;
+    window.ptFetchPrice = function() {
+      var r = origFetch.apply(this, arguments);
+      setTimeout(function(){ syncTickerFromInput(); render(true); }, 700);
+      return r;
+    };
+  }
+
+  function boot() {
+    var page = document.getElementById('page-paper');
+    if (!page || page.classList.contains('hidden')) return;
+    if (!ensureCard()) return;
+    syncTickerFromInput();
+    render(false);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+  setInterval(boot, 1200);
+
+  window.QEPtChart = {
+    load: function(tk){ state.ticker = String(tk || '').toUpperCase(); render(true); },
+    state: state
+  };
+})();
+</script>
 </body>
 </html>
