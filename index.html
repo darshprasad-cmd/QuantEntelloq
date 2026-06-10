@@ -42253,5 +42253,365 @@ setTimeout(() => {
   };
 })();
 </script>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     VISUALS v2 — editorial redesign of the remaining subsections:
+     Signals · Macro · Portfolio · Simulations · Backtest ·
+     Intelligence · Settings. Pure CSS, scoped per page, same design
+     language as Dashboard/Paper Trading/AI Studio.
+     ════════════════════════════════════════════════════════════════════ -->
+<style id="qe-visual-v2-css">
+  /* ─── Shared: ent-page header family (Signals/Portfolio/Intel) ── */
+  .ent-page-title {
+    font-family: 'Fraunces', Georgia, serif !important;
+    font-weight: 400 !important;
+    font-size: clamp(30px, 4vw, 42px) !important;
+    letter-spacing: -0.025em !important;
+    line-height: 1.05 !important;
+    color: #F4F4F0 !important;
+    background: none !important;
+    -webkit-text-fill-color: #F4F4F0 !important;
+  }
+  .ent-page-eyebrow {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 10px !important;
+    letter-spacing: 0.22em !important;
+    color: rgba(167,139,250,0.75) !important;
+    text-transform: uppercase !important;
+  }
+  .ent-page-desc {
+    font-size: 13.5px !important;
+    color: rgba(244,244,240,0.55) !important;
+    line-height: 1.55 !important;
+  }
+  .ent-page-header {
+    margin-bottom: 26px !important;
+    padding-bottom: 20px !important;
+    border-bottom: 1px solid rgba(244,244,240,0.05) !important;
+  }
+  /* Decorative blur orbs — calm them down */
+  .ent-bg-orb { opacity: 0.45 !important; }
+
+  /* ─── Shared: ent-tab pill tracks (Signals/Intelligence) ──────── */
+  .ent-tab-row {
+    background: rgba(244,244,240,0.04) !important;
+    border-radius: 100px !important;
+    padding: 3px !important;
+    display: inline-flex !important;
+    gap: 2px !important;
+    border: 0 !important;
+  }
+  .ent-tab {
+    border-radius: 100px !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 11px !important;
+    letter-spacing: 0.06em !important;
+    padding: 7px 16px !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: rgba(244,244,240,0.6) !important;
+    transition: all 140ms ease !important;
+  }
+  .ent-tab:hover { color: #F4F4F0 !important; }
+  .ent-tab.active {
+    background: rgba(167,139,250,0.16) !important;
+    color: #C4B5FD !important;
+  }
+
+  /* ─── SIGNALS ─────────────────────────────────────────────────── */
+  #page-signals .ent-sig-grid > * {
+    border-radius: 14px !important;
+    border: 1px solid rgba(244,244,240,0.06) !important;
+    background: rgba(15,15,22,0.55) !important;
+    transition: transform 200ms cubic-bezier(0.23,1,0.32,1), border-color 160ms ease !important;
+  }
+  #page-signals .ent-sig-grid > *:hover {
+    transform: translateY(-3px) !important;
+    border-color: rgba(167,139,250,0.30) !important;
+  }
+  #page-signals .ent-sig-controls .input {
+    background: rgba(244,244,240,0.03) !important;
+    border: 1px solid rgba(244,244,240,0.08) !important;
+  }
+
+  /* ─── MACRO ───────────────────────────────────────────────────── */
+  #page-macro .macro-grid {
+    gap: 12px !important;
+  }
+  #page-macro .macro-card {
+    background: rgba(15,15,22,0.55) !important;
+    border: 1px solid rgba(244,244,240,0.06) !important;
+    border-radius: 12px !important;
+    padding: 16px 18px !important;
+    transition: transform 200ms cubic-bezier(0.23,1,0.32,1), border-color 160ms ease !important;
+  }
+  #page-macro .macro-card:hover {
+    transform: translateY(-2px) !important;
+    border-color: rgba(167,139,250,0.28) !important;
+  }
+  #page-macro .macro-label {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 9.5px !important;
+    letter-spacing: 0.18em !important;
+    color: rgba(244,244,240,0.42) !important;
+    text-transform: uppercase !important;
+  }
+  #page-macro .macro-val {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.02em !important;
+    font-variant-numeric: tabular-nums !important;
+    color: #F4F4F0 !important;
+  }
+  #page-macro .macro-change {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 11px !important;
+    font-variant-numeric: tabular-nums !important;
+  }
+  /* Sector cards */
+  #page-macro .msc-card {
+    background: rgba(15,15,22,0.55) !important;
+    border: 1px solid rgba(244,244,240,0.06) !important;
+    border-radius: 14px !important;
+    padding: 18px 20px !important;
+    transition: border-color 160ms ease !important;
+  }
+  #page-macro .msc-card:hover { border-color: rgba(167,139,250,0.26) !important; }
+  #page-macro .msc-name {
+    font-family: 'Fraunces', Georgia, serif !important;
+    font-weight: 500 !important;
+    font-size: 17px !important;
+    letter-spacing: -0.01em !important;
+    color: #F4F4F0 !important;
+  }
+  #page-macro .msc-etf {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 10px !important;
+    letter-spacing: 0.10em !important;
+    color: rgba(244,244,240,0.45) !important;
+  }
+  #page-macro .msc-pct {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    font-variant-numeric: tabular-nums !important;
+  }
+  #page-macro .msc-bar-wrap {
+    height: 5px !important;
+    border-radius: 3px !important;
+    background: rgba(244,244,240,0.06) !important;
+    overflow: hidden !important;
+  }
+  #page-macro .msc-bar-fill {
+    border-radius: 3px !important;
+    background: linear-gradient(90deg, #A78BFA 0%, #67E8F9 100%) !important;
+    box-shadow: 0 0 12px -2px rgba(167,139,250,0.6) !important;
+  }
+  #page-macro .msc-bar-fill.msc-bar-up {
+    background: linear-gradient(90deg, #5EEAD4 0%, #67E8F9 100%) !important;
+    box-shadow: 0 0 12px -2px rgba(94,234,212,0.6) !important;
+  }
+  #page-macro .msc-desc {
+    font-size: 12px !important;
+    line-height: 1.55 !important;
+    color: rgba(244,244,240,0.6) !important;
+  }
+  #page-macro .msc-stocks {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 10.5px !important;
+    letter-spacing: 0.04em !important;
+    color: rgba(244,244,240,0.5) !important;
+  }
+
+  /* ─── PORTFOLIO ───────────────────────────────────────────────── */
+  #page-portfolio .ent-pf-metrics { gap: 12px !important; }
+  #page-portfolio .ent-pf-metric {
+    background: rgba(15,15,22,0.55) !important;
+    border: 1px solid rgba(244,244,240,0.06) !important;
+    border-radius: 12px !important;
+    padding: 16px 18px !important;
+    transition: transform 200ms cubic-bezier(0.23,1,0.32,1), border-color 160ms ease !important;
+  }
+  #page-portfolio .ent-pf-metric:hover {
+    transform: translateY(-2px) !important;
+    border-color: rgba(167,139,250,0.28) !important;
+  }
+  #page-portfolio .ent-pf-metric-icon {
+    width: 28px !important; height: 28px !important;
+    border-radius: 7px !important;
+    font-size: 13px !important;
+    background: rgba(167,139,250,0.12) !important;
+    border: 1px solid rgba(167,139,250,0.25) !important;
+  }
+  #page-portfolio .ent-pf-metric-label {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 9.5px !important;
+    letter-spacing: 0.18em !important;
+    color: rgba(244,244,240,0.42) !important;
+    text-transform: uppercase !important;
+  }
+  #page-portfolio .ent-pf-metric-val {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 23px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.02em !important;
+    font-variant-numeric: tabular-nums !important;
+  }
+  #page-portfolio .ent-pf-metric-sub {
+    font-size: 10.5px !important;
+    color: rgba(244,244,240,0.45) !important;
+  }
+  #page-portfolio .ent-pf-table-wrap {
+    background: rgba(15,15,22,0.55) !important;
+    border: 1px solid rgba(244,244,240,0.06) !important;
+    border-radius: 14px !important;
+    overflow: hidden !important;
+  }
+  #page-portfolio .ent-pf-table tr:hover td {
+    background: rgba(167,139,250,0.04) !important;
+  }
+
+  /* ─── SIMULATIONS ─────────────────────────────────────────────── */
+  #page-scenario .qzsc-panel,
+  #page-scenario .qzsc-form-card {
+    background: rgba(15,15,22,0.55) !important;
+    border: 1px solid rgba(244,244,240,0.06) !important;
+    border-radius: 14px !important;
+  }
+  #page-scenario .qzsc-form-title {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 10.5px !important;
+    letter-spacing: 0.18em !important;
+    text-transform: uppercase !important;
+    color: rgba(244,244,240,0.55) !important;
+    font-weight: 600 !important;
+  }
+  #page-scenario .qzsc-tabs {
+    background: rgba(244,244,240,0.04) !important;
+    border-radius: 100px !important;
+    padding: 3px !important;
+    display: inline-flex !important;
+    gap: 2px !important;
+    border: 0 !important;
+  }
+  #page-scenario .qzsc-tab {
+    border-radius: 100px !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 11px !important;
+    letter-spacing: 0.06em !important;
+    padding: 7px 16px !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: rgba(244,244,240,0.6) !important;
+  }
+  #page-scenario .qzsc-tab.active {
+    background: rgba(167,139,250,0.16) !important;
+    color: #C4B5FD !important;
+  }
+  #page-scenario .qzsc-results-area {
+    border-radius: 14px !important;
+  }
+
+  /* ─── BACKTEST ────────────────────────────────────────────────── */
+  #page-backtest .qzbt-config {
+    background: rgba(15,15,22,0.55) !important;
+    border: 1px solid rgba(244,244,240,0.06) !important;
+    border-radius: 14px !important;
+  }
+  #page-backtest .qzbt-form-grid { gap: 14px !important; }
+
+  /* Shared form labels (Simulations + Backtest + everywhere) */
+  .page-anim .input-label {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 9.5px !important;
+    letter-spacing: 0.16em !important;
+    text-transform: uppercase !important;
+    color: rgba(244,244,240,0.45) !important;
+  }
+
+  /* ─── INTELLIGENCE ────────────────────────────────────────────── */
+  #page-intel .intel-briefing-card {
+    background: rgba(15,15,22,0.55) !important;
+    border: 1px solid rgba(244,244,240,0.06) !important;
+    border-left: 3px solid rgba(167,139,250,0.55) !important;
+    border-radius: 12px !important;
+    transition: border-color 160ms ease, transform 200ms cubic-bezier(0.23,1,0.32,1) !important;
+  }
+  #page-intel .intel-briefing-card:hover {
+    transform: translateX(2px) !important;
+    border-left-color: #A78BFA !important;
+  }
+  #page-intel .intel-briefing-badge {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 9px !important;
+    letter-spacing: 0.14em !important;
+    padding: 3px 9px !important;
+    border-radius: 100px !important;
+    background: rgba(167,139,250,0.12) !important;
+    border: 1px solid rgba(167,139,250,0.28) !important;
+    color: #C4B5FD !important;
+    text-transform: uppercase !important;
+  }
+  #page-intel .intel-briefing-body {
+    font-size: 13px !important;
+    line-height: 1.65 !important;
+    color: rgba(244,244,240,0.75) !important;
+  }
+
+  /* ─── SETTINGS ────────────────────────────────────────────────── */
+  #page-settings .settings-section {
+    background: rgba(15,15,22,0.55) !important;
+    border: 1px solid rgba(244,244,240,0.06) !important;
+    border-radius: 14px !important;
+    padding: 22px 24px !important;
+    margin-bottom: 16px !important;
+  }
+  #page-settings .settings-section-title {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 10.5px !important;
+    letter-spacing: 0.18em !important;
+    text-transform: uppercase !important;
+    color: rgba(244,244,240,0.55) !important;
+    font-weight: 600 !important;
+    margin-bottom: 14px !important;
+  }
+  #page-settings .settings-row {
+    padding: 13px 0 !important;
+    border-top: 1px solid rgba(244,244,240,0.04) !important;
+  }
+  #page-settings .settings-row:first-of-type { border-top: 0 !important; }
+  #page-settings .settings-row-label {
+    font-size: 13.5px !important;
+    color: #F4F4F0 !important;
+  }
+  #page-settings .settings-row-sub {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 11px !important;
+    color: rgba(244,244,240,0.45) !important;
+  }
+  #page-settings .qz-plan-status {
+    border-radius: 12px !important;
+    border: 1px solid rgba(167,139,250,0.22) !important;
+    background: rgba(167,139,250,0.06) !important;
+  }
+
+  /* ─── Buttons: normalize secondary/ghost across all pages ─────── */
+  .page-anim .btn-secondary,
+  .page-anim .btn-ghost {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 11px !important;
+    letter-spacing: 0.06em !important;
+    border-radius: 8px !important;
+    border: 1px solid rgba(244,244,240,0.12) !important;
+    background: rgba(244,244,240,0.03) !important;
+    transition: all 160ms ease !important;
+  }
+  .page-anim .btn-secondary:hover,
+  .page-anim .btn-ghost:hover {
+    border-color: rgba(167,139,250,0.4) !important;
+    color: #C4B5FD !important;
+  }
+</style>
 </body>
 </html>
