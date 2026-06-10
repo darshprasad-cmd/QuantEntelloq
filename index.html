@@ -41303,5 +41303,427 @@ setTimeout(() => {
     gap: 10px !important;
   }
 </style>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     APP SHELL v2 — SIDEBAR KILLED → TOP NAVIGATION SYSTEM
+     The 16-item side column is gone. Replaced with:
+       · Sticky 52px top nav: logo + 6 primary page pills + More menu
+       · Secondary pages (10) live in a grid dropdown
+       · User chip on the right
+       · Full-width content with a 1380px editorial container
+     CSS+JS overlay — zero DOM removal, the hidden sidebar's nav items
+     are still used internally so every showPage hook keeps working.
+     ════════════════════════════════════════════════════════════════════ -->
+<style id="qe-shell-v2-css">
+  /* ─── Kill the sidebar, free the main column ─────────────────── */
+  .sidebar { display: none !important; }
+  .main-content {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  /* Old mobile drawers are obsolete now */
+  #qe-mdrawer, [id^="qe-mdrawer"] { display: none !important; }
+
+  /* ─── Top navigation bar ─────────────────────────────────────── */
+  #qe-topnav {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    background: rgba(4,3,10,0.72);
+    backdrop-filter: saturate(180%) blur(24px);
+    -webkit-backdrop-filter: saturate(180%) blur(24px);
+    border-bottom: 1px solid rgba(167,139,250,0.08);
+    animation: qeTnIn 360ms cubic-bezier(0.22,1,0.36,1);
+  }
+  @keyframes qeTnIn {
+    from { transform: translateY(-100%); }
+    to   { transform: translateY(0); }
+  }
+  .qe-tn-inner {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    height: 52px;
+    padding: 0 clamp(16px, 3vw, 28px);
+    max-width: 1560px;
+    margin: 0 auto;
+  }
+  .qe-tn-logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    cursor: pointer;
+    flex-shrink: 0;
+    user-select: none;
+  }
+  .qe-tn-logo .qe-tn-mark {
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #A78BFA 0%, #67E8F9 100%);
+    color: #04030A;
+    display: grid; place-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 800;
+  }
+  .qe-tn-logo .qe-tn-word {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: #F4F4F0;
+    white-space: nowrap;
+  }
+  .qe-tn-logo .qe-tn-word em {
+    font-style: italic;
+    background: linear-gradient(110deg, #A78BFA, #67E8F9);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+  }
+  .qe-tn-pills {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex: 1;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .qe-tn-pills::-webkit-scrollbar { display: none; }
+  .qe-tn-pill {
+    padding: 7px 14px;
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    color: rgba(244,244,240,0.62);
+    cursor: pointer;
+    white-space: nowrap;
+    border: 1px solid transparent;
+    background: transparent;
+    transition: color 140ms ease, background 140ms ease, border-color 140ms ease;
+    flex-shrink: 0;
+  }
+  .qe-tn-pill:hover {
+    color: #F4F4F0;
+    background: rgba(244,244,240,0.05);
+  }
+  .qe-tn-pill.active {
+    color: #C4B5FD;
+    background: rgba(167,139,250,0.12);
+    border-color: rgba(167,139,250,0.28);
+    box-shadow: 0 0 16px -6px rgba(167,139,250,0.5);
+  }
+  .qe-tn-pill .qe-tn-ai-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #A78BFA, #67E8F9);
+    margin-right: 7px;
+    vertical-align: 1px;
+    box-shadow: 0 0 8px rgba(167,139,250,0.8);
+  }
+  .qe-tn-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .qe-tn-user {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px 4px 4px;
+    background: rgba(244,244,240,0.04);
+    border: 1px solid rgba(244,244,240,0.08);
+    border-radius: 100px;
+    cursor: pointer;
+    transition: border-color 140ms ease;
+  }
+  .qe-tn-user:hover { border-color: rgba(167,139,250,0.4); }
+  .qe-tn-user .qe-tn-ava {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #A78BFA 0%, #67E8F9 100%);
+    color: #04030A;
+    display: grid; place-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 700;
+  }
+  .qe-tn-user .qe-tn-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: rgba(244,244,240,0.75);
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  @media (max-width: 720px) {
+    .qe-tn-user .qe-tn-name { display: none; }
+    .qe-tn-logo .qe-tn-word { display: none; }
+  }
+
+  /* ─── "More" dropdown panel ──────────────────────────────────── */
+  #qe-tn-more-panel {
+    position: absolute;
+    top: 56px;
+    right: clamp(16px, 3vw, 28px);
+    width: 300px;
+    background: #0F0F16;
+    border: 1px solid rgba(167,139,250,0.22);
+    border-radius: 14px;
+    padding: 8px;
+    box-shadow: 0 32px 72px rgba(0,0,0,0.65), 0 0 0 1px rgba(0,0,0,0.4);
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+    z-index: 70;
+  }
+  #qe-tn-more-panel.open {
+    display: grid;
+    animation: qeTnPanelIn 200ms cubic-bezier(0.22,1,0.36,1);
+  }
+  @keyframes qeTnPanelIn {
+    from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .qe-tn-mitem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: background 120ms ease;
+  }
+  .qe-tn-mitem:hover { background: rgba(167,139,250,0.10); }
+  .qe-tn-mitem.active { background: rgba(167,139,250,0.14); }
+  .qe-tn-mitem .qe-tn-mono {
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    background: rgba(244,244,240,0.04);
+    border: 1px solid rgba(244,244,240,0.08);
+    color: rgba(244,244,240,0.6);
+    display: grid; place-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .qe-tn-mitem.active .qe-tn-mono,
+  .qe-tn-mitem:hover .qe-tn-mono {
+    background: rgba(167,139,250,0.16);
+    border-color: rgba(167,139,250,0.4);
+    color: #C4B5FD;
+  }
+  .qe-tn-mitem .qe-tn-mlabel {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: rgba(244,244,240,0.78);
+    white-space: nowrap;
+  }
+
+  /* ─── Stack the old top-bar below the new nav ────────────────── */
+  .top-bar {
+    top: 52px !important;
+    z-index: 50 !important;
+  }
+
+  /* ─── Full-width editorial page container ────────────────────── */
+  .main-content > .page-anim {
+    max-width: 1380px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100% !important;
+  }
+
+  /* ─── Generic page polish (all pages, light touch) ───────────── */
+  .page-anim .chart-container {
+    border-radius: 14px !important;
+    border: 1px solid rgba(244,244,240,0.06) !important;
+    background: rgba(15,15,22,0.55) !important;
+  }
+  .page-anim .tab-bar {
+    background: rgba(244,244,240,0.04) !important;
+    border-radius: 100px !important;
+    padding: 3px !important;
+    border: 0 !important;
+    display: inline-flex !important;
+    gap: 2px !important;
+  }
+  .page-anim .tab {
+    border-radius: 100px !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 11px !important;
+    letter-spacing: 0.06em !important;
+    padding: 7px 16px !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: rgba(244,244,240,0.6) !important;
+  }
+  .page-anim .tab.active {
+    background: rgba(167,139,250,0.16) !important;
+    color: #C4B5FD !important;
+  }
+</style>
+
+<script id="qe-shell-v2-js">
+(function(){
+  'use strict';
+
+  var PRIMARY = [
+    ['dashboard', 'Dashboard',     false],
+    ['ai',        'AI Studio',     true ],
+    ['signals',   'Signals',       false],
+    ['portfolio', 'Portfolio',     false],
+    ['paper',     'Paper Trading', false],
+    ['quantlab',  'Quant Lab',     false]
+  ];
+  var MORE = [
+    ['macro',    'Macro',        'MA'],
+    ['scanner',  'Scanner',      'SC'],
+    ['universe', 'Watchlists',   'WL'],
+    ['intel',    'Intelligence', 'IN'],
+    ['ledger',   'Ledger',       'LD'],
+    ['scenario', 'Simulations',  'SM'],
+    ['backtest', 'Backtest',     'BT'],
+    ['reports',  'Reports',      'RP'],
+    ['alerts',   'Alerts',       'AL'],
+    ['settings', 'Settings',     'SE']
+  ];
+
+  function findSidebarItem(key) {
+    var target = null;
+    document.querySelectorAll('.sidebar .nav-item').forEach(function(it){
+      var oc = it.getAttribute('onclick') || '';
+      if (oc.indexOf("'" + key + "'") >= 0) target = it;
+    });
+    return target;
+  }
+
+  function go(key) {
+    closeMore();
+    var sbItem = findSidebarItem(key);
+    if (typeof window.showPage === 'function') {
+      try { window.showPage(key, sbItem || undefined); }
+      catch(e) { try { window.showPage(key); } catch(_){} }
+    }
+  }
+
+  function closeMore() {
+    var p = document.getElementById('qe-tn-more-panel');
+    if (p) p.classList.remove('open');
+  }
+
+  function build() {
+    var main = document.querySelector('.main-content');
+    if (!main) return;
+    if (document.getElementById('qe-topnav')) return;
+
+    var user = null;
+    try { user = JSON.parse(localStorage.getItem('qz_auth_user') || 'null'); } catch(_){}
+    var name = (user && (user.name || (user.email && user.email.split('@')[0]))) || 'Analyst';
+    var initial = (name.charAt(0) || 'A').toUpperCase();
+
+    var nav = document.createElement('div');
+    nav.id = 'qe-topnav';
+
+    var pillsHtml = PRIMARY.map(function(p){
+      return '<button class="qe-tn-pill" data-page="' + p[0] + '">'
+           + (p[2] ? '<span class="qe-tn-ai-dot"></span>' : '')
+           + p[1]
+           + '</button>';
+    }).join('');
+
+    var moreHtml = MORE.map(function(m){
+      return '<div class="qe-tn-mitem" data-page="' + m[0] + '">'
+           +   '<span class="qe-tn-mono">' + m[2] + '</span>'
+           +   '<span class="qe-tn-mlabel">' + m[1] + '</span>'
+           + '</div>';
+    }).join('');
+
+    nav.innerHTML = ''
+      + '<div class="qe-tn-inner">'
+      +   '<div class="qe-tn-logo" id="qe-tn-logo">'
+      +     '<span class="qe-tn-mark">QE</span>'
+      +     '<span class="qe-tn-word">Quant<em>Entelloq</em></span>'
+      +   '</div>'
+      +   '<nav class="qe-tn-pills" id="qe-tn-pills">'
+      +     pillsHtml
+      +     '<button class="qe-tn-pill" id="qe-tn-more-btn">More ▾</button>'
+      +   '</nav>'
+      +   '<div class="qe-tn-right">'
+      +     '<div class="qe-tn-user" id="qe-tn-user">'
+      +       '<span class="qe-tn-ava">' + initial + '</span>'
+      +       '<span class="qe-tn-name">' + name + '</span>'
+      +     '</div>'
+      +   '</div>'
+      + '</div>'
+      + '<div id="qe-tn-more-panel">' + moreHtml + '</div>';
+
+    main.insertBefore(nav, main.firstChild);
+
+    // Wire navigation
+    nav.querySelectorAll('.qe-tn-pill[data-page]').forEach(function(p){
+      p.addEventListener('click', function(){ go(p.getAttribute('data-page')); });
+    });
+    nav.querySelectorAll('.qe-tn-mitem[data-page]').forEach(function(m){
+      m.addEventListener('click', function(){ go(m.getAttribute('data-page')); });
+    });
+    var logo = document.getElementById('qe-tn-logo');
+    if (logo) logo.addEventListener('click', function(){ go('dashboard'); });
+    var userChip = document.getElementById('qe-tn-user');
+    if (userChip) userChip.addEventListener('click', function(){ go('settings'); });
+
+    var moreBtn = document.getElementById('qe-tn-more-btn');
+    if (moreBtn) {
+      moreBtn.addEventListener('click', function(e){
+        e.stopPropagation();
+        var panel = document.getElementById('qe-tn-more-panel');
+        if (panel) panel.classList.toggle('open');
+      });
+    }
+    document.addEventListener('click', function(e){
+      var panel = document.getElementById('qe-tn-more-panel');
+      if (panel && !panel.contains(e.target)) closeMore();
+    });
+  }
+
+  // Active-state sync: poll the visible page and highlight the pill
+  function syncActive() {
+    var visible = document.querySelector('.main-content > .page-anim:not(.hidden)');
+    if (!visible || !visible.id) return;
+    var key = visible.id.replace('page-', '');
+    var moreActive = false;
+    document.querySelectorAll('.qe-tn-pill[data-page]').forEach(function(p){
+      p.classList.toggle('active', p.getAttribute('data-page') === key);
+    });
+    document.querySelectorAll('.qe-tn-mitem[data-page]').forEach(function(m){
+      var is = m.getAttribute('data-page') === key;
+      m.classList.toggle('active', is);
+      if (is) moreActive = true;
+    });
+    var moreBtn = document.getElementById('qe-tn-more-btn');
+    if (moreBtn) moreBtn.classList.toggle('active', moreActive);
+  }
+
+  function boot() {
+    build();
+    syncActive();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+  setInterval(boot, 1200);
+
+  window.QEShellV2 = { go: go, rebuild: build };
+})();
+</script>
 </body>
 </html>
