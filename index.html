@@ -43108,5 +43108,815 @@ setTimeout(() => {
   window.QELaunchV2 = { start: startRender, stop: stopRender };
 })();
 </script>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     LAUNCH v3 GODMODE — full landing experience
+     Recreates the second wave of brand visuals as live renderers:
+       · Quantum topology mesh — animated 3D wireframe terrain with
+         floating φ/ΔΩ symbols  [image: holo-table mesh]
+       · Triple neural network with traveling signal pulses
+       · Cognition sphere — wireframe orb + orbiting chips + live
+         ticking readouts (SENTIMENT_FLUX / COGNITION_RATE / …)
+       · Glass formula panels over the hero
+       · Data-tag marquee ribbon
+       · About Us + Founder section (Darsh Prasad · Entelloq Networks)
+       · Dedicated "Enter the terminal" auth section wired to the
+         existing lp3Tab sign-in/sign-up flow
+     SAFETY: nothing hidden, nothing starts at opacity 0, decoration
+     layers are pointer-events:none, auth card untouched, renderers
+     pause off-screen, reduced-motion kills all canvases.
+     ════════════════════════════════════════════════════════════════════ -->
+<style id="qe-launch-v3-css">
+  /* ─── Shared godmode section chrome ───────────────────────────── */
+  .qe-gm-section {
+    position: relative;
+    z-index: 2;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 76px 32px 64px;
+  }
+  .qe-gm-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.24em;
+    color: rgba(232,121,249,0.72);
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .qe-gm-title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(30px, 4.6vw, 50px);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    color: #F4F4F0;
+    text-align: center;
+    margin: 0 auto 14px;
+    max-width: 18ch;
+  }
+  .qe-gm-title em {
+    font-style: italic;
+    background: linear-gradient(110deg, #A78BFA 0%, #E879F9 55%, #C084FC 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+  }
+  .qe-gm-sub {
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: rgba(244,244,240,0.62);
+    text-align: center;
+    max-width: 580px;
+    margin: 0 auto 40px;
+  }
+  .qe-gm-canvas-wrap {
+    position: relative;
+    border: 1px solid rgba(217,70,239,0.16);
+    border-radius: 18px;
+    background: rgba(12,8,20,0.5);
+    overflow: hidden;
+    box-shadow: 0 40px 90px -40px rgba(217,70,239,0.30), 0 0 0 1px rgba(0,0,0,0.3);
+  }
+  .qe-gm-canvas-wrap canvas {
+    display: block;
+    width: 100%;
+    pointer-events: none;
+  }
+  .qe-gm-corner {
+    position: absolute;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    color: rgba(232,121,249,0.6);
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+  .qe-gm-corner.tl { top: 14px; left: 18px; }
+  .qe-gm-corner.tr { top: 14px; right: 18px; }
+  .qe-gm-corner.bl { bottom: 12px; left: 18px; }
+  .qe-gm-corner.br { bottom: 12px; right: 18px; }
+
+  /* ─── Hero glass formula panels ───────────────────────────────── */
+  .qe-gm-formula {
+    position: absolute;
+    z-index: 1;
+    width: 290px;
+    padding: 14px 16px;
+    background: rgba(28,16,44,0.38);
+    border: 1px solid rgba(232,121,249,0.22);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    font-family: 'JetBrains Mono', monospace;
+    color: rgba(232,200,255,0.78);
+    pointer-events: none;
+    box-shadow: 0 18px 48px -18px rgba(217,70,239,0.4);
+  }
+  .qe-gm-formula .ttl {
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    color: rgba(232,121,249,0.85);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .qe-gm-formula .math {
+    font-size: 12px;
+    line-height: 1.8;
+    color: rgba(220,190,255,0.85);
+  }
+  #qe-gm-formula-1 { top: 6%; left: 30%; transform: rotate(-1.2deg); }
+  #qe-gm-formula-2 { top: 9%; right: 4%; transform: rotate(1deg); }
+  @media (max-width: 1100px) { .qe-gm-formula { display: none; } }
+
+  /* ─── Marquee data ribbon ─────────────────────────────────────── */
+  #qe-gm-marquee {
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+    border-top: 1px solid rgba(217,70,239,0.12);
+    border-bottom: 1px solid rgba(217,70,239,0.12);
+    background: rgba(14,8,22,0.6);
+    padding: 11px 0;
+  }
+  .qe-gm-marquee-track {
+    display: inline-flex;
+    white-space: nowrap;
+    animation: qeGmMarquee 42s linear infinite;
+    will-change: transform;
+  }
+  .qe-gm-marquee-track span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: rgba(196,160,255,0.55);
+    text-transform: uppercase;
+    padding: 0 26px;
+  }
+  .qe-gm-marquee-track span b { color: rgba(232,121,249,0.85); font-weight: 500; }
+  @keyframes qeGmMarquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* ─── Cognition sphere layout ─────────────────────────────────── */
+  .qe-gm-sphere-grid {
+    display: grid;
+    grid-template-columns: 1fr minmax(320px, 480px) 1fr;
+    gap: 18px;
+    align-items: center;
+  }
+  @media (max-width: 900px) {
+    .qe-gm-sphere-grid { grid-template-columns: 1fr; }
+  }
+  .qe-gm-readouts {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .qe-gm-readouts.left { align-items: flex-end; }
+  .qe-gm-readouts.right { align-items: flex-start; }
+  @media (max-width: 900px) {
+    .qe-gm-readouts.left, .qe-gm-readouts.right {
+      flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center;
+    }
+  }
+  .qe-gm-readout {
+    padding: 10px 14px;
+    background: rgba(24,12,38,0.55);
+    border: 1px solid rgba(217,70,239,0.22);
+    border-radius: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    backdrop-filter: blur(8px);
+  }
+  .qe-gm-readout .k {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: rgba(232,121,249,0.7);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .qe-gm-readout .v {
+    font-size: 16px;
+    font-weight: 700;
+    color: #F4F4F0;
+    font-variant-numeric: tabular-nums;
+  }
+  .qe-gm-readout .v small { font-size: 10px; color: #5EEAD4; margin-left: 6px; }
+
+  /* ─── About / Founder ─────────────────────────────────────────── */
+  #qe-gm-about .qe-gm-about-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 24px;
+    align-items: stretch;
+    margin-top: 12px;
+  }
+  @media (max-width: 880px) {
+    #qe-gm-about .qe-gm-about-grid { grid-template-columns: 1fr; }
+  }
+  .qe-gm-about-card {
+    background: rgba(18,10,30,0.6);
+    border: 1px solid rgba(217,70,239,0.16);
+    border-radius: 16px;
+    padding: 30px 32px;
+  }
+  .qe-gm-about-card p {
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: rgba(244,244,240,0.75);
+    margin: 0 0 14px;
+  }
+  .qe-gm-about-card p strong { color: #F4F4F0; }
+  .qe-gm-about-stats {
+    display: flex; gap: 22px; flex-wrap: wrap;
+    margin-top: 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    color: rgba(232,121,249,0.7);
+    text-transform: uppercase;
+  }
+  .qe-gm-founder-card {
+    background: linear-gradient(160deg, rgba(124,58,237,0.16) 0%, rgba(217,70,239,0.08) 100%);
+    border: 1px solid rgba(217,70,239,0.30);
+    border-radius: 16px;
+    padding: 30px 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 28px 64px -28px rgba(217,70,239,0.4);
+  }
+  .qe-gm-founder-ava {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #A78BFA 0%, #E879F9 100%);
+    color: #0A0612;
+    display: grid; place-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    box-shadow: 0 0 36px rgba(217,70,239,0.5);
+  }
+  .qe-gm-founder-name {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: #F4F4F0;
+  }
+  .qe-gm-founder-role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    color: rgba(232,121,249,0.8);
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+  .qe-gm-founder-quote {
+    margin-top: 16px;
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: rgba(244,244,240,0.65);
+  }
+
+  /* ─── Dedicated auth CTA ──────────────────────────────────────── */
+  #qe-gm-auth {
+    text-align: center;
+    padding-bottom: 110px;
+  }
+  .qe-gm-auth-btns {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 34px;
+  }
+  .qe-gm-btn {
+    padding: 17px 34px;
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    font-weight: 700;
+    cursor: pointer;
+    border: 0;
+    transition: transform 180ms cubic-bezier(0.23,1,0.32,1), box-shadow 220ms ease;
+  }
+  .qe-gm-btn.primary {
+    background: linear-gradient(135deg, #A78BFA 0%, #D946EF 100%);
+    color: #FFFFFF;
+    box-shadow: 0 16px 44px -12px rgba(217,70,239,0.65), 0 0 0 1px rgba(232,121,249,0.4) inset;
+  }
+  .qe-gm-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 22px 52px -12px rgba(217,70,239,0.85), 0 0 0 1px rgba(232,121,249,0.5) inset; }
+  .qe-gm-btn.primary:active { transform: scale(0.97); }
+  .qe-gm-btn.ghost {
+    background: rgba(244,244,240,0.04);
+    border: 1px solid rgba(232,121,249,0.30);
+    color: #F4F4F0;
+    backdrop-filter: blur(8px);
+  }
+  .qe-gm-btn.ghost:hover { border-color: rgba(232,121,249,0.6); background: rgba(232,121,249,0.08); }
+  .qe-gm-auth-note {
+    margin-top: 22px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: rgba(244,244,240,0.4);
+    text-transform: uppercase;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .qe-gm-canvas-wrap canvas { display: none; }
+    .qe-gm-marquee-track { animation: none; }
+  }
+</style>
+
+<script id="qe-launch-v3-js">
+(function(){
+  'use strict';
+
+  var rafId = null;
+  var renderers = []; // { canvas, draw, visible }
+
+  function landingVisible() {
+    var l = document.getElementById('landing');
+    return !!(l && !l.classList.contains('hidden') && getComputedStyle(l).display !== 'none');
+  }
+
+  // ─── Section builders (all idempotent + additive) ──────────────
+  function buildMarquee(afterEl) {
+    if (document.getElementById('qe-gm-marquee')) return;
+    var tags = ['QUANTUM_TOPOLOGY_CORRELATION','AI_TRAINING_OPTIMIZATION','ALPHA_FEATURE_SPACE',
+      'SENTIMENT_FLUX','COGNITION_RATE','SIGNAL_STRENGTH','CONFIDENCE_INTERVAL',
+      'MULTI_OBJECTIVE_OPTIMIZATION','TOPOLOGICAL_DATA_ANALYSIS','QUANTUM_INTELLIGENCE_FOR_GLOBAL_ALPHA'];
+    var half = tags.map(function(t){ return '<span>[<b>' + t + '</b>]</span>'; }).join('');
+    var m = document.createElement('div');
+    m.id = 'qe-gm-marquee';
+    m.setAttribute('aria-hidden', 'true');
+    m.innerHTML = '<div class="qe-gm-marquee-track">' + half + half + '</div>';
+    afterEl.insertAdjacentElement('afterend', m);
+  }
+
+  function buildMesh(afterEl) {
+    if (document.getElementById('qe-gm-mesh-sec')) return;
+    var s = document.createElement('section');
+    s.className = 'qe-gm-section';
+    s.id = 'qe-gm-mesh-sec';
+    s.innerHTML = ''
+      + '<div class="qe-gm-eyebrow">[ Quantum_Topology_Correlation ]</div>'
+      + '<h2 class="qe-gm-title">The <em>alpha landscape</em>, rendered live.</h2>'
+      + '<p class="qe-gm-sub">Every signal is a coordinate. The agents map momentum, sentiment, valuation and flow into one continuously deforming surface — and trade the gradients.</p>'
+      + '<div class="qe-gm-canvas-wrap">'
+      +   '<canvas id="qe-gm-mesh" height="380"></canvas>'
+      +   '<div class="qe-gm-corner tl">[Quantum_Topology_Correlation]</div>'
+      +   '<div class="qe-gm-corner br">[Alpha_Feature_Space]</div>'
+      + '</div>';
+    afterEl.insertAdjacentElement('afterend', s);
+    registerMesh(s.querySelector('#qe-gm-mesh'));
+  }
+
+  function buildNeural(afterEl) {
+    if (document.getElementById('qe-gm-neural-sec')) return;
+    var s = document.createElement('section');
+    s.className = 'qe-gm-section';
+    s.id = 'qe-gm-neural-sec';
+    s.innerHTML = ''
+      + '<div class="qe-gm-eyebrow">[ AI_Training_Optimization ]</div>'
+      + '<h2 class="qe-gm-title">Three networks. <em>One verdict.</em></h2>'
+      + '<p class="qe-gm-sub">Watch ensemble inference happen: signal pulses propagate through parallel networks, disagreements get arbitrated, and only conviction-weighted output survives.</p>'
+      + '<div class="qe-gm-canvas-wrap">'
+      +   '<canvas id="qe-gm-neural" height="340"></canvas>'
+      +   '<div class="qe-gm-corner tl">[Multi-Objective_Optimization]</div>'
+      +   '<div class="qe-gm-corner br">[Topological_Data_Analysis]</div>'
+      + '</div>';
+    afterEl.insertAdjacentElement('afterend', s);
+    registerNeural(s.querySelector('#qe-gm-neural'));
+  }
+
+  function buildSphere(beforeEl, landing) {
+    if (document.getElementById('qe-gm-sphere-sec')) return;
+    var s = document.createElement('section');
+    s.className = 'qe-gm-section';
+    s.id = 'qe-gm-sphere-sec';
+    s.innerHTML = ''
+      + '<div class="qe-gm-eyebrow">[ Cognition_Core ]</div>'
+      + '<h2 class="qe-gm-title">Inside the <em>cognition core</em>.</h2>'
+      + '<p class="qe-gm-sub">Five specialist agents share one memory sphere. Sentiment flux, cognition rate, and confidence intervals are tracked on every inference.</p>'
+      + '<div class="qe-gm-sphere-grid">'
+      +   '<div class="qe-gm-readouts left">'
+      +     '<div class="qe-gm-readout"><div class="k">[Sentiment_Flux]</div><div class="v" id="qe-gm-r1">0.84<small>▲</small></div></div>'
+      +     '<div class="qe-gm-readout"><div class="k">[Cognition_Rate]</div><div class="v" id="qe-gm-r2">96.2%</div></div>'
+      +   '</div>'
+      +   '<div class="qe-gm-canvas-wrap" style="border-radius:50%;aspect-ratio:1;border-color:rgba(217,70,239,0.22);">'
+      +     '<canvas id="qe-gm-sphere" height="460"></canvas>'
+      +   '</div>'
+      +   '<div class="qe-gm-readouts right">'
+      +     '<div class="qe-gm-readout"><div class="k">[Signal_Strength]</div><div class="v" id="qe-gm-r3">HIGH</div></div>'
+      +     '<div class="qe-gm-readout"><div class="k">[Confidence_Interval]</div><div class="v" id="qe-gm-r4">±1.8%</div></div>'
+      +   '</div>'
+      + '</div>';
+    if (beforeEl) beforeEl.insertAdjacentElement('beforebegin', s);
+    else landing.appendChild(s);
+    registerSphere(s.querySelector('#qe-gm-sphere'));
+
+    // Live ticking readouts
+    if (!window._qeGmTick) {
+      window._qeGmTick = setInterval(function(){
+        var r1 = document.getElementById('qe-gm-r1');
+        var r2 = document.getElementById('qe-gm-r2');
+        var r4 = document.getElementById('qe-gm-r4');
+        var r3 = document.getElementById('qe-gm-r3');
+        if (r1) r1.innerHTML = (0.7 + Math.random() * 0.28).toFixed(2) + '<small>' + (Math.random() > 0.4 ? '▲' : '▼') + '</small>';
+        if (r2) r2.textContent = (93 + Math.random() * 6).toFixed(1) + '%';
+        if (r4) r4.textContent = '±' + (1.2 + Math.random() * 1.4).toFixed(1) + '%';
+        if (r3) r3.textContent = ['HIGH','HIGH','EXTREME','ELEVATED'][Math.floor(Math.random() * 4)];
+      }, 1600);
+    }
+  }
+
+  function buildAbout(beforeEl, landing) {
+    if (document.getElementById('qe-gm-about')) return;
+    var s = document.createElement('section');
+    s.className = 'qe-gm-section';
+    s.id = 'qe-gm-about';
+    if (!document.getElementById('lp3-about')) s.setAttribute('id', 'qe-gm-about');
+    s.innerHTML = ''
+      + '<div class="qe-gm-eyebrow">[ Quantum_Intelligence_For_Global_Alpha ]</div>'
+      + '<h2 class="qe-gm-title">Built to make <em>institutional-grade</em> tools free.</h2>'
+      + '<div class="qe-gm-about-grid">'
+      +   '<div class="qe-gm-about-card">'
+      +     '<p><strong>Quant Entelloq exists because a Bloomberg terminal costs $24,000 a year</strong> — and the analytical edge it buys shouldn\'t belong only to institutions.</p>'
+      +     '<p>Five AI specialist agents, ten quant tools, a 100M-security universe across ten markets, paper trading, and macro intelligence — engineered into a single page that runs entirely in your browser. No installs. No credit card. Your data never leaves your machine.</p>'
+      +     '<p>This is a research and education platform — signals are observations, not investment advice.</p>'
+      +     '<div class="qe-gm-about-stats">'
+      +       '<span>Built Solo</span><span>·</span><span>Free Forever</span><span>·</span><span>10 Markets</span><span>·</span><span>5 AI Agents</span>'
+      +     '</div>'
+      +   '</div>'
+      +   '<div class="qe-gm-founder-card">'
+      +     '<div class="qe-gm-founder-ava">DP</div>'
+      +     '<div class="qe-gm-founder-name">Darsh Prasad</div>'
+      +     '<div class="qe-gm-founder-role">Founder · Entelloq Networks</div>'
+      +     '<div class="qe-gm-founder-quote">“If the math is public and the compute is cheap, the only thing left to democratize is the interface.”</div>'
+      +   '</div>'
+      + '</div>';
+    if (beforeEl) beforeEl.insertAdjacentElement('beforebegin', s);
+    else landing.appendChild(s);
+
+    // Point the nav About link here if its target doesn't exist
+    var navAbout = document.querySelector('#landing .lp3-nav-links a[href="#lp3-about"]');
+    if (navAbout && !document.getElementById('lp3-about')) {
+      navAbout.setAttribute('href', '#qe-gm-about');
+    }
+  }
+
+  function buildAuth(beforeEl, landing) {
+    if (document.getElementById('qe-gm-auth')) return;
+    var s = document.createElement('section');
+    s.className = 'qe-gm-section';
+    s.id = 'qe-gm-auth';
+    s.innerHTML = ''
+      + '<div class="qe-gm-eyebrow">[ Access_Platform ]</div>'
+      + '<h2 class="qe-gm-title">Enter the <em>terminal</em>.</h2>'
+      + '<p class="qe-gm-sub">Thirty seconds to a full quant research stack. No credit card, no installs — your account lives in your browser.</p>'
+      + '<div class="qe-gm-auth-btns">'
+      +   '<button type="button" class="qe-gm-btn primary" id="qe-gm-signup">Create free account →</button>'
+      +   '<button type="button" class="qe-gm-btn ghost" id="qe-gm-signin">Sign in</button>'
+      + '</div>'
+      + '<div class="qe-gm-auth-note">Free Forever · LocalStorage-Only Auth · Research &amp; Education</div>';
+    if (beforeEl) beforeEl.insertAdjacentElement('beforebegin', s);
+    else landing.appendChild(s);
+
+    function goAuth(mode) {
+      try { if (typeof window.lp3Tab === 'function') window.lp3Tab(mode); } catch(_){}
+      var hero = document.querySelector('#landing .lp3-hero');
+      if (hero) hero.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    document.getElementById('qe-gm-signup').addEventListener('click', function(){ goAuth('up'); });
+    document.getElementById('qe-gm-signin').addEventListener('click', function(){ goAuth('in'); });
+  }
+
+  function buildFormulas() {
+    var stage = document.getElementById('qe-alpha-stage');
+    if (!stage || document.getElementById('qe-gm-formula-1')) return;
+    var f1 = document.createElement('div');
+    f1.className = 'qe-gm-formula';
+    f1.id = 'qe-gm-formula-1';
+    f1.innerHTML = '<div class="ttl">[Multi-Objective Optimization]</div>'
+      + '<div class="math">P(x) = Σᵢᴺ ξᵢ + Σᵢ₌₁ᴺ φ(a, d−tΩ, θ−hᵢ)<br>&nbsp;&nbsp;+ P₁₀(ω(d, d, θ) − Mᵢ, t)</div>';
+    var f2 = document.createElement('div');
+    f2.className = 'qe-gm-formula';
+    f2.id = 'qe-gm-formula-2';
+    f2.innerHTML = '<div class="ttl">[Topological Data Analysis]</div>'
+      + '<div class="math">Rₓ(ε) = Σᵢ₌₁ᴺ ξₓ = d⁄∂x (∂x − φ)<br>𝒟 = (−d⁄n (Δ, ∅) | Eᵢₜₓ) + (−d⁄n − ⅓)</div>';
+    stage.appendChild(f1);
+    stage.appendChild(f2);
+  }
+
+  // ─── Renderers ──────────────────────────────────────────────────
+  function setupCanvas(canvas, cssH) {
+    var dpr = Math.min(window.devicePixelRatio || 1, 1.6);
+    var w = canvas.parentElement.clientWidth || 800;
+    var h = cssH;
+    canvas.style.height = h + 'px';
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    var ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx: ctx, w: w, h: h };
+  }
+
+  // 1. Quantum topology mesh
+  function registerMesh(canvas) {
+    if (!canvas) return;
+    var isMobile = window.innerWidth < 760;
+    var env = setupCanvas(canvas, isMobile ? 250 : 380);
+    var ctx = env.ctx, W = env.w, H = env.h;
+    var COLS = isMobile ? 30 : 46, ROWS = isMobile ? 14 : 20;
+    var SYMS = ['φ','ΔΩ','θ','Σ','∂','ξ'];
+    var floaters = [];
+    for (var i = 0; i < 7; i++) {
+      floaters.push({ s: SYMS[i % SYMS.length], fx: 0.1 + (i * 0.13) % 0.8, fz: (i * 0.31) % 1, ph: i * 1.7 });
+    }
+    var F = 620;
+    function yAt(gx, gz, t) {
+      return 26 * Math.sin(gx * 0.55 + t * 0.0007) * Math.cos(gz * 0.5 - t * 0.0005)
+           + 14 * Math.sin(gz * 0.9 + t * 0.0009 + gx * 0.2);
+    }
+    function proj(x, y, z) {
+      var s = F / (F + z);
+      return [W / 2 + x * s, H * 0.46 + y * s, s];
+    }
+    renderers.push({ canvas: canvas, draw: function(t){
+      ctx.clearRect(0, 0, W, H);
+      var spX = (W * 1.5) / COLS, spZ = 460 / ROWS;
+      // rows (horizontal polylines)
+      for (var r = 0; r <= ROWS; r++) {
+        var z = r * spZ - 40;
+        var depth = 1 - r / ROWS;
+        ctx.beginPath();
+        for (var c = 0; c <= COLS; c++) {
+          var x = (c - COLS / 2) * spX;
+          var y = yAt(c, r, t) + 46;
+          var p = proj(x, y, z);
+          if (c === 0) ctx.moveTo(p[0], p[1]); else ctx.lineTo(p[0], p[1]);
+        }
+        ctx.strokeStyle = 'rgba(192,132,252,' + (0.06 + depth * 0.26) + ')';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+      // columns
+      for (var c2 = 0; c2 <= COLS; c2 += 2) {
+        var x2 = (c2 - COLS / 2) * spX;
+        ctx.beginPath();
+        for (var r2 = 0; r2 <= ROWS; r2++) {
+          var p2 = proj(x2, yAt(c2, r2, t) + 46, r2 * spZ - 40);
+          if (r2 === 0) ctx.moveTo(p2[0], p2[1]); else ctx.lineTo(p2[0], p2[1]);
+        }
+        ctx.strokeStyle = 'rgba(217,70,239,0.10)';
+        ctx.stroke();
+      }
+      // glowing peak nodes
+      for (var r3 = 0; r3 <= ROWS; r3 += 2) {
+        for (var c3 = 0; c3 <= COLS; c3 += 3) {
+          var yv = yAt(c3, r3, t);
+          if (yv < -28) {
+            var p3 = proj((c3 - COLS / 2) * spX, yv + 46, r3 * spZ - 40);
+            ctx.fillStyle = 'rgba(232,121,249,' + (0.5 * p3[2]) + ')';
+            ctx.shadowColor = 'rgba(232,121,249,0.8)';
+            ctx.shadowBlur = 8;
+            ctx.beginPath(); ctx.arc(p3[0], p3[1], 1.8, 0, Math.PI * 2); ctx.fill();
+            ctx.shadowBlur = 0;
+          }
+        }
+      }
+      // floating symbols
+      ctx.font = '13px "JetBrains Mono", monospace';
+      floaters.forEach(function(f){
+        var bob = Math.sin(t * 0.0008 + f.ph) * 10;
+        var p4 = proj((f.fx - 0.5) * W * 1.3, -56 + bob, f.fz * 380);
+        ctx.fillStyle = 'rgba(220,190,255,' + (0.25 + 0.3 * p4[2]) + ')';
+        ctx.fillText(f.s, p4[0], p4[1]);
+      });
+    }});
+  }
+
+  // 2. Triple neural network with pulses
+  function registerNeural(canvas) {
+    if (!canvas) return;
+    var isMobile = window.innerWidth < 760;
+    var env = setupCanvas(canvas, isMobile ? 240 : 340);
+    var ctx = env.ctx, W = env.w, H = env.h;
+    var nets = [], allEdges = [];
+    var centers = isMobile ? [0.5] : [0.18, 0.5, 0.82];
+    centers.forEach(function(fx, ni){
+      var layers = [4, 6, 6, 4];
+      var nodes = [];
+      var netW = isMobile ? W * 0.7 : W * 0.24;
+      layers.forEach(function(n, li){
+        for (var k = 0; k < n; k++) {
+          nodes.push({
+            x: fx * W - netW / 2 + (li / (layers.length - 1)) * netW,
+            y: H / 2 + (k - (n - 1) / 2) * (H * 0.16),
+            l: li, net: ni
+          });
+        }
+      });
+      var net = { nodes: nodes, layers: layers };
+      nets.push(net);
+      // intra-net edges
+      var off = 0;
+      for (var li2 = 0; li2 < layers.length - 1; li2++) {
+        var aStart = off, aN = layers[li2];
+        var bStart = off + aN, bN = layers[li2 + 1];
+        for (var a = 0; a < aN; a++) for (var b = 0; b < bN; b++) {
+          allEdges.push([nodes[aStart + a], nodes[bStart + b], false]);
+        }
+        off += aN;
+      }
+    });
+    // bridges between nets
+    for (var n2 = 0; n2 < nets.length - 1; n2++) {
+      var aNodes = nets[n2].nodes.filter(function(nd){ return nd.l === 3; });
+      var bNodes = nets[n2 + 1].nodes.filter(function(nd){ return nd.l === 0; });
+      aNodes.forEach(function(a2, i2){
+        if (bNodes[i2 % bNodes.length]) allEdges.push([a2, bNodes[i2 % bNodes.length], true]);
+      });
+    }
+    var pulses = [];
+    renderers.push({ canvas: canvas, draw: function(t){
+      ctx.clearRect(0, 0, W, H);
+      // edges
+      allEdges.forEach(function(e){
+        ctx.strokeStyle = e[2] ? 'rgba(94,234,212,0.10)' : 'rgba(192,132,252,0.09)';
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(e[0].x, e[0].y); ctx.lineTo(e[1].x, e[1].y); ctx.stroke();
+      });
+      // nodes
+      nets.forEach(function(net){
+        net.nodes.forEach(function(nd, i3){
+          var pulse = 0.5 + 0.5 * Math.sin(t * 0.002 + i3 * 0.9 + nd.net * 2);
+          ctx.fillStyle = 'rgba(216,180,254,' + (0.35 + pulse * 0.4) + ')';
+          ctx.shadowColor = 'rgba(217,70,239,0.7)';
+          ctx.shadowBlur = 6 + pulse * 6;
+          ctx.beginPath(); ctx.arc(nd.x, nd.y, 3.4 + pulse * 1.2, 0, Math.PI * 2); ctx.fill();
+          ctx.shadowBlur = 0;
+        });
+      });
+      // spawn pulses
+      if (Math.random() < 0.10 && pulses.length < 14) {
+        var e2 = allEdges[Math.floor(Math.random() * allEdges.length)];
+        pulses.push({ e: e2, p: 0, sp: 0.014 + Math.random() * 0.02 });
+      }
+      // draw pulses
+      for (var pi = pulses.length - 1; pi >= 0; pi--) {
+        var pl = pulses[pi];
+        pl.p += pl.sp;
+        if (pl.p >= 1) { pulses.splice(pi, 1); continue; }
+        var px = pl.e[0].x + (pl.e[1].x - pl.e[0].x) * pl.p;
+        var py = pl.e[0].y + (pl.e[1].y - pl.e[0].y) * pl.p;
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.shadowColor = pl.e[2] ? 'rgba(94,234,212,1)' : 'rgba(232,121,249,1)';
+        ctx.shadowBlur = 12;
+        ctx.beginPath(); ctx.arc(px, py, 2.2, 0, Math.PI * 2); ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+    }});
+  }
+
+  // 3. Cognition sphere
+  function registerSphere(canvas) {
+    if (!canvas) return;
+    var size = Math.min(canvas.parentElement.clientWidth || 420, 480);
+    var dpr = Math.min(window.devicePixelRatio || 1, 1.6);
+    canvas.style.height = size + 'px';
+    canvas.width = size * dpr; canvas.height = size * dpr;
+    var ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var W = size, H = size, R = size * 0.36;
+    renderers.push({ canvas: canvas, draw: function(t){
+      ctx.clearRect(0, 0, W, H);
+      var cx = W / 2, cy = H / 2;
+      // outer ring
+      ctx.strokeStyle = 'rgba(232,121,249,0.35)';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.stroke();
+      // rotating great-circle ellipses
+      for (var k = 0; k < 9; k++) {
+        var ang = (k / 9) * Math.PI + t * 0.00022;
+        ctx.strokeStyle = 'rgba(192,132,252,' + (0.10 + 0.10 * Math.abs(Math.sin(ang))) + ')';
+        ctx.beginPath();
+        ctx.ellipse(cx, cy, R, R * 0.30, ang, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      // latitude rings
+      for (var m = 1; m <= 3; m++) {
+        var ry = R * (m / 4);
+        ctx.strokeStyle = 'rgba(217,70,239,0.12)';
+        ctx.beginPath();
+        ctx.ellipse(cx, cy - R * 0.5 + m * R * 0.33, Math.sqrt(R * R - Math.pow(R * 0.5 - m * R * 0.33, 2)) || R * 0.4, ry * 0.22, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      // orbiting chips
+      for (var c = 0; c < 3; c++) {
+        var oa = t * 0.0005 + c * (Math.PI * 2 / 3);
+        var ox = cx + Math.cos(oa) * R * 0.55;
+        var oy = cy + Math.sin(oa) * R * 0.22;
+        var os = 0.8 + 0.2 * Math.sin(oa);
+        ctx.save();
+        ctx.translate(ox, oy);
+        ctx.shadowColor = 'rgba(232,121,249,0.8)';
+        ctx.shadowBlur = 14;
+        ctx.fillStyle = 'rgba(30,16,48,0.92)';
+        ctx.strokeStyle = 'rgba(232,121,249,' + (0.5 + os * 0.3) + ')';
+        ctx.lineWidth = 1.3;
+        var cs = 17 * os;
+        ctx.beginPath();
+        if (ctx.roundRect) ctx.roundRect(-cs/2, -cs/2, cs, cs, 4); else ctx.rect(-cs/2, -cs/2, cs, cs);
+        ctx.fill(); ctx.stroke();
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = 'rgba(232,121,249,0.9)';
+        ctx.font = (10 * os) + 'px "JetBrains Mono", monospace';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('⊞', 0, 1);
+        ctx.restore();
+      }
+      // incoming particle ribbons
+      for (var p5 = 0; p5 < 26; p5++) {
+        var pt = ((t * 0.00011) + p5 / 26) % 1;
+        var sx = -10 + pt * (cx - R - 6 + 10);
+        var sy = cy + Math.sin(pt * 5 + p5) * 36 * (1 - pt);
+        ctx.fillStyle = 'rgba(216,180,254,' + (0.10 + pt * 0.45) + ')';
+        ctx.beginPath(); ctx.arc(sx, sy, 1.4, 0, Math.PI * 2); ctx.fill();
+        var sx2 = W + 10 - pt * (W - cx - R - 4);
+        var sy2 = cy + Math.cos(pt * 4 + p5) * 30 * (1 - pt);
+        ctx.fillStyle = 'rgba(94,234,212,' + (0.07 + pt * 0.32) + ')';
+        ctx.beginPath(); ctx.arc(sx2, sy2, 1.3, 0, Math.PI * 2); ctx.fill();
+      }
+    }});
+  }
+
+  // ─── Master render loop with off-screen culling ─────────────────
+  function loop(t) {
+    if (document.hidden || !landingVisible()) { rafId = null; return; }
+    var vh = window.innerHeight;
+    renderers.forEach(function(r){
+      var rect = r.canvas.getBoundingClientRect();
+      if (rect.bottom < -80 || rect.top > vh + 80) return; // culled
+      try { r.draw(t); } catch(_){}
+    });
+    rafId = requestAnimationFrame(loop);
+  }
+  function startLoop() {
+    if (rafId) return;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    rafId = requestAnimationFrame(loop);
+  }
+  document.addEventListener('visibilitychange', function(){
+    if (!document.hidden && landingVisible()) startLoop();
+  });
+
+  // ─── Boot ───────────────────────────────────────────────────────
+  function boot() {
+    if (!landingVisible()) { if (rafId) { cancelAnimationFrame(rafId); rafId = null; } return; }
+    var landing = document.getElementById('landing');
+    var hero = landing.querySelector('.lp3-hero');
+    if (!hero) return;
+
+    buildFormulas();
+
+    var anchor = document.getElementById('qe-alloc-strip') || hero;
+    buildMarquee(anchor);
+    var marquee = document.getElementById('qe-gm-marquee');
+    if (marquee) buildMesh(marquee);
+    var meshSec = document.getElementById('qe-gm-mesh-sec');
+    if (meshSec) buildNeural(meshSec);
+
+    var footer = landing.querySelector('.lp3-footer');
+    buildSphere(footer, landing);
+    buildAbout(footer, landing);
+    buildAuth(footer, landing);
+
+    startLoop();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+  setInterval(boot, 1800);
+
+  window.QELaunchV3 = { renderers: renderers, boot: boot };
+})();
+</script>
 </body>
 </html>
