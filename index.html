@@ -42996,13 +42996,13 @@ setTimeout(() => {
 
       var isMobile = W < 760;
       var cx = isMobile ? W * 0.5 : W * 0.40;
-      var cy = H * 0.62;
+      var cy = H * 0.50;
       var sway = Math.sin(t * 0.00022) * 0.42;
       var cos = Math.cos(sway), sin = Math.sin(sway);
 
       // Floor grid
       ctx.lineWidth = 1;
-      var gridN = 7, gridSp = isMobile ? 46 : 64, gy = H * 0.30;
+      var gridN = 7, gridSp = isMobile ? 46 : 64, gy = H * 0.34;
       for (var gi = -gridN; gi <= gridN; gi++) {
         var x0 = gi * gridSp;
         var a = proj(x0 * cos - (-gridN * gridSp) * sin, gy, x0 * sin + (-gridN * gridSp) * cos + 240, cx, cy);
@@ -43016,8 +43016,8 @@ setTimeout(() => {
 
       // Candle wall
       var n = isMobile ? 16 : CANDLES.length;
-      var spacing = isMobile ? 30 : 38;
-      var wallH = isMobile ? 180 : 260;
+      var spacing = isMobile ? 32 : 42;
+      var wallH = isMobile ? 200 : 300;
       var half = (n - 1) / 2;
       for (var i = 0; i < n; i++) {
         var cD = CANDLES[i];
@@ -43036,8 +43036,8 @@ setTimeout(() => {
         var pH = proj(xr, yH - cy + H * 0.34, zr, cx, cy);
         var pL = proj(xr, yL - cy + H * 0.34, zr, cx, cy);
         var scale = pT[2];
-        var bw = Math.max(3, 11 * scale);
-        var alpha = 0.36 + scale * 0.42;
+        var bw = Math.max(3, 12 * scale);
+        var alpha = 0.46 + scale * 0.44;
 
         // Wick
         ctx.strokeStyle = 'rgba(' + col + ',' + (alpha * 0.7) + ')';
@@ -43045,16 +43045,25 @@ setTimeout(() => {
         ctx.beginPath(); ctx.moveTo(pH[0], pH[1]); ctx.lineTo(pL[0], pL[1]); ctx.stroke();
 
         // Body with glow
-        ctx.shadowColor = 'rgba(' + col + ',0.55)';
-        ctx.shadowBlur = 14 * scale;
+        ctx.shadowColor = 'rgba(' + col + ',0.65)';
+        ctx.shadowBlur = 18 * scale;
         ctx.fillStyle = 'rgba(' + col + ',' + alpha + ')';
         ctx.fillRect(pT[0] - bw / 2, pT[1], bw, Math.max(2, pB[1] - pT[1]));
         ctx.shadowBlur = 0;
       }
 
-      // Icosahedron — top-left, slow tumble
+      // Cinematic scanline sweep — slow bright band drifting down
+      var scanY = ((t * 0.018) % (H + 240)) - 120;
+      var scanGrad = ctx.createLinearGradient(0, scanY - 50, 0, scanY + 50);
+      scanGrad.addColorStop(0, 'rgba(232,121,249,0)');
+      scanGrad.addColorStop(0.5, 'rgba(232,121,249,0.045)');
+      scanGrad.addColorStop(1, 'rgba(232,121,249,0)');
+      ctx.fillStyle = scanGrad;
+      ctx.fillRect(0, scanY - 50, W, 100);
+
+      // Icosahedron — top-left, slow tumble (raised + enlarged)
       if (!isMobile) {
-        var icx = W * 0.16, icy = H * 0.24, R = 76;
+        var icx = W * 0.15, icy = H * 0.17, R = 92;
         var ax = t * 0.00031, ay = t * 0.00019;
         var ca = Math.cos(ax), sa = Math.sin(ax), cb = Math.cos(ay), sb = Math.sin(ay);
         var pts = ICO.v.map(function(p){
@@ -43916,6 +43925,239 @@ setTimeout(() => {
   setInterval(boot, 1800);
 
   window.QELaunchV3 = { renderers: renderers, boot: boot };
+})();
+</script>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     HERO v4 — cinematic first impression
+     · Headline grows to 112px with staggered word-rise entrance
+       (pure CSS animations: visible base state, no JS-reveal traps)
+     · Typed terminal boot sequence under the lead copy
+     · Vignette + bottom fade on the hologram stage
+     · Brighter canvas, formula panels repositioned clear of the
+       larger headline, scroll cue at hero bottom
+     ════════════════════════════════════════════════════════════════════ -->
+<style id="qe-hero-v4-css">
+  /* Stage: full brightness + cinematic vignette + bottom blend */
+  #qe-alpha-canvas { opacity: 1 !important; }
+  @media (max-width: 980px) { #qe-alpha-canvas { opacity: 0.55 !important; } }
+  #qe-alpha-stage::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 75% 70% at 42% 42%, transparent 40%, rgba(7,5,14,0.62) 100%);
+    pointer-events: none;
+    z-index: 2;
+  }
+  #qe-alpha-stage::after {
+    content: '';
+    position: absolute; left: 0; right: 0; bottom: 0; height: 160px;
+    background: linear-gradient(180deg, transparent 0%, #07050E 100%);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Headline — bigger, tighter, glowing */
+  #landing .lp3-h1 {
+    font-size: clamp(54px, 7.6vw, 112px) !important;
+    line-height: 0.92 !important;
+    letter-spacing: -0.05em !important;
+    text-shadow: 0 2px 40px rgba(0,0,0,0.55);
+  }
+  #landing .lp3-h1 em {
+    filter: drop-shadow(0 0 36px rgba(217,70,239,0.45)) !important;
+  }
+  /* Word-rise entrance — base state is VISIBLE; animation-fill 'both'
+     applies the hidden first frame only while the animation exists.
+     prefers-reduced-motion kills the animation → words simply show. */
+  #landing .lp3-h1 .qe-w {
+    display: inline-block;
+    animation: qeWordRise 0.92s cubic-bezier(0.22,1,0.36,1) both;
+    animation-delay: var(--wd, 0s);
+  }
+  @keyframes qeWordRise {
+    from { opacity: 0; transform: translateY(34px) rotate(1.2deg); filter: blur(6px); }
+    to   { opacity: 1; transform: translateY(0) rotate(0); filter: blur(0); }
+  }
+  /* Eyebrow — bracket-tag style */
+  #landing .lp3-eyebrow {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 10.5px !important;
+    letter-spacing: 0.24em !important;
+    text-transform: uppercase !important;
+    color: rgba(232,121,249,0.85) !important;
+    background: rgba(217,70,239,0.07) !important;
+    border: 1px solid rgba(217,70,239,0.28) !important;
+    border-radius: 100px !important;
+    padding: 8px 18px !important;
+    box-shadow: 0 0 28px -6px rgba(217,70,239,0.45);
+    animation: qeWordRise 0.8s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  #landing .lp3-lead {
+    max-width: 540px !important;
+    animation: qeWordRise 0.9s cubic-bezier(0.22,1,0.36,1) 0.5s both;
+  }
+  #landing .lp3-hero-stats {
+    animation: qeWordRise 0.9s cubic-bezier(0.22,1,0.36,1) 0.66s both;
+  }
+
+  /* Terminal boot line */
+  #qe-hero-term {
+    margin-top: 22px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.05em;
+    color: rgba(94,234,212,0.85);
+    min-height: 38px;
+    white-space: pre-wrap;
+    text-shadow: 0 0 14px rgba(94,234,212,0.35);
+    animation: qeWordRise 0.9s cubic-bezier(0.22,1,0.36,1) 0.8s both;
+  }
+  #qe-hero-term .cur {
+    display: inline-block;
+    width: 7px; height: 13px;
+    background: #5EEAD4;
+    vertical-align: -2px;
+    margin-left: 3px;
+    animation: qeTermBlink 0.85s steps(1) infinite;
+  }
+  @keyframes qeTermBlink { 0%,55% { opacity: 1; } 56%,100% { opacity: 0; } }
+
+  /* Scroll cue */
+  #qe-hero-scroll {
+    position: absolute;
+    left: 50%; bottom: 22px;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    color: rgba(232,121,249,0.6);
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+  #qe-hero-scroll::after {
+    content: '';
+    width: 1px; height: 34px;
+    background: linear-gradient(180deg, rgba(232,121,249,0.7), transparent);
+    animation: qeScrollPulse 1.8s ease-in-out infinite;
+  }
+  @keyframes qeScrollPulse {
+    0%, 100% { transform: scaleY(0.5); transform-origin: top; opacity: 0.4; }
+    50%      { transform: scaleY(1); opacity: 1; }
+  }
+  @media (max-width: 980px) { #qe-hero-scroll { display: none; } }
+
+  /* Formula panels — repositioned clear of the bigger headline */
+  #qe-gm-formula-1 { top: 3% !important; left: 38% !important; }
+  #qe-gm-formula-2 { top: 10% !important; right: 2.5% !important; }
+
+  @media (prefers-reduced-motion: reduce) {
+    #landing .lp3-h1 .qe-w, #landing .lp3-eyebrow,
+    #landing .lp3-lead, #landing .lp3-hero-stats,
+    #qe-hero-term, #qe-hero-scroll::after { animation: none !important; }
+  }
+</style>
+
+<script id="qe-hero-v4-js">
+(function(){
+  'use strict';
+
+  function landingVisible() {
+    var l = document.getElementById('landing');
+    return !!(l && !l.classList.contains('hidden') && getComputedStyle(l).display !== 'none');
+  }
+
+  // ─── Split headline into staggered rising words ────────────────
+  function splitHeadline() {
+    var h1 = document.querySelector('#landing .lp3-h1');
+    if (!h1 || h1.getAttribute('data-qe-cine4')) return;
+    // Wait until launch-v2 has set its copy
+    if (!h1.getAttribute('data-qe-alpha')) return;
+    h1.setAttribute('data-qe-cine4', '1');
+    h1.innerHTML = ''
+      + '<span class="qe-w" style="--wd:0s">The</span> '
+      + '<span class="qe-w" style="--wd:0.09s">power</span> '
+      + '<span class="qe-w" style="--wd:0.18s">of</span><br>'
+      + '<span class="qe-w" style="--wd:0.32s"><em>intelligent alpha.</em></span>';
+  }
+
+  // ─── Terminal boot typer ────────────────────────────────────────
+  var LINES = [
+    '> quant.entelloq // boot_sequence',
+    '> loading agents: NEXUS-7 ▸ AEGIS ▸ ORACLE ▸ PHOENIX ▸ FORGE  [OK]',
+    '> alpha engine online — latency 0.012ms'
+  ];
+  var termTimer = null;
+
+  function ensureTerm() {
+    if (document.getElementById('qe-hero-term')) return;
+    var lead = document.querySelector('#landing .lp3-lead');
+    if (!lead) return;
+    var el = document.createElement('div');
+    el.id = 'qe-hero-term';
+    el.setAttribute('aria-hidden', 'true');
+    el.innerHTML = '<span id="qe-hero-term-txt"></span><span class="cur"></span>';
+    lead.insertAdjacentElement('afterend', el);
+
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.getElementById('qe-hero-term-txt').textContent = LINES.join('\n');
+      return;
+    }
+    var li = 0, ci = 0, buf = '';
+    function tick() {
+      var txt = document.getElementById('qe-hero-term-txt');
+      if (!txt) { clearInterval(termTimer); termTimer = null; return; }
+      var line = LINES[li];
+      if (ci < line.length) {
+        ci += 2; // two chars per tick — brisk, cinematic
+        txt.textContent = buf + line.slice(0, ci);
+      } else {
+        buf += line + '\n';
+        li++;
+        ci = 0;
+        if (li >= LINES.length) {
+          clearInterval(termTimer);
+          termTimer = null;
+          // Hold the completed boot log, then restart fresh
+          setTimeout(function(){
+            buf = ''; li = 0; ci = 0;
+            var t2 = document.getElementById('qe-hero-term-txt');
+            if (t2 && landingVisible()) {
+              t2.textContent = '';
+              termTimer = setInterval(tick, 34);
+            }
+          }, 9000);
+        }
+      }
+    }
+    termTimer = setInterval(tick, 34);
+  }
+
+  // ─── Scroll cue ─────────────────────────────────────────────────
+  function ensureScrollCue() {
+    if (document.getElementById('qe-hero-scroll')) return;
+    var hero = document.querySelector('#landing .lp3-hero');
+    if (!hero) return;
+    var cue = document.createElement('div');
+    cue.id = 'qe-hero-scroll';
+    cue.setAttribute('aria-hidden', 'true');
+    cue.textContent = 'Scroll';
+    hero.appendChild(cue);
+  }
+
+  function boot() {
+    if (!landingVisible()) return;
+    splitHeadline();
+    ensureTerm();
+    ensureScrollCue();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+  setInterval(boot, 1600);
 })();
 </script>
 </body>
