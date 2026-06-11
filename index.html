@@ -42995,7 +42995,7 @@ setTimeout(() => {
       ctx.clearRect(0, 0, W, H);
 
       var isMobile = W < 760;
-      var cx = isMobile ? W * 0.5 : W * 0.40;
+      var cx = W * 0.5; // centered hero layout (layout v6)
       var cy = H * 0.50;
       var sway = Math.sin(t * 0.00022) * 0.42;
       var cos = Math.cos(sway), sin = Math.sin(sway);
@@ -44207,6 +44207,197 @@ setTimeout(() => {
     #landing .lp3-h1 { font-size: clamp(36px, 9vw, 52px) !important; }
     #landing .lp3-hero { padding: 36px 20px 20px !important; }
     .qe-gm-section { padding: 34px 20px 28px !important; }
+  }
+</style>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     LAYOUT v6 — full frontend layout overhaul (my creative direction)
+     New structure, pure CSS — zero DOM moves, all features intact:
+       · Floating glass pill nav
+       · Full-height CENTERED cinematic hero (was 2-col left/right);
+         auth card becomes a centered glass panel under the CTAs
+       · Hero stats → hairline divider strip (no more tiles)
+       · Zig-zag editorial sections: mesh = text|canvas,
+         neural = canvas|text (was all center-stacked)
+       · Bento feature grid (first card spans 2)
+       · Editorial section numbering 01-05 via CSS counters
+       · About/Founder flipped; auth finale gets a ghost ENTELLOQ
+         outline wordmark backdrop
+     ════════════════════════════════════════════════════════════════════ -->
+<style id="qe-layout-v6-css">
+  /* ─── 1. Floating glass pill nav ──────────────────────────────── */
+  #landing .lp3-nav {
+    background: transparent !important;
+    border-bottom: 0 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    padding-top: 14px !important;
+  }
+  #landing .lp3-nav-inner {
+    max-width: 1180px !important;
+    margin: 0 auto !important;
+    padding: 10px 12px 10px 22px !important;
+    background: rgba(10,6,18,0.66) !important;
+    border: 1px solid rgba(217,70,239,0.20) !important;
+    border-radius: 100px !important;
+    backdrop-filter: saturate(180%) blur(22px) !important;
+    -webkit-backdrop-filter: saturate(180%) blur(22px) !important;
+    box-shadow: 0 18px 48px -18px rgba(217,70,239,0.35) !important;
+  }
+  #landing .lp3-nav-links a {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 11px !important;
+    letter-spacing: 0.10em !important;
+    text-transform: uppercase !important;
+  }
+
+  /* ─── 2. Hero: centered cinema (was copy-left / auth-right) ───── */
+  #landing .lp3-hero {
+    grid-template-columns: 1fr !important;
+    justify-items: center !important;
+    text-align: center !important;
+    align-content: center !important;
+    min-height: 86vh !important;
+    gap: 36px !important;
+    max-width: 1100px !important;
+  }
+  #landing .lp3-hero-copy {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    max-width: 900px !important;
+  }
+  #landing .lp3-h1 { margin-left: auto !important; margin-right: auto !important; }
+  #landing .lp3-lead { margin-left: auto !important; margin-right: auto !important; }
+  #landing .lp3-signal-stream { justify-content: center !important; }
+  #qe-hero-term { text-align: center; }
+
+  /* Auth card → centered glass panel under the copy */
+  #landing .lp3-hero > div:nth-child(2) {
+    width: 100% !important;
+    max-width: 460px !important;
+    background: rgba(14,8,24,0.55);
+    border: 1px solid rgba(217,70,239,0.24);
+    border-radius: 20px;
+    padding: 10px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 34px 80px -30px rgba(217,70,239,0.5), 0 0 0 1px rgba(0,0,0,0.3);
+  }
+
+  /* ─── 3. Hero stats → hairline divider strip ──────────────────── */
+  #landing .lp3-hero-stats {
+    gap: 0 !important;
+    justify-content: center !important;
+  }
+  #landing .lp3-hero-stats > div {
+    background: transparent !important;
+    border: 0 !important;
+    border-left: 1px solid rgba(217,70,239,0.20) !important;
+    border-radius: 0 !important;
+    padding: 4px 30px !important;
+    min-width: 0 !important;
+    text-align: center;
+  }
+  #landing .lp3-hero-stats > div:first-child { border-left: 0 !important; }
+
+  /* Formula panels clear of the centered headline */
+  #qe-gm-formula-1 { top: 4% !important; left: 2% !important; transform: rotate(-1.4deg) !important; }
+  #qe-gm-formula-2 { top: 12% !important; right: 2% !important; }
+
+  /* ─── 4. Editorial section numbering 01-05 ────────────────────── */
+  #landing { counter-reset: qesec; }
+  .qe-gm-section .qe-gm-eyebrow::before {
+    counter-increment: qesec;
+    content: "0" counter(qesec) " — ";
+    color: rgba(244,244,240,0.35);
+    letter-spacing: 0.18em;
+  }
+
+  /* ─── 5. Zig-zag: mesh = text | canvas ────────────────────────── */
+  @media (min-width: 961px) {
+    #qe-gm-mesh-sec {
+      display: grid !important;
+      grid-template-columns: minmax(280px, 0.85fr) 1.25fr !important;
+      column-gap: 44px !important;
+      align-items: center !important;
+    }
+    #qe-gm-mesh-sec .qe-gm-eyebrow,
+    #qe-gm-mesh-sec .qe-gm-title,
+    #qe-gm-mesh-sec .qe-gm-sub {
+      grid-column: 1 !important;
+      text-align: left !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      max-width: none !important;
+    }
+    #qe-gm-mesh-sec .qe-gm-canvas-wrap {
+      grid-column: 2 !important;
+      grid-row: 1 / span 3 !important;
+    }
+
+    /* neural = canvas | text (mirrored) */
+    #qe-gm-neural-sec {
+      display: grid !important;
+      grid-template-columns: 1.25fr minmax(280px, 0.85fr) !important;
+      column-gap: 44px !important;
+      align-items: center !important;
+    }
+    #qe-gm-neural-sec .qe-gm-eyebrow,
+    #qe-gm-neural-sec .qe-gm-title,
+    #qe-gm-neural-sec .qe-gm-sub {
+      grid-column: 2 !important;
+      text-align: left !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      max-width: none !important;
+    }
+    #qe-gm-neural-sec .qe-gm-canvas-wrap {
+      grid-column: 1 !important;
+      grid-row: 1 / span 3 !important;
+    }
+  }
+
+  /* ─── 6. Bento feature grid ───────────────────────────────────── */
+  @media (min-width: 900px) {
+    #landing .lp3-features { grid-template-columns: repeat(3, 1fr) !important; }
+    #landing .lp3-features .lp3-feat:first-child {
+      grid-column: span 2 !important;
+      background: linear-gradient(150deg, rgba(124,58,237,0.16) 0%, rgba(18,12,28,0.6) 55%) !important;
+      border-color: rgba(217,70,239,0.30) !important;
+    }
+  }
+
+  /* ─── 7. About flipped: founder left, mission right ───────────── */
+  @media (min-width: 881px) {
+    #qe-gm-about .qe-gm-about-grid { grid-template-columns: 1fr 1.5fr !important; }
+    #qe-gm-about .qe-gm-about-card { order: 2; }
+    #qe-gm-about .qe-gm-founder-card { order: 1; }
+  }
+
+  /* ─── 8. Auth finale: ghost outline wordmark backdrop ─────────── */
+  #qe-gm-auth { position: relative; overflow: hidden; }
+  #qe-gm-auth::before {
+    content: 'ENTELLOQ';
+    position: absolute;
+    left: 50%; top: 54%;
+    transform: translate(-50%, -50%);
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 700;
+    font-size: clamp(90px, 17vw, 240px);
+    letter-spacing: 0.02em;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(217,70,239,0.12);
+    pointer-events: none;
+    z-index: 0;
+    white-space: nowrap;
+  }
+  #qe-gm-auth > * { position: relative; z-index: 1; }
+
+  /* ─── Mobile sanity ───────────────────────────────────────────── */
+  @media (max-width: 960px) {
+    #landing .lp3-hero { min-height: 0 !important; }
+    #landing .lp3-nav-inner { border-radius: 18px !important; }
   }
 </style>
 </body>
