@@ -44160,5 +44160,54 @@ setTimeout(() => {
   setInterval(boot, 1600);
 })();
 </script>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     HERO v5 — rhythm fix: one continuous flow
+     · Headline line collision fixed (line-height 0.92 → 1.03)
+     · Headline scale pulled back (112px → 84px max)
+     · Dead vertical space removed above the orb strip + hero
+     · All godmode sections compressed so the page reads as one flow
+     ════════════════════════════════════════════════════════════════════ -->
+<style id="qe-hero-v5-css">
+  html { scroll-behavior: smooth; }
+
+  /* Headline: fix line collision + right-size */
+  #landing .lp3-h1 {
+    font-size: clamp(44px, 5.8vw, 84px) !important;
+    line-height: 1.04 !important;
+    letter-spacing: -0.04em !important;
+  }
+  /* Hero: tighter top/bottom so the hologram + content hug the nav */
+  #landing .lp3-hero {
+    padding: 52px 32px 26px !important;
+  }
+  #qe-hero-term { margin-top: 14px !important; min-height: 32px !important; }
+
+  /* Stage hugs the hero instead of stretching a full viewport */
+  #qe-alpha-stage { height: 88vh !important; max-height: 820px !important; }
+
+  /* Orb strip: kill the dead air above it */
+  #qe-alloc-strip { padding: 18px 32px 34px !important; }
+  .qe-alloc-eyebrow { margin-bottom: 20px !important; }
+  .qe-alloc-cluster { height: 210px !important; }
+  .qe-alloc-tag { margin-top: 18px !important; }
+
+  /* Godmode sections: compress vertical rhythm */
+  .qe-gm-section { padding: 42px 32px 34px !important; }
+  .qe-gm-title { margin-bottom: 10px !important; }
+  .qe-gm-sub { margin-bottom: 24px !important; }
+  #qe-gm-auth { padding-bottom: 76px !important; }
+  #qe-gm-marquee { padding: 9px 0 !important; }
+
+  /* Existing lp3 sections: same compression */
+  #landing .lp3-section { padding: 46px 32px !important; }
+  #landing .lp3-cta { padding: 60px 32px !important; }
+
+  @media (max-width: 760px) {
+    #landing .lp3-h1 { font-size: clamp(36px, 9vw, 52px) !important; }
+    #landing .lp3-hero { padding: 36px 20px 20px !important; }
+    .qe-gm-section { padding: 34px 20px 28px !important; }
+  }
+</style>
 </body>
 </html>
