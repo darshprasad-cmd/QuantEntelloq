@@ -44400,5 +44400,70 @@ setTimeout(() => {
     #landing .lp3-nav-inner { border-radius: 18px !important; }
   }
 </style>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     FIX v7 — two bugs in the v6 centered layout
+     1. initHeroFade (line ~28260) fades .lp3-hero to opacity 0 and
+        parallax-translates it on scroll. The centered layout put the
+        auth card INSIDE the hero, so the sign-in panel vanished while
+        scrolling. CSS !important beats the inline styles the rAF
+        handler writes, so the fade is permanently neutralized.
+     2. Headline line separation still failing — the <br> between
+        "of" and "intelligent alpha." can be suppressed by lp3 rules.
+        Rebuilt: line 2 is now a display:block span (no br needed),
+        with a real space character after "of" as belt-and-braces.
+     ════════════════════════════════════════════════════════════════════ -->
+<style id="qe-fix-v7-css">
+  /* 1. Kill the hero fade/parallax for good — inline styles lose */
+  #landing .lp3-hero,
+  #landing .qe-hero-fade {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* 2. Headline line 2 as a true block line */
+  #landing .lp3-h1 .qe-w2 {
+    display: block !important;
+    margin-top: 0.06em;
+  }
+</style>
+<script id="qe-fix-v7-js">
+(function(){
+  'use strict';
+  // ROOT CAUSE (found via preview verification): the editorial-DS
+  // word-reveal system (splitWords, line ~27681) flattens the h1 via
+  // el.textContent — destroying the <br>, the <em> gradient, and any
+  // structure — then re-wraps every word in .qe-word-reveal spans on
+  // a DELAYED init that runs after our splitters. Its re-run guard is
+  // the expando el._qeSplit. So: claim the flag ourselves and rebuild
+  // whenever the flattened markup is detected.
+  function fixHeadline() {
+    var h1 = document.querySelector('#landing .lp3-h1');
+    if (!h1) return;
+    h1._qeSplit = true; // block splitWords from ever flattening again
+    h1.setAttribute('data-qe-cine4', '1'); // stop the v4 splitter too
+    h1.setAttribute('data-qe-cine5', '1');
+    var flattened = !!h1.querySelector('.qe-word-reveal');
+    var correct = !!h1.querySelector('.qe-w2');
+    if (correct && !flattened) return; // already in final form
+    h1.innerHTML = ''
+      + '<span class="qe-w" style="--wd:0s">The</span> '
+      + '<span class="qe-w" style="--wd:0.09s">power</span> '
+      + '<span class="qe-w" style="--wd:0.18s">of</span> '
+      + '<span class="qe-w qe-w2" style="--wd:0.32s"><em>intelligent alpha.</em></span>';
+  }
+  function boot() {
+    var l = document.getElementById('landing');
+    if (!l || l.classList.contains('hidden') || getComputedStyle(l).display === 'none') return;
+    fixHeadline();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+  setInterval(boot, 900);
+})();
+</script>
 </body>
 </html>
