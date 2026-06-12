@@ -44465,5 +44465,80 @@ setTimeout(() => {
   setInterval(boot, 900);
 })();
 </script>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     SIMPLIFY v1 — de-clutter + de-compact the logged-in app
+     User: "it looks really complicated and compact." One CSS pass:
+       · Top chrome slimmed: 48px utility bar, page subtitle dropped
+         (the active nav pill already names the page)
+       · AI Studio: legacy double-header killed — the v7 masthead is
+         now the only header; side panel hidden below 1280px instead
+         of stacking; sub-copy dropped
+       · Dashboard: decorative status bar removed, Daily Challenge
+         compacted, top-6 signals only, bigger block spacing
+       · Portfolio/Signals/Quant Lab/Paper Trading: breathing room,
+         Fraunces page titles, dimmer decorations
+     ════════════════════════════════════════════════════════════════════ -->
+<style id="qe-simplify-v1-css">
+  /* ─── Slimmer top chrome ──────────────────────────────────────── */
+  .top-bar { min-height: 48px !important; padding: 0 22px !important; }
+  .top-bar-title { font-size: 15px !important; }
+  .top-bar-title small { display: none !important; }
+
+  /* ─── AI Studio: ONE header, not two ──────────────────────────── */
+  #page-ai .ais-hdr,
+  #page-ai .ais-tabs { display: none !important; }
+  #qe-studio { padding-top: 10px !important; }
+  #qe-studio .qe-studio-mast { padding: 8px 0 16px !important; }
+  #qe-studio .qe-studio-title { font-size: clamp(26px, 3.4vw, 36px) !important; }
+  #qe-studio .qe-studio-sub { display: none !important; }
+  @media (max-width: 1280px) {
+    #qe-studio-side { display: none !important; }
+    #qe-studio-shell { grid-template-columns: 1fr !important; }
+  }
+
+  /* ─── Dashboard: fewer blocks, more air ───────────────────────── */
+  #page-dashboard { padding-top: 36px !important; }
+  #page-dashboard .dash-status-bar { display: none !important; }
+  #page-dashboard #qe-daily-card,
+  #page-dashboard .qe-daily-card-skel {
+    padding: 14px 18px !important;
+    margin: 0 0 28px !important;
+    min-height: 0 !important;
+  }
+  #page-dashboard .qe-daily-title { font-size: 14.5px !important; line-height: 1.4 !important; }
+  #page-dashboard .qe-daily-stats { display: none !important; }
+  #page-dashboard .qe-daily-options { gap: 6px !important; margin-top: 10px !important; }
+  #page-dashboard .qe-daily-opt { padding: 9px 12px !important; font-size: 12px !important; }
+  #page-dashboard .dash-grid { margin-bottom: 40px !important; }
+  #page-dashboard .dash-main { margin-bottom: 44px !important; gap: 22px !important; }
+  #page-dashboard .dash-section-header { margin-top: 44px !important; margin-bottom: 20px !important; }
+  /* Top 6 signals only — the Signals page has the rest */
+  #signals-grid > *:nth-child(n+7) { display: none !important; }
+
+  /* ─── Portfolio / Signals / shared headers ────────────────────── */
+  .ent-page-header { margin-bottom: 32px !important; }
+  .ent-bg-orb { opacity: 0.22 !important; }
+  #page-portfolio .ent-pf-metrics { gap: 16px !important; margin-bottom: 26px !important; }
+  #page-portfolio .ent-pf-table td { padding: 13px 12px !important; }
+  #page-signals .ent-sig-grid { gap: 16px !important; }
+
+  /* ─── Quant Lab: editorial header ─────────────────────────────── */
+  .ql2-title {
+    font-family: 'Fraunces', Georgia, serif !important;
+    font-weight: 500 !important;
+    font-size: clamp(26px, 3.4vw, 36px) !important;
+    letter-spacing: -0.02em !important;
+  }
+  .ql2-subtitle { color: rgba(244,244,240,0.55) !important; }
+  .ql2-header { margin-bottom: 24px !important; }
+
+  /* ─── Paper Trading: breathing room ───────────────────────────── */
+  #page-paper .pt-grid { gap: 20px !important; }
+  #page-paper .pt-stat-strip { margin: 18px 0 22px !important; }
+
+  /* ─── Generic: roomier cards everywhere ───────────────────────── */
+  .page-anim .chart-container { padding: 24px 26px !important; }
+</style>
 </body>
 </html>
