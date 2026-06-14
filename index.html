@@ -44540,5 +44540,39 @@ setTimeout(() => {
   /* ─── Generic: roomier cards everywhere ───────────────────────── */
   .page-anim .chart-container { padding: 24px 26px !important; }
 </style>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     SIMPLIFY v2 — kill dashboard redundancy (verified locally)
+     Inspection revealed THREE stacked gamification cards before the
+     portfolio + duplicate streaks + duplicate country control.
+       · #qz-daily-challenge-card ("Research Sunday" quest) hidden —
+         the qe-daily-card quiz is the canonical daily challenge
+       · qe-daily-card streak pill hidden — #qz-today-strip already
+         shows STREAK, so only one streak number on the page
+       · #qe-country-badge hidden — duplicate of the toolbar's real
+         country selector
+       · today-strip + portfolio hero tightened; portfolio surfaces
+         sooner
+     ════════════════════════════════════════════════════════════════════ -->
+<style id="qe-simplify-v2-css">
+  /* 1. One daily challenge, not two */
+  #page-dashboard #qz-daily-challenge-card { display: none !important; }
+
+  /* 2. One streak number (today-strip keeps it; quiz pill drops it) */
+  #page-dashboard #qe-daily-card .qe-streak-pill { display: none !important; }
+
+  /* 3. One country control (toolbar selector stays; v11 badge goes) */
+  #qe-country-badge { display: none !important; }
+
+  /* 4. Compact the gamification strip + lead with portfolio sooner */
+  #page-dashboard #qz-today-strip { margin-bottom: 22px !important; }
+  #page-dashboard #qe-daily-card { margin-bottom: 26px !important; }
+
+  /* 5. Trim the chart row — sentiment + AI stack was 656px tall */
+  #page-dashboard .dash-main #main-chart { height: 280px !important; }
+
+  /* 6. Quiet the always-on disclaimer ribbon a touch */
+  #qz-global-footer-disclaimer { font-size: 9.5px !important; opacity: 0.8 !important; }
+</style>
 </body>
 </html>
