@@ -13447,7 +13447,7 @@ function updateHeroBanner(country) {
   const totalValue = positions.reduce((s, p) => s + p.qty * p.current, 0);
   const valEl = document.getElementById('dash-portfolio-value');
   const chgEl = document.getElementById('dash-portfolio-change');
-  if (valEl) valEl.textContent = `${sym}${totalValue.toLocaleString('en-US', {maximumFractionDigits:0})}`;
+  if (valEl) valEl.textContent = `${sym}${(totalValue || 0).toLocaleString('en-US', {maximumFractionDigits:0})}`;
   if (chgEl) chgEl.textContent = positions.length === 0 ? '— add a position to begin' : `▲ ${positions.length} positions in ${country.currency}`;
   // Active signals count — use universe signal proxy
   const activeBuys = country.stocks?.filter(s => s.sig === 'BUY').length || 0;
@@ -13531,7 +13531,7 @@ function renderPortfolioRegional(country) {
   // Update top metric cards on portfolio page
   const cards = document.querySelectorAll('#page-portfolio .metric-card .metric-value');
   if (cards.length >= 3) {
-    cards[0].textContent = `${sym}${totalValue.toLocaleString('en-US', {maximumFractionDigits: 0})}`;
+    cards[0].textContent = `${sym}${(totalValue || 0).toLocaleString('en-US', {maximumFractionDigits: 0})}`;
     cards[1].textContent = positions.length === 0 ? `${sym}0` : `${totalPnl >= 0 ? '+' : '-'}${sym}${Math.abs(totalPnl).toLocaleString('en-US', {maximumFractionDigits: 0})}`;
     cards[1].style.color = positions.length === 0 ? 'var(--text-muted)' : totalPnl >= 0 ? 'var(--green)' : 'var(--red)';
     cards[2].textContent = positions.length === 0 ? `${sym}0` : `${dayPnl >= 0 ? '+' : '-'}${sym}${Math.abs(dayPnl).toLocaleString('en-US', {maximumFractionDigits: 0})}`;
