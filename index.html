@@ -12,7 +12,7 @@
      ============================================================================ -->
 <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
-  script-src 'self' 'unsafe-inline' https://unpkg.com https://accounts.google.com https://apis.google.com https://www.clarity.ms https://*.clarity.ms;
+  script-src 'self' 'unsafe-inline' https://unpkg.com https://accounts.google.com https://apis.google.com https://www.clarity.ms https://*.clarity.ms https://us-assets.i.posthog.com https://us.i.posthog.com;
   style-src  'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com;
   font-src   'self' https://fonts.gstatic.com data:;
   img-src    'self' data: blob: https:;
@@ -42,7 +42,10 @@
     https://oauth2.googleapis.com
     https://www.clarity.ms
     https://*.clarity.ms
-    https://c.bing.com;
+    https://c.bing.com
+    https://us.i.posthog.com
+    https://us-assets.i.posthog.com
+    https://*.posthog.com;
   frame-src https://accounts.google.com;
   frame-ancestors 'none';
   form-action  'self';
@@ -34121,6 +34124,39 @@ setTimeout(() => {
     t=l.createElement(r);t.async=1;t.src='https://www.clarity.ms/tag/'+i;
     y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
   })(window, document, 'clarity', 'script', CLARITY_ID);
+})();
+</script>
+
+<script>
+/* ==================================================================== *
+ *  ANALYTICS — PostHog (product analytics: funnels, events, web stats) *
+ *                                                                      *
+ *  Complements Microsoft Clarity above. Clarity handles session       *
+ *  replay + heatmaps; PostHog adds autocapture, pageviews, funnels,    *
+ *  web analytics, and feature flags. Session recording is DISABLED     *
+ *  here so the two don't double-record and the page stays light.      *
+ *                                                                      *
+ *  Project key (phc_) is public/write-only — safe to commit. Region:  *
+ *  US cloud (us.i.posthog.com). Loader no-ops if the key is a         *
+ *  placeholder, so this is safe to ship.                              *
+ * ==================================================================== */
+(function() {
+  // ▸▸▸  PostHog public project API key ◂◂◂
+  var POSTHOG_KEY = 'phc_qaDi8ShhusbUDaWji4WPeygJxHjBN5SenuL7xvpBfUwU';
+  if (!POSTHOG_KEY || POSTHOG_KEY.indexOf('phc_') !== 0) return;
+
+  // Standard PostHog snippet (array.js loader)
+  !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageViewId captureTraceFeedback captureTraceMetric".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+
+  posthog.init(POSTHOG_KEY, {
+    api_host: 'https://us.i.posthog.com',
+    person_profiles: 'identified_only',
+    capture_pageview: true,
+    autocapture: true,
+    disable_session_recording: true,   // Clarity already records sessions
+    capture_pageleave: true,
+    loaded: function(ph){ try { ph.register({ app: 'quant-entelloq' }); } catch(_){} }
+  });
 })();
 </script>
 
