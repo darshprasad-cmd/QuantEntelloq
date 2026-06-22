@@ -6064,10 +6064,10 @@ window._QZ_GOOGLE_CLIENT_ID = '939725315910-2ght687f6733pt42nepbktfqd8ah6egk.app
       <h1 class="lp3-h1">Empowering enterprises through<br><em>intelligent</em> communication.</h1>
       <p class="lp3-lead">Expanding options in learning and trading with quantitative precision — multi-agent AI, institutional signals, and 100M+ assets powering enterprise intelligence at every scale.</p>
       <div class="lp3-hero-stats">
-        <div><strong>100M+</strong><span>Assets Tracked</span></div>
-        <div><strong>98%</strong><span>Signal Accuracy</span></div>
-        <div><strong>&lt;15ms</strong><span>Data Latency</span></div>
-        <div><strong>12</strong><span>Quant Models</span></div>
+        <div><strong>100M+</strong><span>Securities</span></div>
+        <div><strong>5</strong><span>AI Specialist Agents</span></div>
+        <div><strong>10</strong><span>Quant Tools</span></div>
+        <div><strong>10</strong><span>Global Markets</span></div>
       </div>
 
       <!-- Live signal chips stream -->
@@ -6139,10 +6139,10 @@ window._QZ_GOOGLE_CLIENT_ID = '939725315910-2ght687f6733pt42nepbktfqd8ah6egk.app
 
   <!-- Stats bar -->
   <div class="lp3-trust">
-    <div class="lp3-trust-item"><strong>100,000,000+</strong><span>Securities Tracked</span></div>
-    <div class="lp3-trust-item"><strong>50+</strong><span>Global Exchanges</span></div>
-    <div class="lp3-trust-item"><strong>98%</strong><span>Signal Accuracy</span></div>
-    <div class="lp3-trust-item"><strong>&lt;15ms</strong><span>Data Latency</span></div>
+    <div class="lp3-trust-item"><strong>100,000,000+</strong><span>Securities</span></div>
+    <div class="lp3-trust-item"><strong>10</strong><span>Global Markets</span></div>
+    <div class="lp3-trust-item"><strong>4-Factor</strong><span>Signal Model</span></div>
+    <div class="lp3-trust-item"><strong>Real-Time</strong><span>Analysis</span></div>
   </div>
 
   <!-- Platform preview mockup -->
@@ -44610,5 +44610,202 @@ setTimeout(() => {
   /* 6. Quiet the always-on disclaimer ribbon a touch */
   #qz-global-footer-disclaimer { font-size: 9.5px !important; opacity: 0.8 !important; }
 </style>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     METHODOLOGY v1 — "How Our Models Work" landing section
+     Closes the credibility gap a quant reviewer flagged: the site
+     claimed power without explaining WHY it works. This section adds
+     honest model transparency — the multi-factor taxonomy, the 5-agent
+     architecture, the research pipeline, and an explicit "what we DON'T
+     claim" honesty block. Additive, matches qe-gm-section design.
+     ════════════════════════════════════════════════════════════════════ -->
+<style id="qe-method-v1-css">
+  #qe-method .qe-mth-pillars {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  @media (max-width: 900px) { #qe-method .qe-mth-pillars { grid-template-columns: 1fr; } }
+  .qe-mth-card {
+    background: rgba(18,12,28,0.6);
+    border: 1px solid rgba(217,70,239,0.16);
+    border-radius: 14px;
+    padding: 24px 22px;
+    text-align: left;
+  }
+  .qe-mth-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: rgba(232,121,249,0.7);
+    margin-bottom: 12px;
+  }
+  .qe-mth-h {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500;
+    font-size: 19px;
+    letter-spacing: -0.015em;
+    color: #F4F4F0;
+    margin-bottom: 12px;
+  }
+  .qe-mth-row {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    padding: 7px 0;
+    border-top: 1px solid rgba(244,244,240,0.05);
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: rgba(244,244,240,0.72);
+  }
+  .qe-mth-row:first-of-type { border-top: 0; }
+  .qe-mth-row b {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    color: #C4B5FD;
+    flex-shrink: 0;
+    min-width: 86px;
+  }
+  .qe-mth-row.agent b { color: #E879F9; min-width: 96px; }
+
+  /* Research pipeline flow */
+  .qe-mth-pipe {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 6px auto 30px;
+    max-width: 920px;
+  }
+  .qe-mth-step {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    padding: 7px 13px;
+    border-radius: 100px;
+    background: rgba(167,139,250,0.08);
+    border: 1px solid rgba(217,70,239,0.20);
+    color: rgba(244,244,240,0.82);
+    white-space: nowrap;
+  }
+  .qe-mth-arrow { color: rgba(232,121,249,0.45); font-size: 12px; }
+
+  /* Honesty block — the credibility centerpiece */
+  .qe-mth-honesty {
+    background: linear-gradient(160deg, rgba(94,234,212,0.06) 0%, rgba(18,12,28,0.6) 60%);
+    border: 1px solid rgba(94,234,212,0.22);
+    border-radius: 16px;
+    padding: 28px 30px;
+    max-width: 860px;
+    margin: 0 auto;
+    text-align: left;
+  }
+  .qe-mth-honesty .qe-mth-honesty-eye {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: rgba(94,234,212,0.85);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .qe-mth-honesty h3 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    color: #F4F4F0;
+    margin-bottom: 14px;
+  }
+  .qe-mth-honesty p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: rgba(244,244,240,0.78);
+    margin-bottom: 10px;
+  }
+  .qe-mth-honesty p strong { color: #5EEAD4; }
+</style>
+<script id="qe-method-v1-js">
+(function(){
+  'use strict';
+  function landingVisible() {
+    var l = document.getElementById('landing');
+    return !!(l && !l.classList.contains('hidden') && getComputedStyle(l).display !== 'none');
+  }
+  function build() {
+    if (!landingVisible()) return;
+    var landing = document.getElementById('landing');
+    if (!landing || document.getElementById('qe-method')) return;
+    // Anchor: insert before the About section if present, else before footer
+    var anchor = document.getElementById('qe-gm-about') || landing.querySelector('.lp3-footer');
+
+    var PILLARS = [
+      { n:'01', h:'Multi-Factor Signal Model', rows:[
+        ['Momentum','12–1 month trend, volume-confirmed breakouts, 50/200-day structure'],
+        ['Sentiment','news NLP, options put/call skew, short interest, positioning data'],
+        ['Valuation','multiples vs. own history, estimate revisions, quality (ROIC, margins)'],
+        ['Flow','block prints, volume profile, ETF creation/redemption pressure']
+      ], foot:'Blended into one conviction-weighted alpha score with explicit per-factor attribution — the taxonomy from Fama–French, Carhart momentum, and AQR quality research.' },
+      { n:'02', h:'Five Specialist Agents', agent:true, rows:[
+        ['NEXUS-7','synthesizes the four factors into a directional alpha score'],
+        ['AEGIS-PRIME','VaR · CVaR · Kelly sizing · 2008/2020/2022 regime stress'],
+        ['ORACLE-X','classifies the macro regime from rate curves, credit, FX, vol'],
+        ['PHOENIX-9','ranks event catalysts by expected value, not just probability'],
+        ['FORGE-Δ','backtests strategies with walk-forward, out-of-sample validation']
+      ], foot:'Five disciplines run in parallel — not one black box. Every verdict is bracketed and attributable: you see which factor drove it.' },
+      { n:'03', h:'Reproducible Research', rows:[
+        ['Attribution','every signal decomposes into its factor contributions'],
+        ['Validation','walk-forward + out-of-sample to surface overfitting'],
+        ['Stress','signals re-scored under historical crisis regimes'],
+        ['Transparency','no hidden model — the reasoning is shown, not asserted']
+      ], foot:'The point isn\'t a magic number. It\'s a process you can inspect, question, and reproduce.' }
+    ];
+
+    var pipe = ['Hypothesis','Data','Feature Engineering','Model','Backtest','Validation','Stress Test','Monitor'];
+
+    var pillarsHtml = PILLARS.map(function(p){
+      var rows = p.rows.map(function(r){
+        return '<div class="qe-mth-row' + (p.agent ? ' agent' : '') + '"><b>' + r[0] + '</b><span>' + r[1] + '</span></div>';
+      }).join('');
+      return '<div class="qe-mth-card">'
+        + '<div class="qe-mth-num">' + p.n + '</div>'
+        + '<div class="qe-mth-h">' + p.h + '</div>'
+        + rows
+        + '<div class="qe-mth-row" style="border-top:1px solid rgba(217,70,239,0.18);margin-top:8px;color:rgba(244,244,240,0.55);font-style:italic;font-size:11.5px;"><span>' + p.foot + '</span></div>'
+        + '</div>';
+    }).join('');
+
+    var pipeHtml = pipe.map(function(s, i){
+      return '<span class="qe-mth-step">' + s + '</span>' + (i < pipe.length - 1 ? '<span class="qe-mth-arrow">→</span>' : '');
+    }).join('');
+
+    var sec = document.createElement('section');
+    sec.className = 'qe-gm-section';
+    sec.id = 'qe-method';
+    sec.innerHTML = ''
+      + '<div class="qe-gm-eyebrow">[ How_Our_Models_Work ]</div>'
+      + '<h2 class="qe-gm-title">Not "look how powerful." <em>Here\'s why it works.</em></h2>'
+      + '<p class="qe-gm-sub">Most platforms show you a signal and a verdict. The middle — the actual quant — is hidden. Here is ours, in full.</p>'
+      + '<div class="qe-mth-pillars">' + pillarsHtml + '</div>'
+      + '<div class="qe-gm-eyebrow" style="margin-top:8px;">[ The_Research_Pipeline ]</div>'
+      + '<div class="qe-mth-pipe">' + pipeHtml + '</div>'
+      + '<div class="qe-mth-honesty">'
+      +   '<div class="qe-mth-honesty-eye">What we don\'t claim</div>'
+      +   '<h3>Honesty is the methodology.</h3>'
+      +   '<p>Quant Entelloq is a <strong>research and education platform</strong>. Signals are model observations — <strong>not investment advice, not a track record, not a promise of returns</strong>. Past performance never predicts future results.</p>'
+      +   '<p>We don\'t publish a fabricated accuracy percentage, because a real one requires audited live trading we haven\'t done. Instead we show our <strong>reasoning, factor weights, and assumptions</strong> so you can judge them yourself — which is exactly how serious quant research is supposed to work.</p>'
+      + '</div>';
+
+    if (anchor) anchor.insertAdjacentElement('beforebegin', sec);
+    else landing.appendChild(sec);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', build);
+  else build();
+  setInterval(build, 1600);
+  window.QEMethodology = { build: build };
+})();
+</script>
 </body>
 </html>
