@@ -146,6 +146,14 @@
   }, { passive: true });
 })();
 
+// ── Auth state helper — single source of truth for "is the user logged in" ──
+// Logged in ⟺ a qz_auth_user record exists in localStorage. Gates the logged-in
+// app's heavy boot (market-data fetches, poll loops) so a logged-out landing
+// visitor (and Googlebot) never pays for work behind the auth wall.
+window.QZ_isAuthed = function() {
+  try { return !!localStorage.getItem('qz_auth_user'); } catch (e) { return false; }
+};
+
 // ── Global error boundary — prevent silent failures ──────────────────────────
 window.onerror = function(msg, src, line, col, err) {
   // Only log non-trivial errors; suppress ResizeObserver loop limit exceeded
@@ -16180,6 +16188,8 @@ function uvSeedLiveQuotes() {
   if (synths.length) setTimeout(seedChunk, 100);
 }
 function uvLiveTick() {
+  // Skip entirely for logged-out visitors — the universe panel lives behind auth.
+  if (!window.QZ_isAuthed || !window.QZ_isAuthed()) return;
   if (typeof UNIVERSE === 'undefined') return;
 
   // Build pool from only the rows currently rendered (visible page, max 100 rows).
@@ -20308,7 +20318,9 @@ window.qeRL  = window.QESecurity.rateLimit;
   // ── Boot ──
   function boot() {
     const input = document.getElementById('polygon-api-key');
-    if (PG.apiKey) {
+    // Only boot live market data for logged-in users. Logged-out landing
+    // visitors / crawlers must not fetch snapshots or open the WebSocket.
+    if (PG.apiKey && window.QZ_isAuthed && window.QZ_isAuthed()) {
       if (input) input.value = PG.apiKey;
       updateStatus('Key loaded — connecting…', 'yellow');
       setTimeout(loadDashboardData, 400);
@@ -22362,9 +22374,10 @@ window.polygonSaveKey = async function() {
   setTimeout(uvEnrichWithPolygon, 1500);
 };
 
-// On load if key already present
+// On load if key already present — only for logged-in users. Logged-out landing
+// visitors and crawlers must not trigger market-data fetches.
 setTimeout(() => {
-  if (window.PolygonAPI && window.PolygonAPI.isConfigured()) uvEnrichWithPolygon();
+  if (window.QZ_isAuthed && window.QZ_isAuthed() && window.PolygonAPI && window.PolygonAPI.isConfigured()) uvEnrichWithPolygon();
 }, 3000);
 
 // ─────────────────────────────────────────────────────────────
