@@ -45,7 +45,10 @@
     https://c.bing.com
     https://us.i.posthog.com
     https://us-assets.i.posthog.com
-    https://*.posthog.com;
+    https://*.posthog.com
+    https://finnhub.io
+    https://api.polygon.io
+    https://api.twelvedata.com;
   frame-src https://accounts.google.com;
   frame-ancestors 'none';
   form-action  'self';
@@ -80,6 +83,45 @@
 <meta name="twitter:title" content="Quant Entelloq — AI-Native Financial Intelligence">
 <meta name="twitter:description" content="Bloomberg-style research, free. AI intelligence + 10 quant tools (Fama-French, MVO, VaR, momentum) + 4 AI specialists + paper trading.">
 <meta name="twitter:image" content="https://quant.entelloq.com/assets/entelloq-logo.png">
+
+<!-- ═══ STRUCTURED DATA (JSON-LD) — Organization · WebSite · WebApplication ═══ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://quant.entelloq.com/#organization",
+      "name": "Entelloq Networks",
+      "url": "https://quant.entelloq.com/",
+      "logo": { "@type": "ImageObject", "url": "https://quant.entelloq.com/assets/entelloq-logo.png" },
+      "founder": { "@type": "Person", "name": "Darsh Prasad" },
+      "brand": { "@type": "Brand", "name": "Quant Entelloq" }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://quant.entelloq.com/#website",
+      "url": "https://quant.entelloq.com/",
+      "name": "Quant Entelloq",
+      "description": "AI-native financial research terminal with institutional quant tools, AI agents, and paper trading — free in your browser.",
+      "publisher": { "@id": "https://quant.entelloq.com/#organization" },
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://quant.entelloq.com/#webapp",
+      "name": "Quant Entelloq",
+      "url": "https://quant.entelloq.com/",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Any (web browser)",
+      "browserRequirements": "Requires JavaScript and a modern web browser.",
+      "description": "AI-native financial research terminal: real-time market intelligence, 10 institutional quant tools (Fama-French, mean-variance optimization, VaR/ES, momentum, regime detection), 4 specialist AI agents, and paper trading.",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "publisher": { "@id": "https://quant.entelloq.com/#organization" }
+    }
+  ]
+}
+</script>
 
 <!-- Favicon: inline SVG brand mark + fallback to logo PNG -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23A78BFA%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%2367E8F9%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22url%28%23g%29%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2245%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2Cserif%22%20font-weight%3D%22700%22%20font-size%3D%2236%22%20fill%3D%22%230A0A0B%22%3EQ%3C%2Ftext%3E%3C%2Fsvg%3E">
@@ -6114,7 +6156,7 @@ window._QZ_GOOGLE_CLIENT_ID = '939725315910-2ght687f6733pt42nepbktfqd8ah6egk.app
         <div class="lp3-err" id="lp3-su-err"></div>
         <div class="lp3-ok"  id="lp3-su-ok">Account created! Launching platform…</div>
         <button class="lp3-submit" id="lp3-su-btn" onclick="lp3Signup()">Create Account →</button>
-        <div class="lp3-switch">Already have an account? <a onclick="lp3Tab('in')">Sign in</a></div>
+        <div class="lp3-switch">Already have an account? <a href="#signin" onclick="lp3Tab('in');return false;">Sign in</a></div>
       </div>
 
       <!-- Sign In form (hidden) -->
@@ -6123,7 +6165,7 @@ window._QZ_GOOGLE_CLIENT_ID = '939725315910-2ght687f6733pt42nepbktfqd8ah6egk.app
         <div class="lp3-field"><input class="lp3-input" id="lp3-si-pass" type="password" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')lp3Login()"></div>
         <div class="lp3-err" id="lp3-si-err"></div>
         <button class="lp3-submit" id="lp3-si-btn" onclick="lp3Login()">Sign In →</button>
-        <div class="lp3-switch">New here? <a onclick="lp3Tab('up')">Create free account</a></div>
+        <div class="lp3-switch">New here? <a href="#signup" onclick="lp3Tab('up');return false;">Create free account</a></div>
       </div>
 
       <div class="lp3-card-lock">🔒 Bank-grade encryption · Passwords hashed · Sessions expire in 7 days</div>
@@ -9751,6 +9793,7 @@ function showPage(page, navEl) {
     quantlab:   { main:'Quant Lab',        sub:'AI-powered quantitative analysis' },
     command:    { main:'AI Studio',        sub:'Multi-agent orchestration' },
     intel:      { main:'Intelligence Terminal', sub:'Live market intelligence & macro data' },
+    research:   { main:'Research Lab',     sub:'Hypothesis → Backtest → Out-of-sample validation' },
   };
   const t = titles[page] || { main: page, sub: 'Quant Intelligence Platform' };
   const titleEl = document.getElementById('page-title');
@@ -41617,7 +41660,8 @@ setTimeout(() => {
     ['signals',   'Signals',       false],
     ['portfolio', 'Portfolio',     false],
     ['paper',     'Paper Trading', false],
-    ['quantlab',  'Quant Lab',     false]
+    ['quantlab',  'Quant Lab',     false],
+    ['research',  'Research Lab',  false]
   ];
   var MORE = [
     ['macro',    'Macro',        'MA'],
@@ -44805,6 +44849,495 @@ setTimeout(() => {
   else build();
   setInterval(build, 1600);
   window.QEMethodology = { build: build };
+})();
+</script>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     RESEARCH LAB v1 — a real quant research workspace.
+     Hypothesis → Data → Feature Engineering → Model → Backtest →
+     Out-of-sample Validation → Report.
+
+     Everything computed here is REAL math on a DETERMINISTIC, SEEDED
+     synthetic market that is calibrated to known stylized facts
+     (momentum persistence via AR(1), a low-volatility tilt, a sentiment
+     drift link). The data is simulated and labelled as such; the
+     statistics are genuine:
+       · pooled cross-sectional OLS regression — slope, SE, t-stat,
+         two-tailed p-value, R²
+       · tercile long/short factor portfolio backtest — equity curve,
+         annualised return & vol, Sharpe, Sortino, max drawdown, hit rate
+       · in-sample / out-of-sample split to expose overfitting
+     Some hypotheses succeed and one (short-term reversal) is designed to
+     fail — because honest research reports the nulls too.
+     ════════════════════════════════════════════════════════════════════ -->
+<style id="qe-research-v1-css">
+  #page-research { padding: 0; }
+  .qe-rl { max-width: 1180px; margin: 0 auto; padding: 8px 4px 80px; color: #E7E5F4; }
+  .qe-rl-eyebrow { font: 600 11px/1 'JetBrains Mono', monospace; letter-spacing: .28em;
+    text-transform: uppercase; color: #A78BFA; margin: 0 0 12px; display:flex; gap:10px; align-items:center; }
+  .qe-rl-eyebrow::before { content:''; width:26px; height:1px; background:linear-gradient(90deg,#A78BFA,transparent); }
+  .qe-rl-h1 { font: 600 clamp(30px,4.6vw,52px)/1.02 'Fraunces', Georgia, serif; margin: 0 0 14px;
+    letter-spacing: -.015em; color:#fff; }
+  .qe-rl-h1 em { font-style: italic; background: linear-gradient(120deg,#A78BFA,#E879F9 55%,#67E8F9);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .qe-rl-lede { font: 400 16px/1.6 'Fraunces', Georgia, serif; color:#B6B2CE; max-width: 720px; margin: 0 0 8px; }
+  .qe-rl-note { font: 500 11.5px/1.5 'JetBrains Mono', monospace; color:#8B86A8; margin: 6px 0 26px;
+    display:inline-flex; gap:8px; align-items:center; padding:7px 12px; border:1px solid rgba(167,139,250,.22);
+    border-radius:999px; background:rgba(167,139,250,.06); }
+  .qe-rl-note b { color:#C4B5FD; font-weight:600; }
+
+  .qe-rl-controls { display:grid; grid-template-columns: 1.55fr .85fr; gap: 16px; margin: 0 0 22px; }
+  @media (max-width: 820px){ .qe-rl-controls { grid-template-columns: 1fr; } }
+  .qe-rl-card { background: linear-gradient(180deg, rgba(30,27,48,.78), rgba(18,16,32,.86));
+    border: 1px solid rgba(167,139,250,.16); border-radius: 18px; padding: 20px; }
+  .qe-rl-card h3 { font: 600 12px/1 'JetBrains Mono', monospace; letter-spacing:.16em; text-transform:uppercase;
+    color:#9D97BE; margin: 0 0 14px; }
+  .qe-rl-hypos { display:grid; gap: 9px; }
+  .qe-rl-hypo { text-align:left; cursor:pointer; border:1px solid rgba(167,139,250,.16);
+    background: rgba(167,139,250,.04); border-radius: 13px; padding: 12px 14px; color:#D9D6EC;
+    transition: transform .16s cubic-bezier(.23,1,.32,1), border-color .16s, background .16s; display:flex; gap:12px; align-items:flex-start; }
+  .qe-rl-hypo:hover { border-color: rgba(167,139,250,.45); background: rgba(167,139,250,.09); }
+  .qe-rl-hypo:active { transform: scale(.99); }
+  .qe-rl-hypo.sel { border-color:#A78BFA; background: linear-gradient(180deg, rgba(167,139,250,.18), rgba(167,139,250,.07));
+    box-shadow: 0 0 0 1px rgba(167,139,250,.35), 0 10px 30px -16px rgba(167,139,250,.6); }
+  .qe-rl-hypo .tk { font: 700 13px/1.3 'JetBrains Mono', monospace; color:#fff; min-width: 92px; }
+  .qe-rl-hypo .ds { font: 400 12.5px/1.45 'Fraunces', Georgia, serif; color:#A9A4C6; }
+  .qe-rl-hypo.sel .ds { color:#CFC9E8; }
+  .qe-rl-run { width:100%; margin-top:4px; border:0; cursor:pointer; border-radius:13px; padding:14px 18px;
+    font: 700 13px/1 'JetBrains Mono', monospace; letter-spacing:.08em; color:#0B0815;
+    background: linear-gradient(120deg,#C4B5FD,#E879F9 60%,#67E8F9);
+    transition: transform .16s cubic-bezier(.23,1,.32,1), box-shadow .2s; box-shadow: 0 12px 34px -14px rgba(232,121,249,.7); }
+  .qe-rl-run:hover { box-shadow: 0 16px 44px -14px rgba(232,121,249,.85); }
+  .qe-rl-run:active { transform: scale(.985); }
+  .qe-rl-run[disabled] { opacity:.6; cursor: default; }
+  .qe-rl-spec { display:grid; gap:11px; }
+  .qe-rl-spec .row { display:flex; justify-content:space-between; gap:10px; font: 500 12px/1.4 'JetBrains Mono', monospace; }
+  .qe-rl-spec .row span:first-child { color:#8B86A8; }
+  .qe-rl-spec .row span:last-child { color:#E7E5F4; text-align:right; }
+
+  .qe-rl-steps { display:flex; flex-wrap:wrap; gap:7px; margin: 0 0 20px; }
+  .qe-rl-step { font: 600 10.5px/1 'JetBrains Mono', monospace; letter-spacing:.1em; text-transform:uppercase;
+    color:#7E7A9C; border:1px solid rgba(167,139,250,.14); border-radius:999px; padding:7px 12px; display:flex; gap:8px; align-items:center;
+    transition: color .25s, border-color .25s, background .25s; }
+  .qe-rl-step b { width:16px; height:16px; border-radius:50%; display:grid; place-items:center; font-size:9px;
+    background: rgba(167,139,250,.16); color:#A78BFA; }
+  .qe-rl-step.done { color:#5EEAD4; border-color: rgba(94,234,212,.4); background: rgba(94,234,212,.07); }
+  .qe-rl-step.done b { background:#5EEAD4; color:#06231d; }
+
+  #qe-rl-out { display:none; }
+  #qe-rl-out.show { display:block; animation: qeRlFade .5s cubic-bezier(.23,1,.32,1); }
+  @keyframes qeRlFade { from { opacity:0; transform: translateY(10px) scale(.99); } to { opacity:1; transform:none; } }
+
+  .qe-rl-grid { display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:16px; }
+  @media (max-width: 820px){ .qe-rl-grid { grid-template-columns:1fr; } }
+  .qe-rl-panel { background: linear-gradient(180deg, rgba(28,25,45,.7), rgba(16,14,28,.8));
+    border:1px solid rgba(167,139,250,.14); border-radius:18px; padding:18px 20px; }
+  .qe-rl-panel .cap { font: 600 11px/1 'JetBrains Mono', monospace; letter-spacing:.16em; text-transform:uppercase;
+    color:#9D97BE; margin:0 0 4px; }
+  .qe-rl-panel .sub { font: 400 12.5px/1.5 'Fraunces', Georgia, serif; color:#8B86A8; margin:0 0 14px; }
+
+  .qe-rl-stats { display:grid; grid-template-columns: repeat(4,1fr); gap:12px; margin-bottom:16px; }
+  @media (max-width: 720px){ .qe-rl-stats { grid-template-columns: repeat(2,1fr); } }
+  .qe-rl-stat { background: linear-gradient(180deg, rgba(30,27,48,.7), rgba(18,16,32,.82));
+    border:1px solid rgba(167,139,250,.14); border-radius:15px; padding:15px 16px; }
+  .qe-rl-stat .k { font: 600 10px/1 'JetBrains Mono', monospace; letter-spacing:.13em; text-transform:uppercase; color:#8B86A8; margin-bottom:9px; }
+  .qe-rl-stat .v { font: 700 23px/1 'JetBrains Mono', monospace; color:#fff; letter-spacing:-.01em; }
+  .qe-rl-stat .v.pos { color:#5EEAD4; } .qe-rl-stat .v.neg { color:#FB7185; }
+  .qe-rl-stat .t { font: 500 11px/1.3 'JetBrains Mono', monospace; color:#7E7A9C; margin-top:7px; }
+
+  .qe-rl-table { width:100%; border-collapse:collapse; font: 500 12px/1.4 'JetBrains Mono', monospace; }
+  .qe-rl-table th { text-align:right; color:#8B86A8; font-weight:600; padding:7px 9px; border-bottom:1px solid rgba(167,139,250,.16);
+    font-size:10px; letter-spacing:.08em; text-transform:uppercase; }
+  .qe-rl-table th:first-child, .qe-rl-table td:first-child { text-align:left; }
+  .qe-rl-table td { padding:7px 9px; border-bottom:1px solid rgba(167,139,250,.06); color:#D9D6EC; }
+  .qe-rl-table td .pos { color:#5EEAD4; } .qe-rl-table td .neg { color:#FB7185; }
+  .qe-rl-tag { display:inline-block; font-size:10px; padding:2px 7px; border-radius:6px; font-weight:700; }
+  .qe-rl-tag.l { background:rgba(94,234,212,.14); color:#5EEAD4; } .qe-rl-tag.s { background:rgba(251,113,133,.14); color:#FB7185; }
+
+  .qe-rl-verdict { border-radius:18px; padding:22px 24px; margin-bottom:16px; border:1px solid;
+    display:grid; grid-template-columns:auto 1fr; gap:18px; align-items:start; }
+  .qe-rl-verdict.go { border-color: rgba(94,234,212,.35); background: linear-gradient(120deg, rgba(94,234,212,.1), rgba(94,234,212,.02)); }
+  .qe-rl-verdict.no { border-color: rgba(251,113,133,.35); background: linear-gradient(120deg, rgba(251,113,133,.1), rgba(251,113,133,.02)); }
+  .qe-rl-verdict .badge { font: 700 11px/1 'JetBrains Mono', monospace; letter-spacing:.1em; text-transform:uppercase;
+    padding:9px 13px; border-radius:10px; white-space:nowrap; }
+  .qe-rl-verdict.go .badge { background:#5EEAD4; color:#06231d; } .qe-rl-verdict.no .badge { background:#FB7185; color:#2a0710; }
+  .qe-rl-verdict h4 { font: 600 18px/1.25 'Fraunces', Georgia, serif; color:#fff; margin:0 0 7px; }
+  .qe-rl-verdict p { font: 400 13.5px/1.6 'Fraunces', Georgia, serif; color:#BDB9D6; margin:0; }
+  .qe-rl-verdict code { font: 600 12px 'JetBrains Mono', monospace; color:#C4B5FD; background:rgba(167,139,250,.12); padding:1px 6px; border-radius:5px; }
+
+  .qe-rl-honesty { background: rgba(167,139,250,.05); border:1px dashed rgba(167,139,250,.28); border-radius:16px;
+    padding:18px 20px; font: 400 13px/1.65 'Fraunces', Georgia, serif; color:#A9A4C6; }
+  .qe-rl-honesty b { color:#C4B5FD; font-weight:600; }
+  .qe-rl-chart svg { width:100%; height:auto; display:block; }
+</style>
+<script id="qe-research-v1-js">
+(function(){
+  'use strict';
+  if (window.__qeResearchV1) return; window.__qeResearchV1 = true;
+
+  /* ───────────────────────── math ───────────────────────── */
+  function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; var t=Math.imul(a^a>>>15,1|a);
+    t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+  function seedFromStr(s){ var h=2166136261>>>0; for(var i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619); } return h>>>0; }
+  function randn(rng){ var u=Math.max(1e-12,rng()), v=rng(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
+  function mean(a){ if(!a.length) return 0; var s=0; for(var i=0;i<a.length;i++) s+=a[i]; return s/a.length; }
+  function std(a){ if(a.length<2) return 0; var m=mean(a),s=0; for(var i=0;i<a.length;i++){ var d=a[i]-m; s+=d*d; } return Math.sqrt(s/(a.length-1)); }
+  function zscore(a){ var m=mean(a), sd=std(a); if(sd<1e-12) return a.map(function(){return 0;}); return a.map(function(x){ return (x-m)/sd; }); }
+  function erf(x){ var s=x<0?-1:1; x=Math.abs(x); var t=1/(1+0.3275911*x);
+    var y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x); return s*y; }
+  function normCdf(x){ return 0.5*(1+erf(x/Math.SQRT2)); }
+  function pTwoTail(t){ return 2*(1-normCdf(Math.abs(t))); }
+
+  // Ordinary least squares y ~ x (with intercept). Returns slope, se, t, p, r2, intercept, n.
+  function ols(xs, ys){
+    var n = xs.length; if (n < 3) return null;
+    var mx=mean(xs), my=mean(ys), Sxx=0, Sxy=0, Syy=0;
+    for (var i=0;i<n;i++){ var dx=xs[i]-mx, dy=ys[i]-my; Sxx+=dx*dx; Sxy+=dx*dy; Syy+=dy*dy; }
+    if (Sxx < 1e-12) return null;
+    var b = Sxy/Sxx, a = my - b*mx;
+    var sse=0; for (var j=0;j<n;j++){ var e = ys[j]-(a+b*xs[j]); sse+=e*e; }
+    var df = n-2, s2 = sse/df, seB = Math.sqrt(s2/Sxx);
+    var t = seB>1e-12 ? b/seB : 0, p = pTwoTail(t), r2 = Syy>1e-12 ? 1-sse/Syy : 0;
+    return { slope:b, intercept:a, se:seB, t:t, p:p, r2:r2, n:n };
+  }
+
+  /* ─────────────────── deterministic market ─────────────────── */
+  var DAYS = 520, LOOK = 63, HOLD = 21;       // ~2y history, 3m lookback, 1m hold
+  var SIG = { low:0.012, medium:0.018, high:0.028 };
+
+  function universe(){
+    var s = (window.STOCKS && window.STOCKS.length >= 6) ? window.STOCKS : null;
+    if (s) return s;
+    return [ // self-contained fallback if STOCKS not yet defined
+      {ticker:'AAPL',sentiment:88,momentum:85,risk:'low',price:189},
+      {ticker:'NVDA',sentiment:92,momentum:95,risk:'medium',price:878},
+      {ticker:'MSFT',sentiment:85,momentum:78,risk:'low',price:413},
+      {ticker:'TSLA',sentiment:52,momentum:45,risk:'high',price:245},
+      {ticker:'AMZN',sentiment:82,momentum:80,risk:'low',price:188},
+      {ticker:'META',sentiment:87,momentum:88,risk:'medium',price:498},
+      {ticker:'GOOGL',sentiment:80,momentum:75,risk:'low',price:174},
+      {ticker:'JPM',sentiment:62,momentum:55,risk:'low',price:196},
+      {ticker:'XOM',sentiment:32,momentum:28,risk:'medium',price:114},
+      {ticker:'JNJ',sentiment:55,momentum:48,risk:'low',price:159},
+      {ticker:'BTC',sentiment:76,momentum:82,risk:'high',price:67234},
+      {ticker:'GLD',sentiment:65,momentum:58,risk:'low',price:186}
+    ];
+  }
+
+  // Build a deterministic daily return panel calibrated to stylized facts.
+  // Expected return is a PERSISTENT latent state mu_t (AR(1), weeks-long
+  // half-life) anchored on a characteristic-driven target. The persistence
+  // is what creates genuine multi-week momentum; the target link is what
+  // makes the sentiment and low-volatility tilts real. Params are exposed
+  // so the calibration can be tuned/inspected without rebuilding the file.
+  function buildPanel(opt){
+    opt = opt || {};
+    var kSent  = opt.kSent  != null ? opt.kSent  : 0.0048;   // sentiment → permanent premium
+    var kVol   = opt.kVol   != null ? opt.kVol   : 16;       // low-volatility tilt
+    var rhoM   = opt.rhoM   != null ? opt.rhoM   : 0.955;    // momentum-state persistence
+    var innovM = opt.innovM != null ? opt.innovM : 0.00024;  // momentum-state innovation
+    var sigMap = opt.sig || { low:0.006, medium:0.009, high:0.013 };
+    var u = universe(), tickers = [], rets = [], prices = [];
+    for (var i=0;i<u.length;i++){
+      var st = u[i], tk = st.ticker || ('S'+i);
+      var senti = (typeof st.sentiment==='number') ? st.sentiment : 60;
+      var sig = sigMap[st.risk] || sigMap.medium;
+      // PERMANENT premium from characteristics — sentiment lifts it, vol drags it.
+      // This anchors the long-run cross-section, so the sentiment & low-vol
+      // factors recover the right sign.
+      var annTarget = 0.03 + kSent*(senti-60) - kVol*(sig-0.009);
+      annTarget = Math.max(-0.15, Math.min(0.32, annTarget));
+      var muBar = annTarget/252;
+      var rng = mulberry32(seedFromStr(tk) ^ 0x9e3779b9);
+      // TRANSIENT momentum state — mean-zero AR(1). It persists across weeks
+      // (so trailing returns predict forward returns) but averages out over
+      // the full sample, so it does NOT contaminate the permanent premium.
+      var m = 0, r = [], p = [], px = (st.price||100);
+      for (var d=0; d<DAYS; d++){
+        m = rhoM*m + innovM*randn(rng);                 // momentum state
+        var rt = muBar + m + sig*randn(rng);            // realized daily return
+        r.push(rt);
+      }
+      // Build a price path that ENDS at the listed price (scale anchor for display).
+      var cum = 1, path = [];
+      for (var k=0;k<DAYS;k++){ cum *= (1+r[k]); path.push(cum); }
+      var endC = path[DAYS-1] || 1;
+      for (var m=0;m<DAYS;m++) p.push(px * path[m]/endC);
+      tickers.push(tk); rets.push(r); prices.push(p);
+    }
+    return { tickers:tickers, rets:rets, prices:prices, u:u, n:u.length };
+  }
+
+  /* ─────────────────── factors ─────────────────── */
+  // factor(panel, stockIdx, date) — higher = more attractive per the hypothesis.
+  var HYPOS = [
+    { key:'momentum', tk:'MOMENTUM', name:'Cross-sectional momentum',
+      desc:'Stocks that outperformed over the trailing 3 months keep outperforming.',
+      f:function(P,i,d){ return P.prices[i][d]/P.prices[i][d-LOOK]-1; } },
+    { key:'lowvol', tk:'LOW-VOL', name:'Low-volatility anomaly',
+      desc:'Lower-volatility stocks earn higher risk-adjusted returns than CAPM predicts.',
+      f:function(P,i,d){ var w=P.rets[i].slice(d-LOOK,d); return -std(w); } },
+    { key:'reversal', tk:'REVERSAL', name:'Short-term reversal',
+      desc:'Last month’s losers bounce back and beat last month’s winners.',
+      f:function(P,i,d){ return -(P.prices[i][d]/P.prices[i][d-HOLD]-1); } },
+    { key:'sentiment', tk:'SENTIMENT', name:'Sentiment signal',
+      desc:'Names with stronger crowd + news sentiment lead price over the next month.',
+      f:function(P,i,d){ var s=P.u[i].sentiment; return (typeof s==='number')?s:60; } }
+  ];
+  function hypoByKey(k){ for(var i=0;i<HYPOS.length;i++) if(HYPOS[i].key===k) return HYPOS[i]; return HYPOS[0]; }
+
+  /* ─────────────────── pipeline ─────────────────── */
+  function runResearch(key, opt){
+    var P = buildPanel(opt), H = hypoByKey(key), n = P.n;
+    var dates = [];
+    for (var d=LOOK; d+HOLD < DAYS; d+=HOLD) dates.push(d);   // non-overlapping rebalances
+
+    // Pooled cross-sectional regression + tercile L/S backtest in one sweep.
+    var poolX = [], poolY = [], scatter = [];
+    var periodRets = [], periodMeta = [];
+    var kt = Math.max(1, Math.floor(n/3));
+    for (var di=0; di<dates.length; di++){
+      var dd = dates[di], fac = [], fwd = [];
+      for (var i=0;i<n;i++){
+        fac.push(H.f(P, i, dd));
+        fwd.push(P.prices[i][dd+HOLD]/P.prices[i][dd]-1);
+      }
+      var z = zscore(fac), fbar = mean(fwd);
+      for (var j=0;j<n;j++){ poolX.push(z[j]); var yy=fwd[j]-fbar; poolY.push(yy);
+        if (scatter.length<160) scatter.push([z[j], yy]); }
+      // rank for portfolio
+      var order = fac.map(function(v,idx){ return [v,idx]; }).sort(function(a,b){ return b[0]-a[0]; });
+      var longIdx = order.slice(0,kt).map(function(o){return o[1];});
+      var shortIdx = order.slice(n-kt).map(function(o){return o[1];});
+      var lr=0, sr=0;
+      longIdx.forEach(function(ix){ lr += fwd[ix]; }); lr/=kt;
+      shortIdx.forEach(function(ix){ sr += fwd[ix]; }); sr/=kt;
+      periodRets.push(lr - sr);
+      periodMeta.push({ date:dd, long:longIdx.map(function(ix){return P.tickers[ix];}),
+        short:shortIdx.map(function(ix){return P.tickers[ix];}), ret:lr-sr });
+    }
+
+    var reg = ols(poolX, poolY) || {slope:0,se:0,t:0,p:1,r2:0,n:poolX.length,intercept:0};
+
+    // Equity curve + performance stats on non-overlapping 21d period returns.
+    var ppy = 252/HOLD;                 // periods per year (~12)
+    var equity = [1], cum=1;
+    for (var e=0;e<periodRets.length;e++){ cum *= (1+periodRets[e]); equity.push(cum); }
+    var mP = mean(periodRets), sdP = std(periodRets);
+    var annRet = Math.pow(Math.max(1e-9, equity[equity.length-1]), ppy/periodRets.length) - 1;
+    var annVol = sdP * Math.sqrt(ppy);
+    var sharpe = sdP>1e-9 ? (mP*ppy)/annVol : 0;
+    var downA = periodRets.map(function(x){ return x<0?x:0; });
+    var dd2=0; for (var q=0;q<downA.length;q++) dd2+=downA[q]*downA[q];
+    var downDev = Math.sqrt(dd2/Math.max(1,periodRets.length)) * Math.sqrt(ppy);
+    var sortino = downDev>1e-9 ? (mP*ppy)/downDev : 0;
+    var peak=equity[0], maxDD=0;
+    for (var w=0;w<equity.length;w++){ if(equity[w]>peak) peak=equity[w]; var dr=(peak-equity[w])/peak; if(dr>maxDD) maxDD=dr; }
+    var wins=0; periodRets.forEach(function(x){ if(x>0) wins++; });
+    var hit = periodRets.length? wins/periodRets.length : 0;
+
+    // In-sample / out-of-sample split (60/40) — Sharpe in each window.
+    function sharpeOf(arr){ if(arr.length<2) return 0; var m=mean(arr), s=std(arr); return s>1e-9?(m*ppy)/(s*Math.sqrt(ppy)):0; }
+    var cut = Math.floor(periodRets.length*0.6);
+    var isS = sharpeOf(periodRets.slice(0,cut)), oosS = sharpeOf(periodRets.slice(cut));
+
+    return { hypo:H, reg:reg, scatter:scatter, equity:equity, periodRets:periodRets, periodMeta:periodMeta,
+      stats:{ annRet:annRet, annVol:annVol, sharpe:sharpe, sortino:sortino, maxDD:maxDD, hit:hit },
+      val:{ isSharpe:isS, oosSharpe:oosS, nPeriods:periodRets.length, nObs:poolX.length, cut:cut },
+      n:n, dates:dates };
+  }
+
+  /* ─────────────────── charts (inline SVG) ─────────────────── */
+  function pct(x){ return (x*100).toFixed(1)+'%'; }
+  function sgn(x,d){ d=d||2; return (x>=0?'+':'') + x.toFixed(d); }
+
+  function equitySVG(eq){
+    var W=560,Hh=190,pad=26, n=eq.length, lo=Math.min.apply(null,eq), hi=Math.max.apply(null,eq);
+    if(hi-lo<1e-6) hi=lo+1;
+    function X(i){ return pad + (W-2*pad)*(i/(n-1)); }
+    function Y(v){ return Hh-pad - (Hh-2*pad)*((v-lo)/(hi-lo)); }
+    var d=''; for(var i=0;i<n;i++){ d += (i?'L':'M') + X(i).toFixed(1) + ' ' + Y(eq[i]).toFixed(1); }
+    var area = d + 'L'+X(n-1).toFixed(1)+' '+(Hh-pad)+'L'+X(0).toFixed(1)+' '+(Hh-pad)+'Z';
+    var base = Y(1);
+    return '<svg viewBox="0 0 '+W+' '+Hh+'" xmlns="http://www.w3.org/2000/svg">'
+      + '<defs><linearGradient id="qeRlEq" x1="0" y1="0" x2="0" y2="1">'
+      + '<stop offset="0" stop-color="#5EEAD4" stop-opacity=".34"/><stop offset="1" stop-color="#5EEAD4" stop-opacity="0"/></linearGradient></defs>'
+      + '<line x1="'+pad+'" y1="'+base.toFixed(1)+'" x2="'+(W-pad)+'" y2="'+base.toFixed(1)+'" stroke="#6b6790" stroke-width="1" stroke-dasharray="3 4" opacity=".5"/>'
+      + '<path d="'+area+'" fill="url(#qeRlEq)"/>'
+      + '<path d="'+d+'" fill="none" stroke="#5EEAD4" stroke-width="2.2" stroke-linejoin="round"/>'
+      + '<text x="'+pad+'" y="14" fill="#8B86A8" font-family="JetBrains Mono,monospace" font-size="10">growth of $1 · L/S portfolio</text>'
+      + '<text x="'+(W-pad)+'" y="14" text-anchor="end" fill="#5EEAD4" font-family="JetBrains Mono,monospace" font-size="11">$'+eq[n-1].toFixed(2)+'</text>'
+      + '</svg>';
+  }
+
+  function scatterSVG(pts, reg){
+    var W=560,Hh=190,pad=30;
+    var xs=pts.map(function(p){return p[0];}), ys=pts.map(function(p){return p[1];});
+    var xlo=Math.min.apply(null,xs), xhi=Math.max.apply(null,xs), ylo=Math.min.apply(null,ys), yhi=Math.max.apply(null,ys);
+    if(xhi-xlo<1e-6){xlo-=1;xhi+=1;} if(yhi-ylo<1e-6){ylo-=.01;yhi+=.01;}
+    function X(v){ return pad + (W-2*pad)*((v-xlo)/(xhi-xlo)); }
+    function Y(v){ return Hh-pad - (Hh-2*pad)*((v-ylo)/(yhi-ylo)); }
+    var dots=''; for(var i=0;i<pts.length;i++){ dots += '<circle cx="'+X(pts[i][0]).toFixed(1)+'" cy="'+Y(pts[i][1]).toFixed(1)+'" r="2.6" fill="#A78BFA" opacity=".55"/>'; }
+    var x1=xlo, x2=xhi, y1=reg.intercept+reg.slope*x1, y2=reg.intercept+reg.slope*x2;
+    var zeroY = (0>=ylo&&0<=yhi) ? Y(0) : null;
+    var line = '<line x1="'+X(x1).toFixed(1)+'" y1="'+Y(y1).toFixed(1)+'" x2="'+X(x2).toFixed(1)+'" y2="'+Y(y2).toFixed(1)+'" stroke="#E879F9" stroke-width="2.4"/>';
+    return '<svg viewBox="0 0 '+W+' '+Hh+'" xmlns="http://www.w3.org/2000/svg">'
+      + (zeroY!==null? '<line x1="'+pad+'" y1="'+zeroY.toFixed(1)+'" x2="'+(W-pad)+'" y2="'+zeroY.toFixed(1)+'" stroke="#6b6790" stroke-width="1" stroke-dasharray="3 4" opacity=".45"/>':'')
+      + dots + line
+      + '<text x="'+pad+'" y="14" fill="#8B86A8" font-family="JetBrains Mono,monospace" font-size="10">forward 21d return (demeaned) vs factor z-score</text>'
+      + '<text x="'+(W-pad)+'" y="'+(Hh-8)+'" text-anchor="end" fill="#E879F9" font-family="JetBrains Mono,monospace" font-size="10">slope '+sgn(reg.slope*100,2)+'%/σ</text>'
+      + '</svg>';
+  }
+
+  /* ─────────────────── render ─────────────────── */
+  function ensurePage(){
+    var main = document.querySelector('.main-content');
+    if (!main) return null;
+    var pg = document.getElementById('page-research');
+    if (pg) return pg;
+    pg = document.createElement('div');
+    pg.id = 'page-research'; pg.className = 'page-anim hidden';
+    pg.innerHTML = shellHTML();
+    main.appendChild(pg);
+    wire(pg);
+    return pg;
+  }
+
+  function shellHTML(){
+    var hy = HYPOS.map(function(h,i){
+      return '<button class="qe-rl-hypo'+(i===0?' sel':'')+'" data-h="'+h.key+'">'
+        + '<span class="tk">'+h.tk+'</span><span class="ds">'+h.desc+'</span></button>';
+    }).join('');
+    var steps = ['Hypothesis','Data','Features','Model','Backtest','Validation','Report'].map(function(s,i){
+      return '<div class="qe-rl-step" data-s="'+i+'"><b>'+(i+1)+'</b>'+s+'</div>';
+    }).join('');
+    return ''
+    + '<div class="qe-rl">'
+    + '<p class="qe-rl-eyebrow">Research Lab</p>'
+    + '<h1 class="qe-rl-h1">Test a factor <em>the way a quant desk does.</em></h1>'
+    + '<p class="qe-rl-lede">Pick a hypothesis. The lab runs a pooled cross-sectional regression, builds a long/short factor portfolio, and splits the record into in-sample and out-of-sample windows — so you see whether an edge survives contact with data it never trained on.</p>'
+    + '<span class="qe-rl-note"><b>Deterministic synthetic market</b> · seeded, calibrated to known stylized facts · the statistics are real, the prices are simulated</span>'
+    + '<div class="qe-rl-controls">'
+    +   '<div class="qe-rl-card"><h3>1 · Hypothesis</h3><div class="qe-rl-hypos">'+hy+'</div>'
+    +     '<button class="qe-rl-run" id="qe-rl-run">Run research →</button></div>'
+    +   '<div class="qe-rl-card"><h3>Experiment design</h3><div class="qe-rl-spec">'
+    +     '<div class="row"><span>Universe</span><span id="qe-rl-uni">—</span></div>'
+    +     '<div class="row"><span>History</span><span>520 trading days (~2y)</span></div>'
+    +     '<div class="row"><span>Lookback</span><span>63d · hold 21d</span></div>'
+    +     '<div class="row"><span>Estimator</span><span>Pooled OLS, z-scored</span></div>'
+    +     '<div class="row"><span>Portfolio</span><span>Tercile long / short</span></div>'
+    +     '<div class="row"><span>Validation</span><span>60 / 40 IS-OOS split</span></div>'
+    +   '</div></div>'
+    + '</div>'
+    + '<div class="qe-rl-steps">'+steps+'</div>'
+    + '<div id="qe-rl-out"></div>'
+    + '</div>';
+  }
+
+  function setSteps(pg, k){
+    var steps = pg.querySelectorAll('.qe-rl-step');
+    steps.forEach(function(s,i){ s.classList.toggle('done', i<=k); });
+  }
+
+  function verdict(res){
+    var r=res.reg, v=res.val, sig=r.p<0.05, rightSign=r.slope>0, oosHolds=v.oosSharpe>0.2;
+    var go = sig && rightSign && oosHolds;
+    var title, body;
+    if (go){
+      title = 'Edge confirmed — and it survives out-of-sample.';
+      body = 'The factor loads positive (<code>slope '+sgn(r.slope*100,2)+'%/σ</code>) with <code>t = '+r.t.toFixed(2)
+        +'</code>, <code>p = '+r.p.toFixed(3)+'</code>. The long/short book runs a <code>'+res.stats.sharpe.toFixed(2)
+        +'</code> Sharpe in-sample and still <code>'+v.oosSharpe.toFixed(2)+'</code> out-of-sample — degradation, but the sign holds. That is what a real, tradable factor looks like.';
+    } else if (sig && !rightSign){
+      title = 'Significant — with the wrong sign. Hypothesis rejected.';
+      body = 'The relationship is statistically real (<code>t = '+r.t.toFixed(2)+'</code>, <code>p = '+r.p.toFixed(3)
+        +'</code>) but the slope is <code>'+sgn(r.slope*100,2)+'%/σ</code> — the opposite of the bet. On this market the momentum effect dominates, so fading recent moves loses money. A good desk reports this and moves on.';
+    } else if (!sig){
+      title = 'No significant edge. This is a null result — and that matters.';
+      body = 'At <code>t = '+r.t.toFixed(2)+'</code> / <code>p = '+r.p.toFixed(3)+'</code> we cannot reject “no relationship.” '
+        +'Reporting the nulls is what separates research from story-telling — most hypotheses you test will land here.';
+    } else {
+      title = 'Edge in-sample, but it breaks out-of-sample.';
+      body = 'In-sample Sharpe is <code>'+v.isSharpe.toFixed(2)+'</code>, but out-of-sample it falls to <code>'+v.oosSharpe.toFixed(2)
+        +'</code>. That gap is the signature of overfitting — the reason every claim here is split-tested before it is believed.';
+    }
+    return { go:go, title:title, body:body };
+  }
+
+  function renderResults(pg, res){
+    var out = pg.querySelector('#qe-rl-out');
+    var r=res.reg, s=res.stats, v=res.val, vd=verdict(res);
+    var rows = res.periodMeta.slice(-6).reverse().map(function(m){
+      return '<tr><td>day '+m.date+'</td>'
+        + '<td><span class="qe-rl-tag l">'+m.long.slice(0,3).join(' ')+'</span></td>'
+        + '<td><span class="qe-rl-tag s">'+m.short.slice(0,3).join(' ')+'</span></td>'
+        + '<td><span class="'+(m.ret>=0?'pos':'neg')+'">'+sgn(m.ret*100,2)+'%</span></td></tr>';
+    }).join('');
+    out.innerHTML = ''
+    + '<div class="qe-rl-verdict '+(vd.go?'go':'no')+'"><div class="badge">'+(vd.go?'Tradable':'Filed')+'</div>'
+    +   '<div><h4>'+vd.title+'</h4><p>'+vd.body+'</p></div></div>'
+    + '<div class="qe-rl-stats">'
+    +   stat('Factor premium', sgn(r.slope*100,2)+'%', r.slope>=0?'pos':'neg', 'per 1σ exposure')
+    +   stat('t-stat', r.t.toFixed(2), Math.abs(r.t)>=1.96?'pos':'neg', 'p = '+r.p.toFixed(3))
+    +   stat('R²', (r.r2*100).toFixed(1)+'%', '', r.n+' obs pooled')
+    +   stat('Hit rate', (s.hit*100).toFixed(0)+'%', s.hit>=0.5?'pos':'neg', 'periods positive')
+    + '</div>'
+    + '<div class="qe-rl-grid">'
+    +   '<div class="qe-rl-panel"><p class="cap">Backtest — equity curve</p><p class="sub">Tercile long/short, equal-weight, rebalanced every 21 days.</p><div class="qe-rl-chart">'+equitySVG(res.equity)+'</div></div>'
+    +   '<div class="qe-rl-panel"><p class="cap">Model — cross-sectional fit</p><p class="sub">Each dot is one stock-date; the line is the pooled OLS factor loading.</p><div class="qe-rl-chart">'+scatterSVG(res.scatter, r)+'</div></div>'
+    + '</div>'
+    + '<div class="qe-rl-stats">'
+    +   stat('Ann. return', pct(s.annRet), s.annRet>=0?'pos':'neg', 'geometric, L/S')
+    +   stat('Sharpe', s.sharpe.toFixed(2), s.sharpe>=1?'pos':(s.sharpe>=0?'':'neg'), 'ann. vol '+pct(s.annVol))
+    +   stat('Sortino', s.sortino.toFixed(2), s.sortino>=1?'pos':(s.sortino>=0?'':'neg'), 'downside-adjusted')
+    +   stat('Max drawdown', '-'+pct(s.maxDD), 'neg', 'peak-to-trough')
+    + '</div>'
+    + '<div class="qe-rl-grid">'
+    +   '<div class="qe-rl-panel"><p class="cap">Validation — in vs out-of-sample</p><p class="sub">First 60% of rebalances train; the last 40% are untouched until now.</p>'
+    +     '<table class="qe-rl-table"><tr><th>Window</th><th>Periods</th><th>Sharpe</th></tr>'
+    +     '<tr><td>In-sample</td><td>'+v.cut+'</td><td><span class="'+(v.isSharpe>=0?'pos':'neg')+'">'+v.isSharpe.toFixed(2)+'</span></td></tr>'
+    +     '<tr><td>Out-of-sample</td><td>'+(v.nPeriods-v.cut)+'</td><td><span class="'+(v.oosSharpe>=0?'pos':'neg')+'">'+v.oosSharpe.toFixed(2)+'</span></td></tr>'
+    +     '</table></div>'
+    +   '<div class="qe-rl-panel"><p class="cap">Latest rebalances</p><p class="sub">Most recent long/short books and their realized 21-day return.</p>'
+    +     '<table class="qe-rl-table"><tr><th>Rebalance</th><th>Long</th><th>Short</th><th>Return</th></tr>'+rows+'</table></div>'
+    + '</div>'
+    + '<div class="qe-rl-honesty"><b>What this is, honestly.</b> The market above is a deterministic, seeded simulation calibrated to documented effects (momentum persistence, a low-volatility tilt, a sentiment drift). The <b>methods are exactly those used on real desks</b> — pooled cross-sectional OLS, a tercile long/short book, annualised Sharpe/Sortino, and a hard in-sample/out-of-sample split. The <b>numbers are not a track record</b> and nothing here is investment advice. The point is the workflow: form a hypothesis, test it, and report what the data says — including when it says no.</div>';
+    out.classList.add('show');
+  }
+
+  function stat(k,v,cls,t){ return '<div class="qe-rl-stat"><div class="k">'+k+'</div><div class="v '+(cls||'')+'">'+v+'</div><div class="t">'+(t||'')+'</div></div>'; }
+
+  var SELECTED = 'momentum';
+  function wire(pg){
+    pg.querySelectorAll('.qe-rl-hypo').forEach(function(b){
+      b.addEventListener('click', function(){
+        pg.querySelectorAll('.qe-rl-hypo').forEach(function(x){ x.classList.remove('sel'); });
+        b.classList.add('sel'); SELECTED = b.getAttribute('data-h');
+      });
+    });
+    var uni = pg.querySelector('#qe-rl-uni');
+    if (uni){ var u=universe(); uni.textContent = u.length+' securities'; }
+    var run = pg.querySelector('#qe-rl-run');
+    if (run){
+      run.addEventListener('click', function(){
+        run.setAttribute('disabled','disabled'); run.textContent='Running…';
+        // animate the step rail, then compute + render
+        var i=0; setSteps(pg,-1);
+        var tmr = setInterval(function(){ setSteps(pg, i); i++; if(i>6){ clearInterval(tmr);
+          var res; try { res = runResearch(SELECTED); } catch(e){ res=null; }
+          if (res) renderResults(pg, res);
+          run.removeAttribute('disabled'); run.textContent='Run research →';
+        } }, 130);
+      });
+    }
+  }
+
+  /* ─────────────────── boot ─────────────────── */
+  function boot(){ ensurePage(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+  setInterval(boot, 1500);
+  window.QEResearchLab = { run: runResearch, build: ensurePage, _build: buildPanel, _hypos: HYPOS };
 })();
 </script>
 </body>
