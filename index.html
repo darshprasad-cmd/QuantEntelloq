@@ -129,6 +129,9 @@
 <link rel="manifest" href="/manifest.webmanifest">
 
 <title>Quant Entelloq — AI-Native Financial Research Terminal</title>
+<!-- Warm the font origins early so the hero text (LCP element) paints sooner -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 
 <!-- ═══ Critical inline boot scripts — must run synchronously before paint ══ -->
@@ -19182,8 +19185,14 @@ window.qeRL  = window.QESecurity.rateLimit;
     const t = document.getElementById('qe-tm-time');
     if (t) t.textContent = new Date().toLocaleTimeString('en-US', { hour12: false });
   }, 1000);
-  // Crude FPS meter
-  let _frames = 0, _lastFps = performance.now();
+  // Crude FPS meter — only runs while the tab is visible AND the HUD is on-screen
+  // (it's display:none on mobile). Self-suspends otherwise so we don't burn a
+  // 60fps forever-loop on the main thread / battery when nothing can see it.
+  let _frames = 0, _lastFps = performance.now(), _fpsRAF = 0;
+  function _fpsVisible() {
+    const el = document.getElementById('qe-telemetry');
+    return !document.hidden && el && el.offsetParent !== null;
+  }
   function _fpsLoop() {
     _frames++;
     const now = performance.now();
@@ -19193,9 +19202,14 @@ window.qeRL  = window.QESecurity.rateLimit;
       if (el) el.textContent = fps + ' FPS';
       _frames = 0; _lastFps = now;
     }
-    requestAnimationFrame(_fpsLoop);
+    _fpsRAF = _fpsVisible() ? requestAnimationFrame(_fpsLoop) : 0;
   }
-  requestAnimationFrame(_fpsLoop);
+  function _fpsKick() {
+    if (!_fpsRAF && _fpsVisible()) { _lastFps = performance.now(); _frames = 0; _fpsRAF = requestAnimationFrame(_fpsLoop); }
+  }
+  _fpsKick();
+  document.addEventListener('visibilitychange', _fpsKick);
+  window.addEventListener('resize', _fpsKick, { passive: true });
 
   // ============================================================================
   // GOOGLE/YAHOO LIVE PRICE OVERLAY ON UNIVERSE — auto-fetches real prices
