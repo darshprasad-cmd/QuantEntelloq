@@ -2,8 +2,9 @@
 *.js
 !backend/**/*.js
 !backend/**/*.cjs
-# Production app bundle (externalized from index.html, served by GitHub Pages)
-!js/app.js
+# Production app bundle: app.js = readable source, app.min.js = served (minified).
+# Re-minify after editing app.js:  npx terser js/app.js -c -m --comments false -o js/app.min.js
+!js/*.js
 
 # Dependencies + build artifacts
 node_modules/
