@@ -2,6 +2,8 @@
 *.js
 !backend/**/*.js
 !backend/**/*.cjs
+# Production app bundle (externalized from index.html, served by GitHub Pages)
+!js/app.js
 
 # Dependencies + build artifacts
 node_modules/
