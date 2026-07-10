@@ -715,7 +715,7 @@ function showPage(page, navEl) {
     if (pc) pc.scrollTop = 0;
   } catch (_) { window.scrollTo(0, 0); }
 
-  if(page === 'dashboard') { setTimeout(renderCharts, 100); setTimeout(updateDashboardMetrics, 60); }
+  if(page === 'dashboard') setTimeout(renderHome, 20);
   if(page === 'reports')   setTimeout(renderReports, 50);
   if(page === 'scenario')  setTimeout(renderScenarioChart, 350);
   if(page === 'backtest')  document.getElementById('bt-results').classList.add('hidden');
@@ -917,12 +917,172 @@ function renderLearnContinue() {
 }
 
 // ==================== DASHBOARD ====================
-function renderDashboard() {
-  const grid = document.getElementById('signals-grid');
-  const topSignals = STOCKS.filter(s => s.signal === 'BUY').slice(0, 3);
-  grid.innerHTML = topSignals.map(s => signalCardHTML(s)).join('');
-  setTimeout(renderCharts, 100);
-  updateDashboardMetrics();
+// renderDashboard now delegates to the calm V2 Home (renderHome). The old dense
+// dashboard HTML remains in index.html as a graceful fallback if renderHome throws.
+function renderDashboard() { renderHome(); }
+
+// ==================== V2 HOME — calm 8-widget dashboard ====================
+function qzLookup(t){ try{ if(typeof qzSearchOpen==='function'){ qzSearchOpen(t); return; } if(typeof globalSearch==='function') globalSearch(t); }catch(e){} }
+function _qzUserName(){
+  try{
+    var u=null;
+    if(window.state&&state.profile&&state.profile.name) u=state.profile;
+    if(!u){ try{ u=JSON.parse(localStorage.getItem('qz_auth_user')||'null'); }catch(e){} }
+    if(!u&&typeof getUser==='function') u=getUser();
+    var n=(u&&(u.name||u.fullName||u.displayName))||'';
+    return ((n+'').trim().split(' ')[0])||'there';
+  }catch(e){ return 'there'; }
+}
+function _qzGreet(){ var h; try{ h=new Date().getHours(); }catch(e){ h=10; } var g=h<12?'Good morning':h<18?'Good afternoon':'Good evening'; return g+', '+_qzUserName(); }
+function _qzHomeDateStr(){ try{ return new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}); }catch(e){ return ''; } }
+function _qzHomeStocks(){ try{ return (typeof STOCKS!=='undefined'&&STOCKS&&STOCKS.length)?STOCKS:[]; }catch(e){ return []; } }
+function _qzHomeSent(s){
+  if(!s.length) return {avg:0,label:'—',color:'var(--text-muted)'};
+  var avg=Math.round(s.reduce(function(a,x){return a+(+x.sentiment||0);},0)/s.length);
+  var label=avg>70?'Bullish':avg>55?'Cautious':avg>40?'Neutral':'Bearish';
+  var color=avg>70?'var(--green)':avg>55?'var(--yellow)':avg>40?'var(--text-secondary)':'var(--red)';
+  return {avg:avg,label:label,color:color};
+}
+function _qzRowHTML(x){
+  var chg=+x.change||0, up=chg>=0;
+  var tk=((x.ticker||'')+'').replace(/[^A-Z0-9.]/gi,'');
+  var nm=((x.name||'')+'').replace(/[<>"'&]/g,'').slice(0,24);
+  return '<div class="qz-row" onclick="qzLookup(\''+tk+'\')">'+
+      '<div class="qz-row-main"><span class="qz-row-tk">'+tk+'</span><span class="qz-row-nm">'+nm+'</span></div>'+
+      '<div class="qz-row-chg '+(up?'up':'down')+'">'+(up?'+':'')+chg.toFixed(2)+'%</div>'+
+    '</div>';
+}
+function _qzCard(title, actHTML, bodyHTML, span){
+  return '<div class="qz-home-card'+(span?' qz-span2':'')+'">'+
+      '<div class="qz-home-card-head"><span class="qz-home-card-title">'+title+'</span>'+(actHTML||'')+'</div>'+
+      bodyHTML+
+    '</div>';
+}
+function _qzHomeWatch(S){
+  var def; try{ def=JSON.parse(localStorage.getItem('qz_home_watch')||'null'); }catch(e){ def=null; }
+  if(!def||!def.length) def=['AAPL','NVDA','MSFT','TSLA','AMZN'];
+  var map={}; S.forEach(function(x){ map[((x.ticker||'')+'').toUpperCase()]=x; });
+  var out=def.map(function(t){ return map[((t||'')+'').toUpperCase()]; }).filter(Boolean);
+  if(!out.length) out=S.slice().sort(function(a,b){return Math.abs(+b.change||0)-Math.abs(+a.change||0);}).slice(0,4);
+  return out.slice(0,5);
+}
+function _qzHomePortfolio(){
+  var p=[]; try{ p=(window.state&&state.portfolio)||[]; }catch(e){ p=[]; }
+  if(!p.length){
+    return _qzCard('💼 Portfolio',
+      '<button class="qz-home-card-act" onclick="showSection(\'portfolio\')">Open →</button>',
+      '<div class="qz-home-empty">You have no holdings yet.</div>'+
+      '<button class="btn btn-sm" style="margin-top:10px;align-self:flex-start;" onclick="showSection(\'portfolio\')">Start your portfolio →</button>');
+  }
+  var val=p.reduce(function(s,x){return s+((+x.qty||0)*(+x.current||+x.cost||0));},0);
+  var cost=p.reduce(function(s,x){return s+((+x.qty||0)*(+x.cost||0));},0);
+  var chg=cost>0?((val-cost)/cost*100):0, up=chg>=0;
+  return _qzCard('💼 Portfolio',
+    '<button class="qz-home-card-act" onclick="showSection(\'portfolio\')">Details →</button>',
+    '<div class="qz-big">$'+val.toLocaleString('en-US',{maximumFractionDigits:0})+'</div>'+
+    '<div class="qz-sub" style="color:'+(up?'var(--green)':'var(--red)')+'">'+(up?'▲ +':'▼ ')+Math.abs(chg).toFixed(1)+'% all time · '+p.length+' holdings</div>'+
+    '<div style="margin-top:12px;">'+qzExplainChip('my portfolio return','beginner portfolio explanation')+'</div>');
+}
+function _qzHomeLearn(){
+  var cards=(typeof QZ_LEARN_CARDS!=='undefined')?QZ_LEARN_CARDS:[];
+  if(!cards.length) return _qzCard('🎓 Continue Learning','','<div class="qz-home-empty">Lessons coming soon.</div>');
+  var prog={}; try{ prog=JSON.parse(localStorage.getItem('qz_learn_progress')||'{}'); }catch(e){}
+  var started=cards.filter(function(c){return prog[c.id];});
+  var c=started[0]||cards[0], verb=started.length?'Resume':'Start';
+  return _qzCard('🎓 Continue Learning',
+    '<button class="qz-home-card-act" onclick="showSection(\'learn\')">All lessons →</button>',
+    '<div style="display:flex;gap:12px;align-items:flex-start;">'+
+      '<div style="font-size:30px;line-height:1;">'+c.icon+'</div>'+
+      '<div style="min-width:0;"><div class="qz-row-tk" style="font-family:inherit;font-size:14px;">'+c.title+'</div>'+
+        '<div class="qz-row-nm" style="white-space:normal;">'+c.blurb+'</div></div>'+
+    '</div>'+
+    '<button class="btn btn-sm" style="margin-top:12px;align-self:flex-start;" onclick="qzLearnStart(\''+c.id+'\')">'+verb+' →</button>');
+}
+function _qzHomeEarnings(){
+  var names=[['AAPL','Apple'],['NVDA','Nvidia'],['MSFT','Microsoft'],['AMZN','Amazon']];
+  var rows=names.map(function(n){
+    return '<div class="qz-row" onclick="qzLookup(\''+n[0]+'\')">'+
+        '<div class="qz-row-main"><span class="qz-row-tk">'+n[0]+'</span><span class="qz-row-nm">'+n[1]+'</span></div>'+
+        '<div class="qz-row-nm" style="font-family:var(--font-mono);">reports soon</div>'+
+      '</div>';
+  }).join('');
+  return _qzCard('📅 Earnings to Watch',
+    '<span class="qz-home-card-act" style="cursor:default;">'+qzExplainChip('company earnings','what are earnings reports')+'</span>',
+    rows);
+}
+function _qzNewsRows(arts){
+  return arts.slice(0,4).map(function(a){
+    var imp=a.impact||'neutral';
+    var dot=imp==='positive'?'var(--green)':imp==='negative'?'var(--red)':'var(--text-muted)';
+    var title=((a.title||'')+'').replace(/[<>]/g,'').slice(0,98);
+    return '<div class="qz-row" style="align-items:flex-start;" onclick="showPage(\'intel\')">'+
+        '<span style="width:7px;height:7px;border-radius:50%;background:'+dot+';margin-top:6px;flex-shrink:0;"></span>'+
+        '<div class="qz-row-nm" style="white-space:normal;color:var(--text-secondary);flex:1;">'+title+'</div>'+
+      '</div>';
+  }).join('')||'<div class="qz-home-empty">No headlines right now.</div>';
+}
+function _qzFillHomeNews(){
+  var el=document.getElementById('qz-home-news'); if(!el) return;
+  function get(){ try{ return (window.njState&&njState.allArticles)||[]; }catch(e){ return []; } }
+  var a=get();
+  if(a.length){ el.innerHTML=_qzNewsRows(a); return; }
+  try{ if(typeof njFetch==='function') njFetch((window.njState&&njState.source)||'markets'); }catch(e){}
+  var tries=0;
+  var iv=setInterval(function(){
+    var e2=document.getElementById('qz-home-news'); if(!e2){ clearInterval(iv); return; }
+    var a2=get(); tries++;
+    if(a2.length){ e2.innerHTML=_qzNewsRows(a2); clearInterval(iv); }
+    else if(tries>=5){ e2.innerHTML=_qzNewsRows([]); clearInterval(iv); }
+  }, 900);
+}
+function renderHome(){
+  var host=document.getElementById('page-dashboard');
+  if(!host) return;
+  try {
+    var S=_qzHomeStocks();
+    var byChange=S.slice().sort(function(a,b){return (+b.change||0)-(+a.change||0);});
+    var byActive=S.slice().sort(function(a,b){return Math.abs(+b.change||0)-Math.abs(+a.change||0);});
+    var sent=_qzHomeSent(S);
+    var topGain=byChange[0]||{name:'the market',change:0,ticker:''};
+    var buyCnt=S.filter(function(x){return x.signal==='BUY';}).length;
+
+    var brief=S.length
+      ? 'Markets are looking '+sent.label.toLowerCase()+' today. '+(topGain.name||topGain.ticker||'A leading name')+' is up '+Math.abs(+topGain.change||0).toFixed(1)+'%. '
+        +buyCnt+' of '+S.length+' tracked companies show buy signals, so overall risk appetite is '+(sent.avg>60?'healthy':'measured')+'. Nothing here is advice — tap Explain on anything you are unsure about.'
+      : 'Your daily market brief will appear here once market data loads.';
+    var briefCard=_qzCard('🌅 AI Daily Brief',
+      '<button class="qz-home-card-act" onclick="showPage(\'ai\')">Ask AI →</button>',
+      '<div class="qz-brief">'+brief+'</div>'+
+      '<div style="margin-top:12px;">'+qzExplainChip('today\'s market brief','beginner daily market summary')+'</div>', true);
+
+    var snapTop=byChange.slice(0,3).map(_qzRowHTML).join('')||'<div class="qz-home-empty">Loading market data…</div>';
+    var snapMore=byChange.slice(3,8).map(_qzRowHTML).join('');
+    var snapCard=_qzCard('📊 Market Snapshot',
+      '<span class="qz-home-card-act" style="cursor:default;color:'+sent.color+';">'+sent.label+' · '+sent.avg+'/100</span>',
+      snapTop+(snapMore?qzDisclosure('More movers', snapMore):''));
+
+    var wl=_qzHomeWatch(S);
+    var wlCard=_qzCard('👁 Watchlist',
+      '<button class="qz-home-card-act" onclick="showSection(\'markets\')">Explore →</button>',
+      wl.length?wl.map(_qzRowHTML).join(''):'<div class="qz-home-empty">No watchlist yet — add companies from Markets.</div>');
+
+    var trend=byActive.slice(0,4).map(_qzRowHTML).join('')||'<div class="qz-home-empty">Loading…</div>';
+    var tcard=_qzCard('🔥 Trending Companies',
+      '<button class="qz-home-card-act" onclick="showSection(\'markets\')">See all →</button>', trend);
+
+    var ncard=_qzCard('📰 Market News',
+      '<button class="qz-home-card-act" onclick="showPage(\'intel\')">More →</button>',
+      '<div id="qz-home-news"><div class="qz-home-empty">Loading headlines…</div></div>');
+
+    host.innerHTML=
+      '<div class="qz-home">'+
+        '<div class="qz-home-head"><div class="qz-home-hi">'+_qzGreet()+'</div><div class="qz-home-date">'+_qzHomeDateStr()+'</div></div>'+
+        '<div class="qz-home-grid">'+
+          briefCard+snapCard+wlCard+_qzHomePortfolio()+_qzHomeLearn()+tcard+_qzHomeEarnings()+ncard+
+        '</div>'+
+      '</div>';
+    _qzFillHomeNews();
+  } catch(e){ if(window.console) console.warn('[renderHome] failed, keeping previous view', e); }
 }
 
 function updateDashboardMetrics() {
