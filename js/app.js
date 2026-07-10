@@ -651,6 +651,7 @@ function showPage(page, navEl) {
     _qzRenderUnifiedIntel();
     var _intelTitle = document.getElementById('page-title');
     if (_intelTitle) _intelTitle.innerHTML = 'Intelligence Terminal<small>AI-powered news + signals + opportunities</small>';
+    _qzSyncSectionChrome('intel');
     return;
   }
   // Quant Lab — inline-rebuilt premium quant terminal
@@ -662,6 +663,7 @@ function showPage(page, navEl) {
     var _qlTitle = document.getElementById('page-title');
     if (_qlTitle) _qlTitle.innerHTML = 'Quant Lab<small>Risk · Greeks · Monte Carlo · Backtests · Strategy builder</small>';
     state.currentPage = 'quantlab';
+    _qzSyncSectionChrome('quantlab');
     try { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); } catch (_) { window.scrollTo(0,0); }
     return;
   }
@@ -731,6 +733,187 @@ function showPage(page, navEl) {
   if(page === 'news')    setTimeout(renderNews, 60);
   if(page === 'universe') setTimeout(() => { if (typeof uvFilter === 'function') uvFilter(); }, 80);
   if(page === 'intel' && !IntelEngine._init) { IntelEngine._init = true; setTimeout(() => IntelEngine.boot(), 120); }
+  if(page === 'learn-explore')  setTimeout(renderLearnExplore, 20);
+  if(page === 'learn-continue') setTimeout(renderLearnContinue, 20);
+  _qzSyncSectionChrome(page);
+}
+
+// ==================== V2 SECTION NAV + SUBTABS ====================
+// Six-section information architecture. Existing page-* containers are reused as
+// subtab panels; nothing is deleted. showPage() stays the low-level panel switch;
+// _qzSyncSectionChrome() keeps the sidebar + subtab bar in sync for every entry point.
+var QZ_SECTIONS = {
+  home:      { label:'Home',      subtabs:null, page:'dashboard' },
+  markets:   { label:'Markets',   subtabs:[
+                 { key:'explore',   label:'Explore',   page:'universe' },
+                 { key:'screeners', label:'Screeners', page:'scanner'  },
+                 { key:'heatmap',   label:'Heatmap',   page:'macro'    },
+               ], more:[
+                 { label:'Signals', page:'signals' },
+                 { label:'News',    page:'intel'   },
+               ] },
+  learn:     { label:'Learn',     subtabs:[
+                 { key:'explore',  label:'Explore',  page:'learn-explore'  },
+                 { key:'continue', label:'Continue', page:'learn-continue' },
+               ] },
+  portfolio: { label:'Portfolio', subtabs:[
+                 { key:'overview', label:'Overview', page:'portfolio' },
+                 { key:'activity', label:'Activity', page:'ledger'    },
+               ], more:[
+                 { label:'Paper Trading', page:'paper'   },
+                 { label:'Alerts',        page:'alerts'  },
+                 { label:'Reports',       page:'reports' },
+               ] },
+  ai:        { label:'AI',        subtabs:null, page:'ai' },
+  profile:   { label:'Profile',   subtabs:null, page:'settings' },
+};
+// Reverse map: every page → owning section (incl. advanced tools, so nav always highlights).
+var _QZ_PAGE_SECTION = {
+  dashboard:'home',
+  universe:'markets', scanner:'markets', macro:'markets', signals:'markets', news:'markets', intel:'markets', markets:'markets', quantlab:'markets', research:'markets',
+  'learn-explore':'learn', 'learn-continue':'learn',
+  portfolio:'portfolio', ledger:'portfolio', paper:'portfolio', alerts:'portfolio', reports:'portfolio', scenario:'portfolio', backtest:'portfolio',
+  ai:'ai', command:'ai', agents:'ai',
+  settings:'profile'
+};
+
+function showSection(key, navEl) {
+  var cfg = QZ_SECTIONS[key];
+  if (!cfg) return;
+  var page = cfg.subtabs ? cfg.subtabs[0].page : cfg.page;
+  showPage(page);
+}
+
+function _qzSyncSectionChrome(page) {
+  var section = _QZ_PAGE_SECTION[page] || 'home';
+  var navs = document.querySelectorAll('.sidebar-nav .nav-item');
+  navs.forEach(function(n){ n.classList.toggle('active', n.getAttribute('data-section') === section); });
+  _qzRenderSubtabs(section, page);
+}
+
+function _qzRenderSubtabs(section, activePage) {
+  var host = document.getElementById('section-subtabs');
+  if (!host) return;
+  var cfg = QZ_SECTIONS[section];
+  if (!cfg || !cfg.subtabs) { host.innerHTML = ''; host.style.display = 'none'; return; }
+  host.style.display = '';
+  var html = cfg.subtabs.map(function(t){
+    return '<button class="qz-subtab' + (t.page === activePage ? ' active' : '') +
+           '" onclick="showPage(\'' + t.page + '\')">' + t.label + '</button>';
+  }).join('');
+  if (cfg.more && cfg.more.length) {
+    html += '<span class="qz-subtab-sep"></span>' + cfg.more.map(function(m){
+      return '<button class="qz-subtab qz-subtab-more' + (m.page === activePage ? ' active' : '') +
+             '" onclick="showPage(\'' + m.page + '\')">' + m.label + '</button>';
+    }).join('');
+  }
+  host.innerHTML = html;
+}
+
+// ── Progressive-disclosure primitive: qzDisclosure(summary, detailHTML, {open,icon}) → HTML ──
+function qzDisclosure(summary, detailHTML, opts) {
+  opts = opts || {};
+  var open = opts.open ? ' qz-open' : '';
+  return '<div class="qz-disclosure' + open + '">' +
+           '<button type="button" class="qz-disc-head" onclick="qzToggleDisclosure(this)">' +
+             (opts.icon ? '<span>' + opts.icon + '</span>' : '') +
+             '<span>' + summary + '</span>' +
+             '<span class="qz-disc-chevron">▾</span>' +
+           '</button>' +
+           '<div class="qz-disc-body">' + detailHTML + '</div>' +
+         '</div>';
+}
+function qzToggleDisclosure(el) {
+  var d = el.closest ? el.closest('.qz-disclosure') : el.parentNode;
+  if (d) d.classList.toggle('qz-open');
+}
+
+// ── Experience-level reader (beginner-first default for UI density) ──
+function qzLevel() {
+  try { return (window.state && state.profile && state.profile.level) || 'beginner'; }
+  catch (e) { return 'beginner'; }
+}
+
+// ── ✨ Explain → routes to the one AI assistant, pre-seeded in plain English ──
+function qzExplain(term, context) {
+  try {
+    showPage('ai');
+    setTimeout(function(){
+      var inp = document.getElementById('chat-input');
+      if (!inp) return;
+      inp.value = 'Explain "' + term + '" in simple, beginner-friendly terms' +
+                  (context ? ' (context: ' + context + ')' : '') + '.';
+      inp.focus();
+      if (typeof sendChat === 'function') sendChat();
+    }, 140);
+  } catch (e) {}
+}
+function qzExplainChip(term, context) {
+  var t = (term || '').replace(/"/g, '&quot;');
+  var c = (context || '').replace(/"/g, '&quot;');
+  return '<span class="qz-explain" onclick="qzExplain(&quot;' + t + '&quot;,&quot;' + c + '&quot;)">✨ Explain</span>';
+}
+
+// ── Learn (V2 minimal shell — Phase 4 expands to Netflix-style continue/lessons) ──
+var QZ_LEARN_CARDS = [
+  { id:'stocks',    icon:'📈', title:'What is a stock?',      blurb:'Owning a tiny slice of a company — and why prices move.' },
+  { id:'etf',       icon:'🧺', title:'What is an ETF?',        blurb:'A basket of many stocks in one, for instant diversification.' },
+  { id:'pe',        icon:'⚖️', title:'The P/E ratio',          blurb:'How expensive a stock is versus the profit it makes.' },
+  { id:'dividend',  icon:'💵', title:'Dividends',              blurb:'Cash some companies pay you just for holding their shares.' },
+  { id:'diversify', icon:'🗂️', title:'Diversification',        blurb:'Why you should not put all your money in one place.' },
+  { id:'risk',      icon:'🌊', title:'Risk & volatility',      blurb:'What it means when a stock swings up and down a lot.' },
+  { id:'compound',  icon:'🌱', title:'Compound growth',        blurb:'How small gains snowball into big ones over time.' },
+  { id:'marketcap', icon:'🏛️', title:'Market capitalization',  blurb:'How the market sizes a whole company at a glance.' }
+];
+function _qzLearnProgress() {
+  try { return JSON.parse(localStorage.getItem('qz_learn_progress') || '{}'); } catch (e) { return {}; }
+}
+function qzLearnStart(id) {
+  try {
+    var p = _qzLearnProgress(); p[id] = { started:1, at: (window.Date ? Date.now() : 0) };
+    localStorage.setItem('qz_learn_progress', JSON.stringify(p));
+  } catch (e) {}
+  var card = QZ_LEARN_CARDS.filter(function(c){ return c.id === id; })[0];
+  if (card) qzExplain(card.title, 'beginner investing lesson');
+}
+function _qzLearnCardHTML(c, verb) {
+  return '<div class="qz-learn-card">' +
+           '<div class="qz-learn-ic">' + c.icon + '</div>' +
+           '<div class="qz-learn-t">' + c.title + '</div>' +
+           '<div class="qz-learn-b">' + c.blurb + '</div>' +
+           '<button class="btn btn-sm" style="margin-top:auto;" onclick="qzLearnStart(\'' + c.id + '\')">' + verb + ' →</button>' +
+         '</div>';
+}
+function renderLearnExplore() {
+  var el = document.getElementById('page-learn-explore');
+  if (!el) return;
+  el.innerHTML =
+    '<div style="max-width:960px;">' +
+      '<h2 style="font-size:20px;font-weight:750;margin:4px 0 4px;">Learn investing, one idea at a time</h2>' +
+      '<p style="color:var(--text-secondary);font-size:13.5px;margin:0 0 18px;">Short, plain-English lessons. Tap any card and the AI explains it for you.</p>' +
+      '<div class="qz-learn-grid">' + QZ_LEARN_CARDS.map(function(c){ return _qzLearnCardHTML(c, 'Start'); }).join('') + '</div>' +
+    '</div>';
+}
+function renderLearnContinue() {
+  var el = document.getElementById('page-learn-continue');
+  if (!el) return;
+  var p = _qzLearnProgress();
+  var started = QZ_LEARN_CARDS.filter(function(c){ return p[c.id]; });
+  if (!started.length) {
+    el.innerHTML =
+      '<div style="max-width:640px;padding:40px 0;text-align:center;">' +
+        '<div style="font-size:34px;">🎓</div>' +
+        '<h2 style="font-size:19px;font-weight:750;margin:10px 0 6px;">Nothing in progress yet</h2>' +
+        '<p style="color:var(--text-secondary);font-size:13.5px;margin:0 0 16px;">Pick a topic in <b>Explore</b> and it will show up here so you can pick up where you left off.</p>' +
+        '<button class="btn" onclick="showPage(\'learn-explore\')">Browse topics →</button>' +
+      '</div>';
+    return;
+  }
+  el.innerHTML =
+    '<div style="max-width:960px;">' +
+      '<h2 style="font-size:20px;font-weight:750;margin:4px 0 14px;">Continue learning</h2>' +
+      '<div class="qz-learn-grid">' + started.map(function(c){ return _qzLearnCardHTML(c, 'Resume'); }).join('') + '</div>' +
+    '</div>';
 }
 
 // ==================== DASHBOARD ====================
