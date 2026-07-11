@@ -644,7 +644,7 @@ const _qzComingSoon = {};
 function showPage(page, navEl) {
   // Unified Intelligence Terminal — replaces both 'intel' and 'news' with
   // the new ecosystem (NewsJudge + Intelligence + Opportunities merged).
-  if (page === 'intel' || page === 'news') {
+  if (page === 'intel') {
     document.querySelectorAll('[id^="page-"]').forEach(p => p.classList.add('hidden'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     if (navEl) navEl.classList.add('active');
@@ -750,7 +750,7 @@ var QZ_SECTIONS = {
                  { key:'heatmap',   label:'Heatmap',   page:'macro'    },
                ], more:[
                  { label:'Signals', page:'signals' },
-                 { label:'News',    page:'intel'   },
+                 { label:'News',    page:'news'    },
                ] },
   learn:     { label:'Learn',     subtabs:[
                  { key:'explore',  label:'Explore',  page:'learn-explore'  },
@@ -969,7 +969,7 @@ function _qzHomeWatch(S){
 function _qzHomePortfolio(){
   var p=[]; try{ p=(window.state&&state.portfolio)||[]; }catch(e){ p=[]; }
   if(!p.length){
-    return _qzCard('💼 Portfolio',
+    return _qzCard('Portfolio',
       '<button class="qz-home-card-act" onclick="showSection(\'portfolio\')">Open →</button>',
       '<div class="qz-home-empty">You have no holdings yet.</div>'+
       '<button class="btn btn-sm" style="margin-top:10px;align-self:flex-start;" onclick="showSection(\'portfolio\')">Start your portfolio →</button>');
@@ -977,7 +977,7 @@ function _qzHomePortfolio(){
   var val=p.reduce(function(s,x){return s+((+x.qty||0)*(+x.current||+x.cost||0));},0);
   var cost=p.reduce(function(s,x){return s+((+x.qty||0)*(+x.cost||0));},0);
   var chg=cost>0?((val-cost)/cost*100):0, up=chg>=0;
-  return _qzCard('💼 Portfolio',
+  return _qzCard('Portfolio',
     '<button class="qz-home-card-act" onclick="showSection(\'portfolio\')">Details →</button>',
     '<div class="qz-big">$'+val.toLocaleString('en-US',{maximumFractionDigits:0})+'</div>'+
     '<div class="qz-sub" style="color:'+(up?'var(--green)':'var(--red)')+'">'+(up?'▲ +':'▼ ')+Math.abs(chg).toFixed(1)+'% all time · '+p.length+' holdings</div>'+
@@ -989,7 +989,7 @@ function _qzHomeLearn(){
   var prog={}; try{ prog=JSON.parse(localStorage.getItem('qz_learn_progress')||'{}'); }catch(e){}
   var started=cards.filter(function(c){return prog[c.id];});
   var c=started[0]||cards[0], verb=started.length?'Resume':'Start';
-  return _qzCard('🎓 Continue Learning',
+  return _qzCard('Continue Learning',
     '<button class="qz-home-card-act" onclick="showSection(\'learn\')">All lessons →</button>',
     '<div style="display:flex;gap:12px;align-items:flex-start;">'+
       '<div style="font-size:30px;line-height:1;">'+c.icon+'</div>'+
@@ -1006,7 +1006,7 @@ function _qzHomeEarnings(){
         '<div class="qz-row-nm" style="font-family:var(--font-mono);">reports soon</div>'+
       '</div>';
   }).join('');
-  return _qzCard('📅 Earnings to Watch',
+  return _qzCard('Earnings to Watch',
     '<span class="qz-home-card-act" style="cursor:default;">'+qzExplainChip('company earnings','what are earnings reports')+'</span>',
     rows);
 }
@@ -1023,16 +1023,16 @@ function _qzNewsRows(arts){
 }
 function _qzFillHomeNews(){
   var el=document.getElementById('qz-home-news'); if(!el) return;
-  function get(){ try{ return (window.njState&&njState.allArticles)||[]; }catch(e){ return []; } }
+  function get(){ try{ return (window.njState&&window.njState.allArticles)||[]; }catch(e){ return []; } }
   var a=get();
   if(a.length){ el.innerHTML=_qzNewsRows(a); return; }
-  try{ if(typeof njFetch==='function') njFetch((window.njState&&njState.source)||'markets'); }catch(e){}
-  var tries=0;
+  var tries=0, kicked=false;
   var iv=setInterval(function(){
     var e2=document.getElementById('qz-home-news'); if(!e2){ clearInterval(iv); return; }
+    if(!kicked && typeof window.qzLoadAllNews==='function'){ kicked=true; try{ window.qzLoadAllNews(); }catch(e){} }
     var a2=get(); tries++;
     if(a2.length){ e2.innerHTML=_qzNewsRows(a2); clearInterval(iv); }
-    else if(tries>=5){ e2.innerHTML=_qzNewsRows([]); clearInterval(iv); }
+    else if(tries>=15){ e2.innerHTML=_qzNewsRows([]); clearInterval(iv); }
   }, 900);
 }
 function renderHome(){
@@ -1050,28 +1050,28 @@ function renderHome(){
       ? 'Markets are looking '+sent.label.toLowerCase()+' today. '+(topGain.name||topGain.ticker||'A leading name')+' is up '+Math.abs(+topGain.change||0).toFixed(1)+'%. '
         +buyCnt+' of '+S.length+' tracked companies show buy signals, so overall risk appetite is '+(sent.avg>60?'healthy':'measured')+'. Nothing here is advice — tap Explain on anything you are unsure about.'
       : 'Your daily market brief will appear here once market data loads.';
-    var briefCard=_qzCard('🌅 AI Daily Brief',
+    var briefCard=_qzCard('AI Daily Brief',
       '<button class="qz-home-card-act" onclick="showPage(\'ai\')">Ask AI →</button>',
       '<div class="qz-brief">'+brief+'</div>'+
       '<div style="margin-top:12px;">'+qzExplainChip('today\'s market brief','beginner daily market summary')+'</div>', true);
 
     var snapTop=byChange.slice(0,3).map(_qzRowHTML).join('')||'<div class="qz-home-empty">Loading market data…</div>';
     var snapMore=byChange.slice(3,8).map(_qzRowHTML).join('');
-    var snapCard=_qzCard('📊 Market Snapshot',
+    var snapCard=_qzCard('Market Snapshot',
       '<span class="qz-home-card-act" style="cursor:default;color:'+sent.color+';">'+sent.label+' · '+sent.avg+'/100</span>',
       snapTop+(snapMore?qzDisclosure('More movers', snapMore):''));
 
     var wl=_qzHomeWatch(S);
-    var wlCard=_qzCard('👁 Watchlist',
+    var wlCard=_qzCard('Watchlist',
       '<button class="qz-home-card-act" onclick="showSection(\'markets\')">Explore →</button>',
       wl.length?wl.map(_qzRowHTML).join(''):'<div class="qz-home-empty">No watchlist yet — add companies from Markets.</div>');
 
     var trend=byActive.slice(0,4).map(_qzRowHTML).join('')||'<div class="qz-home-empty">Loading…</div>';
-    var tcard=_qzCard('🔥 Trending Companies',
+    var tcard=_qzCard('Trending Companies',
       '<button class="qz-home-card-act" onclick="showSection(\'markets\')">See all →</button>', trend);
 
-    var ncard=_qzCard('📰 Market News',
-      '<button class="qz-home-card-act" onclick="showPage(\'intel\')">More →</button>',
+    var ncard=_qzCard('Market News',
+      '<button class="qz-home-card-act" onclick="showPage(\'news\')">More →</button>',
       '<div id="qz-home-news"><div class="qz-home-empty">Loading headlines…</div></div>');
 
     host.innerHTML=
@@ -12484,7 +12484,7 @@ const ALLORIGINS = 'https://api.allorigins.win/get?url=';
 const CORSPROXY  = 'https://corsproxy.io/?';
 
 let njState = {
-  source: 'markets',
+  source: 'all',
   filter: 'all',
   search: '',
   articles: [],
@@ -12701,6 +12701,117 @@ async function fetchRSS(source) {
   return fb;
 }
 
+// ========== UNIFIED 50+ SOURCE LIVE NEWS AGGREGATOR ==========
+// One live feed, fetched through the same multi-proxy pipeline as NewsJudge,
+// shared by the News/Intelligence tab AND the Home Market News widget (paired).
+const QZ_NEWS_SOURCES = [
+  {u:'https://www.cnbc.com/id/100003114/device/rss/rss.html', s:'CNBC'},
+  {u:'https://www.cnbc.com/id/10000664/device/rss/rss.html', s:'CNBC Markets'},
+  {u:'https://www.cnbc.com/id/15839069/device/rss/rss.html', s:'CNBC Economy'},
+  {u:'https://www.cnbc.com/id/10001147/device/rss/rss.html', s:'CNBC Finance'},
+  {u:'https://www.cnbc.com/id/19854910/device/rss/rss.html', s:'CNBC Tech'},
+  {u:'https://www.cnbc.com/id/20910258/device/rss/rss.html', s:'CNBC Investing'},
+  {u:'https://feeds.marketwatch.com/marketwatch/topstories/', s:'MarketWatch'},
+  {u:'https://feeds.marketwatch.com/marketwatch/marketpulse/', s:'MarketWatch Pulse'},
+  {u:'https://feeds.marketwatch.com/marketwatch/realtimeheadlines/', s:'MarketWatch RT'},
+  {u:'https://feeds.marketwatch.com/marketwatch/bulletins/', s:'MarketWatch Bulletins'},
+  {u:'https://finance.yahoo.com/rss/topstories', s:'Yahoo Finance'},
+  {u:'https://finance.yahoo.com/news/rssindex', s:'Yahoo News'},
+  {u:'https://feeds.reuters.com/reuters/businessNews', s:'Reuters Business'},
+  {u:'https://feeds.reuters.com/reuters/companyNews', s:'Reuters Companies'},
+  {u:'https://feeds.reuters.com/news/wealth', s:'Reuters Wealth'},
+  {u:'https://feeds.reuters.com/reuters/technologyNews', s:'Reuters Tech'},
+  {u:'https://feeds.a.dj.com/rss/RSSMarketsMain.xml', s:'WSJ Markets'},
+  {u:'https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml', s:'WSJ Business'},
+  {u:'https://feeds.a.dj.com/rss/RSSWSJD.xml', s:'WSJ Tech'},
+  {u:'https://www.nasdaq.com/feed/rssoutbound?category=Markets', s:'Nasdaq Markets'},
+  {u:'https://www.nasdaq.com/feed/rssoutbound?category=Stocks', s:'Nasdaq Stocks'},
+  {u:'https://www.nasdaq.com/feed/rssoutbound?category=Investing', s:'Nasdaq Investing'},
+  {u:'https://www.investing.com/rss/news_25.rss', s:'Investing Stocks'},
+  {u:'https://www.investing.com/rss/news_301.rss', s:'Investing Economy'},
+  {u:'https://www.investing.com/rss/news_285.rss', s:'Investing Forex'},
+  {u:'https://www.investing.com/rss/news_11.rss', s:'Investing Commodities'},
+  {u:'https://www.investing.com/rss/news.rss', s:'Investing.com'},
+  {u:'https://seekingalpha.com/market_currents.xml', s:'Seeking Alpha'},
+  {u:'https://seekingalpha.com/feed.xml', s:'Seeking Alpha Analysis'},
+  {u:'https://markets.businessinsider.com/rss/news', s:'Business Insider'},
+  {u:'https://www.businessinsider.com/sai/rss', s:'Insider Tech'},
+  {u:'http://rss.cnn.com/rss/money_latest.rss', s:'CNN Business'},
+  {u:'http://rss.cnn.com/rss/money_markets.rss', s:'CNN Markets'},
+  {u:'https://feeds.bbci.co.uk/news/business/rss.xml', s:'BBC Business'},
+  {u:'https://www.theguardian.com/uk/business/rss', s:'Guardian Business'},
+  {u:'https://www.forbes.com/business/feed/', s:'Forbes Business'},
+  {u:'https://www.forbes.com/investing/feed/', s:'Forbes Investing'},
+  {u:'https://www.forbes.com/markets/feed/', s:'Forbes Markets'},
+  {u:'https://fortune.com/feed/', s:'Fortune'},
+  {u:'https://www.fool.com/feeds/index.aspx', s:'Motley Fool'},
+  {u:'https://www.benzinga.com/feed', s:'Benzinga'},
+  {u:'https://www.coindesk.com/arc/outboundfeeds/rss/', s:'CoinDesk'},
+  {u:'https://cointelegraph.com/rss', s:'Cointelegraph'},
+  {u:'https://cryptoslate.com/feed/', s:'CryptoSlate'},
+  {u:'https://bitcoinmagazine.com/feed', s:'Bitcoin Magazine'},
+  {u:'https://www.fxstreet.com/rss/news', s:'FXStreet'},
+  {u:'https://oilprice.com/rss/main', s:'OilPrice'},
+  {u:'https://economictimes.indiatimes.com/markets/rss.cms', s:'ET Markets'},
+  {u:'https://economictimes.indiatimes.com/rssfeedstopstories.cms', s:'ET Top'},
+  {u:'https://economictimes.indiatimes.com/markets/stocks/rss.cms', s:'ET Stocks'},
+  {u:'https://economictimes.indiatimes.com/economy/rss.cms', s:'ET Economy'},
+  {u:'https://www.moneycontrol.com/rss/latestnews.xml', s:'Moneycontrol'},
+  {u:'https://www.moneycontrol.com/rss/marketreports.xml', s:'MC Markets'},
+  {u:'https://www.moneycontrol.com/rss/business.xml', s:'MC Business'},
+  {u:'https://www.livemint.com/rss/markets', s:'Mint Markets'},
+  {u:'https://www.livemint.com/rss/money', s:'Mint Money'},
+  {u:'https://www.livemint.com/rss/companies', s:'Mint Companies'},
+  {u:'https://www.business-standard.com/rss/markets-106.rss', s:'Business Standard'},
+  {u:'https://www.business-standard.com/rss/finance-103.rss', s:'BS Finance'}
+];
+var QZ_NEWS = { loaded:false, running:false, lastAgg:0, seen:{}, all:[] };
+function _qzNewsMerge(arts){
+  arts.forEach(function(a){
+    var k=((a.title||'')+'').trim().slice(0,90).toLowerCase();
+    if(k && !QZ_NEWS.seen[k]){ QZ_NEWS.seen[k]=1; QZ_NEWS.all.push(a); }
+  });
+}
+function _qzNewsCommit(){
+  QZ_NEWS.all.sort(function(a,b){ return (new Date(b.pubDate||0)) - (new Date(a.pubDate||0)); });
+  njState.allArticles = QZ_NEWS.all.slice();
+  njState.lastFetch = (window.Date ? Date.now() : 0);
+  try{ njApplyFilters(); }catch(e){}
+  try{ _qzFillHomeNews(); }catch(e){}
+}
+async function qzLoadAllNews(force){
+  if(QZ_NEWS.running) return;
+  var now=(window.Date?Date.now():0);
+  if(QZ_NEWS.loaded && !force && (now-QZ_NEWS.lastAgg < 5*60*1000)){ _qzNewsCommit(); try{ njStatusDot('green'); njStatusText('Live · '+QZ_NEWS.all.length+' headlines from '+QZ_NEWS_SOURCES.length+' sources'); }catch(e){} return; }
+  QZ_NEWS.running=true; QZ_NEWS.seen={}; QZ_NEWS.all=[];
+  if(!njState.allArticles.length){
+    try{ var seed=_njFallbackArticles('markets'); seed._fallback=true; njState.allArticles=seed; njApplyFilters(); }catch(e){}
+  }
+  try{ njStatusDot('yellow'); njStatusText('Aggregating '+QZ_NEWS_SOURCES.length+' sources…'); }catch(e){}
+  var idx=0, done=0, lastRender=0;
+  async function worker(){
+    while(idx<QZ_NEWS_SOURCES.length){
+      var i=idx++, src=QZ_NEWS_SOURCES[i];
+      try{ var arts=await _njFetchUrl(src.u, src.s); if(arts&&arts.length) _qzNewsMerge(arts); }catch(e){}
+      done++;
+      var n=(window.Date?Date.now():0);
+      if(QZ_NEWS.all.length && (n-lastRender>800)){ lastRender=n; _qzNewsCommit(); }
+      try{ njStatusText('Live · '+QZ_NEWS.all.length+' headlines · '+done+'/'+QZ_NEWS_SOURCES.length+' sources'); }catch(e){}
+    }
+  }
+  var CONC=8, ws=[];
+  for(var w=0; w<CONC; w++) ws.push(worker());
+  try{ await Promise.all(ws); }catch(e){}
+  QZ_NEWS.loaded = QZ_NEWS.all.length>0; QZ_NEWS.lastAgg=(window.Date?Date.now():0); QZ_NEWS.running=false;
+  if(QZ_NEWS.all.length) _qzNewsCommit();
+  try{
+    if(QZ_NEWS.all.length){ njStatusDot('green'); njStatusText('Live · '+QZ_NEWS.all.length+' headlines from '+QZ_NEWS_SOURCES.length+' sources'); }
+    else { njStatusDot('yellow'); njStatusText('Curated · live feeds blocked in browser'); }
+  }catch(e){}
+  clearTimeout(njState.refreshTimer);
+  njState.refreshTimer=setTimeout(function(){ qzLoadAllNews(true); }, 5*60*1000);
+}
+
 function njStatusDot(color) {
   const d = document.getElementById('nj-status-dot');
   if (d) d.style.background = color === 'green' ? 'var(--green)' :
@@ -12712,6 +12823,7 @@ function njStatusText(txt) {
 }
 
 async function njFetch(source) {
+  if (source === 'all') return qzLoadAllNews(true);
   if (njState.loading) return;
   njState.loading = true;
   njState.source = source || njState.source;
@@ -12833,7 +12945,10 @@ function njArticleHTML(a) {
 }
 
 // Override legacy functions
-window.renderNews = function() { njFetch(njState.source); };
+window.renderNews = function() { qzLoadAllNews(); };
+// Bridge the boot-scoped news module onto window so the top-level Home widget can reach it
+window.njState = njState;
+window.qzLoadAllNews = qzLoadAllNews;
 window.filterNews = function(type, btn) {
   document.querySelectorAll('.tab[data-filter]').forEach(t => t.classList.remove('active'));
   if (btn) btn.classList.add('active');
