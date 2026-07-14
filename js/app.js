@@ -15,7 +15,7 @@ window._QZ_SERVER_MODE = false;
 const state = {
   user: null,
   onboardingStep: 1,
-  totalSteps: 7,
+  totalSteps: 4,
   profile: {},
   assets: [],
   subscribed: false,
@@ -469,12 +469,10 @@ function updateOnboardingProgress() {
 function nextStep() {
   // === Compulsory questionnaire — block advance until current step is answered ===
   const stepRequirements = {
-    1: () => state.profile.useCase,         // What brings you here?
-    2: () => state.profile.experience,      // Experience level
-    3: () => state.profile.risk != null,    // Risk tolerance slider
-    4: () => Array.isArray(state.assets) && state.assets.length > 0, // Asset selection (or fallback OK)
-    5: () => true,  // Style — optional
-    6: () => true,  // Alerts — optional
+    1: () => state.profile.experience,      // Have you invested before? (drives level defaults)
+    2: () => state.profile.useCase,         // What do you want out of this?
+    3: () => state.profile.risk != null,    // Drop-20% gut check
+    // 4 (interests) is optional — its button finishes onboarding directly
   };
   const cur = state.onboardingStep;
   const check = stepRequirements[cur];

@@ -6698,106 +6698,67 @@ function _lp3Enter(user) {
 <div id="onboarding" class="hidden">
   <div class="onboarding-header">
     <div class="navbar-logo">Quant<span>Entelloq</span></div>
-    <div class="onboarding-progress"><div class="onboarding-progress-fill" id="ob-progress" style="width:14%;"></div></div>
-    <div style="font-size:13px;color:var(--text-muted);font-family:var(--font-mono);" id="ob-step-label">1 / 7</div>
+    <div class="onboarding-progress"><div class="onboarding-progress-fill" id="ob-progress" style="width:25%;"></div></div>
+    <div style="font-size:13px;color:var(--text-muted);font-family:var(--font-mono);" id="ob-step-label">1 / 4</div>
   </div>
 
   <div class="onboarding-step active" id="ob-1">
-    <div class="onboarding-step-num">STEP 1 OF 7</div>
-    <div class="onboarding-step-title">What brings you here?</div>
-    <div class="onboarding-step-sub">Tell us your primary use case so we can personalize your experience.</div>
+    <div class="onboarding-step-num">STEP 1 OF 4</div>
+    <div class="onboarding-step-title">Have you invested before?</div>
+    <div class="onboarding-step-sub">This sets how much detail you see at first. You can change it anytime with one tap on your Home screen.</div>
     <div class="option-grid">
-      <div class="option-item" onclick="selectOption(this,'goal','investing')"><div class="option-item-title">📈 Investing</div><div class="option-item-sub">Stock & asset investment decisions</div></div>
-      <div class="option-item" onclick="selectOption(this,'goal','business')"><div class="option-item-title">🏢 Business Strategy</div><div class="option-item-sub">Market & competitive intelligence</div></div>
-      <div class="option-item" onclick="selectOption(this,'goal','trading')"><div class="option-item-title">⚡ Active Trading</div><div class="option-item-sub">Short-term signals & opportunities</div></div>
-      <div class="option-item" onclick="selectOption(this,'goal','both')"><div class="option-item-title">🎯 Both</div><div class="option-item-sub">Investing + business decisions</div></div>
+      <div class="option-item" onclick="selectOption(this,'level','beginner')"><div class="option-item-title">I'm brand new</div><div class="option-item-sub">Explain everything in plain English — I'm here to learn</div></div>
+      <div class="option-item" onclick="selectOption(this,'level','intermediate')"><div class="option-item-title">I know the basics</div><div class="option-item-sub">I've bought a stock or fund before</div></div>
+      <div class="option-item" onclick="selectOption(this,'level','advanced')"><div class="option-item-title">I'm experienced</div><div class="option-item-sub">Show me the full data and advanced tools</div></div>
     </div>
     <div class="onboarding-nav"><div></div><button class="btn btn-primary" onclick="nextStep()">Continue →</button></div>
   </div>
 
   <div class="onboarding-step" id="ob-2">
-    <div class="onboarding-step-num">STEP 2 OF 7</div>
-    <div class="onboarding-step-title">What's your experience level?</div>
-    <div class="onboarding-step-sub">This helps us calibrate AI explanations and complexity.</div>
+    <div class="onboarding-step-num">STEP 2 OF 4</div>
+    <div class="onboarding-step-title">What do you want to get out of this?</div>
+    <div class="onboarding-step-sub">We'll shape your Home screen around it — nothing gets locked away.</div>
     <div class="option-grid">
-      <div class="option-item" onclick="selectOption(this,'level','beginner')"><div class="option-item-title">🌱 Beginner</div><div class="option-item-sub">Learning the basics</div></div>
-      <div class="option-item" onclick="selectOption(this,'level','intermediate')"><div class="option-item-title">📚 Intermediate</div><div class="option-item-sub">Comfortable with markets</div></div>
-      <div class="option-item" onclick="selectOption(this,'level','advanced')"><div class="option-item-title">🎓 Advanced</div><div class="option-item-sub">Deep market knowledge</div></div>
-      <div class="option-item" onclick="selectOption(this,'level','professional')"><div class="option-item-title">💼 Professional</div><div class="option-item-sub">Finance professional</div></div>
+      <div class="option-item" onclick="selectOption(this,'goal','investing')"><div class="option-item-title">Grow my savings</div><div class="option-item-sub">Learn to invest for the long run</div></div>
+      <div class="option-item" onclick="selectOption(this,'goal','trading')"><div class="option-item-title">Learn to trade</div><div class="option-item-sub">Practice trading with an AI coach — no real money</div></div>
+      <div class="option-item" onclick="selectOption(this,'goal','business')"><div class="option-item-title">Follow the markets</div><div class="option-item-sub">News and insight for work or curiosity</div></div>
+      <div class="option-item" onclick="selectOption(this,'goal','both')"><div class="option-item-title">A bit of everything</div><div class="option-item-sub">Learning, practicing, and staying informed</div></div>
     </div>
     <div class="onboarding-nav"><button class="btn btn-ghost" onclick="prevStep()">← Back</button><button class="btn btn-primary" onclick="nextStep()">Continue →</button></div>
   </div>
 
   <div class="onboarding-step" id="ob-3">
-    <div class="onboarding-step-num">STEP 3 OF 7</div>
-    <div class="onboarding-step-title">What's your risk tolerance?</div>
-    <div class="onboarding-step-sub">This drives our AI recommendations and signal weighting.</div>
+    <div class="onboarding-step-num">STEP 3 OF 4</div>
+    <div class="onboarding-step-title">Imagine your investments dropped 20% for a few months.</div>
+    <div class="onboarding-step-sub">Be honest — there's no wrong answer, and it only tunes how cautious the AI is with you.</div>
     <div class="slider-container">
       <input type="range" min="1" max="5" value="3" id="risk-slider" oninput="updateRisk(this.value)">
-      <div class="slider-labels"><span>Conservative</span><span>Moderate</span><span>Aggressive</span></div>
+      <div class="slider-labels"><span>I'd want out</span><span>I'd wait it out</span><span>I'd buy more</span></div>
       <div style="text-align:center;margin-top:16px;font-family:var(--font-display);font-size:24px;font-weight:700;" id="risk-label">Moderate</div>
     </div>
-    <div class="option-grid" style="margin-top:8px;">
-      <div class="option-item" onclick="selectOption(this,'horizon','short')"><div class="option-item-title">⚡ Short-term</div><div class="option-item-sub">Days to weeks</div></div>
-      <div class="option-item" onclick="selectOption(this,'horizon','medium')"><div class="option-item-title">📅 Medium-term</div><div class="option-item-sub">Months to a year</div></div>
-      <div class="option-item" onclick="selectOption(this,'horizon','long')"><div class="option-item-title">🌳 Long-term</div><div class="option-item-sub">1–5+ years</div></div>
-      <div class="option-item" onclick="selectOption(this,'horizon','mixed')"><div class="option-item-title">🔄 Mixed</div><div class="option-item-sub">Multiple horizons</div></div>
+    <div style="font-size:12px;color:var(--text-muted);text-align:center;margin:4px 0 10px;">And roughly how long would you leave money invested?</div>
+    <div class="option-grid" style="margin-top:4px;">
+      <div class="option-item" onclick="selectOption(this,'horizon','short')"><div class="option-item-title">Weeks</div><div class="option-item-sub">Quick, active practice</div></div>
+      <div class="option-item" onclick="selectOption(this,'horizon','medium')"><div class="option-item-title">Months</div><div class="option-item-sub">Give ideas time to play out</div></div>
+      <div class="option-item" onclick="selectOption(this,'horizon','long')"><div class="option-item-title">Years</div><div class="option-item-sub">Patient, long-term growth</div></div>
+      <div class="option-item" onclick="selectOption(this,'horizon','mixed')"><div class="option-item-title">A mix</div><div class="option-item-sub">Some of each</div></div>
     </div>
     <div class="onboarding-nav"><button class="btn btn-ghost" onclick="prevStep()">← Back</button><button class="btn btn-primary" onclick="nextStep()">Continue →</button></div>
   </div>
 
   <div class="onboarding-step" id="ob-4">
-    <div class="onboarding-step-num">STEP 4 OF 7</div>
-    <div class="onboarding-step-title">What assets interest you?</div>
-    <div class="onboarding-step-sub">Select all that apply.</div>
+    <div class="onboarding-step-num">STEP 4 OF 4</div>
+    <div class="onboarding-step-title">What sounds interesting?</div>
+    <div class="onboarding-step-sub">Pick any that catch your eye — this just seeds your watchlist and lessons.</div>
     <div class="option-grid">
-      <div class="option-item" onclick="toggleAsset(this,'stocks')"><div class="option-item-title">📈 US Stocks</div><div class="option-item-sub">NYSE, NASDAQ</div></div>
-      <div class="option-item" onclick="toggleAsset(this,'crypto')"><div class="option-item-title">₿ Crypto</div><div class="option-item-sub">BTC, ETH & more</div></div>
-      <div class="option-item" onclick="toggleAsset(this,'etf')"><div class="option-item-title">📦 ETFs</div><div class="option-item-sub">Index & sector funds</div></div>
-      <div class="option-item" onclick="toggleAsset(this,'intl')"><div class="option-item-title">🌍 International</div><div class="option-item-sub">Global markets</div></div>
-      <div class="option-item" onclick="toggleAsset(this,'commodities')"><div class="option-item-title">🥇 Commodities</div><div class="option-item-sub">Gold, oil, metals</div></div>
-      <div class="option-item" onclick="toggleAsset(this,'bonds')"><div class="option-item-title">📄 Bonds</div><div class="option-item-sub">Fixed income</div></div>
+      <div class="option-item" onclick="toggleAsset(this,'stocks')"><div class="option-item-title">Big-name stocks</div><div class="option-item-sub">Apple, Nvidia, Tesla…</div></div>
+      <div class="option-item" onclick="toggleAsset(this,'etf')"><div class="option-item-title">Funds (ETFs)</div><div class="option-item-sub">Own hundreds of stocks in one buy</div></div>
+      <div class="option-item" onclick="toggleAsset(this,'crypto')"><div class="option-item-title">Crypto</div><div class="option-item-sub">Bitcoin, Ethereum & more</div></div>
+      <div class="option-item" onclick="toggleAsset(this,'intl')"><div class="option-item-title">World markets</div><div class="option-item-sub">Beyond the US</div></div>
+      <div class="option-item" onclick="toggleAsset(this,'bonds')"><div class="option-item-title">Bonds & safety</div><div class="option-item-sub">Steadier, income-focused</div></div>
+      <div class="option-item" onclick="toggleAsset(this,'commodities')"><div class="option-item-title">Gold & commodities</div><div class="option-item-sub">Metals, oil, real stuff</div></div>
     </div>
-    <div class="onboarding-nav"><button class="btn btn-ghost" onclick="prevStep()">← Back</button><button class="btn btn-primary" onclick="nextStep()">Continue →</button></div>
-  </div>
-
-  <div class="onboarding-step" id="ob-5">
-    <div class="onboarding-step-num">STEP 5 OF 7</div>
-    <div class="onboarding-step-title">What's your investment capacity?</div>
-    <div class="onboarding-step-sub">This stays completely private — it helps us calibrate portfolio tools.</div>
-    <div class="option-grid">
-      <div class="option-item" onclick="selectOption(this,'capital','small')"><div class="option-item-title">💰 Under $10K</div><div class="option-item-sub">Getting started</div></div>
-      <div class="option-item" onclick="selectOption(this,'capital','medium')"><div class="option-item-title">💰💰 $10K–$100K</div><div class="option-item-sub">Growing portfolio</div></div>
-      <div class="option-item" onclick="selectOption(this,'capital','large')"><div class="option-item-title">💰💰💰 $100K–$1M</div><div class="option-item-sub">Serious investor</div></div>
-      <div class="option-item" onclick="selectOption(this,'capital','institutional')"><div class="option-item-title">🏦 $1M+</div><div class="option-item-sub">Institutional scale</div></div>
-    </div>
-    <div class="onboarding-nav"><button class="btn btn-ghost" onclick="prevStep()">← Back</button><button class="btn btn-primary" onclick="nextStep()">Continue →</button></div>
-  </div>
-
-  <div class="onboarding-step" id="ob-6">
-    <div class="onboarding-step-num">STEP 6 OF 7</div>
-    <div class="onboarding-step-title">What's your profession?</div>
-    <div class="onboarding-step-sub">Helps us personalize business vs. investment focused content.</div>
-    <div class="option-grid">
-      <div class="option-item" onclick="selectOption(this,'profession','entrepreneur')"><div class="option-item-title">🚀 Entrepreneur</div><div class="option-item-sub">Founder / startup</div></div>
-      <div class="option-item" onclick="selectOption(this,'profession','finance')"><div class="option-item-title">📊 Finance Pro</div><div class="option-item-sub">Analyst / manager</div></div>
-      <div class="option-item" onclick="selectOption(this,'profession','executive')"><div class="option-item-title">💼 Executive</div><div class="option-item-sub">C-suite / Director</div></div>
-      <div class="option-item" onclick="selectOption(this,'profession','independent')"><div class="option-item-title">🎯 Independent</div><div class="option-item-sub">Individual investor</div></div>
-    </div>
-    <div class="onboarding-nav"><button class="btn btn-ghost" onclick="prevStep()">← Back</button><button class="btn btn-primary" onclick="nextStep()">Continue →</button></div>
-  </div>
-
-  <div class="onboarding-step" id="ob-7">
-    <div class="onboarding-step-num">STEP 7 OF 7</div>
-    <div class="onboarding-step-title">Set up your alerts</div>
-    <div class="onboarding-step-sub">Choose what kind of notifications matter most to you.</div>
-    <div class="option-grid">
-      <div class="option-item selected" onclick="toggleAsset(this,'alert-signals')"><div class="option-item-title">📡 Signal Alerts</div><div class="option-item-sub">New BUY/SELL signals</div></div>
-      <div class="option-item selected" onclick="toggleAsset(this,'alert-news')"><div class="option-item-title">📰 Breaking News</div><div class="option-item-sub">High-impact events</div></div>
-      <div class="option-item" onclick="toggleAsset(this,'alert-portfolio')"><div class="option-item-title">💼 Portfolio Changes</div><div class="option-item-sub">P&L thresholds</div></div>
-      <div class="option-item selected" onclick="toggleAsset(this,'alert-reports')"><div class="option-item-title">📊 Weekly Reports</div><div class="option-item-sub">AI weekly summary</div></div>
-    </div>
-    <div class="onboarding-nav"><button class="btn btn-ghost" onclick="prevStep()">← Back</button><button class="btn btn-primary" onclick="finishOnboarding()">Launch Quant Entelloq →</button></div>
+    <div class="onboarding-nav"><button class="btn btn-ghost" onclick="prevStep()">← Back</button><button class="btn btn-primary" onclick="finishOnboarding()">Meet your AI coach →</button></div>
   </div>
 </div>
 
