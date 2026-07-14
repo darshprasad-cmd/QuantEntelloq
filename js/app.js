@@ -523,6 +523,8 @@ function selectOption(el, key, val) {
   // Map specific keys onto state.profile.useCase / experience for the validator
   if (key === 'useCase' || key === 'goal' || key === 'purpose') state.profile.useCase = val;
   if (key === 'experience' || key === 'level') state.profile.experience = val;
+  // Sync the adaptive-density level system (professional maps to advanced defaults)
+  if (key === 'level') { try { localStorage.setItem('qz_level', val === 'professional' ? 'advanced' : val); } catch(_) {} }
   // Clear any pending validation error on this step
   const err = document.getElementById(`ob-err-${state.onboardingStep}`);
   if (err) err.remove();
@@ -833,6 +835,29 @@ function qzLevel() {
   try { return (window.state && state.profile && state.profile.level) || 'beginner'; }
   catch (e) { return 'beginner'; }
 }
+// ── Adaptive experience level: Beginner / Intermediate / Advanced ──
+// Affects DEFAULTS only (how much detail shows first) — never locks features.
+var QZ_LEVELS = ['beginner','intermediate','advanced'];
+function qzGetLevel(){
+  try{
+    var l = (window.state && state.profile && state.profile.level) || localStorage.getItem('qz_level') || 'beginner';
+    if (l === 'professional') l = 'advanced';
+    return QZ_LEVELS.indexOf(l) >= 0 ? l : 'beginner';
+  }catch(e){ return 'beginner'; }
+}
+function qzSetLevel(l){
+  if(QZ_LEVELS.indexOf(l) < 0) return;
+  try{ if(!window.state) window.state={}; if(!state.profile) state.profile={}; state.profile.level=l; }catch(e){}
+  try{ localStorage.setItem('qz_level', l); }catch(e){}
+  try{ var sel=document.getElementById('ai-level-setting'); if(sel) sel.value=l; }catch(e){}
+  try{ if(window.state && state.currentPage==='dashboard') renderHome(); }catch(e){}
+}
+function qzLevelBar(){
+  var cur=qzGetLevel(), labels={beginner:'Beginner',intermediate:'Intermediate',advanced:'Advanced'};
+  return '<div class="qz-levelbar" title="Controls how much detail you see by default">'+
+    QZ_LEVELS.map(function(l){ return '<button class="qz-levelbtn'+(l===cur?' active':'')+'" onclick="qzSetLevel(\''+l+'\')">'+labels[l]+'</button>'; }).join('')+'</div>';
+}
+try{ if(typeof state!=='undefined' && state.profile && !state.profile.level){ var _ql=localStorage.getItem('qz_level'); if(_ql && QZ_LEVELS.indexOf(_ql)>=0) state.profile.level=_ql; } }catch(e){}
 
 // ── ✨ Explain → routes to the one AI assistant, pre-seeded in plain English ──
 function qzExplain(term, context) {
@@ -854,55 +879,161 @@ function qzExplainChip(term, context) {
   return '<span class="qz-explain" onclick="qzExplain(&quot;' + t + '&quot;,&quot;' + c + '&quot;)">✨ Explain</span>';
 }
 
-// ── Learn (V2 minimal shell — Phase 4 expands to Netflix-style continue/lessons) ──
+// ── Learn (V2 Phase 4 — Netflix-style rows, in-app lessons, tracked progress) ──
 var QZ_LEARN_CARDS = [
-  { id:'stocks',    icon:'📈', title:'What is a stock?',      blurb:'Owning a tiny slice of a company — and why prices move.' },
-  { id:'etf',       icon:'🧺', title:'What is an ETF?',        blurb:'A basket of many stocks in one, for instant diversification.' },
-  { id:'pe',        icon:'⚖️', title:'The P/E ratio',          blurb:'How expensive a stock is versus the profit it makes.' },
-  { id:'dividend',  icon:'💵', title:'Dividends',              blurb:'Cash some companies pay you just for holding their shares.' },
-  { id:'diversify', icon:'🗂️', title:'Diversification',        blurb:'Why you should not put all your money in one place.' },
-  { id:'risk',      icon:'🌊', title:'Risk & volatility',      blurb:'What it means when a stock swings up and down a lot.' },
-  { id:'compound',  icon:'🌱', title:'Compound growth',        blurb:'How small gains snowball into big ones over time.' },
-  { id:'marketcap', icon:'🏛️', title:'Market capitalization',  blurb:'How the market sizes a whole company at a glance.' }
+  { id:'stocks', icon:'▲', cat:'The basics', mins:3, title:'What is a stock?', blurb:'Owning a tiny slice of a company — and why prices move.',
+    body:['A stock is a small ownership slice of a real company. Buy one share of Apple and you literally own a piece of Apple — its stores, its brand, its future profits.',
+          'Prices move because millions of people constantly re-vote on what that slice is worth. Good news pushes the vote up, bad news pushes it down. Day to day it is noisy; over years it tends to follow how the business actually performs.'],
+    key:['A share = part-ownership of a company','Short-term prices are votes, long-term prices follow profits','You make money via price growth and dividends'] },
+  { id:'etf', icon:'▦', cat:'The basics', mins:3, title:'What is an ETF?', blurb:'A basket of many stocks in one, for instant diversification.',
+    body:['An ETF (exchange-traded fund) is a ready-made basket of many stocks that trades like a single stock. One purchase of an S&P 500 ETF makes you a part-owner of 500 large companies at once.',
+          'That instant spread is why beginners often start here: one bad company cannot sink you, and fees on the big index ETFs are extremely low.'],
+    key:['One ETF = hundreds of companies in one trade','Index ETFs are the classic low-cost starting point','Diversification is built in'] },
+  { id:'dividend', icon:'◇', cat:'The basics', mins:3, title:'Dividends', blurb:'Cash some companies pay you just for holding their shares.',
+    body:['A dividend is cash a company pays its shareholders, usually every quarter, out of its profits. Hold the share, receive the payment — no selling required.',
+          'Mature businesses (utilities, banks, consumer staples) tend to pay them; fast growers usually reinvest instead. Reinvesting dividends into more shares is one of the quietest ways wealth compounds.'],
+    key:['Dividends = your share of the profits, in cash','Dividend yield = yearly payout ÷ share price','Reinvested dividends compound powerfully'] },
+  { id:'compound', icon:'≋', cat:'The basics', mins:4, title:'Compound growth', blurb:'How small gains snowball into big ones over time.',
+    body:['Compounding means your returns start earning returns of their own. Year one you earn on your money; year two you earn on your money plus year one\'s gains — and the curve steepens every year after.',
+          '$10,000 growing 8% a year is $21,600 in 10 years, $46,600 in 20, and about $100,000 in 30. Nothing changed but time. This is why starting early beats starting big.'],
+    key:['Gains earn gains — growth accelerates','Time in the market beats timing the market','Starting early matters more than starting large'] },
+  { id:'pe', icon:'⌁', cat:'Valuation & ratios', mins:4, title:'The P/E ratio', blurb:'How expensive a stock is versus the profit it makes.',
+    body:['Price-to-earnings answers one question: how many dollars are you paying for one dollar of the company\'s yearly profit? A P/E of 25 means $25 per $1 of annual earnings.',
+          'A high P/E is not automatically bad — it says the market expects strong growth. A low P/E is not automatically a bargain — it can flag a business in trouble. Always compare a P/E to the company\'s own history and to similar companies.'],
+    key:['P/E = share price ÷ earnings per share','High P/E prices in growth; low P/E prices in doubt','Compare within the same industry, not across'] },
+  { id:'marketcap', icon:'▣', cat:'Valuation & ratios', mins:3, title:'Market capitalization', blurb:'How the market sizes a whole company at a glance.',
+    body:['Market cap is the price tag on the entire company: share price × total shares. It is how "large-cap", "mid-cap" and "small-cap" are defined.',
+          'Large caps (over ~$10B) are steadier; small caps swing harder in both directions. A $900 share of one company can be "cheaper" than a $9 share of another — market cap, not share price, tells you which company is bigger.'],
+    key:['Market cap = price × shares outstanding','Share price alone says nothing about company size','Bigger usually means steadier, smaller means swingier'] },
+  { id:'eps', icon:'∴', cat:'Valuation & ratios', mins:3, title:'Earnings per share', blurb:'The profit engine behind every stock price.',
+    body:['EPS is the company\'s total profit divided across every share — the earnings your one share represents. It is the "E" inside the P/E ratio.',
+          'What moves stocks around earnings season is not the number itself but the surprise: results versus what analysts expected. Beat expectations and the stock often jumps; miss and it can fall even if profits grew.'],
+    key:['EPS = total profit ÷ number of shares','Markets react to surprise vs expectations','Rising EPS over years is the core bull signal'] },
+  { id:'pb', icon:'≡', cat:'Valuation & ratios', mins:3, title:'Price-to-book', blurb:'What you pay versus what the company owns.',
+    body:['Book value is what would be left if a company sold its assets and paid its debts. Price-to-book compares the stock price to that floor value per share.',
+          'It matters most for banks and asset-heavy businesses. For software or brand-driven companies the "book" misses most of what makes them valuable, so a sky-high P/B there is normal, not a warning.'],
+    key:['P/B compares price to net assets','Most useful for banks and industrials','Low P/B can mean value — or a value trap'] },
+  { id:'candles', icon:'╫', cat:'Charts & trading', mins:4, title:'Reading candlesticks', blurb:'What those green and red bars actually say.',
+    body:['Each candle compresses a period of trading into one shape: the body spans open-to-close, the thin wicks mark the highest and lowest prices touched. Green (or white) means it closed higher than it opened; red means lower.',
+          'Long wicks show a fight — prices pushed far but got rejected. A tiny body with long wicks means indecision; a long solid body means conviction. Patterns help, but they are probabilities, never promises.'],
+    key:['Body = open→close, wicks = the extremes','Green closed up, red closed down','Wicks reveal where buyers or sellers fought back'] },
+  { id:'volume', icon:'▥', cat:'Charts & trading', mins:3, title:'Volume', blurb:'The conviction meter behind every price move.',
+    body:['Volume counts how many shares changed hands. It is the polygraph of the market: a price move on heavy volume has real conviction behind it; the same move on thin volume is easy to distrust.',
+          'Classic read: rallies are healthier when volume rises with price, and a spike in volume after a long trend often marks exhaustion — the last buyers or sellers rushing in.'],
+    key:['Volume = how many shares traded','Big move + big volume = conviction','Big move + tiny volume = suspicion'] },
+  { id:'trend', icon:'⟋', cat:'Charts & trading', mins:4, title:'Trends, support & resistance', blurb:'Why prices remember certain levels.',
+    body:['A trend is simply the direction of the drift — higher highs and higher lows mean an uptrend. Support is a floor where buyers have repeatedly stepped in; resistance is a ceiling where sellers have repeatedly appeared.',
+          'These levels work partly because everyone watches them: orders cluster there. A clean break through resistance often turns it into new support — the ceiling becomes the floor.'],
+    key:['Uptrend = higher highs and higher lows','Support = repeated floor, resistance = repeated ceiling','Broken resistance often becomes support'] },
+  { id:'orders', icon:'⇥', cat:'Charts & trading', mins:3, title:'Market vs limit orders', blurb:'The two buttons every investor must understand.',
+    body:['A market order says "fill me now at whatever the price is" — fast, but on thin stocks the fill can be worse than the quote you saw. A limit order says "only at my price or better" — precise, but it may never fill.',
+          'For liquid giants like Apple, market orders are usually fine. For small or volatile names, limits protect you from paying a spike. Try them risk-free in Paper Trading here.'],
+    key:['Market order = speed, limit order = price control','Use limits on thin or volatile stocks','Practice both in Paper Trading first'] },
+  { id:'diversify', icon:'⊞', cat:'Portfolio & risk', mins:3, title:'Diversification', blurb:'Why you should not put all your money in one place.',
+    body:['Diversification spreads your money across companies, industries and countries so no single failure can wreck you. It is the one strategy often called a free lunch: it cuts risk without necessarily cutting returns.',
+          'Real diversification means different things, not just many things — ten tech stocks still sink together. Mix sectors, add international exposure, and consider some bonds or cash as shock absorbers.'],
+    key:['Never let one bet decide your future','Ten similar stocks is not diversification','Mix sectors, geographies and asset types'] },
+  { id:'risk', icon:'~', cat:'Portfolio & risk', mins:4, title:'Risk & volatility', blurb:'What it means when a stock swings up and down a lot.',
+    body:['Volatility measures how violently a price swings. It is the toll the market charges for higher long-term returns — stocks beat savings accounts precisely because they can drop 30% in a bad year.',
+          'The real risk for most people is not volatility itself but being forced (or panicked) into selling at the bottom. Money you need within a few years does not belong in stocks; money you will not touch for a decade can ride the waves.'],
+    key:['Volatility is the price of long-term returns','The deadly mistake is selling in a panic','Match investments to when you need the money'] },
+  { id:'dca', icon:'∿', cat:'Portfolio & risk', mins:3, title:'Dollar-cost averaging', blurb:'The autopilot strategy that removes bad timing.',
+    body:['Dollar-cost averaging means investing a fixed amount on a fixed schedule — say $200 every month — regardless of headlines. When prices are high you buy fewer shares; when they crash you automatically buy more.',
+          'Its superpower is behavioral: it removes the impossible decision of "is now a good time?" and turns market dips from something you fear into something your plan quietly exploits.'],
+    key:['Fixed amount, fixed schedule, no forecasting','Crashes become automatic buying opportunities','Consistency beats prediction'] },
+  { id:'fees', icon:'％', cat:'Portfolio & risk', mins:3, title:'Fees & taxes', blurb:'The silent leaks that drain long-term returns.',
+    body:['A 1% annual fee sounds tiny, but over 30 years it can consume roughly a quarter of your final portfolio — fees compound against you exactly the way returns compound for you.',
+          'Taxes leak too: frequent trading converts gains into short-term taxable events. Low-cost index funds held for years are tax-quiet and fee-light, which is a large part of why they beat most active strategies.'],
+    key:['Fees compound against you for decades','Check the expense ratio before you buy any fund','Less trading usually means less tax drag'] }
 ];
+var QZ_LEARN_CATS = ['The basics','Valuation & ratios','Charts & trading','Portfolio & risk'];
 function _qzLearnProgress() {
   try { return JSON.parse(localStorage.getItem('qz_learn_progress') || '{}'); } catch (e) { return {}; }
 }
-function qzLearnStart(id) {
-  try {
-    var p = _qzLearnProgress(); p[id] = { started:1, at: (window.Date ? Date.now() : 0) };
-    localStorage.setItem('qz_learn_progress', JSON.stringify(p));
-  } catch (e) {}
-  var card = QZ_LEARN_CARDS.filter(function(c){ return c.id === id; })[0];
-  if (card) qzExplain(card.title, 'beginner investing lesson');
+function _qzLearnSave(p) { try { localStorage.setItem('qz_learn_progress', JSON.stringify(p)); } catch (e) {} }
+function _qzLearnCard(id) { return QZ_LEARN_CARDS.filter(function(c){ return c.id === id; })[0]; }
+function qzLearnStart(id) { qzLearnOpen(id); }
+function qzLearnOpen(id) {
+  var c = _qzLearnCard(id); if (!c) return;
+  var p = _qzLearnProgress();
+  if (!p[id] || !p[id].done) { p[id] = { started:1, done:(p[id]&&p[id].done)||0, at: Date.now() }; _qzLearnSave(p); }
+  var done = p[id] && p[id].done;
+  var m = document.getElementById('qz-lesson-modal');
+  if (!m) {
+    m = document.createElement('div');
+    m.id = 'qz-lesson-modal';
+    m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:9100;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);padding:20px;';
+    m.onclick = function(e){ if (e.target === m) m.remove(); };
+    document.body.appendChild(m);
+  }
+  m.innerHTML =
+    '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;max-width:640px;width:100%;max-height:86vh;overflow-y:auto;padding:0;">' +
+      '<div style="padding:22px 26px 0;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">' +
+        '<div>' +
+          '<div style="font-family:var(--font-mono);font-size:10.5px;color:var(--text-muted);letter-spacing:0.08em;">' + c.cat.toUpperCase() + ' · ' + c.mins + ' MIN READ</div>' +
+          '<h2 style="font-size:21px;font-weight:800;margin:6px 0 0;letter-spacing:-0.01em;">' + c.title + '</h2>' +
+        '</div>' +
+        '<button onclick="document.getElementById(\'qz-lesson-modal\').remove()" style="background:transparent;border:none;color:var(--text-muted);font-size:22px;cursor:pointer;padding:0 2px;">×</button>' +
+      '</div>' +
+      '<div style="padding:14px 26px 4px;color:var(--text-secondary);font-size:14px;line-height:1.75;">' +
+        c.body.map(function(par){ return '<p style="margin:0 0 14px;">' + par + '</p>'; }).join('') +
+      '</div>' +
+      '<div style="margin:2px 26px 18px;padding:14px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;">' +
+        '<div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);letter-spacing:0.08em;margin-bottom:8px;">KEY TAKEAWAYS</div>' +
+        c.key.map(function(k){ return '<div style="display:flex;gap:8px;font-size:13px;color:var(--text-primary);margin:5px 0;"><span style="color:var(--green);">✓</span><span>' + k + '</span></div>'; }).join('') +
+      '</div>' +
+      '<div style="padding:14px 26px 20px;display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid var(--border);">' +
+        (done
+          ? '<span style="align-self:center;font-size:12.5px;color:var(--green);font-weight:700;">✓ Completed</span>'
+          : '<button class="btn btn-primary btn-sm" onclick="qzLearnDone(\'' + c.id + '\')">Mark as done ✓</button>') +
+        '<button class="btn btn-secondary btn-sm" onclick="document.getElementById(\'qz-lesson-modal\').remove();qzExplain(\'' + c.title.replace(/'/g, '') + '\',\'go deeper than the basics, I already read the intro lesson\')">Go deeper with AI →</button>' +
+      '</div>' +
+    '</div>';
 }
-function _qzLearnCardHTML(c, verb) {
-  return '<div class="qz-learn-card">' +
-           '<div class="qz-learn-ic">' + c.icon + '</div>' +
+function qzLearnDone(id) {
+  var p = _qzLearnProgress();
+  p[id] = { started:1, done:1, at: Date.now() };
+  _qzLearnSave(p);
+  var m = document.getElementById('qz-lesson-modal'); if (m) m.remove();
+  try { renderLearnExplore(); renderLearnContinue(); } catch (e) {}
+}
+function _qzLearnCardHTML(c) {
+  var p = _qzLearnProgress()[c.id];
+  var badge = p && p.done ? '<span class="qz-learn-done">✓ DONE</span>' : p ? '<span class="qz-learn-prog">IN PROGRESS</span>' : '<span style="font-size:10.5px;color:var(--text-muted);">' + c.mins + ' MIN</span>';
+  return '<div class="qz-learn-card" onclick="qzLearnOpen(\'' + c.id + '\')" style="cursor:pointer;">' +
+           '<div style="display:flex;justify-content:space-between;align-items:center;"><div class="qz-learn-ic" style="font-size:20px;color:var(--text-secondary);">' + c.icon + '</div>' + badge + '</div>' +
            '<div class="qz-learn-t">' + c.title + '</div>' +
            '<div class="qz-learn-b">' + c.blurb + '</div>' +
-           '<button class="btn btn-sm" style="margin-top:auto;" onclick="qzLearnStart(\'' + c.id + '\')">' + verb + ' →</button>' +
          '</div>';
 }
 function renderLearnExplore() {
   var el = document.getElementById('page-learn-explore');
   if (!el) return;
+  var p = _qzLearnProgress();
+  var doneN = QZ_LEARN_CARDS.filter(function(c){ return p[c.id] && p[c.id].done; }).length;
   el.innerHTML =
-    '<div style="max-width:960px;">' +
+    '<div style="max-width:1080px;">' +
       '<h2 style="font-size:20px;font-weight:750;margin:4px 0 4px;">Learn investing, one idea at a time</h2>' +
-      '<p style="color:var(--text-secondary);font-size:13.5px;margin:0 0 18px;">Short, plain-English lessons. Tap any card and the AI explains it for you.</p>' +
-      '<div class="qz-learn-grid">' + QZ_LEARN_CARDS.map(function(c){ return _qzLearnCardHTML(c, 'Start'); }).join('') + '</div>' +
+      '<p style="color:var(--text-secondary);font-size:13.5px;margin:0 0 6px;">Short, plain-English lessons — read one in 3 minutes, then let the AI take you deeper.</p>' +
+      '<p style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted);margin:0 0 10px;">' + doneN + ' / ' + QZ_LEARN_CARDS.length + ' completed</p>' +
+      QZ_LEARN_CATS.map(function(cat){
+        var cards = QZ_LEARN_CARDS.filter(function(c){ return c.cat === cat; });
+        if (!cards.length) return '';
+        return '<div class="qz-learn-cat">' + cat + '</div>' +
+               '<div class="qz-learn-rowscroll">' + cards.map(_qzLearnCardHTML).join('') + '</div>';
+      }).join('') +
     '</div>';
 }
 function renderLearnContinue() {
   var el = document.getElementById('page-learn-continue');
   if (!el) return;
   var p = _qzLearnProgress();
-  var started = QZ_LEARN_CARDS.filter(function(c){ return p[c.id]; });
-  if (!started.length) {
+  var inProg = QZ_LEARN_CARDS.filter(function(c){ return p[c.id] && !p[c.id].done; });
+  var done = QZ_LEARN_CARDS.filter(function(c){ return p[c.id] && p[c.id].done; });
+  if (!inProg.length && !done.length) {
     el.innerHTML =
       '<div style="max-width:640px;padding:40px 0;text-align:center;">' +
-        '<div style="font-size:34px;">🎓</div>' +
+        '<div style="font-size:30px;color:var(--text-muted);">◎</div>' +
         '<h2 style="font-size:19px;font-weight:750;margin:10px 0 6px;">Nothing in progress yet</h2>' +
         '<p style="color:var(--text-secondary);font-size:13.5px;margin:0 0 16px;">Pick a topic in <b>Explore</b> and it will show up here so you can pick up where you left off.</p>' +
         '<button class="btn" onclick="showPage(\'learn-explore\')">Browse topics →</button>' +
@@ -910,9 +1041,11 @@ function renderLearnContinue() {
     return;
   }
   el.innerHTML =
-    '<div style="max-width:960px;">' +
-      '<h2 style="font-size:20px;font-weight:750;margin:4px 0 14px;">Continue learning</h2>' +
-      '<div class="qz-learn-grid">' + started.map(function(c){ return _qzLearnCardHTML(c, 'Resume'); }).join('') + '</div>' +
+    '<div style="max-width:1080px;">' +
+      (inProg.length ? '<div class="qz-learn-cat" style="margin-top:4px;">Continue where you left off</div>' +
+        '<div class="qz-learn-rowscroll">' + inProg.map(_qzLearnCardHTML).join('') + '</div>' : '') +
+      (done.length ? '<div class="qz-learn-cat">Completed · ' + done.length + '</div>' +
+        '<div class="qz-learn-rowscroll">' + done.map(_qzLearnCardHTML).join('') + '</div>' : '') +
     '</div>';
 }
 
@@ -1035,6 +1168,18 @@ function _qzFillHomeNews(){
     else if(tries>=15){ e2.innerHTML=_qzNewsRows([]); clearInterval(iv); }
   }, 900);
 }
+function _qzHomeAdvanced(byChange){
+  if(!byChange.length) return '';
+  var lbl=function(t){ return '<div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);letter-spacing:0.08em;margin:2px 0 6px;">'+t+'</div>'; };
+  var g=byChange.slice(0,4).map(_qzRowHTML).join('');
+  var l=byChange.slice(-4).reverse().map(_qzRowHTML).join('');
+  return _qzCard('Market Movers',
+    '<button class="qz-home-card-act" onclick="showPage(\'signals\')">Signals →</button>',
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 18px;">'+
+      '<div>'+lbl('TOP GAINERS')+g+'</div>'+
+      '<div>'+lbl('TOP LOSERS')+l+'</div>'+
+    '</div>', true);
+}
 function renderHome(){
   var host=document.getElementById('page-dashboard');
   if(!host) return;
@@ -1045,6 +1190,10 @@ function renderHome(){
     var sent=_qzHomeSent(S);
     var topGain=byChange[0]||{name:'the market',change:0,ticker:''};
     var buyCnt=S.filter(function(x){return x.signal==='BUY';}).length;
+    var lvl=qzGetLevel();
+    var moversN=lvl==='advanced'?8:lvl==='intermediate'?5:3;
+    var trendN=lvl==='advanced'?6:4;
+    var showExplain=lvl!=='advanced';
 
     var brief=S.length
       ? 'Markets are looking '+sent.label.toLowerCase()+' today. '+(topGain.name||topGain.ticker||'A leading name')+' is up '+Math.abs(+topGain.change||0).toFixed(1)+'%. '
@@ -1053,10 +1202,10 @@ function renderHome(){
     var briefCard=_qzCard('AI Daily Brief',
       '<button class="qz-home-card-act" onclick="showPage(\'ai\')">Ask AI →</button>',
       '<div class="qz-brief">'+brief+'</div>'+
-      '<div style="margin-top:12px;">'+qzExplainChip('today\'s market brief','beginner daily market summary')+'</div>', true);
+      (showExplain?'<div style="margin-top:12px;">'+qzExplainChip('today\'s market brief','beginner daily market summary')+'</div>':''), true);
 
-    var snapTop=byChange.slice(0,3).map(_qzRowHTML).join('')||'<div class="qz-home-empty">Loading market data…</div>';
-    var snapMore=byChange.slice(3,8).map(_qzRowHTML).join('');
+    var snapTop=byChange.slice(0,moversN).map(_qzRowHTML).join('')||'<div class="qz-home-empty">Loading market data…</div>';
+    var snapMore=byChange.slice(moversN,moversN+6).map(_qzRowHTML).join('');
     var snapCard=_qzCard('Market Snapshot',
       '<span class="qz-home-card-act" style="cursor:default;color:'+sent.color+';">'+sent.label+' · '+sent.avg+'/100</span>',
       snapTop+(snapMore?qzDisclosure('More movers', snapMore):''));
@@ -1066,7 +1215,7 @@ function renderHome(){
       '<button class="qz-home-card-act" onclick="showSection(\'markets\')">Explore →</button>',
       wl.length?wl.map(_qzRowHTML).join(''):'<div class="qz-home-empty">No watchlist yet — add companies from Markets.</div>');
 
-    var trend=byActive.slice(0,4).map(_qzRowHTML).join('')||'<div class="qz-home-empty">Loading…</div>';
+    var trend=byActive.slice(0,trendN).map(_qzRowHTML).join('')||'<div class="qz-home-empty">Loading…</div>';
     var tcard=_qzCard('Trending Companies',
       '<button class="qz-home-card-act" onclick="showSection(\'markets\')">See all →</button>', trend);
 
@@ -1076,9 +1225,10 @@ function renderHome(){
 
     host.innerHTML=
       '<div class="qz-home">'+
-        '<div class="qz-home-head"><div class="qz-home-hi">'+_qzGreet()+'</div><div class="qz-home-date">'+_qzHomeDateStr()+'</div></div>'+
+        '<div class="qz-home-head"><div><div class="qz-home-hi">'+_qzGreet()+'</div><div class="qz-home-date">'+_qzHomeDateStr()+'</div></div>'+qzLevelBar()+'</div>'+
         '<div class="qz-home-grid">'+
           briefCard+snapCard+wlCard+_qzHomePortfolio()+_qzHomeLearn()+tcard+_qzHomeEarnings()+ncard+
+          (lvl==='advanced'?_qzHomeAdvanced(byChange):'')+
         '</div>'+
       '</div>';
     _qzFillHomeNews();
@@ -3182,9 +3332,9 @@ function _searchRender() {
         ${top.map((s,i) => _searchStockRow(s, i)).join('')}
       </div>
       <div class="search-results-section">
-        ${_searchActionRow('🌍', 'Browse the full Universe', "showPage('universe', document.querySelector(\"[onclick*='universe']\"))", 'G U')}
-        ${_searchActionRow('📡', 'View AI Signals', "showPage('signals', document.querySelector(\"[onclick*='signals']\"))", 'G S')}
-        ${_searchActionRow('📰', 'NewsJudge feed', "showPage('news', document.querySelector(\"[onclick*='news']\"))", 'G N')}
+        ${_searchActionRow('▦', 'Browse the full Universe', "showPage('universe', document.querySelector(\"[onclick*='universe']\"))", 'G U')}
+        ${_searchActionRow('⌁', 'View AI Signals', "showPage('signals', document.querySelector(\"[onclick*='signals']\"))", 'G S')}
+        ${_searchActionRow('≡', 'Market News feed', "showPage('news', document.querySelector(\"[onclick*='news']\"))", 'G N')}
       </div>`;
     dd.classList.remove('hidden');
     return;
@@ -3247,6 +3397,9 @@ function _searchRender() {
     ...countryHits.map(([co, m]) => ({type:'country', co, m})),
     ..._searchState.webResults.map(w => ({type:'web', w})),
   ];
+  // ChatGPT-style natural-language escape hatch — any query can be asked to the AI
+  let aiIdx = -1;
+  if (q.length >= 3) { aiIdx = _searchState.items.length; _searchState.items.push({type:'ai', q}); }
   if (_searchState.selected < 0 || _searchState.selected >= _searchState.items.length) {
     _searchState.selected = _searchState.items.length ? 0 : -1;
   }
@@ -3275,7 +3428,7 @@ function _searchRender() {
     const offset = stockTop.length + newsHits.length;
     html += `<div class="search-results-section">
       <div class="search-results-label"><span>QUICK FILTERS</span></div>
-      ${sectorActions.map((sec, i) => `<div class="search-result-action ${(_searchState.selected === offset+i)?'active':''}" data-idx="${offset+i}" onclick="globalSearchPick(${offset+i})">📊 Filter Universe by sector → <b style="color:var(--text-primary);">${sec}</b><span class="action-key">↵</span></div>`).join('')}
+      ${sectorActions.map((sec, i) => `<div class="search-result-action ${(_searchState.selected === offset+i)?'active':''}" data-idx="${offset+i}" onclick="globalSearchPick(${offset+i})">⊞ Filter Universe by sector → <b style="color:var(--text-primary);">${sec}</b><span class="action-key">↵</span></div>`).join('')}
       ${countryHits.map((c, i) => {
         const idx = offset + sectorActions.length + i;
         const flag = (typeof UNIVERSE_FLAGS !== 'undefined') ? (UNIVERSE_FLAGS[c[0]] || '🏳️') : '';
@@ -3299,6 +3452,12 @@ function _searchRender() {
       ${_searchState.webResults.map((w, i) => _searchWebRow(w, webOffset + i)).join('')}
     </div>`;
   }
+  if (aiIdx >= 0) {
+    html += `<div class="search-results-section">
+      <div class="search-results-label"><span>ASK AI</span></div>
+      <div class="search-result-action ${(_searchState.selected === aiIdx)?'active':''}" data-idx="${aiIdx}" onclick="globalSearchPick(${aiIdx})">◈ Ask AI anything: <b style="color:var(--text-primary);">“${_escapeHtml(q)}”</b><span class="action-key">↵</span></div>
+    </div>`;
+  }
   dd.innerHTML = html;
   dd.classList.remove('hidden');
 }
@@ -3308,7 +3467,7 @@ function _searchWebRow(w, idx) {
   return `<div class="search-result-item ${(_searchState.selected === idx)?'active':''}" data-idx="${idx}" onclick="globalSearchPick(${idx})" style="grid-template-columns:54px 1fr auto;">
     <span class="search-result-ticker">${w.symbol}</span>
     <span class="search-result-name" title="${_escapeHtml(w.name)}">${_escapeHtml(w.name)}${typeBadge}</span>
-    <span class="search-result-meta">🌐 ${w.exchange || 'Web'}</span>
+    <span class="search-result-meta">${w.exchange || 'Web'}</span>
   </div>`;
 }
 
@@ -3372,6 +3531,23 @@ function globalSearchPick(idx) {
   else if (item.type === 'sector') _searchOpenSector(item.sec);
   else if (item.type === 'country') _searchOpenCountry(item.co, item.m);
   else if (item.type === 'web') _searchOpenWeb(item.w);
+  else if (item.type === 'ai') _searchAskAI(item.q);
+}
+// Route a natural-language query straight into the one AI conversation
+function _searchAskAI(q) {
+  globalSearchClose();
+  const topInp = document.getElementById('global-search');
+  if (topInp) topInp.blur();
+  try {
+    showPage('ai');
+    setTimeout(function(){
+      var inp = document.getElementById('chat-input');
+      if (!inp) return;
+      inp.value = q;
+      inp.focus();
+      if (typeof sendChat === 'function') sendChat();
+    }, 140);
+  } catch (e) {}
 }
 
 // Open a Yahoo-discovered ticker: fetch full quote + display rich detail modal
@@ -3424,7 +3600,7 @@ function _showStockDetailModal(opts) {
   }
   if (opts.error) {
     modal.innerHTML = `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;min-width:380px;text-align:center;">
-      <div style="font-size:32px;margin-bottom:10px;">⚠️</div>
+      <div style="width:34px;height:34px;margin:0 auto 12px;border-radius:50%;border:2px solid var(--yellow);color:var(--yellow);font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;">!</div>
       <div style="font-family:var(--font-display);font-weight:700;margin-bottom:6px;">Lookup Failed</div>
       <div style="font-size:13px;color:var(--text-muted);margin-bottom:18px;">Couldn't fetch live data for <b>${opts.symbol}</b>. CORS proxies may be rate-limited — try again in a moment.</div>
       <button class="btn btn-secondary btn-sm" onclick="document.getElementById('stock-detail-modal').remove()">Close</button>
@@ -3443,8 +3619,12 @@ function _showStockDetailModal(opts) {
     ? `<div class="live-pill"><div class="live-dot"></div>LIVE · ${q._source.toUpperCase()}</div>`
     : `<div class="live-pill" style="background:rgba(255,211,42,0.14);border-color:rgba(255,211,42,0.25);color:var(--yellow);"><div class="live-dot" style="background:var(--yellow);box-shadow:0 0 8px rgba(255,211,42,0.6);"></div>LOCAL CACHE</div>`;
   const priceDisplay = q.regularMarketPrice && q.regularMarketPrice > 0 ? fmtN(q.regularMarketPrice, 2) : '—';
+  const symJs = String(q.symbol || (opts.hint && opts.hint.ticker) || (opts.localStock && opts.localStock.t) || '').replace(/[^A-Za-z0-9.\-]/g, '');
+  const lvlAdv = (typeof qzGetLevel === 'function' && qzGetLevel() === 'advanced');
+  const explain = (typeof qzExplainChip === 'function') ? qzExplainChip : function(){ return ''; };
+  const disc = (typeof qzDisclosure === 'function') ? qzDisclosure : function(s, d){ return d; };
   const localStockBlock = opts.localStock ? `
-    <div style="padding:0 28px 24px;">
+    <div style="padding:0 0 20px;">
       <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);letter-spacing:0.08em;margin-bottom:10px;">QUANT ENTELLOQ FACTOR SCORES (LOCAL UNIVERSE)</div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
         ${_statCard('Tier', 'T'+opts.localStock.tier)}
@@ -3457,8 +3637,87 @@ function _showStockDetailModal(opts) {
         ${_statCard('Global Rank', '#' + opts.localStock.gr.toLocaleString())}
       </div>
     </div>` : '';
+  // ── Tab panels (V2 Phase 3: Overview · Financials · News · Analysis) ──
+  const pOverview = `
+    <div style="padding:22px 28px 4px;display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+      <div>
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);letter-spacing:0.08em;margin-bottom:6px;">${isLive ? 'LIVE PRICE' : 'PRICE (UNAVAILABLE)'}</div>
+        <div style="font-family:var(--font-display);font-size:36px;font-weight:800;line-height:1;${isLocal?'color:var(--text-muted);':''}">${priceDisplay}</div>
+        ${isLive ? `<div style="margin-top:6px;font-family:var(--font-mono);font-size:14px;color:${chgColor};">
+          ${chgSign} ${fmtN(q.regularMarketChange||0, 2)} (${fmtN(chg, 2)}%)
+        </div>` : `<div style="margin-top:6px;font-size:12px;color:var(--text-muted);font-style:italic;">CORS proxies offline — showing cached fundamentals</div>`}
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">${q.regularMarketTime ? new Date(q.regularMarketTime*1000).toLocaleString() : ''}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;font-size:12px;align-content:start;">
+        ${_kvRow('Day Range', `${fmtN(q.regularMarketDayLow,2)} – ${fmtN(q.regularMarketDayHigh,2)}`)}
+        ${_kvRow('52w Range', `${fmtN(q.fiftyTwoWeekLow,2)} – ${fmtN(q.fiftyTwoWeekHigh,2)}`)}
+        ${_kvRow('Volume', fmtN(q.regularMarketVolume, 0))}
+        ${_kvRow('Prev Close', fmtN(q.regularMarketPreviousClose, 2))}
+      </div>
+    </div>
+    <div style="padding:14px 28px 4px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+      ${_statCard('Market Cap', fmtBn(q.marketCap))}
+      ${_statCard('P/E (TTM)', fmtN(q.trailingPE, 2))}
+      ${_statCard('Div Yield', q.trailingAnnualDividendYield != null ? fmtN(q.trailingAnnualDividendYield*100, 2)+'%' : '—')}
+    </div>
+    <div style="padding:8px 28px 2px;display:flex;gap:8px;flex-wrap:wrap;">
+      ${explain('the P/E ratio', 'evaluating ' + symJs)}
+      ${explain('market capitalization', 'evaluating ' + symJs)}
+    </div>
+    <div style="padding:10px 28px 6px;font-size:12px;color:var(--text-secondary);">
+      <b style="color:var(--text-primary);">Sector:</b> ${_escapeHtml(sector)} &nbsp;·&nbsp; <b style="color:var(--text-primary);">Industry:</b> ${_escapeHtml(industry)}
+    </div>
+    <div style="padding:0 28px 20px;">
+      ${disc('More metrics', `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:4px 0;">
+        ${_statCard('Beta', fmtN(q.beta, 2))}
+        ${_statCard('EPS (TTM)', fmtN(q.epsTrailingTwelveMonths, 2))}
+        ${_statCard('Fwd P/E', fmtN(q.forwardPE, 2))}
+        ${_statCard('Book Val', fmtN(q.bookValue, 2))}
+        ${_statCard('Price/Book', fmtN(q.priceToBook, 2))}
+        ${_statCard('Avg Vol (3m)', fmtN(q.averageDailyVolume3Month, 0))}
+      </div>`, {open: lvlAdv})}
+    </div>`;
+  const pFinancials = `
+    <div style="padding:22px 28px 6px;">
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);letter-spacing:0.08em;margin-bottom:10px;">VALUATION & PROFITABILITY</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+        ${_statCard('Market Cap', fmtBn(q.marketCap))}
+        ${_statCard('P/E (TTM)', fmtN(q.trailingPE, 2))}
+        ${_statCard('Fwd P/E', fmtN(q.forwardPE, 2))}
+        ${_statCard('EPS (TTM)', fmtN(q.epsTrailingTwelveMonths, 2))}
+        ${_statCard('Beta', fmtN(q.beta, 2))}
+        ${_statCard('Div Yield', q.trailingAnnualDividendYield != null ? fmtN(q.trailingAnnualDividendYield*100, 2)+'%' : '—')}
+        ${_statCard('Book Val', fmtN(q.bookValue, 2))}
+        ${_statCard('Price/Book', fmtN(q.priceToBook, 2))}
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+        ${explain('earnings per share', 'reading ' + symJs + ' financials')}
+        ${explain('price-to-book ratio', 'reading ' + symJs + ' financials')}
+      </div>
+      <div style="margin-top:14px;font-size:12px;color:var(--text-muted);">Full statements (income, balance sheet, cash flow) open on Yahoo Finance below — in-app statements are on the roadmap.</div>
+    </div>`;
+  const pNews = `
+    <div id="qz-co-news" style="padding:20px 28px;">
+      <div style="display:flex;align-items:center;gap:10px;color:var(--text-muted);font-size:12px;">
+        <div style="width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+        Scanning the 59-source feed for ${symJs}…
+      </div>
+    </div>`;
+  const pAnalysis = `
+    <div style="padding:22px 28px 10px;">
+      ${localStockBlock || '<div style="font-size:12.5px;color:var(--text-muted);padding-bottom:14px;">No Quant Entelloq factor scores for this ticker yet — pin it to the Universe to start tracking it.</div>'}
+      <button class="btn btn-primary btn-sm" onclick="_qzCoAskAI('${symJs}')">Ask AI to analyze ${symJs} →</button>
+      <div style="margin-top:14px;">
+        ${disc('Advanced tools', `<div style="display:flex;gap:8px;flex-wrap:wrap;padding:4px 0;">
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('stock-detail-modal').remove();showPage('quantlab')">Quant Lab →</button>
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('stock-detail-modal').remove();showPage('signals')">AI Signals →</button>
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('stock-detail-modal').remove();showPage('scanner')">Screeners →</button>
+        </div>`, {open: lvlAdv})}
+      </div>
+    </div>
+    <div style="padding:0 28px 8px;">${_renderLegalHistoryBlock(q.symbol || (opts.hint && opts.hint.ticker) || (opts.localStock && opts.localStock.t) || '')}</div>`;
   modal.innerHTML = `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:0;min-width:520px;max-width:680px;max-height:90vh;overflow-y:auto;">
-    <div style="padding:24px 28px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;gap:16px;">
+    <div style="padding:24px 28px 16px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px;">
       <div>
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;">
           <div style="font-family:var(--font-display);font-size:22px;font-weight:800;letter-spacing:-0.01em;">${_escapeHtml(q.longName || q.shortName || q.symbol)}</div>
@@ -3470,51 +3729,94 @@ function _showStockDetailModal(opts) {
       </div>
       <button onclick="document.getElementById('stock-detail-modal').remove()" style="background:transparent;border:none;color:var(--text-muted);font-size:22px;cursor:pointer;padding:0 4px;">×</button>
     </div>
-    <div style="padding:24px 28px;display:grid;grid-template-columns:1fr 1fr;gap:24px;">
-      <div>
-        <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);letter-spacing:0.08em;margin-bottom:6px;">${isLive ? 'LIVE PRICE' : 'PRICE (UNAVAILABLE)'}</div>
-        <div style="font-family:var(--font-display);font-size:36px;font-weight:800;line-height:1;${isLocal?'color:var(--text-muted);':''}">${priceDisplay}</div>
-        ${isLive ? `<div style="margin-top:6px;font-family:var(--font-mono);font-size:14px;color:${chgColor};">
-          ${chgSign} ${fmtN(q.regularMarketChange||0, 2)} (${fmtN(chg, 2)}%)
-        </div>` : `<div style="margin-top:6px;font-size:12px;color:var(--text-muted);font-style:italic;">CORS proxies offline — showing cached fundamentals</div>`}
-        <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">${q.regularMarketTime ? new Date(q.regularMarketTime*1000).toLocaleString() : ''}</div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;font-size:12px;">
-        ${_kvRow('Day Range', `${fmtN(q.regularMarketDayLow,2)} – ${fmtN(q.regularMarketDayHigh,2)}`)}
-        ${_kvRow('52w Range', `${fmtN(q.fiftyTwoWeekLow,2)} – ${fmtN(q.fiftyTwoWeekHigh,2)}`)}
-        ${_kvRow('Volume', fmtN(q.regularMarketVolume, 0))}
-        ${_kvRow('Avg Vol (3m)', fmtN(q.averageDailyVolume3Month, 0))}
-        ${_kvRow('Open', fmtN(q.regularMarketOpen, 2))}
-        ${_kvRow('Prev Close', fmtN(q.regularMarketPreviousClose, 2))}
-      </div>
+    <div style="display:flex;gap:4px;padding:0 20px;border-bottom:1px solid var(--border);">
+      <button class="qz-subtab active" data-cotabbtn="overview" onclick="_qzCoTab('overview')">Overview</button>
+      <button class="qz-subtab" data-cotabbtn="financials" onclick="_qzCoTab('financials')">Financials</button>
+      <button class="qz-subtab" data-cotabbtn="news" onclick="_qzCoTab('news')">News</button>
+      <button class="qz-subtab" data-cotabbtn="analysis" onclick="_qzCoTab('analysis')">Analysis</button>
     </div>
-    <div style="padding:0 28px 24px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
-      ${_statCard('Market Cap', fmtBn(q.marketCap))}
-      ${_statCard('P/E (TTM)', fmtN(q.trailingPE, 2))}
-      ${_statCard('Fwd P/E', fmtN(q.forwardPE, 2))}
-      ${_statCard('EPS (TTM)', fmtN(q.epsTrailingTwelveMonths, 2))}
-      ${_statCard('Beta', fmtN(q.beta, 2))}
-      ${_statCard('Div Yield', q.trailingAnnualDividendYield != null ? fmtN(q.trailingAnnualDividendYield*100, 2)+'%' : '—')}
-      ${_statCard('Book Val', fmtN(q.bookValue, 2))}
-      ${_statCard('Price/Book', fmtN(q.priceToBook, 2))}
-    </div>
-    <div style="padding:0 28px 24px;font-size:12px;color:var(--text-secondary);">
-      <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);letter-spacing:0.08em;margin-bottom:6px;">CLASSIFICATION</div>
-      <div><b style="color:var(--text-primary);">Sector:</b> ${_escapeHtml(sector)} &nbsp;·&nbsp; <b style="color:var(--text-primary);">Industry:</b> ${_escapeHtml(industry)}</div>
-    </div>
-    ${localStockBlock}
-    ${_renderLegalHistoryBlock(q.symbol || (opts.hint && opts.hint.ticker) || (opts.localStock && opts.localStock.t) || '')}
+    <div class="qz-cotab-panel" data-cotab="overview">${pOverview}</div>
+    <div class="qz-cotab-panel" data-cotab="financials" style="display:none;">${pFinancials}</div>
+    <div class="qz-cotab-panel" data-cotab="news" style="display:none;">${pNews}</div>
+    <div class="qz-cotab-panel" data-cotab="analysis" style="display:none;">${pAnalysis}</div>
     <div style="padding:16px 28px;background:var(--surface2);border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
       <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">Source: Yahoo Finance · cached ${new Date().toLocaleTimeString()}</div>
       <div style="display:flex;gap:8px;">
         <a class="btn btn-ghost btn-sm" href="https://finance.yahoo.com/quote/${encodeURIComponent(q.symbol)}" target="_blank" rel="noopener">Yahoo ↗</a>
-        <a class="btn btn-ghost btn-sm" href="https://www.google.com/finance/quote/${encodeURIComponent(q.symbol)}" target="_blank" rel="noopener">Google ↗</a>
         <a class="btn btn-ghost btn-sm" href="https://www.tradingview.com/symbols/${encodeURIComponent(q.symbol)}" target="_blank" rel="noopener">TradingView ↗</a>
         <button class="btn btn-secondary btn-sm" onclick="_searchAddToUniverse(${JSON.stringify(_compactQuoteForUniverse(q, opts.hint)).replace(/"/g,'&quot;')})">＋ Pin to Universe</button>
         <button class="btn btn-primary btn-sm" onclick="document.getElementById('stock-detail-modal').remove()">Done</button>
       </div>
     </div>
   </div>`;
+  _qzCoNewsFill(symJs, q.longName || q.shortName || '');
+}
+// ── Company-page tab switcher + per-ticker news (V2 Phase 3) ──
+function _qzCoTab(tab) {
+  var m = document.getElementById('stock-detail-modal');
+  if (!m) return;
+  m.querySelectorAll('[data-cotabbtn]').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-cotabbtn') === tab); });
+  m.querySelectorAll('.qz-cotab-panel').forEach(function(p){ p.style.display = (p.getAttribute('data-cotab') === tab) ? '' : 'none'; });
+}
+function _qzCoAskAI(sym) {
+  var m = document.getElementById('stock-detail-modal');
+  if (m) m.remove();
+  try {
+    showPage('ai');
+    setTimeout(function(){
+      var inp = document.getElementById('chat-input');
+      if (!inp) return;
+      inp.value = 'Give me a clear, balanced analysis of ' + sym + ': what the company does, how it makes money, its biggest risks, and what a beginner should know before investing.';
+      inp.focus();
+      if (typeof sendChat === 'function') sendChat();
+    }, 140);
+  } catch (e) {}
+}
+function _qzCoNewsFill(sym, name) {
+  var el = document.getElementById('qz-co-news');
+  if (!el || !sym) return;
+  var safe = sym.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  var re = new RegExp('\\b' + safe + '\\b', 'i');
+  var nm = ((name || '').split(' ')[0] || '').toLowerCase();
+  function arts(){ try { return (window.njState && window.njState.allArticles) || []; } catch (e) { return []; } }
+  function match(a){
+    if (a.tickers && a.tickers.length && a.tickers.indexOf(sym) >= 0) return true;
+    var t = ((a.title || '') + ' ' + (a.summary || a.excerpt || ''));
+    if (re.test(t)) return true;
+    return !!(nm && nm.length > 3 && t.toLowerCase().indexOf(nm) >= 0);
+  }
+  function render(list){
+    if (!list.length) {
+      el.innerHTML = '<div class="qz-home-empty" style="padding:6px 0 14px;">No recent headlines for ' + sym + ' across the 59-source feed.</div>' +
+        '<button class="btn btn-sm" onclick="document.getElementById(\'stock-detail-modal\').remove();showPage(\'news\')">Open Market News →</button>';
+      return;
+    }
+    el.innerHTML = list.slice(0, 8).map(function(a){
+      var imp = a.impact || 'neutral';
+      var dot = imp === 'positive' ? 'var(--green)' : imp === 'negative' ? 'var(--red)' : 'var(--text-muted)';
+      var title = ((a.title || '') + '').replace(/[<>]/g, '').slice(0, 110);
+      var src = ((a.source || '') + '').replace(/[<>]/g, '').slice(0, 28);
+      var href = (a.link || a.url || '') + '';
+      var open = /^https?:\/\//.test(href) ? ' onclick="window.open(\'' + href.replace(/'/g, '') + '\',\'_blank\',\'noopener\')"' : '';
+      return '<div class="qz-row" style="align-items:flex-start;"' + open + '>' +
+          '<span style="width:7px;height:7px;border-radius:50%;background:' + dot + ';margin-top:6px;flex-shrink:0;"></span>' +
+          '<div style="min-width:0;flex:1;"><div class="qz-row-nm" style="white-space:normal;color:var(--text-primary);">' + title + '</div>' +
+          (src ? '<div style="font-size:10.5px;color:var(--text-muted);font-family:var(--font-mono);margin-top:2px;">' + src + '</div>' : '') + '</div>' +
+        '</div>';
+    }).join('');
+  }
+  var hits = arts().filter(match);
+  if (hits.length) { render(hits); return; }
+  if (typeof window.qzLoadAllNews === 'function') { try { window.qzLoadAllNews(); } catch (e) {} }
+  var tries = 0;
+  var iv = setInterval(function(){
+    var e2 = document.getElementById('qz-co-news');
+    if (!e2) { clearInterval(iv); return; }
+    var l2 = arts().filter(match);
+    tries++;
+    if (l2.length) { render(l2); clearInterval(iv); }
+    else if (tries >= 12) { render([]); clearInterval(iv); }
+  }, 1000);
 }
 function _kvRow(k, v) { return `<div style="display:contents;"><span style="color:var(--text-muted);">${k}</span><span style="font-family:var(--font-mono);text-align:right;">${v}</span></div>`; }
 function _statCard(label, v) { return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;">
@@ -3616,7 +3918,7 @@ function _searchOpenNews(n) {
   globalSearchClose();
   const navEl = document.querySelector("[onclick*=\"showPage('news'\"]");
   if (typeof showPage === 'function') showPage('news', navEl);
-  setTimeout(() => alert(`📰 ${n.title}\n\nSource: ${n.source || ''}  ·  ${n.time || ''}\n\n${n.excerpt || ''}`), 80);
+  setTimeout(() => alert(`${n.title}\n\nSource: ${n.source || ''}  ·  ${n.time || ''}\n\n${n.excerpt || ''}`), 80);
 }
 function _searchOpenSector(sec) {
   globalSearchClose();
@@ -3938,11 +4240,31 @@ function _qzsRowHtml(s, idx) {
   </div>`;
 }
 
+function _qzsAskAIRow() {
+  if (!_qzs.query || _qzs.query.length < 3) return '';
+  return `<div class="qzs-section"><div class="qzs-section-hdr"><span>Ask AI</span></div>
+    <div style="padding:11px 16px;cursor:pointer;font-size:13px;color:var(--text-secondary);border-radius:10px;transition:background 140ms ease;" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='transparent'" onclick="_qzsAskAI()">◈ Ask AI anything: <strong style="color:var(--text-primary);">“${_qzsEsc(_qzs.query)}”</strong></div>
+  </div>`;
+}
+function _qzsAskAI() {
+  const q = _qzs.query;
+  qzSearchClose();
+  try {
+    showPage('ai');
+    setTimeout(function(){
+      var inp = document.getElementById('chat-input');
+      if (!inp) return;
+      inp.value = q;
+      inp.focus();
+      if (typeof sendChat === 'function') sendChat();
+    }, 140);
+  } catch (e) {}
+}
 function _qzsRenderResults(results) {
   const body = document.getElementById('qzs-body');
   if (!body) return;
   if (!results.length) {
-    body.innerHTML = `<div class="qzs-empty">No results for "<strong>${_qzsEsc(_qzs.query)}</strong>"<br><span style="font-size:11px;color:var(--text-muted)">Try a ticker symbol or company name</span></div>`;
+    body.innerHTML = `<div class="qzs-empty">No results for "<strong>${_qzsEsc(_qzs.query)}</strong>"<br><span style="font-size:11px;color:var(--text-muted)">Try a ticker symbol or company name</span></div>` + _qzsAskAIRow();
     return;
   }
   const groups = {};
@@ -3959,7 +4281,7 @@ function _qzsRenderResults(results) {
       html += `<div class="qzs-section"><div class="qzs-section-hdr"><span>${names[t]||t}</span><span class="qzs-section-hdr-count">${g.length}</span></div>${g.map(({s,i})=>_qzsRowHtml(s,i)).join('')}</div>`;
     });
   }
-  body.innerHTML = html;
+  body.innerHTML = html + _qzsAskAIRow();
   body.querySelectorAll('.qzs-spark').forEach(c => _qzsSparkline(c, c.dataset.ticker, c.dataset.pos!=='false'));
 }
 
@@ -3970,7 +4292,7 @@ function _qzsRenderHome() {
   let html = '';
   if (recent.length) {
     html += `<div class="qzs-section"><div class="qzs-section-hdr"><span>Recent Searches</span><button style="background:none;border:none;color:var(--text-muted);font-size:10px;cursor:pointer;font-family:var(--font-mono)" onclick="_qzsClearRecent()">Clear</button></div><div class="qzs-chips-row">`;
-    recent.forEach(r => { html += `<div class="qzs-recent-chip" onclick="_qzsPickRecent('${_qzsEsc(r.ticker)}')">🕐 <strong>${_qzsEsc(r.ticker)}</strong>&nbsp;<span style="color:var(--text-muted);font-size:10px;">${_qzsEsc(r.name||'')}</span></div>`; });
+    recent.forEach(r => { html += `<div class="qzs-recent-chip" onclick="_qzsPickRecent('${_qzsEsc(r.ticker)}')">↺ <strong>${_qzsEsc(r.ticker)}</strong>&nbsp;<span style="color:var(--text-muted);font-size:10px;">${_qzsEsc(r.name||'')}</span></div>`; });
     html += `</div></div>`;
   }
   const universe = typeof UNIVERSE !== 'undefined' ? UNIVERSE : [];

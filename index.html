@@ -1165,13 +1165,22 @@ window._qzBodyScrollLock = function(lock) {
   .qz-learn-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:14px; }
   .qz-learn-card { display:flex; flex-direction:column; gap:6px; padding:16px; border:1px solid var(--border); border-radius:14px; background:var(--surface2); min-height:150px; transition:border-color 0.14s, transform 0.14s; }
   .qz-learn-card:hover { border-color:var(--accent); transform:translateY(-2px); }
+  .qz-learn-cat { font-size:15px; font-weight:700; margin:16px 0 10px; color:var(--text-primary); }
+  .qz-learn-rowscroll { display:flex; gap:12px; overflow-x:auto; padding:4px 2px 14px; scrollbar-width:thin; }
+  .qz-learn-rowscroll .qz-learn-card { flex:0 0 232px; min-height:132px; }
+  .qz-learn-done { font-size:10px; color:var(--green); font-weight:700; font-family:var(--font-mono); letter-spacing:0.05em; }
+  .qz-learn-prog { font-size:10px; color:var(--yellow); font-weight:700; font-family:var(--font-mono); letter-spacing:0.05em; }
   .qz-learn-ic { font-size:24px; }
   .qz-learn-t { font-size:14.5px; font-weight:680; color:var(--text-primary); }
   .qz-learn-b { font-size:12.5px; color:var(--text-secondary); line-height:1.45; }
 
   /* ── V2: Calm Home dashboard ── */
   .qz-home { max-width:1080px; margin:0 auto; }
-  .qz-home-head { margin:2px 2px 20px; }
+  .qz-home-head { margin:2px 2px 20px; display:flex; align-items:flex-end; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+  .qz-levelbar { display:flex; gap:3px; background:var(--surface2); border:1px solid var(--border); border-radius:999px; padding:3px; }
+  .qz-levelbtn { border:none; background:transparent; color:var(--text-muted); font-size:11.5px; font-weight:600; padding:5px 12px; border-radius:999px; cursor:pointer; transition:background 160ms ease, color 160ms ease; }
+  .qz-levelbtn:hover { color:var(--text-primary); }
+  .qz-levelbtn.active { background:var(--surface); color:var(--text-primary); box-shadow:0 1px 4px rgba(0,0,0,0.3); }
   .qz-home-hi { font-size:22px; font-weight:750; letter-spacing:-0.02em; color:var(--text-primary); }
   .qz-home-date { font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin-top:3px; }
   .qz-home-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
