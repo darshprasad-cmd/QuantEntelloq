@@ -554,6 +554,50 @@ function finishOnboarding() {
 }
 
 // ==================== APP INIT ====================
+// ── Live data refresh: overwrite the static STOCKS seed with real quotes ──
+// The STOCKS array ships with placeholder prices so the UI never renders empty;
+// once the app boots authed, this pulls real quotes through the MarketDataService
+// failover chain (Finnhub→Polygon→TwelveData→Yahoo), rewrites price/change in
+// place, marks portfolio holdings to market, and re-renders whatever is visible.
+// Repeats every 60s.
+var _qzQuotes = {};        // display ticker -> latest normalized quote
+var _qzRefreshTimer = null;
+var _QZ_TICKER_MAP = { BTC: 'BTC-USD' };          // display ticker -> provider symbol
+var _QZ_TICKER_UNMAP = { 'BTC-USD': 'BTC' };
+async function qzRefreshMarketData() {
+  try {
+    if (typeof MarketDataService === 'undefined' || typeof STOCKS === 'undefined') return;
+    var syms = STOCKS.map(function(s){ return _QZ_TICKER_MAP[s.ticker] || s.ticker; });
+    var quotes = await MarketDataService.getQuotes(syms);
+    if (!quotes || !quotes.length) return;
+    var got = 0;
+    quotes.forEach(function(q){
+      var tk = _QZ_TICKER_UNMAP[q.ticker] || q.ticker;
+      _qzQuotes[tk] = q;
+      var s = STOCKS.filter(function(x){ return x.ticker === tk; })[0];
+      if (s && q.price > 0) { s.price = q.price; s.change = +(+q.changePct || 0).toFixed(2); got++; }
+    });
+    if (!got) return;
+    window._qzDataLive = { at: Date.now(), source: quotes[0].source, count: got, total: STOCKS.length };
+    // Mark portfolio holdings to market so totals are real
+    try {
+      (window.state && state.portfolio || []).forEach(function(p){
+        var q = _qzQuotes[((p.ticker || '') + '').toUpperCase()];
+        if (q && q.price > 0) p.current = q.price;
+      });
+    } catch (e) {}
+    // Re-render whatever is currently showing these numbers
+    try { if (state.currentPage === 'dashboard') renderHome(); } catch (e) {}
+    try { if (state.currentPage === 'signals' && typeof renderSignals === 'function') renderSignals(); } catch (e) {}
+    try { if (state.currentPage === 'portfolio' && typeof renderPortfolio === 'function') renderPortfolio(); } catch (e) {}
+  } catch (e) {}
+}
+function qzStartDataRefresh() {
+  if (_qzRefreshTimer) return;
+  setTimeout(qzRefreshMarketData, 600);
+  _qzRefreshTimer = setInterval(qzRefreshMarketData, 60000);
+}
+
 function initApp() {
   try { state.portfolio = [...(typeof PORTFOLIO_DATA !== 'undefined' ? PORTFOLIO_DATA : [])]; } catch(_) { state.portfolio = []; }
   try { state.ledger    = [...(typeof LEDGER_DATA    !== 'undefined' ? LEDGER_DATA    : [])]; } catch(_) { state.ledger    = []; }
@@ -591,6 +635,9 @@ function initApp() {
 
   // Show one-time rebrand notification for returning users
   setTimeout(_showRebrandToast, 1200);
+
+  // Pull real quotes over the static seed (authed sessions only reach here)
+  try { qzStartDataRefresh(); } catch(e){}
 }
 
 // ── One-time rebrand announcement for returning users ──────────────────────
@@ -695,7 +742,7 @@ function showPage(page, navEl) {
     alerts:     { main:'Alerts',           sub:'Price & signal notifications' },
     settings:   { main:'Settings',         sub:'Account & preferences' },
     universe:   { main:'Watchlists',       sub:'100M+ securities across global markets' },
-    paper:      { main:'Paper Trading',    sub:'Risk-free strategy testing' },
+    paper:      { main:'Practice Trading', sub:'Learn by doing — your AI coach checks every trade' },
     quantlab:   { main:'Quant Lab',        sub:'AI-powered quantitative analysis' },
     command:    { main:'AI Studio',        sub:'Multi-agent orchestration' },
     intel:      { main:'Intelligence Terminal', sub:'Live market intelligence & macro data' },
@@ -718,6 +765,7 @@ function showPage(page, navEl) {
   } catch (_) { window.scrollTo(0, 0); }
 
   if(page === 'dashboard') setTimeout(renderHome, 20);
+  if(page === 'paper')     setTimeout(function(){ try { qzCoachEnsure(); } catch(e){} }, 30);
   if(page === 'reports')   setTimeout(renderReports, 50);
   if(page === 'scenario')  setTimeout(renderScenarioChart, 350);
   if(page === 'backtest')  document.getElementById('bt-results').classList.add('hidden');
@@ -758,13 +806,13 @@ var QZ_SECTIONS = {
                  { key:'explore',  label:'Explore',  page:'learn-explore'  },
                  { key:'continue', label:'Continue', page:'learn-continue' },
                ] },
-  portfolio: { label:'Portfolio', subtabs:[
-                 { key:'overview', label:'Overview', page:'portfolio' },
-                 { key:'activity', label:'Activity', page:'ledger'    },
+  portfolio: { label:'Trade', subtabs:[
+                 { key:'practice',  label:'Practice',  page:'paper'     },
+                 { key:'portfolio', label:'Portfolio', page:'portfolio' },
+                 { key:'activity',  label:'Activity',  page:'ledger'    },
                ], more:[
-                 { label:'Paper Trading', page:'paper'   },
-                 { label:'Alerts',        page:'alerts'  },
-                 { label:'Reports',       page:'reports' },
+                 { label:'Alerts',  page:'alerts'  },
+                 { label:'Reports', page:'reports' },
                ] },
   ai:        { label:'AI',        subtabs:null, page:'ai' },
   profile:   { label:'Profile',   subtabs:null, page:'settings' },
@@ -881,6 +929,26 @@ function qzExplainChip(term, context) {
 
 // ── Learn (V2 Phase 4 — Netflix-style rows, in-app lessons, tracked progress) ──
 var QZ_LEARN_CARDS = [
+  { id:'ai-loop', icon:'⟳', cat:'Trading with AI', mins:4, title:'The 5-step AI trading loop', blurb:'The workflow that turns AI from a magic 8-ball into a real edge.',
+    body:['Professionals don\'t ask AI "what should I buy?" — they run a loop: <b>Idea → Check → Plan → Practice → Review</b>. AI generates candidates and stress-tests your thinking at every step, but the decision stays yours.',
+          'Idea: let AI surface movers, signals and news you\'d never scan alone. Check: make the AI argue the bull AND bear case. Plan: size the position, set the exit. Practice: paper-trade it. Review: feed the outcome back to the AI and extract the lesson. Every loop makes you sharper — that is the actual edge.'],
+    key:['AI proposes, you decide — never the reverse','Every step of the loop has an AI assist','The Review step is where learning compounds'],
+    go:{ label:'Open Practice Trading with the coach', act:'practice' } },
+  { id:'ai-signals', icon:'⌖', cat:'Trading with AI', mins:4, title:'What AI signals really tell you', blurb:'Confidence scores, momentum, sentiment — and what they cannot know.',
+    body:['An AI signal like "BUY · 91% confidence" compresses data — price momentum, news sentiment, fundamentals — into one label. It is a <b>summary of evidence</b>, not a prophecy. 91% confidence does not mean a 91% chance you make money.',
+          'What signals can\'t know: tomorrow\'s headlines, your time horizon, your risk tolerance, and whether everyone else already acted on the same data. Use signals to filter and prioritize your research — never as the research itself.'],
+    key:['A signal is compressed evidence, not a prediction','Confidence ≠ probability of profit','Signals filter your attention; they don\'t replace judgment'],
+    go:{ label:'Open the live AI Signals board', act:'signals' } },
+  { id:'ai-prompting', icon:'❯_', cat:'Trading with AI', mins:5, title:'How to prompt an AI analyst', blurb:'The difference between "is NVDA good?" and a prompt that earns its answer.',
+    body:['Weak prompt: <i>"Is NVDA a good buy?"</i> — you\'ll get a mushy yes-with-caveats. Strong prompt: <i>"Act as a buy-side analyst. Give me the 3-point bull case and 3-point bear case for NVDA, the next events that could move it, and what would change your mind."</i> Structure in, structure out.',
+          'The three rules: give the AI a <b>role</b> (analyst, risk manager, devil\'s advocate), demand <b>both sides</b> (never let it agree with you unchallenged), and ask <b>what would prove it wrong</b>. Every ✨Explain and coach button in this app is built on these rules — read the prompts they generate and steal the pattern.'],
+    key:['Role + both sides + falsifier = a real answer','Never let the AI just agree with you','Steal the prompt patterns this app shows you'],
+    go:{ label:'Try the analyst prompt on a real stock', act:'prompt' } },
+  { id:'ai-risk', icon:'▲!', cat:'Trading with AI', mins:4, title:'When NOT to trust the AI', blurb:'Guardrails that keep one bad answer from becoming a bad account.',
+    body:['AI fails in specific, predictable ways: it can be confidently wrong, it can lag breaking news, and it mirrors your framing back to you (ask "why will X go up?" and it will oblige). The fix is never "trust it less" — it is <b>guardrails that work even when the AI is wrong</b>.',
+          'The three that matter: position sizing (under ~10% per idea — being wrong must be survivable), a written exit plan before entry, and the practice habit — new strategy means paper trades first, always. Notice none of these depend on the AI being right.'],
+    key:['AI is confidently wrong sometimes — plan for it','Guardrails must work even when the answer is bad','Size small, exit planned, practice first'],
+    go:{ label:'Practice with the guardrails on', act:'practice' } },
   { id:'stocks', icon:'▲', cat:'The basics', mins:3, title:'What is a stock?', blurb:'Owning a tiny slice of a company — and why prices move.',
     body:['A stock is a small ownership slice of a real company. Buy one share of Apple and you literally own a piece of Apple — its stores, its brand, its future profits.',
           'Prices move because millions of people constantly re-vote on what that slice is worth. Good news pushes the vote up, bad news pushes it down. Day to day it is noisy; over years it tends to follow how the business actually performs.'],
@@ -946,7 +1014,17 @@ var QZ_LEARN_CARDS = [
           'Taxes leak too: frequent trading converts gains into short-term taxable events. Low-cost index funds held for years are tax-quiet and fee-light, which is a large part of why they beat most active strategies.'],
     key:['Fees compound against you for decades','Check the expense ratio before you buy any fund','Less trading usually means less tax drag'] }
 ];
-var QZ_LEARN_CATS = ['The basics','Valuation & ratios','Charts & trading','Portfolio & risk'];
+var QZ_LEARN_CATS = ['Trading with AI','The basics','Valuation & ratios','Charts & trading','Portfolio & risk'];
+// Try-it deep links for lessons — each lesson can end with a hands-on action
+function qzLearnGo(act) {
+  var m = document.getElementById('qz-lesson-modal');
+  if (m) m.remove();
+  if (act === 'practice') { showSection('portfolio'); }
+  else if (act === 'signals') { showPage('signals'); }
+  else if (act === 'prompt') {
+    _qzCoachSeedAI('Act as a buy-side equity analyst. Give me the 3-point bull case and 3-point bear case for NVDA, the next events that could move the stock, and what evidence would change your mind. Be balanced.');
+  }
+}
 function _qzLearnProgress() {
   try { return JSON.parse(localStorage.getItem('qz_learn_progress') || '{}'); } catch (e) { return {}; }
 }
@@ -986,6 +1064,7 @@ function qzLearnOpen(id) {
         (done
           ? '<span style="align-self:center;font-size:12.5px;color:var(--green);font-weight:700;">✓ Completed</span>'
           : '<button class="btn btn-primary btn-sm" onclick="qzLearnDone(\'' + c.id + '\')">Mark as done ✓</button>') +
+        (c.go ? '<button class="btn btn-sm" onclick="qzLearnGo(\'' + c.go.act + '\')">' + c.go.label + ' →</button>' : '') +
         '<button class="btn btn-secondary btn-sm" onclick="document.getElementById(\'qz-lesson-modal\').remove();qzExplain(\'' + c.title.replace(/'/g, '') + '\',\'go deeper than the basics, I already read the intro lesson\')">Go deeper with AI →</button>' +
       '</div>' +
     '</div>';
@@ -1103,15 +1182,15 @@ function _qzHomePortfolio(){
   var p=[]; try{ p=(window.state&&state.portfolio)||[]; }catch(e){ p=[]; }
   if(!p.length){
     return _qzCard('Portfolio',
-      '<button class="qz-home-card-act" onclick="showSection(\'portfolio\')">Open →</button>',
+      '<button class="qz-home-card-act" onclick="showPage(\'portfolio\')">Open →</button>',
       '<div class="qz-home-empty">You have no holdings yet.</div>'+
-      '<button class="btn btn-sm" style="margin-top:10px;align-self:flex-start;" onclick="showSection(\'portfolio\')">Start your portfolio →</button>');
+      '<button class="btn btn-sm" style="margin-top:10px;align-self:flex-start;" onclick="showPage(\'portfolio\')">Start your portfolio →</button>');
   }
   var val=p.reduce(function(s,x){return s+((+x.qty||0)*(+x.current||+x.cost||0));},0);
   var cost=p.reduce(function(s,x){return s+((+x.qty||0)*(+x.cost||0));},0);
   var chg=cost>0?((val-cost)/cost*100):0, up=chg>=0;
   return _qzCard('Portfolio',
-    '<button class="qz-home-card-act" onclick="showSection(\'portfolio\')">Details →</button>',
+    '<button class="qz-home-card-act" onclick="showPage(\'portfolio\')">Details →</button>',
     '<div class="qz-big">$'+val.toLocaleString('en-US',{maximumFractionDigits:0})+'</div>'+
     '<div class="qz-sub" style="color:'+(up?'var(--green)':'var(--red)')+'">'+(up?'▲ +':'▼ ')+Math.abs(chg).toFixed(1)+'% all time · '+p.length+' holdings</div>'+
     '<div style="margin-top:12px;">'+qzExplainChip('my portfolio return','beginner portfolio explanation')+'</div>');
@@ -1132,11 +1211,17 @@ function _qzHomeLearn(){
     '<button class="btn btn-sm" style="margin-top:12px;align-self:flex-start;" onclick="qzLearnStart(\''+c.id+'\')">'+verb+' →</button>');
 }
 function _qzHomeEarnings(){
+  // Honest data only: shows the real next-earnings date when the provider
+  // returns one, otherwise the live price — never a made-up "reports soon".
   var names=[['AAPL','Apple'],['NVDA','Nvidia'],['MSFT','Microsoft'],['AMZN','Amazon']];
   var rows=names.map(function(n){
+    var q=(typeof _qzQuotes!=='undefined')?_qzQuotes[n[0]]:null;
+    var right='—';
+    if(q&&q.earningsTs){ try{ right='reports '+new Date(q.earningsTs*1000).toLocaleDateString('en-US',{month:'short',day:'numeric'}); }catch(e){} }
+    else if(q&&q.price>0){ right='$'+(q.price>=100?q.price.toFixed(0):q.price.toFixed(2)); }
     return '<div class="qz-row" onclick="qzLookup(\''+n[0]+'\')">'+
         '<div class="qz-row-main"><span class="qz-row-tk">'+n[0]+'</span><span class="qz-row-nm">'+n[1]+'</span></div>'+
-        '<div class="qz-row-nm" style="font-family:var(--font-mono);">reports soon</div>'+
+        '<div class="qz-row-nm" style="font-family:var(--font-mono);">'+right+'</div>'+
       '</div>';
   }).join('');
   return _qzCard('Earnings to Watch',
@@ -1167,6 +1252,26 @@ function _qzFillHomeNews(){
     if(a2.length){ e2.innerHTML=_qzNewsRows(a2); clearInterval(iv); }
     else if(tries>=15){ e2.innerHTML=_qzNewsRows([]); clearInterval(iv); }
   }, 900);
+}
+function _qzHomeTradeLoop(){
+  // Teaches the AI trading loop at a glance and routes into Practice.
+  var done = 0;
+  try { var p = JSON.parse(localStorage.getItem('qz_paper_v1') || '{}'); if (p.accounts && p.accounts.length) done = 1; var oid = p.currentId || (p.accounts && p.accounts[0] && p.accounts[0].id); if (oid && p.orders && (p.orders[oid] || []).length) done = 2; } catch(e){}
+  var steps = ['Idea','Check','Plan','Practice','Review'];
+  var strip = steps.map(function(s, i){
+    return '<span style="font-family:var(--font-mono);font-size:11px;padding:4px 9px;border-radius:999px;border:1px solid ' + (i <= done + 1 ? 'var(--accent)' : 'var(--border)') + ';color:' + (i <= done + 1 ? 'var(--text-primary)' : 'var(--text-muted)') + ';">' + (i + 1) + ' ' + s + '</span>';
+  }).join('<span style="color:var(--text-muted);font-size:10px;">→</span>');
+  var msg = done === 0 ? 'Learn to trade the way professionals use AI — one guided loop, zero real money.'
+          : done === 1 ? 'Your practice account is ready. Run your first idea through the coach.'
+          : 'Keep the loop going — and let the AI review your trades so far.';
+  return _qzCard('Trade with AI',
+    '<button class="qz-home-card-act" onclick="showSection(\'portfolio\')">Open Practice →</button>',
+    '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">' + strip + '</div>'+
+    '<div class="qz-brief" style="font-size:13px;">' + msg + '</div>'+
+    '<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">'+
+      '<button class="btn btn-sm" onclick="showSection(\'portfolio\')">' + (done === 0 ? 'Start the loop →' : done === 1 ? 'Coach-check an idea →' : 'Practice another loop →') + '</button>'+
+      '<button class="btn btn-sm btn-secondary" onclick="qzLearnOpen(\'ai-loop\')">How the loop works (4 min) →</button>'+
+    '</div>', true);
 }
 function _qzHomeAdvanced(byChange){
   if(!byChange.length) return '';
@@ -1225,9 +1330,9 @@ function renderHome(){
 
     host.innerHTML=
       '<div class="qz-home">'+
-        '<div class="qz-home-head"><div><div class="qz-home-hi">'+_qzGreet()+'</div><div class="qz-home-date">'+_qzHomeDateStr()+'</div></div>'+qzLevelBar()+'</div>'+
+        '<div class="qz-home-head"><div><div class="qz-home-hi">'+_qzGreet()+'</div><div class="qz-home-date">'+_qzHomeDateStr()+(window._qzDataLive?' · <span style="color:var(--green);">● live prices</span>':'')+'</div></div>'+qzLevelBar()+'</div>'+
         '<div class="qz-home-grid">'+
-          briefCard+snapCard+wlCard+_qzHomePortfolio()+_qzHomeLearn()+tcard+_qzHomeEarnings()+ncard+
+          briefCard+_qzHomeTradeLoop()+snapCard+wlCard+_qzHomePortfolio()+_qzHomeLearn()+tcard+_qzHomeEarnings()+ncard+
           (lvl==='advanced'?_qzHomeAdvanced(byChange):'')+
         '</div>'+
       '</div>';
@@ -3262,6 +3367,22 @@ async function _searchWebQuote(symbol) {
       }
     }
   }
+  // 4) MarketDataService failover chain (Finnhub/Polygon/TwelveData) — final resort
+  try {
+    if (window.MarketDataService) {
+      const mq = await MarketDataService.getQuote(symbol);
+      if (mq && mq.price > 0) {
+        return {
+          symbol: mq.ticker, shortName: mq.ticker, longName: mq.ticker,
+          regularMarketPrice: mq.price, regularMarketChange: mq.change,
+          regularMarketChangePercent: mq.changePct, regularMarketPreviousClose: mq.prevClose,
+          regularMarketOpen: mq.open, regularMarketDayHigh: mq.high, regularMarketDayLow: mq.low,
+          regularMarketVolume: mq.volume, currency: 'USD',
+          regularMarketTime: Math.floor(mq.ts / 1000), _source: mq.source
+        };
+      }
+    }
+  } catch (_) {}
   return null;
 }
 function _toStooqSymbol(t) {
@@ -10633,8 +10754,10 @@ window.qeRL  = window.QESecurity.rateLimit;
   function fail(p, msg) {
     var h = health[p];
     h.fails++; h.lastError = (msg || '') + '';
-    if (h.fails >= FAILS_TO_TRIP) { h.until = Date.now() + COOLDOWN_MS; h.fails = 0; }
+    // Rate limits trip the cooldown immediately — hammering a 429 makes it worse
+    if (/429/.test(h.lastError) || h.fails >= FAILS_TO_TRIP) { h.until = Date.now() + COOLDOWN_MS; h.fails = 0; }
   }
+  var _pgBatchAt = 0; // space Polygon batch calls ≥15s apart (free tier = 5 req/min)
   function ok(p) { health[p].fails = 0; health[p].until = 0; health[p].lastError = ''; }
 
   function fetchJson(url, timeoutMs) {
@@ -10747,7 +10870,7 @@ window.qeRL  = window.QESecurity.rateLimit;
         return P.yahoo.multi([sym]).then(function(qs){ if (!qs.length) throw new Error('empty'); return qs[0]; });
       },
       multi: function(syms) {
-        var url = 'https://query1.finance.yahoo.com/v7/finance/quote?symbols=' + encodeURIComponent(syms.join(',')) + '&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent,regularMarketPreviousClose,regularMarketVolume,regularMarketDayHigh,regularMarketDayLow,regularMarketOpen';
+        var url = 'https://query1.finance.yahoo.com/v7/finance/quote?symbols=' + encodeURIComponent(syms.join(',')) + '&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent,regularMarketPreviousClose,regularMarketVolume,regularMarketDayHigh,regularMarketDayLow,regularMarketOpen,earningsTimestamp';
         return proxied(url).then(function(d){
           var rs = (d && d.quoteResponse && d.quoteResponse.result) || [];
           if (!rs.length) throw new Error('empty batch');
@@ -10755,7 +10878,7 @@ window.qeRL  = window.QESecurity.rateLimit;
             return { ticker: r.symbol, price: r.regularMarketPrice || 0, prevClose: r.regularMarketPreviousClose || 0,
                      change: r.regularMarketChange || 0, changePct: r.regularMarketChangePercent || 0,
                      high: r.regularMarketDayHigh || 0, low: r.regularMarketDayLow || 0, open: r.regularMarketOpen || 0,
-                     volume: r.regularMarketVolume || 0, ts: Date.now(), source: 'yahoo' };
+                     volume: r.regularMarketVolume || 0, earningsTs: r.earningsTimestamp || 0, ts: Date.now(), source: 'yahoo' };
           }).filter(function(q){ return q.price > 0; });
         });
       },
@@ -10808,7 +10931,10 @@ window.qeRL  = window.QESecurity.rateLimit;
     });
     if (need.length) {
       var got = null;
-      if (usable('polygon')) { try { got = await P.polygon.multi(need); ok('polygon'); } catch (e) { fail('polygon', e && e.message); } }
+      if (usable('polygon') && Date.now() - _pgBatchAt > 15000) {
+        _pgBatchAt = Date.now();
+        try { got = await P.polygon.multi(need); ok('polygon'); } catch (e) { fail('polygon', e && e.message); }
+      }
       if (!got && usable('yahoo')) { try { got = await P.yahoo.multi(need); ok('yahoo'); } catch (e) { fail('yahoo', e && e.message); } }
       if (got) {
         got.forEach(function(q){ qCache[q.ticker] = { quote: q, ts: Date.now() }; fresh.push(q); });
@@ -17895,11 +18021,17 @@ setTimeout(() => {
 
   function _priceFor(ticker) {
     var t = String(ticker || '').toUpperCase();
+    // 1) Live quote (warmed via MarketDataService before order/price routes)
+    try {
+      var lq = window._qzQuotes && window._qzQuotes[t];
+      if (lq && lq.price > 0 && (Date.now() - (lq.ts || 0)) < 10 * 60 * 1000) return lq.price;
+    } catch (_) {}
+    // 2) Tracked seed (itself refreshed with real quotes every 60s once authed)
     if (typeof STOCKS !== 'undefined' && STOCKS) {
       var s = STOCKS.find(function(x){ return x.ticker === t; });
       if (s && s.price) return s.price;
     }
-    // Stable pseudo-random based on ticker hash
+    // 3) Last resort: stable pseudo-random based on ticker hash (offline demo only)
     var h = 0; for (var i=0; i<t.length; i++) h = (h*31 + t.charCodeAt(i)) | 0;
     return Math.abs(h % 400) + 20 + (Math.random() - 0.5) * 0.5;
   }
@@ -18036,24 +18168,269 @@ setTimeout(() => {
     }
 
     if (/^(\/api\/pt\/|https?:\/\/[^\/]+\/api\/pt\/)/.test(url)) {
-      try {
-        var pathOnly = url.replace(/^https?:\/\/[^\/]+/, '');
-        var data = _route(pathOnly, init || {});
-        if (data === null) {
-          return Promise.resolve(new Response(JSON.stringify({ error: 'not_implemented' }), { status: 501, headers: { 'Content-Type': 'application/json' } }));
-        }
-        var isError = data && data.error;
-        return Promise.resolve(new Response(JSON.stringify(data), {
-          status: isError ? 400 : 200,
-          headers: { 'Content-Type': 'application/json' }
-        }));
-      } catch (err) {
-        return Promise.resolve(new Response(JSON.stringify({ error: 'shim_error', message: err.message }), { status: 500, headers: { 'Content-Type': 'application/json' } }));
+      var pathOnly = url.replace(/^https?:\/\/[^\/]+/, '');
+      // Accuracy: warm the live-quote cache before pricing a fill or quote lookup,
+      // so paper trades execute at REAL market prices, not the static seed.
+      var warmTicker = null;
+      var pm = pathOnly.match(/^\/api\/pt\/price\/([^\/?]+)/);
+      if (pm) warmTicker = pm[1].toUpperCase();
+      if (/^\/api\/pt\/orders?$/.test(pathOnly) && init && init.method === 'POST') {
+        try { warmTicker = String((JSON.parse(init.body || '{}').ticker || '')).toUpperCase(); } catch (_) {}
       }
+      var warm = Promise.resolve();
+      if (warmTicker && window.MarketDataService) {
+        warm = MarketDataService.getQuote(warmTicker).then(function(q){
+          if (q && q.price > 0) { window._qzQuotes = window._qzQuotes || {}; window._qzQuotes[warmTicker] = q; }
+        }).catch(function(){});
+      }
+      return warm.then(function() {
+        try {
+          var data = _route(pathOnly, init || {});
+          if (data === null) {
+            return new Response(JSON.stringify({ error: 'not_implemented' }), { status: 501, headers: { 'Content-Type': 'application/json' } });
+          }
+          var isError = data && data.error;
+          return new Response(JSON.stringify(data), {
+            status: isError ? 400 : 200,
+            headers: { 'Content-Type': 'application/json' }
+          });
+        } catch (err) {
+          return new Response(JSON.stringify({ error: 'shim_error', message: err.message }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+        }
+      });
     }
     return _origFetch.apply(this, arguments);
   };
 })();
+
+/* ==================================================================== *
+ *  AI TRADE COACH — the heart of the Trade-with-AI redesign.           *
+ *  Lives inside Practice Trading: teaches the 5-step AI trading loop,  *
+ *  sanity-checks every trade idea against real data, reviews your      *
+ *  history, and shows you HOW to prompt an AI analyst as you go.       *
+ *  Runs 100% locally on live quotes + signals; the "Ask AI" buttons    *
+ *  hand a well-engineered prompt to the one AI conversation.           *
+ * ==================================================================== */
+function _qzCoachStock(t) {
+  try { return (typeof STOCKS !== 'undefined' ? STOCKS : []).filter(function(s){ return s.ticker === t; })[0] || null; } catch (e) { return null; }
+}
+function _qzCoachNewsCount(t) {
+  try {
+    var arts = (window.njState && window.njState.allArticles) || [];
+    var re = new RegExp('\\b' + t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+    return arts.filter(function(a){ return (a.tickers && a.tickers.indexOf(t) >= 0) || re.test(a.title || ''); }).length;
+  } catch (e) { return 0; }
+}
+function _qzCoachSeedAI(prompt) {
+  try {
+    showPage('ai');
+    setTimeout(function(){
+      var inp = document.getElementById('chat-input');
+      if (!inp) return;
+      inp.value = prompt;
+      inp.focus();
+      if (typeof sendChat === 'function') sendChat();
+    }, 140);
+  } catch (e) {}
+}
+var _QZ_COACH_STEPS = [
+  { k:'idea',     n:'1 · Idea',     tip:'Let the AI surface candidates — movers, signals, news. You still pick.' },
+  { k:'check',    n:'2 · Check',    tip:'Read the company page + ask the AI analyst. Never trade a ticker you cannot explain.' },
+  { k:'plan',     n:'3 · Plan',     tip:'Size the position, know your exit. The coach does the math with you.' },
+  { k:'practice', n:'4 · Practice', tip:'Place it as a paper trade first. Zero real money.' },
+  { k:'review',   n:'5 · Review',   tip:'Have the AI review the outcome. This loop is how you actually learn.' }
+];
+function qzCoachEnsure() {
+  var page = document.getElementById('page-paper');
+  if (!page || document.getElementById('qz-coach-panel')) return;
+  var host = page.querySelector('.pt-page') || page;
+  var panel = document.createElement('div');
+  panel.id = 'qz-coach-panel';
+  panel.innerHTML =
+    '<div class="qz-coach-head">'+
+      '<div><div class="qz-coach-title">AI Trade Coach</div>'+
+      '<div class="qz-coach-sub">The workflow professionals use with AI — practiced here with zero real money. Tap a step to learn it.</div></div>'+
+      '<button class="qz-home-card-act" onclick="qzCoachReview()">Review my trading →</button>'+
+    '</div>'+
+    '<div class="qz-coach-steps">'+
+      _QZ_COACH_STEPS.map(function(s, i){
+        return '<button class="qz-coach-step" data-step="'+s.k+'" onclick="qzCoachStep(\''+s.k+'\')" title="'+s.tip+'">'+s.n+'</button>'+(i<4?'<span class="qz-coach-arrow">→</span>':'');
+      }).join('')+
+    '</div>'+
+    '<div class="qz-coach-ticket">'+
+      '<input class="input" id="qz-coach-ticker" placeholder="Ticker · e.g. NVDA" style="width:150px;text-transform:uppercase;" onkeydown="if(event.key===\'Enter\')qzCoachAnalyze()">'+
+      '<div class="pt-side-btns" style="width:150px;">'+
+        '<button class="pt-side-btn buy-active" id="qz-coach-buy" onclick="qzCoachSide(\'buy\')">BUY</button>'+
+        '<button class="pt-side-btn" id="qz-coach-sell" onclick="qzCoachSide(\'sell\')">SELL</button>'+
+      '</div>'+
+      '<input class="input" id="qz-coach-qty" type="number" min="1" placeholder="Qty" style="width:90px;">'+
+      '<button class="btn btn-primary btn-sm" onclick="qzCoachAnalyze()">Coach check ▸</button>'+
+      '<span style="font-size:11px;color:var(--text-muted);">The coach checks your idea against live data before you place it.</span>'+
+    '</div>'+
+    '<div id="qz-coach-out"></div>';
+  host.insertBefore(panel, host.firstChild ? host.firstChild.nextSibling : null);
+}
+var _qzCoachSideVal = 'buy';
+function qzCoachSide(s) {
+  _qzCoachSideVal = s === 'sell' ? 'sell' : 'buy';
+  var b = document.getElementById('qz-coach-buy'), sl = document.getElementById('qz-coach-sell');
+  if (b) b.className = 'pt-side-btn' + (s === 'buy' ? ' buy-active' : '');
+  if (sl) sl.className = 'pt-side-btn' + (s === 'sell' ? ' sell-active' : '');
+}
+function qzCoachStep(k) {
+  var out = document.getElementById('qz-coach-out');
+  var step = _QZ_COACH_STEPS.filter(function(s){ return s.k === k; })[0];
+  if (!out || !step) return;
+  var body = '';
+  if (k === 'idea') {
+    var S = (typeof STOCKS !== 'undefined' ? STOCKS : []).slice().sort(function(a,b){ return Math.abs(+b.change||0) - Math.abs(+a.change||0); }).slice(0, 3);
+    body = '<div class="qz-coach-note">AI surfaces candidates; you choose. Today\'s most active tracked names:</div>'+
+      S.map(function(s){
+        var up = (+s.change||0) >= 0;
+        return '<div class="qz-row" onclick="qzCoachPrefill(\''+s.ticker+'\')">'+
+          '<div class="qz-row-main"><span class="qz-row-tk">'+s.ticker+'</span><span class="qz-row-nm">'+s.name+' · signal '+s.signal+' ('+s.conf+'%)</span></div>'+
+          '<div class="qz-row-chg '+(up?'up':'down')+'">'+(up?'+':'')+(+s.change||0).toFixed(2)+'%</div></div>';
+      }).join('')+
+      '<button class="btn btn-sm" style="margin-top:8px;" onclick="_qzCoachSeedAI(\'Give me 3 stock ideas worth researching today. For each: the thesis in 2 sentences, the main risk, and what data I should check before trading it. I am practicing with paper money.\')">Ask AI for ideas — see the prompt it uses →</button>';
+  } else if (k === 'check') {
+    body = '<div class="qz-coach-note">Before any trade, be able to answer: what does this company do, why should it be worth more (or less), and what would prove me wrong? Type a ticker above and hit <b>Coach check</b> — or hand it to the AI analyst:</div>'+
+      '<button class="btn btn-sm" onclick="qzCoachAskAnalyst()">Ask the AI analyst about my ticker →</button>';
+  } else if (k === 'plan') {
+    body = '<div class="qz-coach-note"><b>The 3 planning rules the coach enforces:</b></div>'+
+      '<div class="qz-coach-check">✓ Risk small: one idea should be under ~10% of your account. Surviving mistakes matters more than any single win.</div>'+
+      '<div class="qz-coach-check">✓ Know your exit before you enter: at what price (up or down) will you close, and why?</div>'+
+      '<div class="qz-coach-check">✓ Write the reason down: "AI said buy" is not a reason — the AI\'s <i>argument</i> is. The Coach check below does this with you.</div>';
+  } else if (k === 'practice') {
+    body = '<div class="qz-coach-note">Run your idea through <b>Coach check</b>, then place it with the order ticket below. Fills use live market prices. Nothing here is real money — that is the point: build the habit before the stakes.</div>';
+  } else {
+    body = '<div class="qz-coach-note">After a few trades, review is where learning happens. The coach summarizes your account; the AI turns it into lessons.</div>'+
+      '<button class="btn btn-sm" onclick="qzCoachReview()">Run my review now →</button>';
+  }
+  out.innerHTML = '<div class="qz-coach-card"><div class="qz-coach-card-title">'+step.n+' — '+step.tip+'</div>'+body+'</div>';
+  document.querySelectorAll('.qz-coach-step').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-step') === k); });
+}
+function qzCoachPrefill(t) {
+  var inp = document.getElementById('qz-coach-ticker');
+  if (inp) inp.value = t;
+  qzCoachAnalyze();
+}
+function qzCoachAskAnalyst() {
+  var t = ((document.getElementById('qz-coach-ticker') || {}).value || 'NVDA').trim().toUpperCase() || 'NVDA';
+  _qzCoachSeedAI('Act as a buy-side equity analyst. Analyze ' + t + ' for me: (1) what the company does in plain English, (2) the bull case in 3 points, (3) the bear case in 3 points, (4) what upcoming events could move the stock, (5) what a beginner should verify before trading it. Be balanced — I want the argument, not a verdict.');
+}
+async function qzCoachAnalyze() {
+  var out = document.getElementById('qz-coach-out');
+  if (!out) return;
+  var t = ((document.getElementById('qz-coach-ticker') || {}).value || '').trim().toUpperCase().replace(/[^A-Z0-9.\-]/g, '');
+  var qty = parseFloat((document.getElementById('qz-coach-qty') || {}).value) || 0;
+  var side = _qzCoachSideVal;
+  if (!t) { out.innerHTML = '<div class="qz-coach-card"><div class="qz-coach-note">Type a ticker first — try one from step <b>1 · Idea</b>.</div></div>'; return; }
+  out.innerHTML = '<div class="qz-coach-card"><div class="qz-coach-note">Checking ' + t + ' against live data…</div></div>';
+  var q = null;
+  try { if (window.MarketDataService) q = await MarketDataService.getQuote(t); } catch (e) {}
+  var s = _qzCoachStock(t);
+  var price = (q && q.price > 0) ? q.price : (s && s.price) || 0;
+  var chg = (q && q.changePct != null) ? +q.changePct : (s && +s.change) || 0;
+  var newsN = _qzCoachNewsCount(t);
+  // Account context (position sizing is THE beginner lesson)
+  var acct = null;
+  try {
+    var accts = await (await fetch('/api/pt/accounts')).json();
+    acct = (window.ptState && ptState.currentAccount && accts.filter(function(a){ return a.id === ptState.currentAccount.id; })[0]) || accts[accts.length - 1] || null;
+  } catch (e) {}
+  var lines = [], checks = [], verdict = 'NEUTRAL', vcolor = 'var(--yellow)';
+  if (!price) {
+    lines.push('I could not get a live price for <b>' + t + '</b> — that alone is a caution flag. Stick to liquid, well-known names while learning.');
+  } else {
+    lines.push('<b>' + t + '</b> trades at <b>$' + price.toFixed(2) + '</b>, ' + (chg >= 0 ? 'up' : 'down') + ' ' + Math.abs(chg).toFixed(2) + '% today' + (q ? ' (live via ' + q.source + ')' : '') + '.');
+    if (side === 'buy' && chg > 3) lines.push('You are buying <i>after</i> a +' + chg.toFixed(1) + '% move — that is a momentum entry. It can work, but you are paying up: ask what today\'s buyers know that you don\'t.');
+    if (side === 'buy' && chg < -3) lines.push('You are buying a ' + chg.toFixed(1) + '% dip. Ask first: is this a discount, or the market repricing bad news? "Cheap" and "cheaper tomorrow" look identical at entry.');
+    if (side === 'sell' && chg < -3) lines.push('Selling after a ' + chg.toFixed(1) + '% drop locks the loss in. Sometimes right — but decide from your original thesis, not from the red number.');
+  }
+  if (s) {
+    var aligned = (side === 'buy' && s.signal === 'BUY') || (side === 'sell' && s.signal === 'SELL');
+    verdict = aligned ? 'ALIGNED WITH AI SIGNAL' : (s.signal === 'HOLD' ? 'AI SIGNAL SAYS HOLD' : 'CONTRARIAN TO AI SIGNAL');
+    vcolor = aligned ? 'var(--green)' : (s.signal === 'HOLD' ? 'var(--yellow)' : 'var(--red)');
+    lines.push('Quant Entelloq\'s signal on ' + t + ' is <b>' + s.signal + '</b> at ' + s.conf + '% confidence (momentum ' + s.momentum + '/100, sentiment ' + s.sentiment + '/100). The reasoning: <i>' + s.reason + '</i>');
+    if (!aligned && s.signal !== 'HOLD') lines.push('Trading against the signal is allowed — pros do it — but then <b>your</b> written reason has to beat the machine\'s. Do you have one?');
+  } else {
+    verdict = 'OUTSIDE COVERAGE';
+    lines.push(t + ' is outside the tracked signal set — you are trading without the AI safety net. Fine for pros, harder for learning.');
+  }
+  if (newsN > 0) lines.push(newsN + ' recent headline' + (newsN > 1 ? 's' : '') + ' mention ' + t + ' in the live 59-source feed — read them before you commit (News tab on the company page).');
+  if (acct && price && qty > 0) {
+    var cost = price * qty, pctOfAcct = acct.equity > 0 ? (cost / acct.equity) * 100 : 0;
+    checks.push((pctOfAcct <= 10 ? '✓' : '✗') + ' Position size: $' + cost.toFixed(0) + ' = <b>' + pctOfAcct.toFixed(1) + '%</b> of your $' + acct.equity.toLocaleString() + ' account ' + (pctOfAcct <= 10 ? '— inside the 10% learning guardrail.' : '— OVER the 10% guardrail. Cut the size; you can always add later.'));
+    if (side === 'buy' && cost > acct.cash) checks.push('✗ You only have $' + acct.cash.toLocaleString() + ' cash — this order will not fill.');
+  } else if (qty <= 0) {
+    checks.push('· Add a quantity and I\'ll run the position-sizing math against your practice account.');
+  }
+  checks.push('· Exit plan: before placing, write down the price where you\'d take profit AND the price where you\'d admit the idea failed.');
+  out.innerHTML =
+    '<div class="qz-coach-card">'+
+      '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;">'+
+        '<span class="qz-coach-verdict" style="border-color:' + vcolor + ';color:' + vcolor + ';">' + verdict + '</span>'+
+        '<span style="font-size:11px;color:var(--text-muted);">Coach analysis · educational, not advice</span>'+
+      '</div>'+
+      lines.map(function(l){ return '<div class="qz-coach-note">' + l + '</div>'; }).join('')+
+      (checks.length ? '<div style="margin-top:8px;">' + checks.map(function(c){ return '<div class="qz-coach-check">' + c + '</div>'; }).join('') + '</div>' : '')+
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">'+
+        '<button class="btn btn-primary btn-sm" onclick="qzCoachToTicket(\'' + t + '\',' + (qty || 0) + ')">Looks good — fill the order ticket ↓</button>'+
+        '<button class="btn btn-secondary btn-sm" onclick="qzCoachAskAnalyst()">Ask the AI analyst first →</button>'+
+        (typeof qzExplainChip === 'function' ? qzExplainChip('position sizing', 'why beginners should risk under 10% per trade') : '')+
+      '</div>'+
+    '</div>';
+}
+function qzCoachToTicket(t, qty) {
+  try {
+    var ti = document.getElementById('pt-ticker-input');
+    var qi = document.getElementById('pt-qty-input');
+    if (ti) { ti.value = t; if (typeof ptTickerChanged === 'function') ptTickerChanged(); }
+    if (qi && qty > 0) qi.value = qty;
+    if (typeof ptSetSide === 'function') ptSetSide(_qzCoachSideVal);
+    if (typeof ptFetchPrice === 'function') ptFetchPrice();
+    var ticket = document.getElementById('pt-submit-btn');
+    if (ticket) ticket.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } catch (e) {}
+}
+async function qzCoachReview() {
+  var out = document.getElementById('qz-coach-out');
+  if (!out) { showPage('paper'); setTimeout(qzCoachReview, 350); return; }
+  out.innerHTML = '<div class="qz-coach-card"><div class="qz-coach-note">Reading your practice account…</div></div>';
+  var acct = null, orders = [];
+  try {
+    var accts = await (await fetch('/api/pt/accounts')).json();
+    acct = (window.ptState && ptState.currentAccount && accts.filter(function(a){ return a.id === ptState.currentAccount.id; })[0]) || accts[accts.length - 1] || null;
+    if (acct) orders = await (await fetch('/api/pt/orders?accountId=' + acct.id)).json();
+  } catch (e) {}
+  if (!acct) {
+    out.innerHTML = '<div class="qz-coach-card"><div class="qz-coach-note">No practice account yet — create one above (+ New Account) and place your first trade. The review unlocks after that.</div></div>';
+    return;
+  }
+  var ret = acct.initial_cash > 0 ? ((acct.equity - acct.initial_cash) / acct.initial_cash) * 100 : 0;
+  var cashPct = acct.equity > 0 ? (acct.cash / acct.equity) * 100 : 100;
+  var biggest = null;
+  (acct.positions || []).forEach(function(p){ if (!biggest || p.market_value > biggest.market_value) biggest = p; });
+  var concPct = (biggest && acct.equity > 0) ? (biggest.market_value / acct.equity) * 100 : 0;
+  var lines = [];
+  lines.push('Account <b>' + acct.name + '</b>: equity <b>$' + acct.equity.toLocaleString() + '</b>, ' + (ret >= 0 ? 'up' : 'down') + ' <b>' + Math.abs(ret).toFixed(2) + '%</b> all-time across ' + orders.length + ' order' + (orders.length === 1 ? '' : 's') + '.');
+  if (orders.length === 0) lines.push('No trades yet — go run the loop: Idea → Check → Plan → Practice.');
+  if (orders.length > 15) lines.push('That is a lot of orders for a learning account. Over-trading is the #1 beginner leak — each trade should have a written reason.');
+  if (biggest) lines.push('Largest position: <b>' + biggest.ticker + '</b> at ' + concPct.toFixed(1) + '% of equity' + (concPct > 25 ? ' — concentrated. One headline can swing your whole account.' : ' — reasonable.'));
+  lines.push('Cash is ' + cashPct.toFixed(0) + '% of equity. ' + (cashPct < 10 ? 'Fully invested means no dry powder when opportunity (or trouble) shows up.' : 'Good — you have room to act.'));
+  var summary = 'My paper trading account: equity $' + acct.equity.toFixed(0) + ', return ' + ret.toFixed(2) + '%, ' + orders.length + ' orders, positions: ' +
+    ((acct.positions || []).map(function(p){ return p.ticker + ' (' + p.qty + ' sh, P&L ' + (p.unrealized_pnl >= 0 ? '+' : '') + p.unrealized_pnl + ')'; }).join(', ') || 'none') +
+    '. Recent orders: ' + orders.slice(0, 8).map(function(o){ return o.side + ' ' + o.qty + ' ' + o.ticker + ' @' + o.price; }).join('; ');
+  window._qzCoachReviewPrompt = 'Act as my trading coach. ' + summary + ' — Review my trading like a mentor: what am I doing well, what habit should I fix first, and what should my next practice trade focus on? Be specific and kind.';
+  out.innerHTML =
+    '<div class="qz-coach-card">'+
+      '<div class="qz-coach-card-title">5 · Review — what your account says about your habits</div>'+
+      lines.map(function(l){ return '<div class="qz-coach-note">' + l + '</div>'; }).join('')+
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">'+
+        '<button class="btn btn-primary btn-sm" onclick="_qzCoachSeedAI(window._qzCoachReviewPrompt)">Ask AI to coach me on this →</button>'+
+      '</div>'+
+    '</div>';
+}
 
 /* ==================================================================== *
  *  COMPLIANCE — visible per-section disclaimers (Phase 19)             *
