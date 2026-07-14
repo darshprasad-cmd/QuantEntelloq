@@ -16586,6 +16586,400 @@ function _lp3Enter(user) {
 
 <!-- Cache-busting version stamp: bump ?v= on every deploy so browsers never
      run a stale bundle against fresh HTML (stale-tour class of bug). -->
-<script defer src="js/app.min.js?v=20260714-8"></script>
+<style id="qz-theme-v3">
+/* ================================================================
+   QUANT ENTELLOQ — "Calm Editorial" FINAL production theme layer
+   Append as the LAST <style> block in <body> (after the .qe-rl-*
+   block that ends near line 16586), before the app.min.js script.
+   Scoped to the signed-in app only: #app, body-level app chrome by
+   ID, and modals gated on body.qe-in-app. Never matches #landing,
+   .lp3*, or the logged-out #auth-modal.
+   ================================================================ */
+
+/* —— 0 · Token rebind — scoped, NEVER :root (landing keeps violet) — */
+#app,
+#qz-search-overlay,
+#qz-asset-panel,
+#qe-mdrawer,
+#qe-mdrawer-back,
+body.qe-in-app .qe-mobile-overlay,
+body.qe-in-app .modal-overlay:not(#auth-modal) {
+  --black:#0F0E0C; --white:#F5F2EB;
+  --bg:#131110; --surface:#191714; --surface2:#1E1B18; --surface3:#262220; --surface4:#2C2825;
+  --border:rgba(236,227,214,0.085); --border-light:rgba(236,227,214,0.05); --border-medium:rgba(236,227,214,0.14);
+  --text-primary:#F2EFE9; --text-secondary:#A9A297; --text-muted:#8A8375; --text-accent:#DFC591;
+  --accent:#C6A35F; --accent-2:#D9C29A; --accent-soft:rgba(198,163,95,0.10); --accent-glow:rgba(198,163,95,0.14);
+  --violet:#C6A35F; --violet-deep:#A9853F; --violet-soft:rgba(198,163,95,0.10);
+  --green:#4CAF82; --green-soft:rgba(76,175,130,0.10);
+  --red:#D9605A; --red-soft:rgba(217,96,90,0.10);
+  --yellow:#D9A441; --yellow-soft:rgba(217,164,65,0.10);
+  --blue:#7BA6C9; --blue-soft:rgba(123,166,201,0.10);
+  --amber:#C6A35F; --cyan:#7FB0BC; --cyan-soft:rgba(127,176,188,0.10); --cyan-10:rgba(127,176,188,0.10);
+  --gray-900:#191714; --gray-800:#1E1B18; --gray-700:#2C2825;
+  --radius:14px; --radius-sm:10px; --radius-lg:18px; --radius-xl:22px;
+  --shadow-sm:0 1px 2px rgba(12,10,7,0.20);
+  --shadow-md:0 2px 8px rgba(12,10,7,0.22);
+  --shadow-lg:0 12px 32px rgba(12,10,7,0.30);
+  --shadow-accent:0 0 0 1px rgba(198,163,95,0.15);
+  --shadow-card:inset 0 1px 0 0 rgba(255,255,255,0.03), 0 1px 2px rgba(12,10,7,0.18);
+  --shadow-card-lg:inset 0 1px 0 0 rgba(255,255,255,0.04), 0 8px 24px -12px rgba(12,10,7,0.40);
+  --bevel-top:inset 0 1px 0 0 rgba(255,255,255,0.03);
+  --font-display:'Fraunces','Tiempos Headline',Georgia,serif;
+  --grad-green:linear-gradient(135deg,#C6A35F 0%,#B08D48 100%);
+  --grad-blue:linear-gradient(135deg,#7BA6C9 0%,#8FB5C4 100%);
+  --grad-purple:linear-gradient(135deg,#C6A35F 0%,#D9C29A 100%);
+  --grad-warm:linear-gradient(135deg,#D9A441 0%,#C6A35F 100%);
+  --glow-green:0 0 0 1px rgba(198,163,95,0.20);
+  --glow-blue:0 0 0 1px rgba(123,166,201,0.20);
+  --q0:#0F0E0C; --q1:#191714; --q2:#1E1B18; --q3:#262220; --q4:#322D28;
+  --teal:#C6A35F; --teal-dim:rgba(198,163,95,0.60); --teal-10:rgba(198,163,95,0.10); --teal-20:rgba(198,163,95,0.18);
+  --teal-glow:0 0 0 1px rgba(198,163,95,0.18);
+  --purple:#C6A35F; --purple-10:rgba(198,163,95,0.10); --purple-glow:0 0 0 1px rgba(198,163,95,0.18);
+  --qe-void:#131110; --qe-canvas:#171513; --qe-surface:#1E1B18; --qe-elevated:#26221E;
+  --qe-text:#F2EFE9; --qe-text-soft:rgba(242,239,233,0.72); --qe-text-mute:rgba(242,239,233,0.55); --qe-text-dim:rgba(242,239,233,0.26);
+  --qe-hl:rgba(242,239,233,0.06); --qe-hl-strong:rgba(242,239,233,0.12); --qe-hl-bold:rgba(242,239,233,0.20);
+  --qe-amber:#C6A35F; --qe-amber-soft:rgba(198,163,95,0.11); --qe-amber-glow:rgba(198,163,95,0.22);
+  --qe-cyan:#D9C29A; --qe-cyan-soft:rgba(217,194,154,0.10);
+  --qe-pos:#4CC38A; --qe-neg:#E17067;
+}
+
+/* —— 1 · Canvas & typographic voice ————————————————— */
+#app { background-color: var(--bg); color: var(--text-primary); }
+#app h1, #app h2, #app h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.012em;
+}
+/* retire the gradient-clipped title; plain warm ivory serif.
+   -webkit-text-fill-color guards against base color:transparent. */
+#app .top-bar-title {
+  font-family: var(--font-display);
+  font-weight: 560;
+  background: none;
+  -webkit-text-fill-color: var(--text-primary);
+  color: var(--text-primary);
+}
+#app ::selection { background: rgba(198,163,95,0.28); color: var(--text-primary); }
+#app :focus-visible:not(input):not(textarea):not(select) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* —— 2 · One calm motion contract (allowed properties only) ——— */
+#app .btn, #app .nav-item, #app .qz-subtab, #app .tab, #app .qz-levelbtn,
+#app .qz-home-card, #app .qz-learn-card, #app .card, #app .metric-card,
+#app .signal-card, #app .market-card, #app .ent-card, #app .ql-card,
+#app .scanner-card, #app .qz-card, #app .badge, #app .qz-home-card-act,
+#app .qz-coach-step, #app .qz-explain, #app .pt-side-btn, #app .pt-type-btn,
+#app .pt-submit-btn, #qe-topnav .qe-tn-pill {
+  transition: transform 160ms cubic-bezier(0.33,1,0.68,1),
+              opacity 160ms cubic-bezier(0.33,1,0.68,1),
+              color 160ms cubic-bezier(0.33,1,0.68,1),
+              border-color 160ms cubic-bezier(0.33,1,0.68,1),
+              background-color 160ms cubic-bezier(0.33,1,0.68,1);
+}
+/* loading states must never smear */
+#app .skeleton, #app .intel-skeleton-line { transition: none; }
+
+/* —— 3 · Top nav (inside #app via .main-content) ———————— */
+#qe-topnav {
+  background: rgba(21,19,17,0.95);
+  border-bottom: 1px solid rgba(236,227,214,0.08);
+  box-shadow: none;
+}
+#qe-topnav .qe-tn-mark { background: linear-gradient(135deg,#C6A35F,#A9853F); color: #191307; }
+#qe-topnav .qe-tn-word { color: var(--text-primary); }
+#qe-topnav .qe-tn-word em {
+  background: linear-gradient(110deg,#C6A35F,#D9C29A);
+  -webkit-background-clip: text; background-clip: text;
+}
+#qe-topnav .qe-tn-pill { color: var(--text-secondary); border-radius: 999px; }
+#qe-topnav .qe-tn-pill:hover { color: var(--text-primary); background: rgba(242,239,233,0.05); }
+#qe-topnav .qe-tn-pill:active { transform: scale(0.97); }
+/* nav-active stays neutral — brass is reserved for AI + primary CTA */
+#qe-topnav .qe-tn-pill.active {
+  background: rgba(242,239,233,0.08);
+  border-color: rgba(236,227,214,0.14);
+  color: var(--text-primary);
+  box-shadow: none;
+}
+/* the AI dot is the teachable brass marker on nav */
+#qe-topnav .qe-tn-ai-dot { background: var(--accent); box-shadow: 0 0 8px rgba(198,163,95,0.7); }
+#qe-topnav .qe-tn-user { background: rgba(242,239,233,0.04); border-color: rgba(236,227,214,0.10); }
+#qe-topnav .qe-tn-user:hover { border-color: rgba(198,163,95,0.40); }
+#qe-topnav .qe-tn-ava { background: linear-gradient(135deg,#C6A35F,#A9853F); color: #191307; }
+#qe-topnav .qe-tn-name { color: var(--text-secondary); }
+#qe-tn-more-panel {
+  background: #1C1A17;
+  border: 1px solid rgba(236,227,214,0.12);
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(10,8,6,0.45);
+}
+
+/* —— 4 · Sidebar (hidden by shell v2 — skinned, not shown) ——— */
+#app .sidebar { background: var(--surface); border-right: 1px solid var(--border); box-shadow: none; }
+#app .sidebar::after { opacity: 0; }
+#app .nav-item { border-radius: 10px; color: var(--text-secondary); }
+#app .nav-item:hover { background: var(--qe-hl); color: var(--text-primary); }
+#app .nav-item.active {
+  background: var(--accent-soft);
+  color: var(--text-primary);
+  box-shadow: inset 2px 0 0 0 var(--accent);
+}
+#app .sidebar-user { border-top: 1px solid var(--border); background: var(--surface); }
+#app .user-avatar { border-radius: 10px; background: var(--accent-soft); color: var(--accent); box-shadow: none; }
+
+/* —— 5 · Top bar & sticky subtabs (near-solid ink, offsets untouched) */
+#app .top-bar { background: rgba(19,17,16,0.95); border-bottom: 1px solid var(--border); box-shadow: none; }
+#app .section-subtabs { background: rgba(19,17,16,0.96); border-bottom: 1px solid var(--border); }
+#app .qz-subtab { border-radius: 999px; color: var(--text-secondary); font-weight: 500; }
+#app .qz-subtab:hover { background: var(--qe-hl); color: var(--text-primary); }
+#app .qz-subtab.active {
+  background: var(--surface3);
+  border-color: var(--border-medium);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+#app .qz-subtab-sep { background: var(--border); }
+
+/* —— 6 · Cards — editorial whitespace, one elevation level ——— */
+#app .qz-home-grid { gap: 20px; }
+#app .qz-home-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 22px 18px;
+  box-shadow: var(--shadow-card);
+}
+#app .qz-home-card:hover { border-color: var(--border-medium); }
+#app .qz-home-card.qz-span2 { padding: 22px 24px 20px; }
+/* ruled card header — structure, not color */
+#app .qz-home-card-head { padding-bottom: 10px; border-bottom: 1px solid var(--border-light); margin-bottom: 12px; }
+#app .qz-home-card-title { font-family: var(--font-display); font-size: 15px; font-weight: 600; }
+/* card action links stay quiet; brass appears only inside the AI coach */
+#app .qz-home-card-act { color: var(--text-secondary); }
+#app .qz-home-card-act:hover { color: var(--text-primary); text-decoration: none; }
+#app .qz-row + .qz-row { border-top: 1px solid var(--border-light); }
+#app .qz-row:hover { background: var(--qe-hl); }
+
+#app .card, #app .metric-card, #app .signal-card, #app .market-card,
+#app .ent-card, #app .ql-card, #app .scanner-card, #app .qz-card, #app .agent-card {
+  background: var(--surface2);
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card) !important;
+  backdrop-filter: none;
+}
+#app .card:hover, #app .metric-card:hover, #app .signal-card:hover,
+#app .market-card:hover, #app .ent-card:hover, #app .ql-card:hover,
+#app .scanner-card:hover, #app .qz-card:hover, #app .agent-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(236,227,214,0.16) !important;
+  box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.04), 0 8px 20px -12px rgba(10,8,6,0.5) !important;
+}
+#app .chart-container {
+  background: rgba(23,21,19,0.60);
+  border: 1px solid var(--border) !important;
+  border-radius: 14px;
+  box-shadow: none !important;
+}
+
+/* —— 7 · AI Coach — the only tinted surface (real hooks verified) — */
+#app #qz-coach-panel {
+  border: 1px solid rgba(198,163,95,0.24);
+  border-top: 2px solid var(--accent);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(198,163,95,0.055), rgba(198,163,95,0.015) 55%, rgba(198,163,95,0) 100%), var(--surface2);
+  box-shadow: var(--shadow-card);
+}
+#app #qz-coach-panel:hover { border-color: rgba(198,163,95,0.34); border-top-color: var(--accent); }
+#app .qz-coach-title { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.01em; }
+#app .qz-coach-sub { color: var(--text-secondary); }
+#app .qz-coach-step { border-radius: 999px; }
+#app .qz-coach-step:hover { border-color: rgba(198,163,95,0.50); color: var(--text-primary); }
+#app .qz-coach-step.active { border-color: var(--accent); background: rgba(198,163,95,0.12); color: #E9D9B4; }
+#app .qz-coach-step:active { transform: scale(0.97); }
+#app .qz-coach-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
+#app .qz-coach-note, #app .qz-coach-check, #app #qz-coach-out { color: var(--text-secondary); }
+#app #qz-coach-panel .qz-home-card-act { color: var(--accent); }
+#app #qz-coach-panel .qz-home-card-act:hover { color: var(--accent-2); }
+/* explain chips: kill hardcoded violet rgba(167,139,250,…) */
+#app .qz-explain { color: var(--accent-2); background: var(--accent-soft); border-color: rgba(198,163,95,0.30); }
+#app .qz-explain:hover { background: rgba(198,163,95,0.18); color: var(--text-primary); }
+
+/* —— 8 · Learn cards ————————————————————————— */
+#app .qz-learn-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; }
+#app .qz-learn-card:hover {
+  background: var(--surface3);
+  border-color: rgba(198,163,95,0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px -14px rgba(10,8,6,0.5);
+}
+
+/* —— 9 · Paper trading — beats the #page-paper !important stack.
+      Green/red buy-sell semantics preserved (class-only selectors:
+      qzCoachSide wipes className, ids would be unsafe to depend on) */
+#app .pt-card {
+  border: 1px solid rgba(236,227,214,0.10) !important;
+  border-radius: 16px !important;
+  box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.03), 0 1px 2px rgba(12,10,7,0.18) !important;
+}
+#app .pt-card-title {
+  font-family: 'DM Sans', system-ui, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  color: var(--text-secondary) !important;
+}
+#page-paper .pt-tab.active { background: rgba(198,163,95,0.14) !important; color: #E6D3A6 !important; }
+#app .pt-side-btn { border-radius: 10px; }
+#app .pt-side-btn:active, #app .pt-type-btn:active { transform: scale(0.97); }
+#page-paper .pt-side-btn.buy-active, #app .pt-side-btn.buy-active {
+  background: rgba(76,175,130,0.15) !important;
+  border: 1px solid rgba(76,175,130,0.45) !important;
+  color: var(--green) !important;
+  box-shadow: none !important;
+}
+#page-paper .pt-side-btn.sell-active, #app .pt-side-btn.sell-active {
+  background: rgba(217,96,90,0.15) !important;
+  border: 1px solid rgba(217,96,90,0.45) !important;
+  color: var(--red) !important;
+  box-shadow: none !important;
+}
+#page-paper .pt-type-btn.active {
+  background: rgba(198,163,95,0.14) !important;
+  border-color: rgba(198,163,95,0.40) !important;
+  color: #E6D3A6 !important;
+}
+#app .pt-submit-btn { border-radius: 12px; box-shadow: none; }
+#app .pt-submit-btn.buy { background: var(--green); color: #07130D; }
+#app .pt-submit-btn.sell { background: var(--red); color: #1C0505; }
+#app .pt-submit-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+#app .pt-submit-btn:active { transform: scale(0.97); }
+
+/* —— 10 · Buttons — one flat brass primary per view —————— */
+#app .btn { border-radius: 12px; font-weight: 600; letter-spacing: 0.01em; }
+#app .btn:active { transform: scale(0.97); }
+#app .btn-primary {
+  background: var(--accent);
+  color: #191307;
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: none;
+}
+#app .btn-primary:hover { background: #D2B274; transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+#app .btn-secondary { background: var(--surface2); border: 1px solid var(--border); color: var(--text-primary); box-shadow: none; }
+#app .btn-secondary:hover { background: var(--surface3); border-color: var(--border-medium); }
+#app .btn-ghost { background: transparent; color: var(--text-secondary); box-shadow: none; }
+#app .btn-ghost:hover { color: var(--text-primary); background: var(--qe-hl); }
+#app .btn-violet {
+  background: var(--accent-soft);
+  color: #E6D3A6;
+  border: 1px solid rgba(198,163,95,0.30);
+  box-shadow: none;
+}
+#app .btn-violet:hover { background: rgba(198,163,95,0.16); border-color: rgba(198,163,95,0.45); }
+#app .btn-green { background: var(--green); color: #07130D; box-shadow: none; }
+
+/* —— 11 · Inputs & search ———————————————————————— */
+#app .input, #app textarea, #app select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text-primary);
+}
+#app .input:focus, #app textarea:focus, #app select:focus {
+  border-color: rgba(198,163,95,0.45);
+  box-shadow: 0 0 0 3px rgba(198,163,95,0.10);
+  outline: none;
+}
+#app .input::placeholder, #app textarea::placeholder { color: var(--text-muted); }
+#app .search-bar { background: var(--surface); border: 1px solid var(--border); border-radius: 999px; box-shadow: none; }
+#app .search-bar:focus-within { border-color: rgba(198,163,95,0.40); box-shadow: 0 0 0 3px rgba(198,163,95,0.08); }
+
+/* —— 12 · Tabs & level switcher — neutral states —————— */
+#app .tab-bar { background: var(--qe-hl); border-radius: 999px; }
+#app .tab { color: var(--text-secondary); }
+#app .tab.active { background: var(--surface3); color: var(--text-primary); }
+#app .qz-levelbar { background: var(--surface); border: 1px solid var(--border); }
+#app .qz-levelbtn { color: var(--text-muted); border-radius: 999px; }
+#app .qz-levelbtn.active { background: var(--surface3); color: var(--text-primary); box-shadow: 0 1px 2px rgba(12,10,7,0.30); }
+
+/* —— 13 · Universe table — breathing room, solid sticky head —— */
+#app .universe-table thead th {
+  background: var(--surface3);            /* token-derived, fully opaque */
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-medium);
+}
+#app .universe-table td {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-light);
+}
+#app .universe-table tbody tr:hover td { background: rgba(242,239,233,0.025); }
+
+/* —— 14 · Overlays — cmd-K, asset drawer, authed modals ———— */
+#qz-search-overlay { background: rgba(15,13,11,0.80); }
+#qz-search-modal {
+  background: #1C1A17;
+  border: 1px solid rgba(236,227,214,0.12);
+  border-radius: 20px;
+  box-shadow: 0 24px 64px rgba(8,6,4,0.55);
+}
+@media (max-width: 700px) {
+  #qz-search-modal { border-radius: 0 0 16px 16px; border-top: none; }
+}
+#qz-asset-panel {
+  background: var(--surface);
+  border-left: 1px solid var(--border-medium);
+  box-shadow: -24px 0 60px rgba(10,8,6,0.45);
+}
+/* gated on the real authed hook body.qe-in-app (app.js:19508);
+   #auth-modal excluded so the logged-out flow can never repaint */
+body.qe-in-app .modal-overlay:not(#auth-modal) { background: rgba(15,13,11,0.78); }
+body.qe-in-app .modal-overlay:not(#auth-modal) .modal {
+  background: var(--surface);
+  border: 1px solid var(--border-medium);
+  border-radius: 20px;
+  padding: clamp(24px, 5vw, 40px) clamp(20px, 4.5vw, 36px);
+  box-shadow: var(--shadow-lg);
+}
+body.qe-in-app .modal-overlay:not(#auth-modal) .modal-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  color: var(--text-primary);
+}
+body.qe-in-app .modal-overlay:not(#auth-modal) .modal-close {
+  border-radius: 10px;
+  background: var(--qe-hl);
+  color: var(--text-secondary);
+}
+body.qe-in-app .modal-overlay:not(#auth-modal) .modal-close:hover {
+  background: var(--qe-hl-strong);
+  color: var(--text-primary);
+}
+
+/* —— 15 · Badges — de-bevel, true market colors ———————— */
+#app .badge { border-radius: 999px; font-weight: 600; letter-spacing: 0.05em; box-shadow: none; }
+#app .badge-green { background: var(--green-soft); border-color: rgba(76,175,130,0.30); color: var(--green); }
+#app .badge-red { background: var(--red-soft); border-color: rgba(217,96,90,0.30); color: var(--red); }
+#app .badge-yellow { background: var(--yellow-soft); border-color: rgba(217,164,65,0.30); color: var(--yellow); }
+#app .badge-blue { background: var(--blue-soft); border-color: rgba(123,166,201,0.30); color: var(--blue); }
+#app .badge-gray { background: var(--qe-hl); border-color: var(--border); color: var(--text-secondary); }
+
+/* —— 16 · Scrollbars — quiet warm pills, app-scoped only ——— */
+#app ::-webkit-scrollbar { width: 10px; height: 10px; }
+#app ::-webkit-scrollbar-track { background: transparent; }
+#app ::-webkit-scrollbar-corner { background: transparent; }
+#app ::-webkit-scrollbar-thumb {
+  background: rgba(236,227,214,0.14);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+#app ::-webkit-scrollbar-thumb:hover { background-color: rgba(236,227,214,0.24); }
+#app * { scrollbar-width: thin; scrollbar-color: rgba(236,227,214,0.18) transparent; }
+</style>
+<script defer src="js/app.min.js?v=20260714-9"></script>
 </body>
 </html>
