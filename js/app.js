@@ -795,17 +795,14 @@ function showPage(page, navEl) {
 var QZ_SECTIONS = {
   home:      { label:'Home',      subtabs:null, page:'dashboard' },
   markets:   { label:'Markets',   subtabs:[
-                 { key:'explore',   label:'Explore',   page:'universe' },
-                 { key:'screeners', label:'Screeners', page:'scanner'  },
-                 { key:'heatmap',   label:'Heatmap',   page:'macro'    },
+                 { key:'explore', label:'Explore',    page:'universe' },
+                 { key:'signals', label:'AI Signals', page:'signals'  },
+                 { key:'news',    label:'News',       page:'news'     },
                ], more:[
-                 { label:'Signals', page:'signals' },
-                 { label:'News',    page:'news'    },
+                 { label:'Screeners', page:'scanner' },
+                 { label:'Heatmap',   page:'macro'   },
                ] },
-  learn:     { label:'Learn',     subtabs:[
-                 { key:'explore',  label:'Explore',  page:'learn-explore'  },
-                 { key:'continue', label:'Continue', page:'learn-continue' },
-               ] },
+  learn:     { label:'Learn',     subtabs:null, page:'learn-explore' },
   portfolio: { label:'Trade', subtabs:[
                  { key:'practice',  label:'Practice',  page:'paper'     },
                  { key:'portfolio', label:'Portfolio', page:'portfolio' },
@@ -851,7 +848,9 @@ function _qzRenderSubtabs(section, activePage) {
     return '<button class="qz-subtab' + (t.page === activePage ? ' active' : '') +
            '" onclick="showPage(\'' + t.page + '\')">' + t.label + '</button>';
   }).join('');
-  if (cfg.more && cfg.more.length) {
+  // Advanced tools stay reachable but only appear past Beginner —
+  // a first-timer sees at most three plain-English tabs anywhere.
+  if (cfg.more && cfg.more.length && (typeof qzGetLevel !== 'function' || qzGetLevel() !== 'beginner')) {
     html += '<span class="qz-subtab-sep"></span>' + cfg.more.map(function(m){
       return '<button class="qz-subtab qz-subtab-more' + (m.page === activePage ? ' active' : '') +
              '" onclick="showPage(\'' + m.page + '\')">' + m.label + '</button>';
@@ -899,6 +898,8 @@ function qzSetLevel(l){
   try{ localStorage.setItem('qz_level', l); }catch(e){}
   try{ var sel=document.getElementById('ai-level-setting'); if(sel) sel.value=l; }catch(e){}
   try{ if(window.state && state.currentPage==='dashboard') renderHome(); }catch(e){}
+  // Subtab bar is level-aware (advanced groups hide for beginners) — refresh it
+  try{ if(window.state && typeof _qzSyncSectionChrome==='function') _qzSyncSectionChrome(state.currentPage); }catch(e){}
 }
 function qzLevelBar(){
   var cur=qzGetLevel(), labels={beginner:'Beginner',intermediate:'Intermediate',advanced:'Advanced'};
@@ -1086,15 +1087,21 @@ function _qzLearnCardHTML(c) {
          '</div>';
 }
 function renderLearnExplore() {
+  // One calm page: continue-where-you-left-off up top, then every track.
+  // (The old Explore/Continue subtab split confused beginners — merged.)
   var el = document.getElementById('page-learn-explore');
   if (!el) return;
   var p = _qzLearnProgress();
   var doneN = QZ_LEARN_CARDS.filter(function(c){ return p[c.id] && p[c.id].done; }).length;
+  var inProg = QZ_LEARN_CARDS.filter(function(c){ return p[c.id] && !p[c.id].done; });
   el.innerHTML =
     '<div style="max-width:1080px;">' +
       '<h2 style="font-size:20px;font-weight:750;margin:4px 0 4px;">Learn investing, one idea at a time</h2>' +
       '<p style="color:var(--text-secondary);font-size:13.5px;margin:0 0 6px;">Short, plain-English lessons — read one in 3 minutes, then let the AI take you deeper.</p>' +
       '<p style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted);margin:0 0 10px;">' + doneN + ' / ' + QZ_LEARN_CARDS.length + ' completed</p>' +
+      (inProg.length ?
+        '<div class="qz-learn-cat" style="color:var(--yellow);">Continue where you left off</div>' +
+        '<div class="qz-learn-rowscroll">' + inProg.map(_qzLearnCardHTML).join('') + '</div>' : '') +
       QZ_LEARN_CATS.map(function(cat){
         var cards = QZ_LEARN_CARDS.filter(function(c){ return c.cat === cat; });
         if (!cards.length) return '';
