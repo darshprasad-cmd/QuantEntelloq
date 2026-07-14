@@ -905,6 +905,8 @@ function qzLevelBar(){
     QZ_LEVELS.map(function(l){ return '<button class="qz-levelbtn'+(l===cur?' active':'')+'" onclick="qzSetLevel(\''+l+'\')">'+labels[l]+'</button>'; }).join('')+'</div>';
 }
 try{ if(typeof state!=='undefined' && state.profile && !state.profile.level){ var _ql=localStorage.getItem('qz_level'); if(_ql && QZ_LEVELS.indexOf(_ql)>=0) state.profile.level=_ql; } }catch(e){}
+// Keep the Settings dropdown in step with the persisted level at boot
+try{ window.addEventListener('DOMContentLoaded', function(){ var s=document.getElementById('ai-level-setting'); if(s) s.value=qzGetLevel(); }); }catch(e){}
 
 // ── ✨ Explain → routes to the one AI assistant, pre-seeded in plain English ──
 function qzExplain(term, context) {
@@ -938,12 +940,12 @@ var QZ_LEARN_CARDS = [
           'What signals can\'t know: tomorrow\'s headlines, your time horizon, your risk tolerance, and whether everyone else already acted on the same data. Use signals to filter and prioritize your research — never as the research itself.'],
     key:['A signal is compressed evidence, not a prediction','Confidence ≠ probability of profit','Signals filter your attention; they don\'t replace judgment'],
     go:{ label:'Open the live AI Signals board', act:'signals' } },
-  { id:'ai-prompting', icon:'❯_', cat:'Trading with AI', mins:5, title:'How to prompt an AI analyst', blurb:'The difference between "is NVDA good?" and a prompt that earns its answer.',
+  { id:'ai-prompting', icon:'❯', cat:'Trading with AI', mins:5, title:'How to prompt an AI analyst', blurb:'The difference between "is NVDA good?" and a prompt that earns its answer.',
     body:['Weak prompt: <i>"Is NVDA a good buy?"</i> — you\'ll get a mushy yes-with-caveats. Strong prompt: <i>"Act as a buy-side analyst. Give me the 3-point bull case and 3-point bear case for NVDA, the next events that could move it, and what would change your mind."</i> Structure in, structure out.',
           'The three rules: give the AI a <b>role</b> (analyst, risk manager, devil\'s advocate), demand <b>both sides</b> (never let it agree with you unchallenged), and ask <b>what would prove it wrong</b>. Every ✨Explain and coach button in this app is built on these rules — read the prompts they generate and steal the pattern.'],
     key:['Role + both sides + falsifier = a real answer','Never let the AI just agree with you','Steal the prompt patterns this app shows you'],
     go:{ label:'Try the analyst prompt on a real stock', act:'prompt' } },
-  { id:'ai-risk', icon:'▲!', cat:'Trading with AI', mins:4, title:'When NOT to trust the AI', blurb:'Guardrails that keep one bad answer from becoming a bad account.',
+  { id:'ai-risk', icon:'△', cat:'Trading with AI', mins:4, title:'When NOT to trust the AI', blurb:'Guardrails that keep one bad answer from becoming a bad account.',
     body:['AI fails in specific, predictable ways: it can be confidently wrong, it can lag breaking news, and it mirrors your framing back to you (ask "why will X go up?" and it will oblige). The fix is never "trust it less" — it is <b>guardrails that work even when the AI is wrong</b>.',
           'The three that matter: position sizing (under ~10% per idea — being wrong must be survivable), a written exit plan before entry, and the practice habit — new strategy means paper trades first, always. Notice none of these depend on the AI being right.'],
     key:['AI is confidently wrong sometimes — plan for it','Guardrails must work even when the answer is bad','Size small, exit planned, practice first'],
@@ -18249,6 +18251,17 @@ function qzCoachEnsure() {
   var page = document.getElementById('page-paper');
   if (!page || document.getElementById('qz-coach-panel')) return;
   var host = page.querySelector('.pt-page') || page;
+  // First-timer grace: if no practice account exists yet, create one so the
+  // beginner never faces an empty screen and a mystery "+ New Account" button.
+  try {
+    fetch('/api/pt/accounts').then(function(r){ return r.json(); }).then(function(accts){
+      if (Array.isArray(accts) && !accts.length) {
+        return fetch('/api/pt/accounts', { method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ name:'My First Practice Account', initialCash:100000 }) })
+          .then(function(){ if (typeof ptInit === 'function') ptInit(); });
+      }
+    }).catch(function(){});
+  } catch (e) {}
   var panel = document.createElement('div');
   panel.id = 'qz-coach-panel';
   panel.innerHTML =
@@ -18273,7 +18286,10 @@ function qzCoachEnsure() {
       '<span style="font-size:11px;color:var(--text-muted);">The coach checks your idea against live data before you place it.</span>'+
     '</div>'+
     '<div id="qz-coach-out"></div>';
-  host.insertBefore(panel, host.firstChild ? host.firstChild.nextSibling : null);
+  // Anchor after the page header element (never a whitespace text node)
+  var hdr = host.querySelector('.pt-header');
+  if (hdr && hdr.parentNode === host) host.insertBefore(panel, hdr.nextSibling);
+  else host.insertBefore(panel, host.firstElementChild ? host.firstElementChild.nextSibling : null);
 }
 var _qzCoachSideVal = 'buy';
 function qzCoachSide(s) {
@@ -28140,57 +28156,37 @@ async function qzCoachReview() {
   // ────────────────────────────────────────────────────────────────────
   // #2 — First-visit feature tour
   // ────────────────────────────────────────────────────────────────────
-  var TOUR_KEY = 'qe_tour_seen_v1';
+  var TOUR_KEY = 'qe_tour_seen_v2'; // v2: rewritten for the Trade-with-AI redesign
 
   var STEPS = [
     {
-      title: 'Welcome to Quant Entelloq',
-      body: "Hi — I'm your AI co-pilot. In the next minute I'll show you every feature in this terminal. Browser-only, free, no signup. Bloomberg costs $24k/year for less than this.",
-      pills: ['Free forever', 'Browser-only', 'No signup']
+      title: 'Welcome — here\'s the 30-second map',
+      body: "Quant Entelloq teaches you to <strong>trade with AI</strong> — safely, with zero real money. Six sections, plain English everywhere, and an AI that explains anything you tap. Let me show you around.",
+      pills: ['Zero real money', 'Plain English', 'AI everywhere']
     },
     {
-      title: 'The Dashboard',
-      body: "Your command center. Real-time portfolio value, signal counts, market sentiment, and the top AI opportunity. Charts update live. The <strong>Daily Challenge</strong> card at the top builds a streak — answer one finance question per day to keep it alive.",
-      pills: ['Live charts', 'Signal counts', 'Daily streak']
+      title: 'Home — your calm daily view',
+      body: "One scroll: an <strong>AI market brief</strong>, live prices, your watchlist, and your <strong>Trade with AI</strong> progress. The <strong>Beginner / Intermediate / Advanced</strong> switch at the top controls how much detail you see — nothing is ever locked, just tucked away until you want it.",
+      pills: ['Live prices', 'AI daily brief', 'You set the depth']
     },
     {
-      title: 'AI Studio · 5 Specialists',
-      body: "The brain of the app. Five high-tech specialist agents — <strong>NEXUS-7</strong> (alpha synthesis), <strong>AEGIS-PRIME</strong> (risk), <strong>ORACLE-X</strong> (macro regime), <strong>PHOENIX-9</strong> (catalysts), <strong>FORGE-Δ</strong> (backtests) — analyze any query in parallel. Ask anything, all 5 respond simultaneously.",
-      pills: ['5 agents', 'Parallel', 'Institutional-grade']
+      title: 'Trade — practice with an AI coach',
+      body: "The heart of the app. Open <strong>Trade → Practice</strong> and run the loop: <strong>Idea → Check → Plan → Practice → Review</strong>. The AI Coach checks every idea against live prices, signals, news, and position-sizing guardrails <em>before</em> you place it — with virtual cash and real market prices.",
+      pills: ['Virtual cash', 'Real prices', 'Coach checks every trade']
     },
     {
-      title: 'Quant Lab',
-      body: "Ten quant tools at your fingertips: <strong>backtester</strong>, <strong>Monte Carlo</strong>, <strong>Black-Scholes pricer</strong>, <strong>portfolio optimizer</strong>, <strong>factor analyzer</strong>, <strong>correlation matrix</strong>, and more. Type a strategy in plain English — the lab picks the right model and runs the math.",
-      pills: ['10 tools', 'Plain English', 'Real math']
+      title: 'Learn — 3-minute lessons',
+      body: "Short, plain-English lessons — start with the <strong>Trading with AI</strong> track: what signals really mean, how to prompt an AI analyst, and when <em>not</em> to trust the machine. Every lesson ends with a hands-on step in the app.",
+      pills: ['3-min reads', 'AI trading track', 'Learn by doing']
     },
     {
-      title: 'Watchlists · 100M+ Securities',
-      body: "Search stocks, ETFs, crypto, forex, indices, commodities — anywhere. One-click to add to your watchlist, and we'll auto-inject relevant news + AI signals into your dashboard.",
-      pills: ['Global', 'One-click', 'Auto-feeds']
+      title: 'Markets + ask AI anything',
+      body: "Explore live prices and news from <strong>50+ sources</strong>. See a term you don't know? Tap <strong>✨ Explain</strong> anywhere. Got a question a search box can't answer? Type it in the top bar and hit <strong>Ask AI</strong> — plain questions welcome.",
+      pills: ['50+ news sources', '✨ Explain anywhere', 'Ask AI anything']
     },
     {
-      title: 'Portfolio + Paper Trading',
-      body: "Two ways to use the terminal: track your <strong>real portfolio</strong> (CSV import or NL add), or open a <strong>paper trading account</strong> with virtual cash and practice strategies risk-free. Both update the AI agents' context so every analysis is personalized to your holdings.",
-      pills: ['Real or paper', 'Personalized AI', 'Risk-free practice']
-    },
-    {
-      title: 'Alerts + Reports',
-      body: "<strong>Alerts</strong> stream live signal changes, breaking news, and risk flags in real time. <strong>Reports</strong> generates editorial-quality weekly intelligence reports — top movers, signal breakdown, key risks. Both update automatically.",
-      pills: ['Live alerts', 'Weekly synthesis', 'AI-written']
-    },
-    {
-      title: 'Country Switcher',
-      body: "Top-right corner. Switch between US, UK, India, Japan, EU and more — every part of the app re-skins to that region: signals, portfolio currency, alerts, reports, watchlist universe.",
-      pills: ['Global markets', 'Live re-skin', 'Native currency']
-    },
-    {
-      title: 'Voice Mode + Share',
-      body: "The orb in the bottom-right corner is your <strong>JARVIS-style voice assistant</strong> — click and talk. The Share button in the top bar lets you send Quant Entelloq to anyone in one tap (X, Reddit, LinkedIn, WhatsApp, Email).",
-      pills: ['Voice', 'One-tap share', 'JARVIS-style']
-    },
-    {
-      title: "You're all set",
-      body: "Start with the <strong>Dashboard</strong>, then try asking the agents in <strong>AI Studio</strong>. Click the small <strong>?</strong> in the bottom-left anytime to replay this tour. Welcome aboard — let's find some alpha.",
+      title: "You're set",
+      body: "Start on <strong>Home</strong>, then open <strong>Trade</strong> and let the coach walk you through your first practice trade. Click the small <strong>?</strong> bottom-left anytime to replay this tour.",
       pills: ['Click ? to replay', 'Welcome aboard']
     }
   ];

@@ -62,7 +62,7 @@
 <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
 
 <!-- ═══ SEO + SOCIAL SHARE METADATA ═══ -->
-<meta name="description" content="Quant Entelloq — AI-native financial research terminal: quant analysis, market intelligence, simulations & portfolio tools. Free in your browser.">
+<meta name="description" content="Quant Entelloq — learn to trade with AI. Practice with virtual cash at real market prices while an AI coach checks every trade. Plain-English lessons, live data, pro tools when you're ready. Free in your browser.">
 <meta name="keywords" content="quant research, ai trading, financial intelligence, fama-french regression, mean-variance optimization, value at risk, momentum scanner, paper trading, ai copilot, market intelligence, quant terminal">
 <meta name="author" content="Entelloq Networks">
 <meta name="theme-color" content="#0A0A0B">
@@ -71,8 +71,8 @@
 <!-- Open Graph (Facebook, LinkedIn, Discord, Slack previews) -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Quant Entelloq">
-<meta property="og:title" content="Quant Entelloq — AI-Native Financial Intelligence Terminal">
-<meta property="og:description" content="Institutional-grade research without the Bloomberg price tag. AI intelligence, 10 quant tools, 4 specialist agents, paper trading. Free in your browser.">
+<meta property="og:title" content="Quant Entelloq — Learn to Trade with AI">
+<meta property="og:description" content="Practice trading with virtual cash at real market prices while an AI coach checks every idea. Plain-English lessons, 50+ news sources, pro-grade tools when you're ready. Free in your browser.">
 <meta property="og:url" content="https://quant.entelloq.com/">
 <meta property="og:image" content="https://quant.entelloq.com/assets/entelloq-logo.png">
 <meta property="og:image:alt" content="Quant Entelloq — AI-native financial research terminal">
@@ -80,8 +80,8 @@
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Quant Entelloq — AI-Native Financial Intelligence">
-<meta name="twitter:description" content="Bloomberg-style research, free. AI intelligence + 10 quant tools (Fama-French, MVO, VaR, momentum) + 4 AI specialists + paper trading.">
+<meta name="twitter:title" content="Quant Entelloq — Learn to Trade with AI">
+<meta name="twitter:description" content="Practice trading with virtual cash at real prices while an AI coach checks every idea. Free in your browser.">
 <meta name="twitter:image" content="https://quant.entelloq.com/assets/entelloq-logo.png">
 
 <!-- ═══ STRUCTURED DATA (JSON-LD) — Organization · WebSite · WebApplication ═══ -->
@@ -128,7 +128,7 @@
 <link rel="apple-touch-icon" href="/assets/entelloq-logo.png">
 <link rel="manifest" href="/manifest.webmanifest">
 
-<title>Quant Entelloq — AI-Native Financial Research Terminal</title>
+<title>Quant Entelloq — Learn to Trade with AI · Practice with Zero Real Money</title>
 <!-- Warm the font origins early so the hero text (LCP element) paints sooner -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -8388,8 +8388,8 @@ function _lp3Enter(user) {
           <div class="settings-section">
             <div class="settings-section-title">AI Preferences</div>
             <div class="settings-row"><div><div class="settings-row-label">Explanation Level</div><div class="settings-row-sub">Simple or technical AI responses</div></div>
-              <select class="input" style="width:auto;padding:6px 12px;font-size:13px;" id="ai-level-setting" onchange="if(window.state&&state.profile)state.profile.level=this.value">
-                <option value="beginner">Simple</option><option value="intermediate">Intermediate</option><option value="advanced" selected>Advanced</option><option value="professional">Professional</option>
+              <select class="input" style="width:auto;padding:6px 12px;font-size:13px;" id="ai-level-setting" onchange="if(typeof qzSetLevel==='function')qzSetLevel(this.value);else if(window.state&&state.profile)state.profile.level=this.value">
+                <option value="beginner" selected>Beginner — plain English</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced — full detail</option>
               </select>
             </div>
             <div class="settings-row"><div><div class="settings-row-label">Risk Mode</div><div class="settings-row-sub">Conservative, Moderate, Aggressive</div></div>
@@ -8532,9 +8532,9 @@ function _lp3Enter(user) {
           <!-- Header + account bar -->
           <div class="pt-header">
             <div>
-              <div class="pt-eyebrow"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span>PAPER TRADING SIMULATOR</div>
-              <div class="pt-title">Paper Trade<span style="color:var(--violet);">.</span></div>
-              <div class="pt-sub">Risk-free trading simulation · Zero real money · Build your edge</div>
+              <div class="pt-eyebrow"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span>PRACTICE TRADING · AI COACH</div>
+              <div class="pt-title">Practice Trading<span style="color:var(--violet);">.</span></div>
+              <div class="pt-sub">Virtual cash · Real market prices · Your AI coach checks every idea</div>
             </div>
             <div class="pt-acct-bar">
               <select class="pt-acct-select" id="pt-acct-select" onchange="ptSwitchAccount(this.value)">
