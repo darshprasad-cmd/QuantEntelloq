@@ -4158,36 +4158,29 @@ function _qzsMergeWeb(quotes) {
 }
 
 // --- Live price batch (non-blocking, DOM-patch) ---
+// Routed through MarketDataService (Finnhub→Polygon→TwelveData→Yahoo failover).
 async function _qzsFetchLiveBatch(items) {
   const syms = items.map(s=>s.t).filter(t => !_qzs.liveInflight.has(t) && (!_qzs.liveCache.has(t) || (Date.now()-(_qzs.liveCache.get(t)._ts||0)) > 28000));
   if (!syms.length) return;
   syms.forEach(t => _qzs.liveInflight.add(t));
-  const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(syms.join(','))}&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent`;
-  const proxies = ['https://api.allorigins.win/raw?url=', 'https://corsproxy.io/?'];
-  for (const px of proxies) {
-    try {
-      const r = await fetch(px + encodeURIComponent(url));
-      if (!r.ok) continue;
-      const d = await r.json();
-      const quotes = d?.quoteResponse?.result || [];
-      quotes.forEach(q => {
-        _qzs.liveCache.set(q.symbol, { price: q.regularMarketPrice, change: q.regularMarketChange, pct: q.regularMarketChangePercent, _ts: Date.now() });
-        const row = document.querySelector(`.qzs-row[data-ticker="${q.symbol}"]`);
-        if (!row) return;
-        const pEl = row.querySelector('.qzs-price');
-        const cEl = row.querySelector('.qzs-chg');
-        if (pEl && q.regularMarketPrice != null) pEl.textContent = _qzsFmtPrice(q.regularMarketPrice);
-        if (cEl && q.regularMarketChangePercent != null) {
-          const pos = q.regularMarketChangePercent >= 0;
-          cEl.textContent = (pos?'+':'')+q.regularMarketChangePercent.toFixed(2)+'%';
-          cEl.className = 'qzs-chg '+(pos?'pos':'neg');
-          const sp = row.querySelector('.qzs-spark');
-          if (sp) _qzsSparkline(sp, q.symbol, pos);
-        }
-      });
-      break;
-    } catch {}
-  }
+  try {
+    const quotes = (window.MarketDataService ? await MarketDataService.getQuotes(syms) : []) || [];
+    quotes.forEach(q => {
+      _qzs.liveCache.set(q.ticker, { price: q.price, change: q.change, pct: q.changePct, _ts: Date.now() });
+      const row = document.querySelector(`.qzs-row[data-ticker="${q.ticker}"]`);
+      if (!row) return;
+      const pEl = row.querySelector('.qzs-price');
+      const cEl = row.querySelector('.qzs-chg');
+      if (pEl && q.price != null) pEl.textContent = _qzsFmtPrice(q.price);
+      if (cEl && q.changePct != null) {
+        const pos = q.changePct >= 0;
+        cEl.textContent = (pos?'+':'')+q.changePct.toFixed(2)+'%';
+        cEl.className = 'qzs-chg '+(pos?'pos':'neg');
+        const sp = row.querySelector('.qzs-spark');
+        if (sp) _qzsSparkline(sp, q.ticker, pos);
+      }
+    });
+  } catch {}
   syms.forEach(t => _qzs.liveInflight.delete(t));
 }
 
@@ -10609,6 +10602,313 @@ window.qeRL  = window.QESecurity.rateLimit;
 
 /* ===== block @ index.html line 19714 ===== */
 ;
+
+// ==================== MARKET DATA SERVICE (multi-provider failover) ====================
+// Unified quote/candle layer: Finnhub → Polygon → TwelveData → Yahoo (proxy, keyless).
+// Single quotes honor that order; batches prefer batch-capable providers (Polygon,
+// Yahoo) for efficiency, then fill leftovers through the per-symbol chain.
+// Providers trip a 90s cooldown after 2 consecutive failures so one dead API
+// never stalls the UI. Keys live in localStorage; Yahoo needs none.
+(function MarketDataServiceModule() {
+  'use strict';
+  var ORDER = ['finnhub', 'polygon', 'twelvedata', 'yahoo'];
+  var COOLDOWN_MS = 90000, FAILS_TO_TRIP = 2, QUOTE_TTL = 25000, CANDLE_TTL = 60000;
+  var health = {};
+  ORDER.forEach(function(p){ health[p] = { fails: 0, until: 0, lastError: '' }; });
+  var qCache = {}, cCache = {}, inflight = {};
+  var PROXIES = ['https://api.allorigins.win/raw?url=', 'https://corsproxy.io/?'];
+
+  function mdsKey(p) {
+    try {
+      if (p === 'polygon') return localStorage.getItem('qe_poly_key') || localStorage.getItem('qe_polygon_key') || '';
+      if (p === 'finnhub') return localStorage.getItem('qe_finnhub_key') || '';
+      if (p === 'twelvedata') return localStorage.getItem('qe_twelvedata_key') || '';
+    } catch (e) {}
+    return '';
+  }
+  function usable(p) {
+    if (p !== 'yahoo' && !mdsKey(p)) return false;
+    return Date.now() >= health[p].until;
+  }
+  function fail(p, msg) {
+    var h = health[p];
+    h.fails++; h.lastError = (msg || '') + '';
+    if (h.fails >= FAILS_TO_TRIP) { h.until = Date.now() + COOLDOWN_MS; h.fails = 0; }
+  }
+  function ok(p) { health[p].fails = 0; health[p].until = 0; health[p].lastError = ''; }
+
+  function fetchJson(url, timeoutMs) {
+    return new Promise(function(resolve, reject) {
+      var ctl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+      var to = setTimeout(function(){ if (ctl) ctl.abort(); reject(new Error('timeout')); }, timeoutMs || 7000);
+      fetch(url, ctl ? { signal: ctl.signal } : {}).then(function(r){
+        clearTimeout(to);
+        if (!r.ok) { reject(new Error('http ' + r.status)); return; }
+        r.json().then(resolve, reject);
+      }, function(e){ clearTimeout(to); reject(e); });
+    });
+  }
+  function proxied(url, timeoutMs) {
+    // Try each CORS proxy in order; first JSON wins
+    var i = 0;
+    function next() {
+      if (i >= PROXIES.length) return Promise.reject(new Error('all proxies failed'));
+      var px = PROXIES[i++];
+      return fetchJson(px + encodeURIComponent(url), timeoutMs).catch(next);
+    }
+    return next();
+  }
+  function num(v) { var n = parseFloat(v); return isNaN(n) ? 0 : n; }
+
+  var P = {
+    finnhub: {
+      quote: function(sym) {
+        return fetchJson('https://finnhub.io/api/v1/quote?symbol=' + encodeURIComponent(sym) + '&token=' + mdsKey('finnhub')).then(function(d){
+          if (!d || typeof d.c !== 'number' || d.c <= 0) throw new Error('empty quote');
+          var pc = d.pc || 0;
+          return { ticker: sym, price: d.c, prevClose: pc, change: (d.d != null ? d.d : d.c - pc),
+                   changePct: (d.dp != null ? d.dp : (pc ? (d.c - pc) / pc * 100 : 0)),
+                   high: d.h || 0, low: d.l || 0, open: d.o || 0, volume: 0, ts: Date.now(), source: 'finnhub' };
+        });
+      },
+      candles: function(sym, days) {
+        var to = Math.floor(Date.now() / 1000), from = to - days * 86400;
+        return fetchJson('https://finnhub.io/api/v1/stock/candle?symbol=' + encodeURIComponent(sym) + '&resolution=D&from=' + from + '&to=' + to + '&token=' + mdsKey('finnhub')).then(function(d){
+          if (!d || d.s !== 'ok' || !d.c || !d.c.length) throw new Error('empty candles');
+          return d.c.map(function(c, i){ return { t: d.t[i] * 1000, o: d.o[i], h: d.h[i], l: d.l[i], c: c, v: d.v[i] || 0 }; });
+        });
+      }
+    },
+    polygon: {
+      quote: function(sym) {
+        var k = mdsKey('polygon');
+        return fetchJson('https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers/' + encodeURIComponent(sym) + '?apiKey=' + k).then(function(d){
+          var t = d && d.ticker;
+          if (!t) throw new Error('empty snapshot');
+          var price = (t.lastTrade && t.lastTrade.p) || (t.day && t.day.c) || 0;
+          if (!price) throw new Error('no price');
+          return { ticker: sym, price: price, prevClose: (t.prevDay && t.prevDay.c) || 0,
+                   change: t.todaysChange || 0, changePct: t.todaysChangePerc || 0,
+                   high: (t.day && t.day.h) || 0, low: (t.day && t.day.l) || 0, open: (t.day && t.day.o) || 0,
+                   volume: (t.day && t.day.v) || 0, ts: Date.now(), source: 'polygon' };
+        }).catch(function(){
+          // Snapshot needs a paid plan on some keys — fall back to previous close aggs
+          return fetchJson('https://api.polygon.io/v2/aggs/ticker/' + encodeURIComponent(sym) + '/prev?apiKey=' + k).then(function(d){
+            var r = d && d.results && d.results[0];
+            if (!r || !r.c) throw new Error('empty prev');
+            return { ticker: sym, price: r.c, prevClose: r.o || 0, change: r.c - (r.o || r.c),
+                     changePct: r.o ? (r.c - r.o) / r.o * 100 : 0, high: r.h || 0, low: r.l || 0,
+                     open: r.o || 0, volume: r.v || 0, ts: Date.now(), source: 'polygon' };
+          });
+        });
+      },
+      multi: function(syms) {
+        return fetchJson('https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers?tickers=' + encodeURIComponent(syms.join(',')) + '&apiKey=' + mdsKey('polygon')).then(function(d){
+          if (!d || !d.tickers || !d.tickers.length) throw new Error('empty multi-snapshot');
+          return d.tickers.map(function(t){
+            return { ticker: t.ticker, price: (t.lastTrade && t.lastTrade.p) || (t.day && t.day.c) || 0,
+                     prevClose: (t.prevDay && t.prevDay.c) || 0, change: t.todaysChange || 0,
+                     changePct: t.todaysChangePerc || 0, high: (t.day && t.day.h) || 0,
+                     low: (t.day && t.day.l) || 0, open: (t.day && t.day.o) || 0,
+                     volume: (t.day && t.day.v) || 0, ts: Date.now(), source: 'polygon' };
+          }).filter(function(q){ return q.price > 0; });
+        });
+      },
+      candles: function(sym, days) {
+        var to = new Date().toISOString().slice(0, 10);
+        var from = new Date(Date.now() - days * 86400000).toISOString().slice(0, 10);
+        return fetchJson('https://api.polygon.io/v2/aggs/ticker/' + encodeURIComponent(sym) + '/range/1/day/' + from + '/' + to + '?adjusted=true&sort=asc&limit=5000&apiKey=' + mdsKey('polygon')).then(function(d){
+          if (!d || !d.results || !d.results.length) throw new Error('empty aggs');
+          return d.results.map(function(r){ return { t: r.t, o: r.o, h: r.h, l: r.l, c: r.c, v: r.v || 0 }; });
+        });
+      }
+    },
+    twelvedata: {
+      quote: function(sym) {
+        return fetchJson('https://api.twelvedata.com/quote?symbol=' + encodeURIComponent(sym) + '&apikey=' + mdsKey('twelvedata')).then(function(d){
+          if (!d || d.status === 'error' || !d.close) throw new Error((d && d.message) || 'empty quote');
+          return { ticker: sym, price: num(d.close), prevClose: num(d.previous_close),
+                   change: num(d.change), changePct: num(d.percent_change),
+                   high: num(d.high), low: num(d.low), open: num(d.open),
+                   volume: num(d.volume), ts: Date.now(), source: 'twelvedata' };
+        });
+      },
+      candles: function(sym, days) {
+        return fetchJson('https://api.twelvedata.com/time_series?symbol=' + encodeURIComponent(sym) + '&interval=1day&outputsize=' + Math.min(days, 5000) + '&apikey=' + mdsKey('twelvedata')).then(function(d){
+          if (!d || d.status === 'error' || !d.values || !d.values.length) throw new Error((d && d.message) || 'empty series');
+          return d.values.slice().reverse().map(function(v){
+            return { t: new Date(v.datetime).getTime(), o: num(v.open), h: num(v.high), l: num(v.low), c: num(v.close), v: num(v.volume) };
+          });
+        });
+      }
+    },
+    yahoo: {
+      quote: function(sym) {
+        return P.yahoo.multi([sym]).then(function(qs){ if (!qs.length) throw new Error('empty'); return qs[0]; });
+      },
+      multi: function(syms) {
+        var url = 'https://query1.finance.yahoo.com/v7/finance/quote?symbols=' + encodeURIComponent(syms.join(',')) + '&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent,regularMarketPreviousClose,regularMarketVolume,regularMarketDayHigh,regularMarketDayLow,regularMarketOpen';
+        return proxied(url).then(function(d){
+          var rs = (d && d.quoteResponse && d.quoteResponse.result) || [];
+          if (!rs.length) throw new Error('empty batch');
+          return rs.map(function(r){
+            return { ticker: r.symbol, price: r.regularMarketPrice || 0, prevClose: r.regularMarketPreviousClose || 0,
+                     change: r.regularMarketChange || 0, changePct: r.regularMarketChangePercent || 0,
+                     high: r.regularMarketDayHigh || 0, low: r.regularMarketDayLow || 0, open: r.regularMarketOpen || 0,
+                     volume: r.regularMarketVolume || 0, ts: Date.now(), source: 'yahoo' };
+          }).filter(function(q){ return q.price > 0; });
+        });
+      },
+      candles: function(sym, days) {
+        var url = 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(sym) + '?range=' + (days <= 30 ? '1mo' : days <= 90 ? '3mo' : days <= 365 ? '1y' : '5y') + '&interval=1d';
+        return proxied(url).then(function(d){
+          var r = d && d.chart && d.chart.result && d.chart.result[0];
+          var q = r && r.indicators && r.indicators.quote && r.indicators.quote[0];
+          if (!r || !q || !r.timestamp) throw new Error('empty chart');
+          var out = [];
+          r.timestamp.forEach(function(t, i){
+            if (q.close[i] == null) return;
+            out.push({ t: t * 1000, o: q.open[i] || 0, h: q.high[i] || 0, l: q.low[i] || 0, c: q.close[i], v: q.volume[i] || 0 });
+          });
+          if (!out.length) throw new Error('no rows');
+          return out;
+        });
+      }
+    }
+  };
+
+  async function getQuote(sym) {
+    sym = (sym || '').toUpperCase();
+    if (!sym) return null;
+    var c = qCache[sym];
+    if (c && Date.now() - c.ts < QUOTE_TTL) return c.quote;
+    if (inflight[sym]) return inflight[sym];
+    inflight[sym] = (async function(){
+      for (var i = 0; i < ORDER.length; i++) {
+        var p = ORDER[i];
+        if (!usable(p)) continue;
+        try {
+          var q = await P[p].quote(sym);
+          ok(p);
+          qCache[sym] = { quote: q, ts: Date.now() };
+          return q;
+        } catch (e) { fail(p, e && e.message); }
+      }
+      return null;
+    })();
+    try { return await inflight[sym]; } finally { delete inflight[sym]; }
+  }
+
+  async function getQuotes(syms) {
+    syms = (syms || []).filter(Boolean).map(function(s){ return (s + '').toUpperCase(); });
+    var fresh = [], need = [];
+    syms.forEach(function(s){
+      var c = qCache[s];
+      if (c && Date.now() - c.ts < QUOTE_TTL) fresh.push(c.quote); else need.push(s);
+    });
+    if (need.length) {
+      var got = null;
+      if (usable('polygon')) { try { got = await P.polygon.multi(need); ok('polygon'); } catch (e) { fail('polygon', e && e.message); } }
+      if (!got && usable('yahoo')) { try { got = await P.yahoo.multi(need); ok('yahoo'); } catch (e) { fail('yahoo', e && e.message); } }
+      if (got) {
+        got.forEach(function(q){ qCache[q.ticker] = { quote: q, ts: Date.now() }; fresh.push(q); });
+        var have = {}; got.forEach(function(q){ have[q.ticker] = 1; });
+        need = need.filter(function(s){ return !have[s]; });
+      }
+      // Leftovers walk the full per-symbol chain (Finnhub / TwelveData)
+      var i = 0, CONC = Math.min(4, need.length);
+      async function worker() {
+        while (i < need.length) {
+          var s = need[i++];
+          try { var q = await getQuote(s); if (q) fresh.push(q); } catch (e) {}
+        }
+      }
+      if (CONC > 0) await Promise.all(Array.from({ length: CONC }, worker));
+    }
+    return fresh;
+  }
+
+  async function getCandles(sym, days) {
+    sym = (sym || '').toUpperCase();
+    days = days || 90;
+    var ck = sym + ':' + days;
+    var c = cCache[ck];
+    if (c && Date.now() - c.ts < CANDLE_TTL) return c.candles;
+    for (var i = 0; i < ORDER.length; i++) {
+      var p = ORDER[i];
+      if (!usable(p)) continue;
+      try {
+        var rows = await P[p].candles(sym, days);
+        ok(p);
+        cCache[ck] = { candles: rows, ts: Date.now() };
+        return rows;
+      } catch (e) { fail(p, e && e.message); }
+    }
+    return null;
+  }
+
+  function status() {
+    return ORDER.map(function(p){
+      return { provider: p, keyed: p === 'yahoo' ? true : !!mdsKey(p),
+               cooling: Date.now() < health[p].until, lastError: health[p].lastError };
+    });
+  }
+  function setKey(provider, k) {
+    try {
+      if (provider === 'finnhub') localStorage.setItem('qe_finnhub_key', k);
+      else if (provider === 'twelvedata') localStorage.setItem('qe_twelvedata_key', k);
+      else if (provider === 'polygon') localStorage.setItem('qe_polygon_key', k);
+      else return false;
+      health[provider] = { fails: 0, until: 0, lastError: '' };
+      return true;
+    } catch (e) { return false; }
+  }
+
+  window.MarketDataService = { getQuote: getQuote, getQuotes: getQuotes, getCandles: getCandles, status: status, setKey: setKey, _health: health };
+
+  // ── Settings wiring (Finnhub / TwelveData key rows + failover status line) ──
+  function _mdsPreview(k) { return k ? k.slice(0, 4) + '••••' + k.slice(-4) : ''; }
+  function _mdsSyncRow(provider) {
+    var k = mdsKey(provider);
+    var row = document.getElementById('mds-' + provider + '-saved-row');
+    var prev = document.getElementById('mds-' + provider + '-preview');
+    if (row) row.style.display = k ? 'flex' : 'none';
+    if (prev && k) prev.textContent = _mdsPreview(k);
+  }
+  function _mdsRenderStatus() {
+    var el = document.getElementById('mds-status');
+    if (!el) return;
+    el.innerHTML = status().map(function(s){
+      var col = s.cooling ? 'var(--red)' : s.keyed ? 'var(--green)' : 'var(--text-muted)';
+      var label = s.cooling ? 'cooldown' : s.keyed ? 'ready' : 'no key';
+      return '<span style="display:inline-flex;align-items:center;gap:5px;margin-right:14px;"><span style="width:6px;height:6px;border-radius:50%;background:' + col + ';display:inline-block;"></span>' + s.provider + ' · ' + label + '</span>';
+    }).join('');
+  }
+  window.mdsSaveKey = function(provider) {
+    var inp = document.getElementById('mds-' + provider + '-key');
+    if (!inp) return;
+    var k = (inp.value || '').trim();
+    if (!k) return;
+    setKey(provider, k);
+    inp.value = '';
+    _mdsSyncRow(provider); _mdsRenderStatus();
+    // Validate with a live quote in the background
+    getQuote('AAPL').then(function(q){
+      var el = document.getElementById('mds-status');
+      if (el && q) el.innerHTML += '<div style="margin-top:6px;color:var(--green);">✓ Live: AAPL ' + q.price.toFixed(2) + ' via ' + q.source + '</div>';
+    });
+  };
+  window.mdsForgetKey = function(provider) {
+    try {
+      if (provider === 'finnhub') localStorage.removeItem('qe_finnhub_key');
+      if (provider === 'twelvedata') localStorage.removeItem('qe_twelvedata_key');
+    } catch (e) {}
+    _mdsSyncRow(provider); _mdsRenderStatus();
+  };
+  window.addEventListener('DOMContentLoaded', function() {
+    _mdsSyncRow('finnhub'); _mdsSyncRow('twelvedata'); _mdsRenderStatus();
+  });
+})();
 
 (function PolygonIntegration() {
   'use strict';

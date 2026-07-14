@@ -8468,7 +8468,7 @@ function _lp3Enter(user) {
             </div>
           </div>
           <div class="settings-section">
-            <div class="settings-section-title">Market Data — Polygon.io</div>
+            <div class="settings-section-title">Market Data — Providers & Failover</div>
             <div class="settings-row">
               <div style="flex:1;">
                 <div class="settings-row-label">Live Market Data</div>
@@ -8496,6 +8496,38 @@ function _lp3Enter(user) {
                 <span class="qz-key-saved">🔒 Key saved · <span id="polygon-key-preview"></span></span>
                 <button onclick="qzForgetKey('polygon')" style="background:none;border:none;font-size:10px;color:var(--text-muted);font-family:var(--font-mono);cursor:pointer;padding:0;text-decoration:underline;">Remove</button>
               </div>
+            </div>
+            <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:8px;">
+              <div><div class="settings-row-label">Finnhub API Key <span style="font-size:10px;color:var(--text-muted);font-weight:400;">(optional · tried first)</span></div><div class="settings-row-sub">Free at finnhub.io — real-time quotes with the highest priority in the failover chain</div></div>
+              <div style="display:flex;gap:8px;width:100%;align-items:center;">
+                <div class="qz-key-wrap" style="flex:1;">
+                  <input type="password" id="mds-finnhub-key" placeholder="Enter Finnhub API key…" class="input" style="width:100%;font-size:12px;font-family:var(--font-mono);padding-right:38px !important;" onkeydown="if(event.key==='Enter')mdsSaveKey('finnhub')">
+                  <button class="qz-key-eye" onclick="qzToggleKeyVis('mds-finnhub-key',this)" title="Show/hide key" tabindex="-1">👁</button>
+                </div>
+                <button class="btn btn-primary btn-sm" onclick="mdsSaveKey('finnhub')" style="white-space:nowrap;">Connect</button>
+              </div>
+              <div id="mds-finnhub-saved-row" style="display:none;margin-top:8px;align-items:center;gap:8px;">
+                <span class="qz-key-saved">🔒 Key saved · <span id="mds-finnhub-preview"></span></span>
+                <button onclick="mdsForgetKey('finnhub')" style="background:none;border:none;font-size:10px;color:var(--text-muted);font-family:var(--font-mono);cursor:pointer;padding:0;text-decoration:underline;">Remove</button>
+              </div>
+            </div>
+            <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:8px;">
+              <div><div class="settings-row-label">Twelve Data API Key <span style="font-size:10px;color:var(--text-muted);font-weight:400;">(optional · third fallback)</span></div><div class="settings-row-sub">Free at twelvedata.com — backs up Finnhub and Polygon in the failover chain</div></div>
+              <div style="display:flex;gap:8px;width:100%;align-items:center;">
+                <div class="qz-key-wrap" style="flex:1;">
+                  <input type="password" id="mds-twelvedata-key" placeholder="Enter Twelve Data API key…" class="input" style="width:100%;font-size:12px;font-family:var(--font-mono);padding-right:38px !important;" onkeydown="if(event.key==='Enter')mdsSaveKey('twelvedata')">
+                  <button class="qz-key-eye" onclick="qzToggleKeyVis('mds-twelvedata-key',this)" title="Show/hide key" tabindex="-1">👁</button>
+                </div>
+                <button class="btn btn-primary btn-sm" onclick="mdsSaveKey('twelvedata')" style="white-space:nowrap;">Connect</button>
+              </div>
+              <div id="mds-twelvedata-saved-row" style="display:none;margin-top:8px;align-items:center;gap:8px;">
+                <span class="qz-key-saved">🔒 Key saved · <span id="mds-twelvedata-preview"></span></span>
+                <button onclick="mdsForgetKey('twelvedata')" style="background:none;border:none;font-size:10px;color:var(--text-muted);font-family:var(--font-mono);cursor:pointer;padding:0;text-decoration:underline;">Remove</button>
+              </div>
+            </div>
+            <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:6px;">
+              <div><div class="settings-row-label">Failover Chain</div><div class="settings-row-sub">Finnhub → Polygon → Twelve Data → Yahoo (keyless backup). A provider that fails twice rests for 90s.</div></div>
+              <div id="mds-status" style="font-size:11px;font-family:var(--font-mono);color:var(--text-secondary);margin-top:4px;"></div>
             </div>
             <div class="settings-row">
               <div><div class="settings-row-label">WebSocket Streaming</div><div class="settings-row-sub">Real-time price updates via WebSocket</div></div>
