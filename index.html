@@ -16598,6 +16598,10 @@ function _lp3Enter(user) {
 
 /* —— 0 · Token rebind — scoped, NEVER :root (landing keeps violet) — */
 #app,
+#stock-detail-modal,
+#qz-lesson-modal,
+#qe-tour-overlay,
+#onboarding,
 #qz-search-overlay,
 #qz-asset-panel,
 #qe-mdrawer,
@@ -16979,6 +16983,88 @@ body.qe-in-app .modal-overlay:not(#auth-modal) .modal-close:hover {
 }
 #app ::-webkit-scrollbar-thumb:hover { background-color: rgba(236,227,214,0.24); }
 #app * { scrollbar-width: thin; scrollbar-color: rgba(236,227,214,0.18) transparent; }
+
+/* —— 17 · Body-level app surfaces: tour card, modals, onboarding ——
+   These mount on document.body (outside #app) but only ever show to
+   signed-in users; the token rebind above covers their var() usage,
+   and the rules below retint their hardcoded violets to brass. */
+#qe-tour-card {
+  background: linear-gradient(180deg, #1E1B18 0%, #171513 100%);
+  border: 1px solid rgba(198,163,95,0.28);
+}
+/* #qe-tour-overlay prefix: the runtime qe-hotfix-v10-css sheet appends
+   AFTER this block, so we must win on specificity, not order. */
+#qe-tour-overlay .qe-tour-orb {
+  background: linear-gradient(135deg, #C6A35F 0%, #D9C29A 100%);
+  box-shadow: 0 0 32px rgba(198,163,95,0.40), 0 8px 24px rgba(0,0,0,0.5);
+  color: #191307;
+}
+#qe-tour-overlay .qe-tour-step-counter { color: rgba(198,163,95,0.78); }
+#qe-tour-overlay .qe-tour-pill { background: rgba(198,163,95,0.10); border-color: rgba(198,163,95,0.28); color: #DFC591; }
+#qe-tour-overlay .qe-tour-progress-fill { background: linear-gradient(90deg, #A9853F 0%, #C6A35F 60%, #E6D3A6 100%); }
+#qe-tour-overlay .qe-tour-btn-primary { background: #C6A35F; color: #191307; box-shadow: 0 4px 16px rgba(198,163,95,0.30); }
+#qe-tour-overlay .qe-tour-btn-primary:hover { box-shadow: 0 6px 20px rgba(198,163,95,0.42); }
+#qe-tour-overlay #qe-tour-card {
+  background: linear-gradient(180deg, #1E1B18 0%, #171513 100%);
+  border: 1px solid rgba(198,163,95,0.28);
+}
+#qe-tour-replay { background: rgba(198,163,95,0.12); }
+
+/* Onboarding (authed-only, shown post-signup) — brass over the violet
+   !important stacks; the #onboarding prefix out-specifies them. */
+#onboarding {
+  background: radial-gradient(ellipse at 20% 30%, rgba(198,163,95,0.09) 0%, transparent 50%),
+              radial-gradient(ellipse at 80% 70%, rgba(217,194,154,0.05) 0%, transparent 50%),
+              #131110 !important;
+}
+#onboarding .onboarding-header { background: rgba(19,17,16,0.92) !important; border-bottom-color: rgba(236,227,214,0.08) !important; }
+#onboarding .onboarding-step-num { background: rgba(198,163,95,0.12) !important; border-color: rgba(198,163,95,0.30) !important; color: #DFC591 !important; }
+#onboarding .onboarding-progress-fill { background: linear-gradient(90deg,#A9853F,#C6A35F,#E6D3A6) !important; box-shadow: 0 0 10px rgba(198,163,95,0.45) !important; }
+#onboarding .onboarding-step-title { background: linear-gradient(135deg,#F5F2EB 0%,#DFC591 70%) !important; -webkit-background-clip: text !important; background-clip: text !important; }
+#onboarding .option-item:hover { border-color: rgba(198,163,95,0.32) !important; background: rgba(198,163,95,0.05) !important; }
+#onboarding .option-item.selected { border-color: #C6A35F !important; background: rgba(198,163,95,0.08) !important; box-shadow: 0 0 18px rgba(198,163,95,0.10) !important; }
+#onboarding .option-item.selected::after { background: rgba(198,163,95,0.35) !important; }
+
+/* —— 18 · Cascade armor — the runtime qe-no-yellow / qz-editorial-ds
+   sheets style [class*="btn-primary"] and input:focus with !important
+   and append AFTER this block. ID-scoped !important out-specifies them
+   inside app surfaces; the landing (unscoped) keeps its own look. */
+#app .btn-primary, #app [class*="btn-primary"],
+#onboarding .btn-primary,
+#qz-lesson-modal .btn-primary, #stock-detail-modal .btn-primary,
+#qz-search-overlay .btn-primary, #qz-asset-panel .btn-primary,
+body.qe-in-app .modal-overlay:not(#auth-modal) .btn-primary {
+  background: #C6A35F !important;
+  background-image: none !important;
+  color: #191307 !important;
+  box-shadow: none !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+}
+#app .btn-primary:hover, #app [class*="btn-primary"]:hover,
+#onboarding .btn-primary:hover,
+#qz-lesson-modal .btn-primary:hover, #stock-detail-modal .btn-primary:hover,
+#qz-search-overlay .btn-primary:hover, #qz-asset-panel .btn-primary:hover,
+body.qe-in-app .modal-overlay:not(#auth-modal) .btn-primary:hover {
+  background: #D2B274 !important;
+  box-shadow: 0 1px 2px rgba(12,10,7,0.20) !important;
+}
+#qe-tour-overlay .qe-tour-btn-primary {
+  background: #C6A35F !important;
+  background-image: none !important;
+  color: #191307 !important;
+  box-shadow: 0 4px 16px rgba(198,163,95,0.30) !important;
+}
+#app .input:focus, #app textarea:focus, #app select:focus,
+#onboarding input:focus, #onboarding textarea:focus, #onboarding select:focus {
+  border-color: rgba(198,163,95,0.45) !important;
+  box-shadow: 0 0 0 3px rgba(198,163,95,0.10) !important;
+}
+#app .qz-disclaimer-banner {
+  background: rgba(198,163,95,0.045) !important;
+  border-color: rgba(198,163,95,0.20) !important;
+  border-left-color: #C6A35F !important;
+}
+#app .qz-disclaimer-banner strong { color: #DFC591 !important; }
 </style>
 <script defer src="js/app.min.js?v=20260714-9"></script>
 </body>
