@@ -16598,6 +16598,8 @@ function _lp3Enter(user) {
 
 /* —— 0 · Token rebind — scoped, NEVER :root (landing keeps violet) — */
 #app,
+#page-agents,
+#page-markets,
 #stock-detail-modal,
 #qz-lesson-modal,
 #qe-tour-overlay,
@@ -17065,6 +17067,40 @@ body.qe-in-app .modal-overlay:not(#auth-modal) .btn-primary:hover {
   border-left-color: #C6A35F !important;
 }
 #app .qz-disclaimer-banner strong { color: #DFC591 !important; }
+
+/* —— 19 · Warm-glass counterstrike — Premium v4 paints 21 card classes
+   rgba(10,15,30,.72)+blur with !important; retint the in-app subset to
+   the warm surface (landing .lp-* classes intentionally excluded). */
+#app .card, #app .metric-card, #app .signal-card, #app .market-card, #app .pricing-card,
+#app .review-card, #app .team-card, #app .preview-card,
+#app .news-item, #app .scenario-result, #app .report-section, #app .backtest-result,
+#app .macro-card, #app .universe-stat, #app .scanner-item, #app .alert-item,
+#app .world-clock-item, #app .gate-card, #app .sector-item, #app .agent-card, #app .feature-item,
+#page-agents .agent-card, #page-markets .market-card, #page-markets .card, #page-markets .metric-card {
+  background: rgba(30,27,24,0.85) !important;
+  border: 1px solid rgba(236,227,214,0.085) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+#app .chart-container {
+  background: rgba(23,21,19,0.60) !important;
+  border: 1px solid rgba(236,227,214,0.085) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+#app .metric-card:hover, #app .signal-card:hover, #app .market-card:hover,
+#app .scanner-item:hover, #app .news-item:hover, #app .universe-stat:hover,
+#app .review-card:hover, #app .team-card:hover, #app .alert-item:hover,
+#app .sector-item:hover, #app .agent-card:hover,
+#page-agents .agent-card:hover, #page-markets .market-card:hover {
+  border-color: rgba(236,227,214,0.16) !important;
+  box-shadow: 0 0 0 1px rgba(198,163,95,0.10), 0 14px 40px -16px rgba(10,8,6,0.50) !important;
+  transform: translateY(-1px) !important;
+}
+#app .pricing-card.featured {
+  background: rgba(30,27,24,0.92) !important;
+  box-shadow: 0 0 0 1px rgba(198,163,95,0.32), 0 0 50px rgba(198,163,95,0.08), 0 24px 64px rgba(10,8,6,0.50) !important;
+}
 </style>
 <script defer src="js/app.min.js?v=20260714-9"></script>
 </body>
