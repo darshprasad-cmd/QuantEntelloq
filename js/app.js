@@ -411,7 +411,7 @@ function _qzUpdateLiveUI(on) {
     dot.style.animation = 'none';
     dot.style.boxShadow = 'none';
     lbl.style.color = '#555';
-    btn.style.borderColor = 'rgba(255,255,255,0.06)';
+    btn.style.borderColor = 'rgba(26,23,20,0.11)';
     btn.title = 'Offline — Quant Entelloq is silent. Click to go LIVE.';
   }
 }
@@ -2058,14 +2058,14 @@ function _renderTVPortChart(container, period) {
       horzLine: { color: 'rgba(167,139,250,0.55)', width: 1, style: 2, labelBackgroundColor: '#1a1a1a' },
     },
     timeScale: {
-      borderColor: 'rgba(255,255,255,0.06)',
+      borderColor: 'rgba(26,23,20,0.11)',
       timeVisible: period === '1D',
       secondsVisible: false,
       fixLeftEdge: true,
       fixRightEdge: true,
     },
     rightPriceScale: {
-      borderColor: 'rgba(255,255,255,0.06)',
+      borderColor: 'rgba(26,23,20,0.11)',
       scaleMargins: { top: 0.12, bottom: 0.08 },
     },
     handleScale: { mouseWheel: false, pinch: false },
@@ -2151,7 +2151,7 @@ function renderSentimentChart() {
     ctx.beginPath();
     ctx.roundRect(x, y, bW * 0.6, h, 3);
     ctx.fill();
-    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.fillStyle = 'rgba(26,23,20,0.55)';
     ctx.font = '10px DM Mono, monospace';
     ctx.textAlign = 'center';
     ctx.fillText(l, x + bW * 0.3, H - 2);
@@ -2577,10 +2577,10 @@ function renderScenarioChart(portfolioData, benchData, containerId, height) {
   if (typeof LightweightCharts === 'undefined') return;
   _tvScChart = LightweightCharts.createChart(container, {
     width: container.offsetWidth || 600, height: height || 200,
-    layout: { background:{color:'transparent'}, textColor:'#94A3B8', fontFamily:"'DM Mono',monospace", fontSize:10 },
-    grid: { vertLines:{color:'rgba(255,255,255,0.02)'}, horzLines:{color:'rgba(255,255,255,0.03)'} },
-    timeScale: { borderColor:'rgba(255,255,255,0.06)', fixLeftEdge:true, fixRightEdge:true },
-    rightPriceScale: { borderColor:'rgba(255,255,255,0.06)', scaleMargins:{top:0.08,bottom:0.06} },
+    layout: { background:{color:'transparent'}, textColor: '#847B6E', fontFamily:"'DM Mono',monospace", fontSize:10 },
+    grid: { vertLines:{color:'rgba(26,23,20,0.055)'}, horzLines:{color:'rgba(26,23,20,0.08)'} },
+    timeScale: { borderColor:'rgba(26,23,20,0.11)', fixLeftEdge:true, fixRightEdge:true },
+    rightPriceScale: { borderColor:'rgba(26,23,20,0.11)', scaleMargins:{top:0.08,bottom:0.06} },
     crosshair:{mode:1}, handleScale:{mouseWheel:false}, handleScroll:{mouseWheel:false},
   });
   const fmtV = v => '$'+(v>=1e6?(v/1e6).toFixed(1)+'M':(v/1000).toFixed(0)+'k');
@@ -2648,10 +2648,10 @@ function _qzscRunCrisis() {
   if (el && _tvCrisisChart) { try {_tvCrisisChart.remove();} catch(_){} _tvCrisisChart=null; }
   if (el && typeof LightweightCharts !== 'undefined') {
     el.innerHTML='';
-    _tvCrisisChart = LightweightCharts.createChart(el, { width:el.offsetWidth||600,height:210,layout:{background:{color:'transparent'},textColor:'#94A3B8'},grid:{vertLines:{color:'rgba(255,255,255,0.02)'},horzLines:{color:'rgba(255,255,255,0.03)'}},timeScale:{borderColor:'rgba(255,255,255,0.06)'},rightPriceScale:{borderColor:'rgba(255,255,255,0.06)'},crosshair:{mode:1},handleScale:{mouseWheel:false},handleScroll:{mouseWheel:false} });
+    _tvCrisisChart = LightweightCharts.createChart(el, { width:el.offsetWidth||600,height:210,layout:{background:{color:'transparent'},textColor: '#847B6E'},grid:{vertLines:{color:'rgba(26,23,20,0.055)'},horzLines:{color:'rgba(26,23,20,0.08)'}},timeScale:{borderColor:'rgba(26,23,20,0.11)'},rightPriceScale:{borderColor:'rgba(26,23,20,0.11)'},crosshair:{mode:1},handleScale:{mouseWheel:false},handleScroll:{mouseWheel:false} });
     const s = _tvCrisisChart.addAreaSeries({ lineColor:c.color, topColor:c.color.replace(')',',0.18)').replace('rgb','rgba'), bottomColor:'rgba(0,0,0,0)', lineWidth:2, priceFormat:{type:'custom',formatter:v=>'$'+(v/1000).toFixed(0)+'k',minMove:1}, priceLineVisible:false });
     s.setData(chartData);
-    const b = _tvCrisisChart.addLineSeries({ color:'rgba(255,255,255,0.12)',lineWidth:1,lineStyle:2,priceFormat:{type:'custom',formatter:v=>'$'+(v/1000).toFixed(0)+'k',minMove:1},priceLineVisible:false,lastValueVisible:false });
+    const b = _tvCrisisChart.addLineSeries({ color:'rgba(138,106,40,0.45)',lineWidth:1,lineStyle:2,priceFormat:{type:'custom',formatter:v=>'$'+(v/1000).toFixed(0)+'k',minMove:1},priceLineVisible:false,lastValueVisible:false });
     b.setData(baseline);
     _tvCrisisChart.timeScale().fitContent();
   }
@@ -2707,7 +2707,7 @@ function _qzscRunMonteCarlo() {
   if (!el || typeof LightweightCharts==='undefined') return;
   el.innerHTML='';
   if (_tvMCChart) { try{_tvMCChart.remove();}catch(_){} _tvMCChart=null; }
-  _tvMCChart = LightweightCharts.createChart(el, { width:el.offsetWidth||600,height:240,layout:{background:{color:'transparent'},textColor:'#94A3B8'},grid:{vertLines:{color:'rgba(255,255,255,0.02)'},horzLines:{color:'rgba(255,255,255,0.03)'}},timeScale:{borderColor:'rgba(255,255,255,0.06)'},rightPriceScale:{borderColor:'rgba(255,255,255,0.06)'},crosshair:{mode:1},handleScale:{mouseWheel:false},handleScroll:{mouseWheel:false} });
+  _tvMCChart = LightweightCharts.createChart(el, { width:el.offsetWidth||600,height:240,layout:{background:{color:'transparent'},textColor: '#847B6E'},grid:{vertLines:{color:'rgba(26,23,20,0.055)'},horzLines:{color:'rgba(26,23,20,0.08)'}},timeScale:{borderColor:'rgba(26,23,20,0.11)'},rightPriceScale:{borderColor:'rgba(26,23,20,0.11)'},crosshair:{mode:1},handleScale:{mouseWheel:false},handleScroll:{mouseWheel:false} });
   const now = Math.floor(Date.now()/1000);
   const mkData = path => path.map((v,i) => ({ time:now - (months-i)*2592000, value:+v.toFixed(0) }));
   // Draw a sample of paths in faint color
@@ -3110,8 +3110,8 @@ function renderBacktestChart(equityCurve, benchCurve, capital, years) {
       layout:{background:{color:'transparent'},textColor:'#5a5a5a',fontFamily:"'DM Mono',monospace",fontSize:10},
       grid:{vertLines:{color:'rgba(255,255,255,0.025)'},horzLines:{color:'rgba(255,255,255,0.035)'}},
       crosshair:{mode:1},
-      timeScale:{borderColor:'rgba(255,255,255,0.06)',fixLeftEdge:true,fixRightEdge:true},
-      rightPriceScale:{borderColor:'rgba(255,255,255,0.06)',scaleMargins:{top:0.1,bottom:0.1}},
+      timeScale:{borderColor:'rgba(26,23,20,0.11)',fixLeftEdge:true,fixRightEdge:true},
+      rightPriceScale:{borderColor:'rgba(26,23,20,0.11)',scaleMargins:{top:0.1,bottom:0.1}},
       handleScale:{mouseWheel:false},handleScroll:{mouseWheel:false},
     });
     const portSeries = _tvBtChart.addAreaSeries({
@@ -3156,8 +3156,8 @@ function renderDrawdownChart(drawdownSeries) {
       layout:{background:{color:'transparent'},textColor:'#5a5a5a',fontFamily:"'DM Mono',monospace",fontSize:9},
       grid:{vertLines:{visible:false},horzLines:{color:'rgba(255,255,255,0.025)'}},
       crosshair:{mode:1},
-      timeScale:{borderColor:'rgba(255,255,255,0.06)',fixLeftEdge:true,fixRightEdge:true,visible:false},
-      rightPriceScale:{borderColor:'rgba(255,255,255,0.06)',scaleMargins:{top:0.05,bottom:0}},
+      timeScale:{borderColor:'rgba(26,23,20,0.11)',fixLeftEdge:true,fixRightEdge:true,visible:false},
+      rightPriceScale:{borderColor:'rgba(26,23,20,0.11)',scaleMargins:{top:0.05,bottom:0}},
       handleScale:{mouseWheel:false},handleScroll:{mouseWheel:false},
     });
     const ddS = _tvBtDDChart.addAreaSeries({
@@ -4616,11 +4616,11 @@ function _qzapRenderChart(tf) {
   el.innerHTML = '';
   const chart = window.LightweightCharts.createChart(el, {
     width: el.offsetWidth, height: 240,
-    layout: { background:{color:'transparent'}, textColor:'#94A3B8' },
-    grid: { vertLines:{color:'rgba(148,163,184,0.07)'}, horzLines:{color:'rgba(148,163,184,0.07)'} },
+    layout: { background:{color:'transparent'}, textColor: '#847B6E' },
+    grid: { vertLines:{color:'rgba(26,23,20,0.07)'}, horzLines:{color:'rgba(26,23,20,0.07)'} },
     crosshair: { mode:1 },
-    rightPriceScale: { borderColor:'rgba(148,163,184,0.12)' },
-    timeScale: { borderColor:'rgba(148,163,184,0.12)', timeVisible:true },
+    rightPriceScale: { borderColor:'rgba(26,23,20,0.11)' },
+    timeScale: { borderColor:'rgba(26,23,20,0.11)', timeVisible:true },
     handleScale:true, handleScroll:true,
   });
   _qzap.chart = chart;
@@ -8253,7 +8253,7 @@ window.addEventListener('resize', () => {
     ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--surface') || '#111';
     ctx.fill();
     // centre label
-    ctx.fillStyle = '#fafafa';
+    ctx.fillStyle = '#1A1714';
     ctx.font = 'bold 13px "Syne",sans-serif';
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText('$284K', cx, cy);
@@ -11130,11 +11130,11 @@ window.qeRL  = window.QESecurity.rateLimit;
     tvChart = LightweightCharts.createChart(container, {
       width: container.offsetWidth,
       height: 300,
-      layout: {background: {type: 'solid', color: 'transparent'}, textColor: '#8895B3'},
-      grid: {vertLines: {color: 'rgba(255,255,255,0.03)'}, horzLines: {color: 'rgba(255,255,255,0.03)'}},
+      layout: {background: {type: 'solid', color: 'transparent'}, textColor: '#847B6E'},
+      grid: {vertLines: {color: 'rgba(26,23,20,0.08)'}, horzLines: {color: 'rgba(26,23,20,0.08)'}},
       crosshair: {mode: LightweightCharts.CrosshairMode.Normal, vertLine: {color: 'rgba(167,139,250,0.3)', width: 1, style: 2}, horzLine: {color: 'rgba(167,139,250,0.3)', width: 1, style: 2}},
-      timeScale: {borderColor: 'rgba(255,255,255,0.06)', timeVisible: true},
-      rightPriceScale: {borderColor: 'rgba(255,255,255,0.06)'},
+      timeScale: {borderColor: 'rgba(26,23,20,0.11)', timeVisible: true},
+      rightPriceScale: {borderColor: 'rgba(26,23,20,0.11)'},
     });
 
     tvCandleSeries = tvChart.addCandlestickSeries({
@@ -11824,7 +11824,7 @@ window.qeRL  = window.QESecurity.rateLimit;
       // Icon
       ctx.font = `${Math.max(10, r * 0.9)}px serif`;
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillStyle = '#fff'; ctx.globalAlpha = 0.9;
+      ctx.fillStyle = '#1A1714'; ctx.globalAlpha = 0.9;
       ctx.fillText(n.icon, n.x, n.y);
       ctx.globalAlpha = 1;
 
@@ -22694,7 +22694,7 @@ async function qzCoachReview() {
     grid.style.cssText = 'display:grid;grid-template-columns:repeat(3,260px);gap:18px;';
     var cards = [
       { tag: 'BULLISH', color: '#34D399', title: 'AI Infrastructure Momentum', body: 'NVDA, AMD, AVGO showing breakout consolidation. Capex cycle accelerating.' },
-      { tag: 'BEARISH', color: '#FB7185', title: 'Regional Banks · Credit Stress', body: 'Loan-loss provisions trending up. Watch KRE, RF, ZION.' },
+      { tag: 'BEARISH', color: '#B3453D', title: 'Regional Banks · Credit Stress', body: 'Loan-loss provisions trending up. Watch KRE, RF, ZION.' },
       { tag: 'MACRO',   color: '#67E8F9', title: 'Yield Curve · Steepening', body: 'Long-end selloff. Risk-on for cyclicals, drag on long-duration tech.' },
     ];
     cards.forEach(function(c, i) {
@@ -22789,7 +22789,7 @@ async function qzCoachReview() {
     { tag: 'BACKTEST',     val: 'Sharpe 2.84', sub: 'SMA 10/30', color: '#A78BFA' },
     { tag: 'OPPORTUNITY',  val: 'NVDA · 94%', sub: 'high conviction', color: '#67E8F9' },
     { tag: 'INTELLIGENCE', val: '1,247', sub: 'items processed', color: '#FBBF24' },
-    { tag: 'VOLATILITY',   val: '18.2%', sub: 'annualized σ', color: '#FB7185' },
+    { tag: 'VOLATILITY',   val: '18.2%', sub: 'annualized σ', color: '#B3453D' },
     { tag: 'AI AGENTS',    val: '4 / 4', sub: 'specialists online', color: '#A78BFA' },
     { tag: 'PAPER',        val: '$100k', sub: 'simulated cash', color: '#34D399' },
     { tag: 'WATCHLIST',    val: '12', sub: 'symbols tracked', color: '#67E8F9' },
@@ -25226,7 +25226,7 @@ async function qzCoachReview() {
       '</tr></thead><tbody>' +
       filtered.slice(0, 50).map(function(r) {
         var sigCls = r.signal === 'BUY' ? 'buy' : (r.signal === 'SELL' ? 'sell' : 'hold');
-        var sparkColor = r.change >= 0 ? '#5EEAD4' : '#FB7185';
+        var sparkColor = r.change >= 0 ? '#16794A' : '#B3453D';
         var changeCls = r.change >= 0 ? 'qe-pg2-side-buy' : 'qe-pg2-side-sell';
         return '<tr>' +
           '<td style="color:#F4F4F0;font-weight:600;">' + (r.ticker || '—') + '</td>' +
@@ -25318,7 +25318,7 @@ async function qzCoachReview() {
           localStorage.setItem('qz_watchlist_default', JSON.stringify(wl));
         } catch(_) {}
         b.textContent = 'Added';
-        b.style.color = '#5EEAD4';
+        b.style.color = '#16794A';
         b.style.borderColor = 'rgba(94,234,212,0.4)';
         setTimeout(function() { b.textContent = 'Watch'; b.style.color = ''; b.style.borderColor = ''; }, 1800);
       };
@@ -25894,7 +25894,7 @@ async function qzCoachReview() {
       mono: 'AG',
       role: 'RISK QUANTIFICATION MATRIX',
       emoji: '◈',
-      color: '#FB7185',
+      color: '#B3453D',
       flowNode: 'cfn-risk',
       domain: 'risk decomposition, stress testing, tail-risk, correlation regimes',
       systemPrompt: "You are AEGIS-PRIME — the Risk Quantification Matrix for Quant Entelloq, operating to Tier-1 prime broker standards. For any portfolio or trade, you produce a complete risk decomposition: (1) parametric + Monte Carlo VaR at 95% and 99%, 1-day and 10-day; (2) Expected Shortfall (CVaR) in the tail; (3) max drawdown under 4 historical regimes — 2008 GFC, 2020 COVID, 2022 rate shock, 2018 vol-pocalypse; (4) factor exposure decomposition (market beta, size, value, momentum, quality); (5) correlation matrix shift under stress; (6) Kelly fraction + recommended position size. Output format: start with [RISK VERDICT: APPROVED / WARNING / BLOCK] in caps, then a numeric breakdown. Block any single position above 20% NAV or any sector above 40% without explicit hedge. Never suggest sizing above 0.5x Kelly without a written justification.",
@@ -25942,7 +25942,7 @@ async function qzCoachReview() {
       mono: 'FG',
       role: 'STRATEGY BACKTEST ENGINE',
       emoji: '◊',
-      color: '#5EEAD4',
+      color: '#16794A',
       flowNode: 'cfn-quant',
       domain: 'systematic backtesting, signal engineering, walk-forward, regime-aware optimization',
       systemPrompt: "You are FORGE-Δ — the Strategy Backtest Engine for Quant Entelloq. You translate any trading idea into a precise rule-based strategy and quantify its expected performance using walk-forward optimization, Monte Carlo simulation, and regime-segmented backtests. For every strategy request: (1) restate the idea as a precise IF-THEN-ELSE rule with explicit entry, exit, position size, and risk controls; (2) report Sharpe, Sortino, Calmar, max drawdown, hit rate, profit factor, and worst 5 trades; (3) decompose returns by market regime (bull / bear / range / crisis); (4) flag overfitting risk via in-sample vs out-of-sample Sharpe gap; (5) recommend the next variant to test (e.g., 'add a volatility filter — this strategy underperforms when VIX > 25'). Reject any strategy with hit rate < 35% AND profit factor < 1.3 — those are noise. Always report sample size and warn if N < 50 trades.",
@@ -26440,10 +26440,10 @@ async function qzCoachReview() {
   // is self-sufficient even if overhaul-v2 hasn't booted yet.
   var NEW_AGENTS = [
     { id:'nexus',   name:'NEXUS-7',     mono:'NX', role:'ALPHA SYNTHESIS ENGINE',     emoji:'◆', color:'#A78BFA', tagline:'Multi-modal alpha synthesis · technicals + fundamentals + sentiment + flow' },
-    { id:'aegis',   name:'AEGIS-PRIME', mono:'AG', role:'RISK QUANTIFICATION MATRIX', emoji:'◈', color:'#FB7185', tagline:'VaR · CVaR · stress tests · Kelly sizing' },
+    { id:'aegis',   name:'AEGIS-PRIME', mono:'AG', role:'RISK QUANTIFICATION MATRIX', emoji:'◈', color:'#B3453D', tagline:'VaR · CVaR · stress tests · Kelly sizing' },
     { id:'oracle',  name:'ORACLE-X',    mono:'OR', role:'MACRO REGIME DETECTOR',      emoji:'◉', color:'#67E8F9', tagline:'8-regime classifier · cross-asset confirmation' },
     { id:'phoenix', name:'PHOENIX-9',   mono:'PX', role:'CATALYST DISCOVERY SYSTEM',  emoji:'◇', color:'#FCD34D', tagline:'Event-driven · earnings · M&A · FDA · insider clusters' },
-    { id:'forge',   name:'FORGE-Δ',     mono:'FG', role:'STRATEGY BACKTEST ENGINE',   emoji:'◊', color:'#5EEAD4', tagline:'Walk-forward · Monte Carlo · regime decomposition' }
+    { id:'forge',   name:'FORGE-Δ',     mono:'FG', role:'STRATEGY BACKTEST ENGINE',   emoji:'◊', color:'#16794A', tagline:'Walk-forward · Monte Carlo · regime decomposition' }
   ];
 
   function ensureAgentStates() {
@@ -26939,10 +26939,10 @@ async function qzCoachReview() {
 
   var AGENTS = [
     { id:'nexus',   name:'NEXUS-7',     mono:'NX', role:'Alpha Synthesis Engine',     color:'#A78BFA' },
-    { id:'aegis',   name:'AEGIS-PRIME', mono:'AG', role:'Risk Quantification Matrix', color:'#FB7185' },
+    { id:'aegis',   name:'AEGIS-PRIME', mono:'AG', role:'Risk Quantification Matrix', color:'#B3453D' },
     { id:'oracle',  name:'ORACLE-X',    mono:'OR', role:'Macro Regime Detector',      color:'#67E8F9' },
     { id:'phoenix', name:'PHOENIX-9',   mono:'PX', role:'Catalyst Discovery System',  color:'#FCD34D' },
-    { id:'forge',   name:'FORGE-Δ',     mono:'FG', role:'Strategy Backtest Engine',   color:'#5EEAD4' }
+    { id:'forge',   name:'FORGE-Δ',     mono:'FG', role:'Strategy Backtest Engine',   color:'#16794A' }
   ];
 
   var SAMPLE_PROMPTS = [
@@ -27431,10 +27431,10 @@ async function qzCoachReview() {
           // Look up agent metadata
           var meta = {
             nexus:   { id:'nexus',   name:'NEXUS-7',     color:'#A78BFA' },
-            aegis:   { id:'aegis',   name:'AEGIS-PRIME', color:'#FB7185' },
+            aegis:   { id:'aegis',   name:'AEGIS-PRIME', color:'#B3453D' },
             oracle:  { id:'oracle',  name:'ORACLE-X',    color:'#67E8F9' },
             phoenix: { id:'phoenix', name:'PHOENIX-9',   color:'#FCD34D' },
-            forge:   { id:'forge',   name:'FORGE-Δ',     color:'#5EEAD4' }
+            forge:   { id:'forge',   name:'FORGE-Δ',     color:'#16794A' }
           }[id];
           runOne(meta, query).then(function(result){
             pushLog(meta.name, 'Response ready · ' + result.latency, meta.color);
@@ -29496,25 +29496,25 @@ async function qzCoachReview() {
         height: 300,
         layout: {
           background: { color: 'transparent' },
-          textColor: 'rgba(244,244,240,0.5)',
+          textColor: '#847B6E',
           fontFamily: "'JetBrains Mono', monospace",
           fontSize: 10
         },
         grid: {
-          vertLines: { color: 'rgba(244,244,240,0.03)' },
-          horzLines: { color: 'rgba(244,244,240,0.045)' }
+          vertLines: { color: 'rgba(26,23,20,0.055)' },
+          horzLines: { color: 'rgba(26,23,20,0.08)' }
         },
-        timeScale: { borderColor: 'rgba(244,244,240,0.08)', timeVisible: true, secondsVisible: false },
-        rightPriceScale: { borderColor: 'rgba(244,244,240,0.08)' },
+        timeScale: { borderColor: 'rgba(26,23,20,0.11)', timeVisible: true, secondsVisible: false },
+        rightPriceScale: { borderColor: 'rgba(26,23,20,0.11)' },
         crosshair: { mode: 1 }
       });
       state.candleSeries = state.chart.addCandlestickSeries({
-        upColor: '#5EEAD4',
-        downColor: '#FB7185',
-        borderUpColor: '#5EEAD4',
-        borderDownColor: '#FB7185',
-        wickUpColor: 'rgba(94,234,212,0.65)',
-        wickDownColor: 'rgba(251,113,133,0.65)'
+        upColor: '#16794A',
+        downColor: '#B3453D',
+        borderUpColor: '#16794A',
+        borderDownColor: '#B3453D',
+        wickUpColor: 'rgba(22,121,74,0.7)',
+        wickDownColor: 'rgba(179,69,61,0.7)'
       });
       state.volSeries = state.chart.addHistogramSeries({
         priceFormat: { type: 'volume' },
@@ -29540,7 +29540,7 @@ async function qzCoachReview() {
       return {
         time: c.time,
         value: c.volume,
-        color: c.close >= c.open ? 'rgba(94,234,212,0.18)' : 'rgba(251,113,133,0.18)'
+        color: c.close >= c.open ? 'rgba(22,121,74,0.22)' : 'rgba(179,69,61,0.22)'
       };
     }));
     state.maSeries.setData(sma(candles, 20));

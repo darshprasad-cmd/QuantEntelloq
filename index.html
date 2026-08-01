@@ -6239,6 +6239,22 @@ window._QZ_GOOGLE_CLIENT_ID = '939725315910-2ght687f6733pt42nepbktfqd8ah6egk.app
 #landing .qzl-btn-solid:hover{background:var(--brass-ink)}
 #landing .qzl-btn-lg{font-size:15px;padding:13px 24px;border-radius:12px}
 
+/* ── decorative candlesticks (static SVG, no canvas / no JS) ── */
+#landing .qzl-candles{position:absolute;left:0;right:0;bottom:0;width:100%;height:clamp(180px,26vw,320px);pointer-events:none;user-select:none;z-index:0}
+#landing .qzl-candles .ub,#landing .qzl-candles .uw{fill:var(--up);stroke:var(--up)}
+#landing .qzl-candles .db,#landing .qzl-candles .dw{fill:var(--down);stroke:var(--down)}
+#landing .qzl-candles .uw,#landing .qzl-candles .dw{stroke-width:1.4}
+#landing .qzl-candles-hero{opacity:.085;bottom:-8px;height:clamp(200px,30vw,340px);
+  -webkit-mask-image:linear-gradient(to top,#000 0%,#000 42%,transparent 100%);
+  mask-image:linear-gradient(to top,#000 0%,#000 42%,transparent 100%)}
+#landing .qzl-candles-cta{opacity:.07;height:clamp(140px,20vw,220px);
+  -webkit-mask-image:linear-gradient(to top,#000 0%,transparent 92%);
+  mask-image:linear-gradient(to top,#000 0%,transparent 92%)}
+#landing .qzl-hero-shell{position:relative;overflow:hidden}
+#landing .qzl-hero-shell > .lp3-hero{position:relative;z-index:1}
+#landing .qzl-cta{position:relative;overflow:hidden}
+#landing .qzl-cta > *:not(.qzl-candles){position:relative;z-index:1}
+
 /* ── hero ── */
 #landing .lp3-hero{display:grid;grid-template-columns:1.08fr .92fr;gap:64px;align-items:center;max-width:1120px;margin:0 auto;padding:clamp(48px,7vw,88px) 24px clamp(40px,5vw,64px)}
 #landing .qzl-badge{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--brass-ink);background:var(--brass-soft);border:1px solid rgba(138,106,40,.2);border-radius:999px;padding:6px 13px;margin-bottom:22px}
@@ -6340,7 +6356,7 @@ window._QZ_GOOGLE_CLIENT_ID = '939725315910-2ght687f6733pt42nepbktfqd8ah6egk.app
 /* Paint the page shell light while the landing is on screen (the app's dark
    body background is set with !important by a runtime sheet). Progressive:
    browsers without :has simply keep the dark shell behind a full-height page. */
-html:has(#landing:not(.hidden)) body{background:#FBFAF7!important}
+/* shell painted light globally in theme section 20 */
 </style>
 
   <!-- ── Nav ── -->
@@ -6361,6 +6377,8 @@ html:has(#landing:not(.hidden)) body{background:#FBFAF7!important}
   </nav>
 
   <!-- ── Hero ── -->
+  <div class="qzl-hero-shell">
+    <svg class="qzl-candles qzl-candles-hero" viewBox="0 0 1200 320" preserveAspectRatio="none" aria-hidden="true" focusable="false"><line class="uw" x1="21.4" y1="193.2" x2="21.4" y2="197.2"/><rect class="ub" x="12.4" y="192.4" width="18.0" height="6.0" rx="1"/><line class="dw" x1="64.3" y1="185.8" x2="64.3" y2="202.9"/><rect class="db" x="55.3" y="192.4" width="18.0" height="3.4" rx="1"/><line class="uw" x1="107.1" y1="183.3" x2="107.1" y2="196.5"/><rect class="ub" x="98.1" y="191.2" width="18.0" height="4.6" rx="1"/><line class="uw" x1="150.0" y1="184.9" x2="150.0" y2="182.6"/><rect class="ub" x="141.0" y="178.5" width="18.0" height="12.7" rx="1"/><line class="dw" x1="192.9" y1="176.3" x2="192.9" y2="187.4"/><rect class="db" x="183.9" y="178.5" width="18.0" height="6.1" rx="1"/><line class="dw" x1="235.7" y1="178.3" x2="235.7" y2="192.2"/><rect class="db" x="226.7" y="184.6" width="18.0" height="1.5" rx="1"/><line class="dw" x1="278.6" y1="183.9" x2="278.6" y2="189.0"/><rect class="db" x="269.6" y="184.7" width="18.0" height="4.8" rx="1"/><line class="dw" x1="321.4" y1="187.6" x2="321.4" y2="193.4"/><rect class="db" x="312.4" y="189.6" width="18.0" height="2.6" rx="1"/><line class="dw" x1="364.3" y1="190.0" x2="364.3" y2="205.5"/><rect class="db" x="355.3" y="192.2" width="18.0" height="3.2" rx="1"/><line class="uw" x1="407.1" y1="193.7" x2="407.1" y2="192.1"/><rect class="ub" x="398.1" y="191.5" width="18.0" height="4.0" rx="1"/><line class="uw" x1="450.0" y1="179.0" x2="450.0" y2="193.7"/><rect class="ub" x="441.0" y="180.7" width="18.0" height="10.8" rx="1"/><line class="uw" x1="492.9" y1="172.1" x2="492.9" y2="180.0"/><rect class="ub" x="483.9" y="177.6" width="18.0" height="3.1" rx="1"/><line class="uw" x1="535.7" y1="167.0" x2="535.7" y2="177.3"/><rect class="ub" x="526.7" y="169.7" width="18.0" height="7.9" rx="1"/><line class="dw" x1="578.6" y1="172.2" x2="578.6" y2="182.6"/><rect class="db" x="569.6" y="169.7" width="18.0" height="11.4" rx="1"/><line class="uw" x1="621.4" y1="178.8" x2="621.4" y2="180.7"/><rect class="ub" x="612.4" y="170.0" width="18.0" height="11.1" rx="1"/><line class="dw" x1="664.3" y1="167.7" x2="664.3" y2="170.2"/><rect class="db" x="655.3" y="170.0" width="18.0" height="2.7" rx="1"/><line class="dw" x1="707.1" y1="170.7" x2="707.1" y2="183.4"/><rect class="db" x="698.1" y="172.7" width="18.0" height="4.2" rx="1"/><line class="dw" x1="750.0" y1="175.6" x2="750.0" y2="190.1"/><rect class="db" x="741.0" y="176.9" width="18.0" height="12.3" rx="1"/><line class="uw" x1="792.9" y1="188.8" x2="792.9" y2="198.9"/><rect class="ub" x="783.9" y="187.2" width="18.0" height="2.0" rx="1"/><line class="dw" x1="835.7" y1="196.2" x2="835.7" y2="194.8"/><rect class="db" x="826.7" y="187.2" width="18.0" height="12.2" rx="1"/><line class="uw" x1="878.6" y1="189.7" x2="878.6" y2="195.5"/><rect class="ub" x="869.6" y="185.9" width="18.0" height="13.5" rx="1"/><line class="uw" x1="921.4" y1="185.6" x2="921.4" y2="186.1"/><rect class="ub" x="912.4" y="177.7" width="18.0" height="8.1" rx="1"/><line class="uw" x1="964.3" y1="171.6" x2="964.3" y2="183.0"/><rect class="ub" x="955.3" y="168.7" width="18.0" height="9.0" rx="1"/><line class="uw" x1="1007.1" y1="163.0" x2="1007.1" y2="159.2"/><rect class="ub" x="998.1" y="157.6" width="18.0" height="11.1" rx="1"/><line class="uw" x1="1050.0" y1="148.6" x2="1050.0" y2="157.7"/><rect class="ub" x="1041.0" y="156.5" width="18.0" height="1.5" rx="1"/><line class="uw" x1="1092.9" y1="145.2" x2="1092.9" y2="162.7"/><rect class="ub" x="1083.9" y="150.3" width="18.0" height="6.2" rx="1"/><line class="dw" x1="1135.7" y1="151.9" x2="1135.7" y2="151.5"/><rect class="db" x="1126.7" y="150.3" width="18.0" height="2.4" rx="1"/><line class="uw" x1="1178.6" y1="144.9" x2="1178.6" y2="147.8"/><rect class="ub" x="1169.6" y="145.4" width="18.0" height="7.3" rx="1"/></svg>
   <section class="lp3-hero">
     <div>
       <div class="qzl-badge"><span>Free · Browser-only · No credit card</span></div>
@@ -6412,6 +6430,8 @@ html:has(#landing:not(.hidden)) body{background:#FBFAF7!important}
       <div class="lp3-card-lock">Your account lives in your browser · Passwords hashed · Research &amp; education only</div>
     </div>
   </section>
+
+  </div>
 
   <!-- ── How it works ── -->
   <section class="qzl-sec qzl-band" id="lp3-how">
@@ -6486,6 +6506,7 @@ html:has(#landing:not(.hidden)) body{background:#FBFAF7!important}
 
   <!-- ── CTA ── -->
   <div class="qzl-cta qzl-band">
+    <svg class="qzl-candles qzl-candles-cta" viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true" focusable="false"><line class="uw" x1="25.0" y1="121.2" x2="25.0" y2="117.4"/><rect class="ub" x="14.5" y="116.3" width="21.0" height="7.7" rx="1"/><line class="uw" x1="75.0" y1="113.5" x2="75.0" y2="122.7"/><rect class="ub" x="64.5" y="115.1" width="21.0" height="1.5" rx="1"/><line class="uw" x1="125.0" y1="106.2" x2="125.0" y2="120.3"/><rect class="ub" x="114.5" y="110.9" width="21.0" height="4.3" rx="1"/><line class="uw" x1="175.0" y1="103.6" x2="175.0" y2="110.9"/><rect class="ub" x="164.5" y="110.5" width="21.0" height="1.5" rx="1"/><line class="dw" x1="225.0" y1="109.3" x2="225.0" y2="118.0"/><rect class="db" x="214.5" y="110.5" width="21.0" height="6.9" rx="1"/><line class="uw" x1="275.0" y1="117.3" x2="275.0" y2="119.0"/><rect class="ub" x="264.5" y="115.3" width="21.0" height="2.1" rx="1"/><line class="dw" x1="325.0" y1="121.4" x2="325.0" y2="117.8"/><rect class="db" x="314.5" y="115.3" width="21.0" height="6.1" rx="1"/><line class="uw" x1="375.0" y1="116.7" x2="375.0" y2="120.9"/><rect class="ub" x="364.5" y="112.1" width="21.0" height="9.3" rx="1"/><line class="dw" x1="425.0" y1="109.6" x2="425.0" y2="115.4"/><rect class="db" x="414.5" y="112.1" width="21.0" height="1.5" rx="1"/><line class="dw" x1="475.0" y1="112.1" x2="475.0" y2="113.4"/><rect class="db" x="464.5" y="112.4" width="21.0" height="1.5" rx="1"/><line class="uw" x1="525.0" y1="104.0" x2="525.0" y2="121.8"/><rect class="ub" x="514.5" y="112.9" width="21.0" height="1.5" rx="1"/><line class="uw" x1="575.0" y1="108.2" x2="575.0" y2="105.3"/><rect class="ub" x="564.5" y="104.7" width="21.0" height="8.2" rx="1"/><line class="dw" x1="625.0" y1="100.6" x2="625.0" y2="105.8"/><rect class="db" x="614.5" y="104.7" width="21.0" height="4.0" rx="1"/><line class="dw" x1="675.0" y1="102.7" x2="675.0" y2="116.9"/><rect class="db" x="664.5" y="108.6" width="21.0" height="1.5" rx="1"/><line class="uw" x1="725.0" y1="98.8" x2="725.0" y2="103.4"/><rect class="ub" x="714.5" y="101.3" width="21.0" height="7.4" rx="1"/><line class="uw" x1="775.0" y1="91.7" x2="775.0" y2="105.5"/><rect class="ub" x="764.5" y="100.4" width="21.0" height="1.5" rx="1"/><line class="uw" x1="825.0" y1="99.2" x2="825.0" y2="108.8"/><rect class="ub" x="814.5" y="100.0" width="21.0" height="1.5" rx="1"/><line class="dw" x1="875.0" y1="97.1" x2="875.0" y2="103.5"/><rect class="db" x="864.5" y="100.0" width="21.0" height="5.7" rx="1"/><line class="uw" x1="925.0" y1="104.8" x2="925.0" y2="106.1"/><rect class="ub" x="914.5" y="104.7" width="21.0" height="1.5" rx="1"/><line class="uw" x1="975.0" y1="95.8" x2="975.0" y2="104.5"/><rect class="ub" x="964.5" y="102.5" width="21.0" height="2.2" rx="1"/></svg>
     <h2 class="qzl-h2">Your first trade should be a <em>practice trade.</em></h2>
     <p class="qzl-lead">Make it today, with an AI looking over your shoulder — and nothing on the line.</p>
     <button class="qzl-btn qzl-btn-solid qzl-btn-lg" onclick="lp3Tab('up');window.scrollTo({top:0,behavior:'smooth'});">Create your free account</button>
@@ -14873,43 +14894,46 @@ function _lp3Enter(user) {
 #qe-mdrawer-back,
 body.qe-in-app .qe-mobile-overlay,
 body.qe-in-app .modal-overlay:not(#auth-modal) {
-  --black:#0F0E0C; --white:#F5F2EB;
-  --bg:#131110; --surface:#191714; --surface2:#1E1B18; --surface3:#262220; --surface4:#2C2825;
-  --border:rgba(236,227,214,0.085); --border-light:rgba(236,227,214,0.05); --border-medium:rgba(236,227,214,0.14);
-  --text-primary:#F2EFE9; --text-secondary:#A9A297; --text-muted:#8A8375; --text-accent:#DFC591;
-  --accent:#C6A35F; --accent-2:#D9C29A; --accent-soft:rgba(198,163,95,0.10); --accent-glow:rgba(198,163,95,0.14);
-  --violet:#C6A35F; --violet-deep:#A9853F; --violet-soft:rgba(198,163,95,0.10);
-  --green:#4CAF82; --green-soft:rgba(76,175,130,0.10);
-  --red:#D9605A; --red-soft:rgba(217,96,90,0.10);
-  --yellow:#D9A441; --yellow-soft:rgba(217,164,65,0.10);
-  --blue:#7BA6C9; --blue-soft:rgba(123,166,201,0.10);
-  --amber:#C6A35F; --cyan:#7FB0BC; --cyan-soft:rgba(127,176,188,0.10); --cyan-10:rgba(127,176,188,0.10);
-  --gray-900:#191714; --gray-800:#1E1B18; --gray-700:#2C2825;
+  /* ── WARM PAPER (light) — same palette as the launch page ──
+     Ink-on-paper inverts of the old dark tokens. Every alpha overlay that
+     used to be white-on-dark is now ink-on-paper so contrast survives. */
+  --black:#1A1714; --white:#FFFFFF;
+  --bg:#FBFAF7; --surface:#FFFFFF; --surface2:#FFFFFF; --surface3:#F4F1EA; --surface4:#EFEBE2;
+  --border:rgba(26,23,20,0.11); --border-light:rgba(26,23,20,0.07); --border-medium:rgba(26,23,20,0.18);
+  --text-primary:#1A1714; --text-secondary:#5A5349; --text-muted:#7A7165; --text-accent:#6E5420;
+  --accent:#8A6A28; --accent-2:#6E5420; --accent-soft:rgba(138,106,40,0.09); --accent-glow:rgba(138,106,40,0.14);
+  --violet:#8A6A28; --violet-deep:#6E5420; --violet-soft:rgba(138,106,40,0.09);
+  --green:#16794A; --green-soft:rgba(22,121,74,0.10);
+  --red:#B3453D; --red-soft:rgba(179,69,61,0.10);
+  --yellow:#8A6512; --yellow-soft:rgba(138,101,18,0.12);
+  --blue:#2C6087; --blue-soft:rgba(44,96,135,0.10);
+  --amber:#8A6A28; --cyan:#2F6E7A; --cyan-soft:rgba(47,110,122,0.10); --cyan-10:rgba(47,110,122,0.10);
+  --gray-900:#FFFFFF; --gray-800:#F4F1EA; --gray-700:#EFEBE2;
   --radius:14px; --radius-sm:10px; --radius-lg:18px; --radius-xl:22px;
-  --shadow-sm:0 1px 2px rgba(12,10,7,0.20);
-  --shadow-md:0 2px 8px rgba(12,10,7,0.22);
-  --shadow-lg:0 12px 32px rgba(12,10,7,0.30);
-  --shadow-accent:0 0 0 1px rgba(198,163,95,0.15);
-  --shadow-card:inset 0 1px 0 0 rgba(255,255,255,0.03), 0 1px 2px rgba(12,10,7,0.18);
-  --shadow-card-lg:inset 0 1px 0 0 rgba(255,255,255,0.04), 0 8px 24px -12px rgba(12,10,7,0.40);
-  --bevel-top:inset 0 1px 0 0 rgba(255,255,255,0.03);
+  --shadow-sm:0 1px 2px rgba(26,23,20,0.06);
+  --shadow-md:0 2px 8px rgba(26,23,20,0.07);
+  --shadow-lg:0 14px 36px -18px rgba(26,23,20,0.22);
+  --shadow-accent:0 0 0 1px rgba(138,106,40,0.22);
+  --shadow-card:0 1px 2px rgba(26,23,20,0.04), 0 10px 26px -20px rgba(26,23,20,0.16);
+  --shadow-card-lg:0 1px 2px rgba(26,23,20,0.05), 0 16px 40px -22px rgba(26,23,20,0.22);
+  --bevel-top:none;
   --font-display:'Fraunces','Tiempos Headline',Georgia,serif;
-  --grad-green:linear-gradient(135deg,#C6A35F 0%,#B08D48 100%);
-  --grad-blue:linear-gradient(135deg,#7BA6C9 0%,#8FB5C4 100%);
-  --grad-purple:linear-gradient(135deg,#C6A35F 0%,#D9C29A 100%);
-  --grad-warm:linear-gradient(135deg,#D9A441 0%,#C6A35F 100%);
-  --glow-green:0 0 0 1px rgba(198,163,95,0.20);
-  --glow-blue:0 0 0 1px rgba(123,166,201,0.20);
-  --q0:#0F0E0C; --q1:#191714; --q2:#1E1B18; --q3:#262220; --q4:#322D28;
-  --teal:#C6A35F; --teal-dim:rgba(198,163,95,0.60); --teal-10:rgba(198,163,95,0.10); --teal-20:rgba(198,163,95,0.18);
-  --teal-glow:0 0 0 1px rgba(198,163,95,0.18);
-  --purple:#C6A35F; --purple-10:rgba(198,163,95,0.10); --purple-glow:0 0 0 1px rgba(198,163,95,0.18);
-  --qe-void:#131110; --qe-canvas:#171513; --qe-surface:#1E1B18; --qe-elevated:#26221E;
-  --qe-text:#F2EFE9; --qe-text-soft:rgba(242,239,233,0.72); --qe-text-mute:rgba(242,239,233,0.55); --qe-text-dim:rgba(242,239,233,0.26);
-  --qe-hl:rgba(242,239,233,0.06); --qe-hl-strong:rgba(242,239,233,0.12); --qe-hl-bold:rgba(242,239,233,0.20);
-  --qe-amber:#C6A35F; --qe-amber-soft:rgba(198,163,95,0.11); --qe-amber-glow:rgba(198,163,95,0.22);
-  --qe-cyan:#D9C29A; --qe-cyan-soft:rgba(217,194,154,0.10);
-  --qe-pos:#4CC38A; --qe-neg:#E17067;
+  --grad-green:linear-gradient(135deg,#8A6A28 0%,#6E5420 100%);
+  --grad-blue:linear-gradient(135deg,#2C6087 0%,#3E7699 100%);
+  --grad-purple:linear-gradient(135deg,#8A6A28 0%,#A98338 100%);
+  --grad-warm:linear-gradient(135deg,#A98338 0%,#8A6A28 100%);
+  --glow-green:0 0 0 1px rgba(138,106,40,0.22);
+  --glow-blue:0 0 0 1px rgba(44,96,135,0.20);
+  --q0:#FBFAF7; --q1:#FFFFFF; --q2:#FFFFFF; --q3:#F4F1EA; --q4:#EFEBE2;
+  --teal:#8A6A28; --teal-dim:rgba(138,106,40,0.70); --teal-10:rgba(138,106,40,0.09); --teal-20:rgba(138,106,40,0.16);
+  --teal-glow:0 0 0 1px rgba(138,106,40,0.20);
+  --purple:#8A6A28; --purple-10:rgba(138,106,40,0.09); --purple-glow:0 0 0 1px rgba(138,106,40,0.20);
+  --qe-void:#FBFAF7; --qe-canvas:#FBFAF7; --qe-surface:#FFFFFF; --qe-elevated:#FFFFFF;
+  --qe-text:#1A1714; --qe-text-soft:rgba(26,23,20,0.78); --qe-text-mute:rgba(26,23,20,0.58); --qe-text-dim:rgba(26,23,20,0.34);
+  --qe-hl:rgba(26,23,20,0.045); --qe-hl-strong:rgba(26,23,20,0.09); --qe-hl-bold:rgba(26,23,20,0.16);
+  --qe-amber:#8A6A28; --qe-amber-soft:rgba(138,106,40,0.10); --qe-amber-glow:rgba(138,106,40,0.20);
+  --qe-cyan:#6E5420; --qe-cyan-soft:rgba(110,84,32,0.09);
+  --qe-pos:#16794A; --qe-neg:#B3453D;
 }
 
 /* —— 1 · Canvas & typographic voice ————————————————— */
@@ -14927,7 +14951,7 @@ body.qe-in-app .modal-overlay:not(#auth-modal) {
   -webkit-text-fill-color: var(--text-primary);
   color: var(--text-primary);
 }
-#app ::selection { background: rgba(198,163,95,0.28); color: var(--text-primary); }
+#app ::selection { background: rgba(138,106,40,0.28); color: var(--text-primary); }
 #app :focus-visible:not(input):not(textarea):not(select) {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
@@ -14951,37 +14975,37 @@ body.qe-in-app .modal-overlay:not(#auth-modal) {
 
 /* —— 3 · Top nav (inside #app via .main-content) ———————— */
 #qe-topnav {
-  background: rgba(21,19,17,0.95);
-  border-bottom: 1px solid rgba(236,227,214,0.08);
+  background: rgba(251,250,247,0.96);
+  border-bottom: 1px solid rgba(26,23,20,0.08);
   box-shadow: none;
 }
-#qe-topnav .qe-tn-mark { background: linear-gradient(135deg,#C6A35F,#A9853F); color: #191307; }
+#qe-topnav .qe-tn-mark { background: linear-gradient(135deg,#8A6A28,#6E5420); color:#FFFFFF; }
 #qe-topnav .qe-tn-word { color: var(--text-primary); }
 #qe-topnav .qe-tn-word em {
-  background: linear-gradient(110deg,#C6A35F,#D9C29A);
+  background: linear-gradient(110deg,#8A6A28,#A98338);
   -webkit-background-clip: text; background-clip: text;
 }
 #qe-topnav .qe-tn-pill { color: var(--text-secondary); border-radius: 999px; }
-#qe-topnav .qe-tn-pill:hover { color: var(--text-primary); background: rgba(242,239,233,0.05); }
+#qe-topnav .qe-tn-pill:hover { color: var(--text-primary); background: rgba(26,23,20,0.05); }
 #qe-topnav .qe-tn-pill:active { transform: scale(0.97); }
 /* nav-active stays neutral — brass is reserved for AI + primary CTA */
 #qe-topnav .qe-tn-pill.active {
-  background: rgba(242,239,233,0.08);
-  border-color: rgba(236,227,214,0.14);
+  background: rgba(26,23,20,0.08);
+  border-color: rgba(26,23,20,0.14);
   color: var(--text-primary);
   box-shadow: none;
 }
 /* the AI dot is the teachable brass marker on nav */
-#qe-topnav .qe-tn-ai-dot { background: var(--accent); box-shadow: 0 0 8px rgba(198,163,95,0.7); }
-#qe-topnav .qe-tn-user { background: rgba(242,239,233,0.04); border-color: rgba(236,227,214,0.10); }
-#qe-topnav .qe-tn-user:hover { border-color: rgba(198,163,95,0.40); }
-#qe-topnav .qe-tn-ava { background: linear-gradient(135deg,#C6A35F,#A9853F); color: #191307; }
+#qe-topnav .qe-tn-ai-dot { background: var(--accent); box-shadow: 0 0 8px rgba(138,106,40,0.7); }
+#qe-topnav .qe-tn-user { background: rgba(26,23,20,0.04); border-color: rgba(26,23,20,0.10); }
+#qe-topnav .qe-tn-user:hover { border-color: rgba(138,106,40,0.40); }
+#qe-topnav .qe-tn-ava { background: linear-gradient(135deg,#8A6A28,#6E5420); color:#FFFFFF; }
 #qe-topnav .qe-tn-name { color: var(--text-secondary); }
 #qe-tn-more-panel {
-  background: #1C1A17;
-  border: 1px solid rgba(236,227,214,0.12);
+  background: #FFFFFF;
+  border: 1px solid rgba(26,23,20,0.12);
   border-radius: 16px;
-  box-shadow: 0 16px 40px rgba(10,8,6,0.45);
+  box-shadow: 0 16px 40px rgba(26,23,20,0.45);
 }
 
 /* —— 4 · Sidebar (hidden by shell v2 — skinned, not shown) ——— */
@@ -14998,8 +15022,8 @@ body.qe-in-app .modal-overlay:not(#auth-modal) {
 #app .user-avatar { border-radius: 10px; background: var(--accent-soft); color: var(--accent); box-shadow: none; }
 
 /* —— 5 · Top bar & sticky subtabs (near-solid ink, offsets untouched) */
-#app .top-bar { background: rgba(19,17,16,0.95); border-bottom: 1px solid var(--border); box-shadow: none; }
-#app .section-subtabs { background: rgba(19,17,16,0.96); border-bottom: 1px solid var(--border); }
+#app .top-bar { background: rgba(251,250,247,0.96); border-bottom: 1px solid var(--border); box-shadow: none; }
+#app .section-subtabs { background: rgba(251,250,247,0.96); border-bottom: 1px solid var(--border); }
 #app .qz-subtab { border-radius: 999px; color: var(--text-secondary); font-weight: 500; }
 #app .qz-subtab:hover { background: var(--qe-hl); color: var(--text-primary); }
 #app .qz-subtab.active {
@@ -15042,11 +15066,11 @@ body.qe-in-app .modal-overlay:not(#auth-modal) {
 #app .market-card:hover, #app .ent-card:hover, #app .ql-card:hover,
 #app .scanner-card:hover, #app .qz-card:hover, #app .agent-card:hover {
   transform: translateY(-1px);
-  border-color: rgba(236,227,214,0.16) !important;
-  box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.04), 0 8px 20px -12px rgba(10,8,6,0.5) !important;
+  border-color: rgba(26,23,20,0.16) !important;
+  box-shadow: inset 0 1px 0 0 rgba(26,23,20,0.04), 0 8px 20px -12px rgba(26,23,20,0.5) !important;
 }
 #app .chart-container {
-  background: rgba(23,21,19,0.60);
+  background: #FFFFFF;
   border: 1px solid var(--border) !important;
   border-radius: 14px;
   box-shadow: none !important;
@@ -15054,43 +15078,43 @@ body.qe-in-app .modal-overlay:not(#auth-modal) {
 
 /* —— 7 · AI Coach — the only tinted surface (real hooks verified) — */
 #app #qz-coach-panel {
-  border: 1px solid rgba(198,163,95,0.24);
+  border: 1px solid rgba(138,106,40,0.24);
   border-top: 2px solid var(--accent);
   border-radius: 18px;
-  background: linear-gradient(180deg, rgba(198,163,95,0.055), rgba(198,163,95,0.015) 55%, rgba(198,163,95,0) 100%), var(--surface2);
+  background: linear-gradient(180deg, rgba(138,106,40,0.07), rgba(138,106,40,0.02) 55%, rgba(138,106,40,0) 100%), var(--surface);
   box-shadow: var(--shadow-card);
 }
-#app #qz-coach-panel:hover { border-color: rgba(198,163,95,0.34); border-top-color: var(--accent); }
+#app #qz-coach-panel:hover { border-color: rgba(138,106,40,0.34); border-top-color: var(--accent); }
 #app .qz-coach-title { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.01em; }
 #app .qz-coach-sub { color: var(--text-secondary); }
 #app .qz-coach-step { border-radius: 999px; }
-#app .qz-coach-step:hover { border-color: rgba(198,163,95,0.50); color: var(--text-primary); }
-#app .qz-coach-step.active { border-color: var(--accent); background: rgba(198,163,95,0.12); color: #E9D9B4; }
+#app .qz-coach-step:hover { border-color: rgba(138,106,40,0.50); color: var(--text-primary); }
+#app .qz-coach-step.active { border-color: var(--accent); background: rgba(138,106,40,0.12); color: #6E5420; }
 #app .qz-coach-step:active { transform: scale(0.97); }
 #app .qz-coach-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
 #app .qz-coach-note, #app .qz-coach-check, #app #qz-coach-out { color: var(--text-secondary); }
 #app #qz-coach-panel .qz-home-card-act { color: var(--accent); }
 #app #qz-coach-panel .qz-home-card-act:hover { color: var(--accent-2); }
 /* explain chips: kill hardcoded violet rgba(167,139,250,…) */
-#app .qz-explain { color: var(--accent-2); background: var(--accent-soft); border-color: rgba(198,163,95,0.30); }
-#app .qz-explain:hover { background: rgba(198,163,95,0.18); color: var(--text-primary); }
+#app .qz-explain { color: var(--accent-2); background: var(--accent-soft); border-color: rgba(138,106,40,0.30); }
+#app .qz-explain:hover { background: rgba(138,106,40,0.18); color: var(--text-primary); }
 
 /* —— 8 · Learn cards ————————————————————————— */
 #app .qz-learn-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; }
 #app .qz-learn-card:hover {
   background: var(--surface3);
-  border-color: rgba(198,163,95,0.35);
+  border-color: rgba(138,106,40,0.35);
   transform: translateY(-2px);
-  box-shadow: 0 10px 24px -14px rgba(10,8,6,0.5);
+  box-shadow: 0 10px 24px -14px rgba(26,23,20,0.5);
 }
 
 /* —— 9 · Paper trading — beats the #page-paper !important stack.
       Green/red buy-sell semantics preserved (class-only selectors:
       qzCoachSide wipes className, ids would be unsafe to depend on) */
 #app .pt-card {
-  border: 1px solid rgba(236,227,214,0.10) !important;
+  border: 1px solid rgba(26,23,20,0.10) !important;
   border-radius: 16px !important;
-  box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.03), 0 1px 2px rgba(12,10,7,0.18) !important;
+  box-shadow: inset 0 1px 0 0 rgba(26,23,20,0.03), 0 1px 2px rgba(26,23,20,0.18) !important;
 }
 #app .pt-card-title {
   font-family: 'DM Sans', system-ui, sans-serif !important;
@@ -15100,29 +15124,29 @@ body.qe-in-app .modal-overlay:not(#auth-modal) {
   letter-spacing: 0 !important;
   color: var(--text-secondary) !important;
 }
-#page-paper .pt-tab.active { background: rgba(198,163,95,0.14) !important; color: #E6D3A6 !important; }
+#page-paper .pt-tab.active { background: rgba(138,106,40,0.14) !important; color: #6E5420 !important; }
 #app .pt-side-btn { border-radius: 10px; }
 #app .pt-side-btn:active, #app .pt-type-btn:active { transform: scale(0.97); }
 #page-paper .pt-side-btn.buy-active, #app .pt-side-btn.buy-active {
-  background: rgba(76,175,130,0.15) !important;
-  border: 1px solid rgba(76,175,130,0.45) !important;
+  background: rgba(22,121,74,0.15) !important;
+  border: 1px solid rgba(22,121,74,0.45) !important;
   color: var(--green) !important;
   box-shadow: none !important;
 }
 #page-paper .pt-side-btn.sell-active, #app .pt-side-btn.sell-active {
-  background: rgba(217,96,90,0.15) !important;
-  border: 1px solid rgba(217,96,90,0.45) !important;
+  background: rgba(179,69,61,0.15) !important;
+  border: 1px solid rgba(179,69,61,0.45) !important;
   color: var(--red) !important;
   box-shadow: none !important;
 }
 #page-paper .pt-type-btn.active {
-  background: rgba(198,163,95,0.14) !important;
-  border-color: rgba(198,163,95,0.40) !important;
-  color: #E6D3A6 !important;
+  background: rgba(138,106,40,0.14) !important;
+  border-color: rgba(138,106,40,0.40) !important;
+  color: #6E5420 !important;
 }
 #app .pt-submit-btn { border-radius: 12px; box-shadow: none; }
-#app .pt-submit-btn.buy { background: var(--green); color: #07130D; }
-#app .pt-submit-btn.sell { background: var(--red); color: #1C0505; }
+#app .pt-submit-btn.buy { background: var(--green); color:#FFFFFF; }
+#app .pt-submit-btn.sell { background: var(--red); color:#FFFFFF; }
 #app .pt-submit-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
 #app .pt-submit-btn:active { transform: scale(0.97); }
 
@@ -15131,23 +15155,23 @@ body.qe-in-app .modal-overlay:not(#auth-modal) {
 #app .btn:active { transform: scale(0.97); }
 #app .btn-primary {
   background: var(--accent);
-  color: #191307;
+  color:#FFFFFF;
   border: 1px solid rgba(255,255,255,0.10);
   box-shadow: none;
 }
-#app .btn-primary:hover { background: #D2B274; transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+#app .btn-primary:hover { background: #6E5420; transform: translateY(-1px); box-shadow: var(--shadow-sm); }
 #app .btn-secondary { background: var(--surface2); border: 1px solid var(--border); color: var(--text-primary); box-shadow: none; }
 #app .btn-secondary:hover { background: var(--surface3); border-color: var(--border-medium); }
 #app .btn-ghost { background: transparent; color: var(--text-secondary); box-shadow: none; }
 #app .btn-ghost:hover { color: var(--text-primary); background: var(--qe-hl); }
 #app .btn-violet {
   background: var(--accent-soft);
-  color: #E6D3A6;
-  border: 1px solid rgba(198,163,95,0.30);
+  color: #6E5420;
+  border: 1px solid rgba(138,106,40,0.30);
   box-shadow: none;
 }
-#app .btn-violet:hover { background: rgba(198,163,95,0.16); border-color: rgba(198,163,95,0.45); }
-#app .btn-green { background: var(--green); color: #07130D; box-shadow: none; }
+#app .btn-violet:hover { background: rgba(138,106,40,0.16); border-color: rgba(138,106,40,0.45); }
+#app .btn-green { background: var(--green); color:#FFFFFF; box-shadow: none; }
 
 /* —— 11 · Inputs & search ———————————————————————— */
 #app .input, #app textarea, #app select {
@@ -15157,13 +15181,13 @@ body.qe-in-app .modal-overlay:not(#auth-modal) {
   color: var(--text-primary);
 }
 #app .input:focus, #app textarea:focus, #app select:focus {
-  border-color: rgba(198,163,95,0.45);
-  box-shadow: 0 0 0 3px rgba(198,163,95,0.10);
+  border-color: rgba(138,106,40,0.45);
+  box-shadow: 0 0 0 3px rgba(138,106,40,0.10);
   outline: none;
 }
 #app .input::placeholder, #app textarea::placeholder { color: var(--text-muted); }
 #app .search-bar { background: var(--surface); border: 1px solid var(--border); border-radius: 999px; box-shadow: none; }
-#app .search-bar:focus-within { border-color: rgba(198,163,95,0.40); box-shadow: 0 0 0 3px rgba(198,163,95,0.08); }
+#app .search-bar:focus-within { border-color: rgba(138,106,40,0.40); box-shadow: 0 0 0 3px rgba(138,106,40,0.08); }
 
 /* —— 12 · Tabs & level switcher — neutral states —————— */
 #app .tab-bar { background: var(--qe-hl); border-radius: 999px; }
@@ -15171,7 +15195,7 @@ body.qe-in-app .modal-overlay:not(#auth-modal) {
 #app .tab.active { background: var(--surface3); color: var(--text-primary); }
 #app .qz-levelbar { background: var(--surface); border: 1px solid var(--border); }
 #app .qz-levelbtn { color: var(--text-muted); border-radius: 999px; }
-#app .qz-levelbtn.active { background: var(--surface3); color: var(--text-primary); box-shadow: 0 1px 2px rgba(12,10,7,0.30); }
+#app .qz-levelbtn.active { background: var(--surface3); color: var(--text-primary); box-shadow: 0 1px 2px rgba(26,23,20,0.30); }
 
 /* —— 13 · Universe table — breathing room, solid sticky head —— */
 #app .universe-table thead th {
@@ -15187,12 +15211,12 @@ body.qe-in-app .modal-overlay:not(#auth-modal) {
 #app .universe-table tbody tr:hover td { background: rgba(242,239,233,0.025); }
 
 /* —— 14 · Overlays — cmd-K, asset drawer, authed modals ———— */
-#qz-search-overlay { background: rgba(15,13,11,0.80); }
+#qz-search-overlay { background: rgba(26,23,20,0.40); }
 #qz-search-modal {
-  background: #1C1A17;
-  border: 1px solid rgba(236,227,214,0.12);
+  background: #FFFFFF;
+  border: 1px solid rgba(26,23,20,0.12);
   border-radius: 20px;
-  box-shadow: 0 24px 64px rgba(8,6,4,0.55);
+  box-shadow: 0 24px 64px rgba(26,23,20,0.55);
 }
 @media (max-width: 700px) {
   #qz-search-modal { border-radius: 0 0 16px 16px; border-top: none; }
@@ -15200,11 +15224,11 @@ body.qe-in-app .modal-overlay:not(#auth-modal) {
 #qz-asset-panel {
   background: var(--surface);
   border-left: 1px solid var(--border-medium);
-  box-shadow: -24px 0 60px rgba(10,8,6,0.45);
+  box-shadow: -24px 0 60px rgba(26,23,20,0.45);
 }
 /* gated on the real authed hook body.qe-in-app (app.js:19508);
    #auth-modal excluded so the logged-out flow can never repaint */
-body.qe-in-app .modal-overlay:not(#auth-modal) { background: rgba(15,13,11,0.78); }
+body.qe-in-app .modal-overlay:not(#auth-modal) { background: rgba(26,23,20,0.38); }
 body.qe-in-app .modal-overlay:not(#auth-modal) .modal {
   background: var(--surface);
   border: 1px solid var(--border-medium);
@@ -15230,10 +15254,10 @@ body.qe-in-app .modal-overlay:not(#auth-modal) .modal-close:hover {
 
 /* —— 15 · Badges — de-bevel, true market colors ———————— */
 #app .badge { border-radius: 999px; font-weight: 600; letter-spacing: 0.05em; box-shadow: none; }
-#app .badge-green { background: var(--green-soft); border-color: rgba(76,175,130,0.30); color: var(--green); }
-#app .badge-red { background: var(--red-soft); border-color: rgba(217,96,90,0.30); color: var(--red); }
-#app .badge-yellow { background: var(--yellow-soft); border-color: rgba(217,164,65,0.30); color: var(--yellow); }
-#app .badge-blue { background: var(--blue-soft); border-color: rgba(123,166,201,0.30); color: var(--blue); }
+#app .badge-green { background: var(--green-soft); border-color: rgba(22,121,74,0.30); color: var(--green); }
+#app .badge-red { background: var(--red-soft); border-color: rgba(179,69,61,0.30); color: var(--red); }
+#app .badge-yellow { background: var(--yellow-soft); border-color: rgba(138,101,18,0.30); color: var(--yellow); }
+#app .badge-blue { background: var(--blue-soft); border-color: rgba(44,96,135,0.30); color: var(--blue); }
 #app .badge-gray { background: var(--qe-hl); border-color: var(--border); color: var(--text-secondary); }
 
 /* —— 16 · Scrollbars — quiet warm pills, app-scoped only ——— */
@@ -15241,54 +15265,54 @@ body.qe-in-app .modal-overlay:not(#auth-modal) .modal-close:hover {
 #app ::-webkit-scrollbar-track { background: transparent; }
 #app ::-webkit-scrollbar-corner { background: transparent; }
 #app ::-webkit-scrollbar-thumb {
-  background: rgba(236,227,214,0.14);
+  background: rgba(26,23,20,0.14);
   border-radius: 999px;
   border: 3px solid transparent;
   background-clip: content-box;
 }
-#app ::-webkit-scrollbar-thumb:hover { background-color: rgba(236,227,214,0.24); }
-#app * { scrollbar-width: thin; scrollbar-color: rgba(236,227,214,0.18) transparent; }
+#app ::-webkit-scrollbar-thumb:hover { background-color: rgba(26,23,20,0.24); }
+#app * { scrollbar-width: thin; scrollbar-color: rgba(26,23,20,0.18) transparent; }
 
 /* —— 17 · Body-level app surfaces: tour card, modals, onboarding ——
    These mount on document.body (outside #app) but only ever show to
    signed-in users; the token rebind above covers their var() usage,
    and the rules below retint their hardcoded violets to brass. */
 #qe-tour-card {
-  background: linear-gradient(180deg, #1E1B18 0%, #171513 100%);
-  border: 1px solid rgba(198,163,95,0.28);
+  background: #FFFFFF;
+  border: 1px solid rgba(138,106,40,0.28);
 }
 /* #qe-tour-overlay prefix: the runtime qe-hotfix-v10-css sheet appends
    AFTER this block, so we must win on specificity, not order. */
 #qe-tour-overlay .qe-tour-orb {
-  background: linear-gradient(135deg, #C6A35F 0%, #D9C29A 100%);
-  box-shadow: 0 0 32px rgba(198,163,95,0.40), 0 8px 24px rgba(0,0,0,0.5);
-  color: #191307;
+  background: linear-gradient(135deg, #8A6A28 0%, #A98338 100%);
+  box-shadow: 0 0 32px rgba(138,106,40,0.40), 0 8px 24px rgba(0,0,0,0.5);
+  color:#FFFFFF;
 }
-#qe-tour-overlay .qe-tour-step-counter { color: rgba(198,163,95,0.78); }
-#qe-tour-overlay .qe-tour-pill { background: rgba(198,163,95,0.10); border-color: rgba(198,163,95,0.28); color: #DFC591; }
-#qe-tour-overlay .qe-tour-progress-fill { background: linear-gradient(90deg, #A9853F 0%, #C6A35F 60%, #E6D3A6 100%); }
-#qe-tour-overlay .qe-tour-btn-primary { background: #C6A35F; color: #191307; box-shadow: 0 4px 16px rgba(198,163,95,0.30); }
-#qe-tour-overlay .qe-tour-btn-primary:hover { box-shadow: 0 6px 20px rgba(198,163,95,0.42); }
+#qe-tour-overlay .qe-tour-step-counter { color: rgba(138,106,40,0.78); }
+#qe-tour-overlay .qe-tour-pill { background: rgba(138,106,40,0.10); border-color: rgba(138,106,40,0.28); color: #6E5420; }
+#qe-tour-overlay .qe-tour-progress-fill { background: linear-gradient(90deg, #6E5420 0%, #8A6A28 60%, #6E5420 100%); }
+#qe-tour-overlay .qe-tour-btn-primary { background: #8A6A28; color:#FFFFFF; box-shadow: 0 4px 16px rgba(138,106,40,0.30); }
+#qe-tour-overlay .qe-tour-btn-primary:hover { box-shadow: 0 6px 20px rgba(138,106,40,0.42); }
 #qe-tour-overlay #qe-tour-card {
-  background: linear-gradient(180deg, #1E1B18 0%, #171513 100%);
-  border: 1px solid rgba(198,163,95,0.28);
+  background: #FFFFFF;
+  border: 1px solid rgba(138,106,40,0.28);
 }
-#qe-tour-replay { background: rgba(198,163,95,0.12); }
+#qe-tour-replay { background: rgba(138,106,40,0.12); }
 
 /* Onboarding (authed-only, shown post-signup) — brass over the violet
    !important stacks; the #onboarding prefix out-specifies them. */
 #onboarding {
-  background: radial-gradient(ellipse at 20% 30%, rgba(198,163,95,0.09) 0%, transparent 50%),
+  background: radial-gradient(ellipse at 20% 30%, rgba(138,106,40,0.09) 0%, transparent 50%),
               radial-gradient(ellipse at 80% 70%, rgba(217,194,154,0.05) 0%, transparent 50%),
               #131110 !important;
 }
-#onboarding .onboarding-header { background: rgba(19,17,16,0.92) !important; border-bottom-color: rgba(236,227,214,0.08) !important; }
-#onboarding .onboarding-step-num { background: rgba(198,163,95,0.12) !important; border-color: rgba(198,163,95,0.30) !important; color: #DFC591 !important; }
-#onboarding .onboarding-progress-fill { background: linear-gradient(90deg,#A9853F,#C6A35F,#E6D3A6) !important; box-shadow: 0 0 10px rgba(198,163,95,0.45) !important; }
-#onboarding .onboarding-step-title { background: linear-gradient(135deg,#F5F2EB 0%,#DFC591 70%) !important; -webkit-background-clip: text !important; background-clip: text !important; }
-#onboarding .option-item:hover { border-color: rgba(198,163,95,0.32) !important; background: rgba(198,163,95,0.05) !important; }
-#onboarding .option-item.selected { border-color: #C6A35F !important; background: rgba(198,163,95,0.08) !important; box-shadow: 0 0 18px rgba(198,163,95,0.10) !important; }
-#onboarding .option-item.selected::after { background: rgba(198,163,95,0.35) !important; }
+#onboarding .onboarding-header { background: rgba(19,17,16,0.92) !important; border-bottom-color: rgba(26,23,20,0.08) !important; }
+#onboarding .onboarding-step-num { background: rgba(138,106,40,0.12) !important; border-color: rgba(138,106,40,0.30) !important; color: #6E5420 !important; }
+#onboarding .onboarding-progress-fill { background: linear-gradient(90deg,#6E5420,#8A6A28,#6E5420) !important; box-shadow: 0 0 10px rgba(138,106,40,0.45) !important; }
+#onboarding .onboarding-step-title { background: linear-gradient(135deg,#FFFFFF 0%,#6E5420 70%) !important; -webkit-background-clip: text !important; background-clip: text !important; }
+#onboarding .option-item:hover { border-color: rgba(138,106,40,0.32) !important; background: rgba(138,106,40,0.05) !important; }
+#onboarding .option-item.selected { border-color: #8A6A28 !important; background: rgba(138,106,40,0.08) !important; box-shadow: 0 0 18px rgba(138,106,40,0.10) !important; }
+#onboarding .option-item.selected::after { background: rgba(138,106,40,0.35) !important; }
 
 /* —— 18 · Cascade armor — the runtime qe-no-yellow / qz-editorial-ds
    sheets style [class*="btn-primary"] and input:focus with !important
@@ -15299,9 +15323,9 @@ body.qe-in-app .modal-overlay:not(#auth-modal) .modal-close:hover {
 #qz-lesson-modal .btn-primary, #stock-detail-modal .btn-primary,
 #qz-search-overlay .btn-primary, #qz-asset-panel .btn-primary,
 body.qe-in-app .modal-overlay:not(#auth-modal) .btn-primary {
-  background: #C6A35F !important;
+  background: #8A6A28 !important;
   background-image: none !important;
-  color: #191307 !important;
+  color:#FFFFFF !important;
   box-shadow: none !important;
   border: 1px solid rgba(255,255,255,0.10) !important;
 }
@@ -15310,26 +15334,26 @@ body.qe-in-app .modal-overlay:not(#auth-modal) .btn-primary {
 #qz-lesson-modal .btn-primary:hover, #stock-detail-modal .btn-primary:hover,
 #qz-search-overlay .btn-primary:hover, #qz-asset-panel .btn-primary:hover,
 body.qe-in-app .modal-overlay:not(#auth-modal) .btn-primary:hover {
-  background: #D2B274 !important;
-  box-shadow: 0 1px 2px rgba(12,10,7,0.20) !important;
+  background: #6E5420 !important;
+  box-shadow: 0 1px 2px rgba(26,23,20,0.20) !important;
 }
 #qe-tour-overlay .qe-tour-btn-primary {
-  background: #C6A35F !important;
+  background: #8A6A28 !important;
   background-image: none !important;
-  color: #191307 !important;
-  box-shadow: 0 4px 16px rgba(198,163,95,0.30) !important;
+  color:#FFFFFF !important;
+  box-shadow: 0 4px 16px rgba(138,106,40,0.30) !important;
 }
 #app .input:focus, #app textarea:focus, #app select:focus,
 #onboarding input:focus, #onboarding textarea:focus, #onboarding select:focus {
-  border-color: rgba(198,163,95,0.45) !important;
-  box-shadow: 0 0 0 3px rgba(198,163,95,0.10) !important;
+  border-color: rgba(138,106,40,0.45) !important;
+  box-shadow: 0 0 0 3px rgba(138,106,40,0.10) !important;
 }
 #app .qz-disclaimer-banner {
-  background: rgba(198,163,95,0.045) !important;
-  border-color: rgba(198,163,95,0.20) !important;
-  border-left-color: #C6A35F !important;
+  background: rgba(138,106,40,0.045) !important;
+  border-color: rgba(138,106,40,0.20) !important;
+  border-left-color: #8A6A28 !important;
 }
-#app .qz-disclaimer-banner strong { color: #DFC591 !important; }
+#app .qz-disclaimer-banner strong { color: #6E5420 !important; }
 
 /* —— 18b · VOICE REMOVED — permanent hide for any voice element that late
    code still injects (the JS kill-layer nulls the APIs; this guarantees
@@ -15354,14 +15378,14 @@ body.qe-in-app .modal-overlay:not(#auth-modal) .btn-primary:hover {
 #app .macro-card, #app .universe-stat, #app .scanner-item, #app .alert-item,
 #app .world-clock-item, #app .gate-card, #app .sector-item, #app .agent-card, #app .feature-item,
 #page-agents .agent-card, #page-markets .market-card, #page-markets .card, #page-markets .metric-card {
-  background: rgba(30,27,24,0.85) !important;
-  border: 1px solid rgba(236,227,214,0.085) !important;
+  background: #FFFFFF !important;
+  border: 1px solid rgba(26,23,20,0.085) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
 #app .chart-container {
-  background: rgba(23,21,19,0.60) !important;
-  border: 1px solid rgba(236,227,214,0.085) !important;
+  background: #FFFFFF !important;
+  border: 1px solid rgba(26,23,20,0.085) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
@@ -15370,15 +15394,148 @@ body.qe-in-app .modal-overlay:not(#auth-modal) .btn-primary:hover {
 #app .review-card:hover, #app .team-card:hover, #app .alert-item:hover,
 #app .sector-item:hover, #app .agent-card:hover,
 #page-agents .agent-card:hover, #page-markets .market-card:hover {
-  border-color: rgba(236,227,214,0.16) !important;
-  box-shadow: 0 0 0 1px rgba(198,163,95,0.10), 0 14px 40px -16px rgba(10,8,6,0.50) !important;
+  border-color: rgba(26,23,20,0.16) !important;
+  box-shadow: 0 0 0 1px rgba(138,106,40,0.10), 0 14px 40px -16px rgba(26,23,20,0.50) !important;
   transform: translateY(-1px) !important;
 }
 #app .pricing-card.featured {
-  background: rgba(30,27,24,0.92) !important;
-  box-shadow: 0 0 0 1px rgba(198,163,95,0.32), 0 0 50px rgba(198,163,95,0.08), 0 24px 64px rgba(10,8,6,0.50) !important;
+  background: #FFFFFF !important;
+  box-shadow: 0 0 0 1px rgba(138,106,40,0.32), 0 0 50px rgba(138,106,40,0.08), 0 24px 64px rgba(26,23,20,0.50) !important;
 }
+
+/* —— 20 · Light shell: the runtime editorial sheet paints html/body dark
+   with !important; override it whenever the signed-in app is showing. */
+html, body { background:#FBFAF7 !important; }
+
+/* —— 21 · Light-mode legacy fixes ——————————————————————————
+   Hardcoded colours baked into JS-generated inline styles and older
+   blocks that the token rebind cannot reach. Each was measured failing
+   contrast against the paper background. */
+
+/* Daily Challenge card: near-white text measured 1.06:1 on paper — invisible. */
+#app .qe-daily-eyebrow { color: var(--text-muted) !important; }
+#app .qe-daily-title   { color: var(--text-primary) !important; }
+#app .qe-daily-opt     { color: var(--text-secondary) !important; border-color: var(--border) !important; }
+#app .qe-daily-opt:hover { background: var(--qe-hl) !important; color: var(--text-primary) !important; }
+
+/* Legacy neon stat inks (violet 2.6:1, cyan 1.7:1, grey 2.4:1 on paper). */
+#app [style*="color:#A78BFA"], #app [style*="color: #A78BFA"] { color: var(--accent) !important; }
+#app [style*="color:#C4B5FD"], #app [style*="color: #C4B5FD"] { color: var(--accent-2) !important; }
+#app [style*="color:#22D3EE"], #app [style*="color: #22D3EE"] { color: var(--blue) !important; }
+#app [style*="color:#67E8F9"], #app [style*="color: #67E8F9"] { color: var(--cyan) !important; }
+#app [style*="color:#9CA3AF"], #app [style*="color: #9CA3AF"] { color: var(--text-muted) !important; }
+#app [style*="color:#94A3B8"], #app [style*="color: #94A3B8"] { color: var(--text-muted) !important; }
+#app [style*="color:#4ADE80"], #app [style*="color: #4ADE80"] { color: var(--green) !important; }
+#app [style*="color:#F87171"], #app [style*="color: #F87171"] { color: var(--red) !important; }
+#app [style*="color:#F4F4F0"], #app [style*="color: #F4F4F0"] { color: var(--text-primary) !important; }
+#app [style*="color:#FCD34D"], #app [style*="color: #FCD34D"] { color: var(--yellow) !important; }
+
+/* Near-white ink on what is now a light surface. */
+#app [style*="color:#fff"], #app [style*="color: #fff"],
+#app [style*="color:#FFF"], #app [style*="color: #FFF"],
+#app [style*="color:white"], #app [style*="color: white"],
+#app [style*="color:#fafafa"], #app [style*="color:#F5F2EB"] { color: var(--text-primary) !important; }
+
+/* …but white ink is correct on a solid coloured slab. */
+#app .btn-primary, #app [class*="btn-primary"], #app .lp3-submit,
+#app .pt-submit-btn, #app .btn-green, #app .badge-solid { color: #FFFFFF !important; }
+
+/* Dark chips/pills that survived as raw near-black rgba. */
+#app [style*="rgba(8,8,12"], #app [style*="rgba(8, 8, 12"],
+#app [style*="rgba(10,10,11"], #app [style*="rgba(10, 10, 11"],
+#app [style*="rgba(5,7,15"], #app [style*="rgba(5, 7, 15"],
+#app [style*="background:#0"], #app [style*="background: #0"],
+#app [style*="background:#1"], #app [style*="background: #1"] {
+  background: var(--surface3) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Chart panels are the chart background (every LightweightCharts instance
+   renders transparent), so these must be paper-white, not near-black. */
+#app .chart-container,
+#app .chart-container[style],
+#app [id$="-chart"], #app [id*="chart-wrap"] {
+  background: #FFFFFF !important;
+  border: 1px solid var(--border) !important;
+  backdrop-filter: none !important;
+}
+
+/* Translucent-white fills read as ink on paper. */
+#app [style*="rgba(244,244,240"], #app [style*="rgba(244, 244, 240"] { color: var(--text-primary) !important; }
+
+/* Chrome bars: an older sheet still paints these near-black translucent,
+   which put ink-coloured text on a dark strip (measured 2.64:1). */
+#app .top-bar, #app .section-subtabs, #qe-topnav {
+  background: rgba(251,250,247,0.96) !important;
+  border-bottom: 1px solid var(--border) !important;
+  backdrop-filter: none !important;
+}
+#app .country-selector, #app .country-selector-wrap > * {
+  background: var(--surface3) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Practice-Trading + settings panels kept their own near-black fills
+   (rgba(15,15,22,.55) / rgb(21,21,26)), which put ink text on a dark
+   slab — measured 2.52:1 and, for the AI status row, 1.07:1. */
+#app .pt-card, #app .pt-stat, #app .pt-acct-card, #app .pt-order-preview,
+#app .pt-tabs, #app .pt-empty, #app .pt-stat-strip, #app .pt-positions,
+#app .settings-section, #app .settings-row {
+  background: var(--surface) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+#app .pt-acct-select, #app select, #app .input, #app textarea {
+  background: var(--surface) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+#app .pt-card-title, #app .pt-stat-lbl, #app .pt-sub, #app .settings-row-sub {
+  color: var(--text-secondary) !important;
+}
+#app [style*="rgba(15,15,22"], #app [style*="rgba(15, 15, 22"],
+#app [style*="rgba(21,21,26"], #app [style*="rgba(21, 21, 26"] {
+  background: var(--surface) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Class families that hardcode the old dark-theme ink rgba(244,244,240,x)
+   / #F4F4F0 in their CSS (not inline), so the attribute selectors above
+   cannot reach them. Measured 1.10:1 on paper. */
+#app .settings-section-title, #app .settings-row-label, #app .settings-title,
+#app [class^="qe-ptc-"], #app [class*=" qe-ptc-"],
+#app .qe-mth-h3, #app .qe-mth-title, #app .qe-rl-title, #app .qe-rl-h3 {
+  color: var(--text-primary) !important;
+}
+#app .qe-ptc-tf, #app .qe-ptc-chg, #app .settings-row-sub, #app .qe-mth-sub,
+#app .pt-tab, #app .pt-new-acct-btn, #app .pt-acct-detail, #app .pt-eyebrow,
+#app .ent-sig-metric-val, #app .ent-sig-reason, #app .ent-sig-metric-lbl,
+#app .ent-card-sub, #app .ent-sig-sub {
+  color: var(--text-secondary) !important;
+}
+#app .pt-tab.active {
+  color: var(--text-primary) !important;
+  border-color: var(--accent) !important;
+}
+/* Sentiment/impact badges: their tinted inks were tuned for a dark chip. */
+#app .badge, #app .news-impact, #app .intel-badge, #app [class*="-impact"] { font-weight: 650 !important; }
+#app .badge-green, #app [class*="impact-positive"], #app [class*="-positive"] { color: var(--green) !important; }
+#app .badge-red, #app [class*="impact-negative"], #app [class*="-negative"] { color: var(--red) !important; }
+#app .badge-yellow, #app [class*="impact-neutral"] { color: var(--yellow) !important; }
+
+#app .qe-ptc-tf.active, #app .qe-ptc-tf[data-active="1"] {
+  background: var(--accent-soft) !important;
+  color: var(--accent-2) !important;
+  border-color: rgba(138,106,40,.32) !important;
+}
+
+/* Skeletons / shimmer were white-on-dark. */
+#app .skeleton, #app .qz-skeleton, #app .intel-skeleton-line {
+  background: linear-gradient(90deg, var(--surface3) 25%, var(--surface4) 37%, var(--surface3) 63%) !important;
+}
+
 </style>
-<script defer src="js/app.min.js?v=20260714-11"></script>
+<script defer src="js/app.min.js?v=20260714-13"></script>
 </body>
 </html>
