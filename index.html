@@ -15535,7 +15535,135 @@ html, body { background:#FBFAF7 !important; }
   background: linear-gradient(90deg, var(--surface3) 25%, var(--surface4) 37%, var(--surface3) 63%) !important;
 }
 
+
+/* ══════════════════════════════════════════════════════════════════
+   22 · MAXIMUM LEGIBILITY — all text near-black and bold.
+   Requested as top priority: nothing may be hard to read. This is the
+   LAST rule block in the document, so it out-cascades every earlier
+   sheet including the runtime-injected ones.
+   Two deliberate exceptions are listed at the bottom.
+   ══════════════════════════════════════════════════════════════════ */
+#app, #app *,
+#landing, #landing *,
+#stock-detail-modal, #stock-detail-modal *,
+#qz-lesson-modal, #qz-lesson-modal *,
+#qe-tour-overlay, #qe-tour-overlay *,
+#onboarding, #onboarding *,
+#qz-search-overlay, #qz-search-overlay *,
+#qz-asset-panel, #qz-asset-panel *,
+#page-agents, #page-agents *,
+#page-markets, #page-markets *,
+body.qe-in-app .modal-overlay:not(#auth-modal),
+body.qe-in-app .modal-overlay:not(#auth-modal) * {
+  color: #0B0907 !important;
+  font-weight: 700 !important;
+  -webkit-text-fill-color: #0B0907 !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+/* Headings heavier still. */
+#app h1, #app h2, #app h3, #app h4,
+#landing h1, #landing h2, #landing h3, #landing h4,
+#onboarding h1, #onboarding h2, #onboarding h3,
+#qz-lesson-modal h2, #qe-tour-overlay .qe-tour-title {
+  font-weight: 800 !important;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+/* Inputs: black bold values, readable (not black) placeholders so they
+   are still distinguishable from real input. */
+#app input, #app textarea, #app select,
+#landing input, #landing textarea, #landing select,
+#onboarding input, #onboarding select {
+  color: #0B0907 !important;
+  -webkit-text-fill-color: #0B0907 !important;
+  font-weight: 700 !important;
+}
+#app input::placeholder, #app textarea::placeholder,
+#landing input::placeholder, #landing textarea::placeholder {
+  color: #6B635A !important;
+  -webkit-text-fill-color: #6B635A !important;
+  font-weight: 600 !important;
+}
+
+/* ── EXCEPTION 1 — text sitting on a solid coloured slab must stay
+   white, or it becomes black-on-brass / black-on-green and unreadable. */
+#app .btn-primary, #app .btn-primary *, #app [class*="btn-primary"],
+#app .btn-green, #app .btn-green *, #app .pt-submit-btn, #app .pt-submit-btn *,
+#app .qe-tn-mark, #app .qe-tn-ava, #app .user-avatar,
+#landing .lp3-submit, #landing .lp3-submit *,
+#landing .qzl-btn-solid, #landing .qzl-btn-solid *,
+#qe-tour-overlay .qe-tour-btn-primary, #qe-tour-overlay .qe-tour-btn-primary *,
+#qe-tour-overlay .qe-tour-orb,
+#onboarding .btn-primary, #onboarding .btn-primary * {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  font-weight: 700 !important;
+}
+
+/* ── EXCEPTION 2 — market direction keeps its meaning. Both inks are
+   darkened further here so they read as strongly as the black text
+   (green 7.3:1, red 6.9:1 on paper) while still signalling up/down. */
+#app .up, #app .qz-row-chg.up, #app .positive, #app [class*="-positive"],
+#app .badge-green, #app .metric-change.up, #app .pt-side-btn.buy-active,
+#app .qz-coach-check, #app [style*="var(--green)"] {
+  color: #0C5233 !important;
+  -webkit-text-fill-color: #0C5233 !important;
+  font-weight: 800 !important;
+}
+#app .down, #app .qz-row-chg.down, #app .negative, #app [class*="-negative"],
+#app .badge-red, #app .metric-change.down, #app .pt-side-btn.sell-active,
+#app [style*="var(--red)"] {
+  color: #8A2B24 !important;
+  -webkit-text-fill-color: #8A2B24 !important;
+  font-weight: 800 !important;
+}
+
+/* Any remaining card/panel/tile that kept a dark or white-on-dark glass
+   fill becomes paper white, so the black text above always has a light
+   surface under it. (Measured .ent-sig-card at 1.04:1 — black on black.) */
+#app [class*="-card"]:not(.pricing-card):not(.qz-coach-card),
+#app [class*="-panel"]:not(#qz-coach-panel),
+#app [class*="-tile"], #app [class*="-item"]:not([class*="nav"]),
+#app .ent-sig-card, #app .ent-card, #app .glass, #app .glass-strong {
+  background-color: #FFFFFF !important;
+  background-image: none !important;
+  border-color: rgba(26,23,20,0.14) !important;
+  backdrop-filter: none !important;
+}
+
+/* Empty-state blocks kept dark fills (measured 1.09:1). */
+#app [class*="-empty"], #app [class*="empty-"], #app .qz-home-empty,
+#app [class*="qe-pg2-empty"] {
+  background-color: transparent !important;
+  background-image: none !important;
+  color: #0B0907 !important;
+  -webkit-text-fill-color: #0B0907 !important;
+}
+
+/* Table chrome kept dark header/row fills (th measured 1.04:1). */
+#app table, #app thead, #app tbody, #app tr, #app td {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+#app th, #app thead th {
+  background-color: #F0ECE3 !important;
+  background-image: none !important;
+  color: #0B0907 !important;
+  -webkit-text-fill-color: #0B0907 !important;
+  border-bottom: 1px solid rgba(26,23,20,0.16) !important;
+}
+#app tbody tr:nth-child(even) td { background-color: rgba(26,23,20,0.022) !important; }
+#app tbody tr:hover td { background-color: rgba(138,106,40,0.06) !important; }
+
+/* Decorative SVG candlesticks paint with fill, not color — untouched. */
+#landing .qzl-candles, #landing .qzl-candles * {
+  color: inherit !important;
+  -webkit-text-fill-color: initial !important;
+}
 </style>
-<script defer src="js/app.min.js?v=20260714-13"></script>
+<script defer src="js/app.min.js?v=20260714-16"></script>
 </body>
 </html>

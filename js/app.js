@@ -720,7 +720,7 @@ function _showRebrandToast() {
   toast.innerHTML = `
     <div style="display:flex;align-items:flex-start;gap:14px;">
       <div style="flex:0 0 auto;width:40px;height:40px;border-radius:12px;
-        background:linear-gradient(135deg,#7C3AED,#A78BFA);
+        background:linear-gradient(135deg,#7C3AED,#8A6A28);
         display:flex;align-items:center;justify-content:center;font-size:18px;
         box-shadow:0 4px 16px rgba(124,58,237,0.35);">⚡</div>
       <div style="flex:1;min-width:0;">
@@ -1489,8 +1489,8 @@ function _qzShowComingSoon(page) {
       '<div style="position:absolute;bottom:-40px;left:25%;width:220px;height:220px;background:radial-gradient(circle,rgba(34,211,238,0.10),transparent 65%);pointer-events:none;"></div>' +
       '<div style="position:relative;">' +
         '<div style="font-size:48px;margin-bottom:18px;line-height:1;filter:drop-shadow(0 0 24px rgba(167,139,250,0.40));">' + t.icon + '</div>' +
-        '<div style="display:inline-flex;align-items:center;gap:8px;font-size:10.5px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:#A78BFA;padding:5px 11px;border-radius:999px;border:1px solid rgba(167,139,250,0.30);background:rgba(124,58,237,0.10);margin-bottom:18px;box-shadow:0 0 16px rgba(167,139,250,0.20);">' +
-          '<span style="width:6px;height:6px;border-radius:50%;background:#A78BFA;box-shadow:0 0 10px #A78BFA;"></span>Launching Soon' +
+        '<div style="display:inline-flex;align-items:center;gap:8px;font-size:10.5px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:#8A6A28;padding:5px 11px;border-radius:999px;border:1px solid rgba(167,139,250,0.30);background:rgba(124,58,237,0.10);margin-bottom:18px;box-shadow:0 0 16px rgba(167,139,250,0.20);">' +
+          '<span style="width:6px;height:6px;border-radius:50%;background:#8A6A28;box-shadow:0 0 10px #8A6A28;"></span>Launching Soon' +
         '</div>' +
         '<div style="font-size:24px;font-weight:700;letter-spacing:-0.025em;color:#fff;line-height:1.15;margin-bottom:10px;">' + t.name + '</div>' +
         '<div style="font-size:13.5px;color:rgba(244,244,245,0.62);line-height:1.55;margin-bottom:28px;">' + t.desc + '</div>' +
@@ -1706,8 +1706,8 @@ function _qzRenderUnifiedIntel() {
     '<div style="position:relative;">' +
       '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;">' +
         '<div style="flex:1;min-width:260px;">' +
-          '<div style="display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:#A78BFA;padding:5px 12px;border-radius:999px;border:1px solid rgba(167,139,250,0.30);background:rgba(124,58,237,0.10);margin-bottom:14px;animation:qzIntelGlow 3s ease-in-out infinite;">' +
-            '<span style="width:6px;height:6px;border-radius:50%;background:#A78BFA;box-shadow:0 0 10px #A78BFA;animation:qzIntelPulse 2s ease-in-out infinite;"></span>' +
+          '<div style="display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:#8A6A28;padding:5px 12px;border-radius:999px;border:1px solid rgba(167,139,250,0.30);background:rgba(124,58,237,0.10);margin-bottom:14px;animation:qzIntelGlow 3s ease-in-out infinite;">' +
+            '<span style="width:6px;height:6px;border-radius:50%;background:#8A6A28;box-shadow:0 0 10px #8A6A28;animation:qzIntelPulse 2s ease-in-out infinite;"></span>' +
             'Intelligence Terminal · Live' +
           '</div>' +
           '<div style="font-size:28px;font-weight:700;letter-spacing:-0.028em;line-height:1.1;margin-bottom:10px;color:#fff;">Markets, Synthesized.</div>' +
@@ -1715,7 +1715,7 @@ function _qzRenderUnifiedIntel() {
         '</div>' +
         '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;min-width:260px;">' +
           '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px 16px;"><div style="font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(244,244,245,0.42);margin-bottom:4px;">Processed</div><div style="font-size:18px;font-weight:600;letter-spacing:-0.022em;color:#fff;font-variant-numeric:tabular-nums;">1,247</div></div>' +
-          '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px 16px;"><div style="font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(244,244,245,0.42);margin-bottom:4px;">Surfaced</div><div style="font-size:18px;font-weight:600;letter-spacing:-0.022em;color:#A78BFA;font-variant-numeric:tabular-nums;">' + INTEL.length + '</div></div>' +
+          '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px 16px;"><div style="font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(244,244,245,0.42);margin-bottom:4px;">Surfaced</div><div style="font-size:18px;font-weight:600;letter-spacing:-0.022em;color:#8A6A28;font-variant-numeric:tabular-nums;">' + INTEL.length + '</div></div>' +
           '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(16,185,129,0.18);border-radius:10px;padding:12px 16px;"><div style="font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(244,244,245,0.42);margin-bottom:4px;">Bullish</div><div style="font-size:18px;font-weight:600;letter-spacing:-0.022em;color:#10B981;font-variant-numeric:tabular-nums;">' + bullCount + '</div></div>' +
           '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(239,68,68,0.18);border-radius:10px;padding:12px 16px;"><div style="font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(244,244,245,0.42);margin-bottom:4px;">Bearish</div><div style="font-size:18px;font-weight:600;letter-spacing:-0.022em;color:#EF4444;font-variant-numeric:tabular-nums;">' + bearCount + '</div></div>' +
         '</div>' +
@@ -1747,7 +1747,7 @@ function _qzRenderUnifiedIntel() {
 
   // ── PORTFOLIO IMPACT ──
   if (portfolioImpact.length > 0) {
-    html += '<div class="qz-intel-section-title">💼 Portfolio Impact <span style="background:rgba(124,58,237,0.14);border:1px solid rgba(167,139,250,0.30);color:#A78BFA;font-size:10.5px;padding:2px 7px;border-radius:4px;font-weight:600;letter-spacing:0.05em;">' + portfolioImpact.length + ' RELEVANT</span></div>';
+    html += '<div class="qz-intel-section-title">💼 Portfolio Impact <span style="background:rgba(124,58,237,0.14);border:1px solid rgba(167,139,250,0.30);color:#8A6A28;font-size:10.5px;padding:2px 7px;border-radius:4px;font-weight:600;letter-spacing:0.05em;">' + portfolioImpact.length + ' RELEVANT</span></div>';
     html += '<div style="display:grid;gap:10px;margin-bottom:24px;">';
     portfolioImpact.slice(0, 3).forEach(function(n) {
       var sColor = n.sentiment === 'bullish' ? '#10B981' : n.sentiment === 'bearish' ? '#EF4444' : '#F59E0B';
@@ -1813,7 +1813,7 @@ function _qzRenderUnifiedIntel() {
 function _qzIntelCard(n) {
   var sColor = n.sentiment === 'bullish' ? '#10B981' : n.sentiment === 'bearish' ? '#EF4444' : '#F59E0B';
   var sBg = n.sentiment === 'bullish' ? 'rgba(16,185,129,0.12)' : n.sentiment === 'bearish' ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.12)';
-  var impactColor = n.impact >= 8 ? '#A78BFA' : n.impact >= 6 ? '#22D3EE' : 'rgba(244,244,245,0.55)';
+  var impactColor = n.impact >= 8 ? '#8A6A28' : n.impact >= 6 ? '#2C6087' : 'rgba(244,244,245,0.55)';
   return '<div class="qz-intel-card" style="position:relative;">' +
     '<div style="position:absolute;left:0;top:22px;bottom:22px;width:3px;background:' + sColor + ';box-shadow:0 0 12px ' + sColor + '80;border-radius:0 2px 2px 0;"></div>' +
     '<div style="margin-left:10px;">' +
@@ -1825,7 +1825,7 @@ function _qzIntelCard(n) {
         '</div>' +
       '</div>' +
       '<div style="font-size:11px;color:rgba(244,244,245,0.42);margin-bottom:14px;letter-spacing:0.01em;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
-        '<span class="qz-intel-pill" style="background:rgba(124,58,237,0.10);color:#A78BFA;font-size:9.5px;">' + n.cat + '</span>' +
+        '<span class="qz-intel-pill" style="background:rgba(124,58,237,0.10);color:#8A6A28;font-size:9.5px;">' + n.cat + '</span>' +
         '<span style="color:rgba(167,139,250,0.85);font-weight:500;">' + n.source + '</span>' +
         '<span style="color:rgba(244,244,245,0.30);">·</span>' +
         '<span>' + n.time + '</span>' +
@@ -1834,13 +1834,13 @@ function _qzIntelCard(n) {
       '</div>' +
       '<div style="font-size:13.5px;color:rgba(244,244,245,0.78);line-height:1.6;margin-bottom:14px;">' + n.summary + '</div>' +
       '<div style="border-top:1px solid rgba(255,255,255,0.05);padding-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">' +
-        '<div><div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#A78BFA;margin-bottom:4px;">Key Takeaway</div><div style="font-size:12.5px;color:rgba(244,244,245,0.78);line-height:1.5;">' + n.takeaway + '</div></div>' +
-        '<div><div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#22D3EE;margin-bottom:4px;">Implication</div><div style="font-size:12.5px;color:rgba(244,244,245,0.78);line-height:1.5;">' + n.implication + '</div></div>' +
+        '<div><div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#8A6A28;margin-bottom:4px;">Key Takeaway</div><div style="font-size:12.5px;color:rgba(244,244,245,0.78);line-height:1.5;">' + n.takeaway + '</div></div>' +
+        '<div><div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#2C6087;margin-bottom:4px;">Implication</div><div style="font-size:12.5px;color:rgba(244,244,245,0.78);line-height:1.5;">' + n.implication + '</div></div>' +
         '<div><div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#F87171;margin-bottom:4px;">Risk</div><div style="font-size:12.5px;color:rgba(244,244,245,0.78);line-height:1.5;">' + n.risk + '</div></div>' +
       '</div>' +
       '<div style="margin-top:12px;display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:rgba(244,244,245,0.50);">' +
-        '<div><strong style="color:#A78BFA;font-weight:600;">Sectors:</strong> ' + n.sectors.join(' · ') + '</div>' +
-        '<div><strong style="color:#A78BFA;font-weight:600;">Tickers:</strong> <span style="font-family:monospace;letter-spacing:0.04em;color:rgba(244,244,245,0.85);">' + n.tickers.join(' ') + '</span></div>' +
+        '<div><strong style="color:#8A6A28;font-weight:600;">Sectors:</strong> ' + n.sectors.join(' · ') + '</div>' +
+        '<div><strong style="color:#8A6A28;font-weight:600;">Tickers:</strong> <span style="font-family:monospace;letter-spacing:0.04em;color:rgba(244,244,245,0.85);">' + n.tickers.join(' ') + '</span></div>' +
       '</div>' +
     '</div>' +
   '</div>';
@@ -1918,7 +1918,7 @@ function drawInlineSparkline(id, data, isUp) {
   const range = max - min || 1;
   const chartH = H - 6;
   const norm = v => chartH - ((v - min) / range) * (chartH - 4) - 2;
-  const color = isUp ? '#A78BFA' : '#EF4444';
+  const color = isUp ? '#8A6A28' : '#EF4444';
   // Gradient fill
   const grad = ctx.createLinearGradient(0, 0, 0, chartH);
   grad.addColorStop(0, isUp ? 'rgba(167,139,250,0.28)' : 'rgba(239,68,68,0.22)');
@@ -2073,7 +2073,7 @@ function _renderTVPortChart(container, period) {
   });
 
   _tvPortSeries = _tvPortChart.addAreaSeries({
-    lineColor: '#A78BFA',
+    lineColor: '#8A6A28',
     topColor: 'rgba(167,139,250,0.22)',
     bottomColor: 'rgba(124,58,237,0.01)',
     lineWidth: 2,
@@ -2083,7 +2083,7 @@ function _renderTVPortChart(container, period) {
       minMove: 1,
     },
     crosshairMarkerRadius: 5,
-    crosshairMarkerBorderColor: '#A78BFA',
+    crosshairMarkerBorderColor: '#8A6A28',
     crosshairMarkerBackgroundColor: '#0d0d0d',
     lastValueVisible: true,
     priceLineVisible: true,
@@ -2584,7 +2584,7 @@ function renderScenarioChart(portfolioData, benchData, containerId, height) {
     crosshair:{mode:1}, handleScale:{mouseWheel:false}, handleScroll:{mouseWheel:false},
   });
   const fmtV = v => '$'+(v>=1e6?(v/1e6).toFixed(1)+'M':(v/1000).toFixed(0)+'k');
-  const portS = _tvScChart.addAreaSeries({ lineColor:'#A78BFA', topColor:'rgba(167,139,250,0.2)', bottomColor:'rgba(167,139,250,0.01)', lineWidth:2, priceFormat:{type:'custom',formatter:fmtV,minMove:1}, priceLineVisible:false, lastValueVisible:true });
+  const portS = _tvScChart.addAreaSeries({ lineColor:'#8A6A28', topColor:'rgba(167,139,250,0.2)', bottomColor:'rgba(167,139,250,0.01)', lineWidth:2, priceFormat:{type:'custom',formatter:fmtV,minMove:1}, priceLineVisible:false, lastValueVisible:true });
   portS.setData(portfolioData);
   if (benchData) {
     const bmS = _tvScChart.addLineSeries({ color:'rgba(96,165,250,0.5)', lineWidth:1, lineStyle:2, priceFormat:{type:'custom',formatter:fmtV,minMove:1}, priceLineVisible:false, lastValueVisible:false });
@@ -2599,7 +2599,7 @@ const _CRISES = {
   gfc:    { name:'2008 GFC', equityDD:-0.568, bondGain:0.18, duration:18, recovery:48, color:'#F87171' },
   covid:  { name:'COVID-19', equityDD:-0.339, bondGain:0.08, duration:2,  recovery:5,  color:'#FB923C' },
   dotcom: { name:'Dot-com',  equityDD:-0.491, bondGain:0.22, duration:30, recovery:84, color:'#FBBF24' },
-  '1987': { name:'Black Monday', equityDD:-0.226, bondGain:0.06, duration:1, recovery:24, color:'#A78BFA' },
+  '1987': { name:'Black Monday', equityDD:-0.226, bondGain:0.06, duration:1, recovery:24, color:'#8A6A28' },
   '2022': { name:'Rate Hike 2022', equityDD:-0.254, bondGain:-0.18, duration:9, recovery:15, color:'#60A5FA' },
   '1973': { name:'Oil Crisis 1973', equityDD:-0.482, bondGain:0.05, duration:22, recovery:96, color:'#34D399' },
 };
@@ -2695,7 +2695,7 @@ function _qzscRunMonteCarlo() {
   const fmt = v => '$'+(v>=1e6?(v/1e6).toFixed(1)+'M':(v/1000).toFixed(0)+'k');
   document.getElementById('qzmc-results').innerHTML = `
     <div class="qzsc-metric-grid" style="margin-bottom:8px;">
-      <div class="qzsc-metric"><div class="qzsc-metric-label">Median Outcome (P50)</div><div class="qzsc-metric-val" style="color:#A78BFA;font-size:17px;">${fmt(p50)}</div><div class="qzsc-metric-sub">50th percentile</div></div>
+      <div class="qzsc-metric"><div class="qzsc-metric-label">Median Outcome (P50)</div><div class="qzsc-metric-val" style="color:#8A6A28;font-size:17px;">${fmt(p50)}</div><div class="qzsc-metric-sub">50th percentile</div></div>
       <div class="qzsc-metric"><div class="qzsc-metric-label">Optimistic (P90)</div><div class="qzsc-metric-val" style="color:#34D399;font-size:17px;">${fmt(p90)}</div><div class="qzsc-metric-sub">90th percentile</div></div>
       <div class="qzsc-metric"><div class="qzsc-metric-label">Conservative (P10)</div><div class="qzsc-metric-val" style="color:#F87171;font-size:17px;">${fmt(p10)}</div><div class="qzsc-metric-sub">10th percentile</div></div>
       <div class="qzsc-metric"><div class="qzsc-metric-label">P75 / P25</div><div class="qzsc-metric-val" style="font-size:14px;">${fmt(p75)}<br><span style="font-size:11px;color:var(--text-muted)">${fmt(p25)}</span></div></div>
@@ -2744,12 +2744,12 @@ function _qzscRunStress() {
     { name:'Severe Recession (-30%)',     impacts:{ us:-0.30, intl:-0.25, bond:0.12,  comm:-0.15, cash:0 }, color:'#EF4444' },
     { name:'Stagflation',                 impacts:{ us:-0.20, intl:-0.18, bond:-0.08, comm:0.20,  cash:-0.05 }, color:'#FB923C' },
     { name:'Dollar Crash (-20%)',         impacts:{ us:-0.08, intl:0.15,  bond:-0.05, comm:0.18,  cash:-0.20 }, color:'#FBBF24' },
-    { name:'China Credit Crisis',         impacts:{ us:-0.12, intl:-0.20, bond:0.08,  comm:-0.10, cash:0 }, color:'#A78BFA' },
+    { name:'China Credit Crisis',         impacts:{ us:-0.12, intl:-0.20, bond:0.08,  comm:-0.10, cash:0 }, color:'#8A6A28' },
     { name:'Tech Sector Crash (-40%)',    impacts:{ us:-0.22, intl:-0.10, bond:0.05,  comm:0.02,  cash:0 }, color:'#60A5FA' },
     { name:'Oil Shock +80%',              impacts:{ us:-0.10, intl:-0.08, bond:-0.03, comm:0.22,  cash:0 }, color:'#34D399' },
     { name:'Global Pandemic (COVID-like)',impacts:{ us:-0.34, intl:-0.30, bond:0.10,  comm:-0.20, cash:0 }, color:'#F87171' },
     { name:'Geopolitical Conflict',       impacts:{ us:-0.15, intl:-0.20, bond:0.05,  comm:0.25,  cash:0 }, color:'#FBBF24' },
-    { name:'Crypto/FinTech Contagion',    impacts:{ us:-0.12, intl:-0.08, bond:0.02,  comm:0.00,  cash:0 }, color:'#A78BFA' },
+    { name:'Crypto/FinTech Contagion',    impacts:{ us:-0.12, intl:-0.08, bond:0.02,  comm:0.00,  cash:0 }, color:'#8A6A28' },
   ];
   const rows = scenarios.map(sc => {
     const impact = invest*(us*sc.impacts.us + intl*sc.impacts.intl + bond*sc.impacts.bond + comm*sc.impacts.comm + cash*sc.impacts.cash);
@@ -3115,7 +3115,7 @@ function renderBacktestChart(equityCurve, benchCurve, capital, years) {
       handleScale:{mouseWheel:false},handleScroll:{mouseWheel:false},
     });
     const portSeries = _tvBtChart.addAreaSeries({
-      lineColor:'#A78BFA',topColor:'rgba(167,139,250,0.22)',bottomColor:'rgba(167,139,250,0.01)',
+      lineColor:'#8A6A28',topColor:'rgba(167,139,250,0.22)',bottomColor:'rgba(167,139,250,0.01)',
       lineWidth:2,priceFormat:{type:'custom',formatter:v=>'$'+(v>=1000?(v/1000).toFixed(0)+'k':v.toFixed(0)),minMove:1},
       priceLineVisible:false,lastValueVisible:true,
     });
@@ -3138,7 +3138,7 @@ function renderBacktestChart(equityCurve, benchCurve, capital, years) {
     const gr=ctx.createLinearGradient(0,0,0,H); gr.addColorStop(0,'rgba(167,139,250,0.18)'); gr.addColorStop(1,'rgba(167,139,250,0)');
     ctx.beginPath(); vals.forEach((p,i)=>{const x=(i/(vals.length-1))*W;i===0?ctx.moveTo(x,nr(p)):ctx.lineTo(x,nr(p));});
     ctx.lineTo(W,H); ctx.lineTo(0,H); ctx.closePath(); ctx.fillStyle=gr; ctx.fill();
-    ctx.beginPath(); ctx.strokeStyle='#A78BFA'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.strokeStyle='#8A6A28'; ctx.lineWidth=2;
     vals.forEach((p,i)=>{const x=(i/(vals.length-1))*W;i===0?ctx.moveTo(x,nr(p)):ctx.lineTo(x,nr(p));}); ctx.stroke();
   }
 }
@@ -4914,8 +4914,8 @@ const AGENT_SPECS = {
     scalabilityF: "If one helper breaks, the system automatically uses a backup. You won't lose data or miss signals. Failed tasks are saved and retried automatically.",
     scalabilityO: "The system caches recent answers so it doesn't have to work as hard on repeated questions. Urgent alerts always get processed first. Most answers arrive in under 1 second.",
     agents: [
-      { emoji:"📡", name:"Data Ingestor", color:"#A78BFA", role:"Collects live stock prices, trading volumes, and market data every few seconds from financial data providers.", input:"Market data APIs, exchange feeds", output:"Clean, normalized price & volume data", decision:"Validates data freshness and flags stale or corrupted feeds automatically" },
-      { emoji:"📰", name:"Sentiment Agent", color:"#A78BFA", role:"Reads news articles and social media to figure out how people feel about a stock — positive, negative, or neutral.", input:"News headlines, social signals", output:"Sentiment score from -1.0 (very negative) to +1.0 (very positive)", decision:"Filters noise, weighs source credibility, and spots sudden sentiment shifts" },
+      { emoji:"📡", name:"Data Ingestor", color:"#8A6A28", role:"Collects live stock prices, trading volumes, and market data every few seconds from financial data providers.", input:"Market data APIs, exchange feeds", output:"Clean, normalized price & volume data", decision:"Validates data freshness and flags stale or corrupted feeds automatically" },
+      { emoji:"📰", name:"Sentiment Agent", color:"#8A6A28", role:"Reads news articles and social media to figure out how people feel about a stock — positive, negative, or neutral.", input:"News headlines, social signals", output:"Sentiment score from -1.0 (very negative) to +1.0 (very positive)", decision:"Filters noise, weighs source credibility, and spots sudden sentiment shifts" },
       { emoji:"⚡", name:"Signal Generator", color:"#60A5FA", role:"Uses patterns in price data combined with sentiment scores to decide if a stock is likely to go up (BUY), down (SELL), or stay flat (HOLD).", input:"Normalized price data + sentiment score", output:"BUY / SELL / HOLD signal with a confidence percentage", decision:"If confidence is below 60%, it flags the signal as uncertain and requests more data" },
       { emoji:"💼", name:"Portfolio Agent", color:"#60A5FA", role:"Checks your current investments to make sure a new recommendation makes sense for your specific holdings and doesn't create too much risk.", input:"Your portfolio holdings + new signal", output:"Adjusted recommendation based on your situation", decision:"Blocks signals that would over-concentrate your portfolio in one area" },
       { emoji:"🤖", name:"LLM Reasoner", color:"#60A5FA", role:"The AI brain that writes the plain-English explanation for why a signal was generated, like a financial advisor explaining their thinking.", input:"All signals and data from other agents", output:"Simple explanation you can understand and act on", decision:"Simplifies complex data into clear language matched to your experience level" },
@@ -4934,8 +4934,8 @@ const AGENT_SPECS = {
     scalabilityF: "Circuit breakers on all third-party data APIs with exponential backoff. Dead letter queues capture failed tasks for replay. Each agent reports health via heartbeat — Orchestrator reroutes work if a node goes silent for >10s.",
     scalabilityO: "Signals cached at 5s TTL reduces LLM calls by ~70%. Priority queues: ALERT > SIGNAL > REPORT. Batch-friendly tasks (weekly reports) processed off-peak. P95 latency target: <800ms end-to-end.",
     agents: [
-      { emoji:"📡", name:"Data Ingestor", color:"#A78BFA", role:"Polls real-time OHLCV data, order book depth, and macro indicators from multiple providers simultaneously.", input:"Exchange APIs, macro data feeds, alternative data", output:"Normalized, timestamped OHLCV + volume profiles + macro snapshot", decision:"Validates data integrity; flags anomalies (e.g. price spikes >5σ) before passing downstream" },
-      { emoji:"📰", name:"Sentiment Agent", color:"#A78BFA", role:"Runs NLP models on news, earnings call transcripts, and social signals. Scores sentiment per asset with source weighting by credibility.", input:"News APIs, social signals, SEC filings", output:"Per-asset sentiment score (-1 to +1) with velocity (rate of change)", decision:"Detects sentiment regime shifts; triggers urgency flag if score moves >0.3 in <30 min" },
+      { emoji:"📡", name:"Data Ingestor", color:"#8A6A28", role:"Polls real-time OHLCV data, order book depth, and macro indicators from multiple providers simultaneously.", input:"Exchange APIs, macro data feeds, alternative data", output:"Normalized, timestamped OHLCV + volume profiles + macro snapshot", decision:"Validates data integrity; flags anomalies (e.g. price spikes >5σ) before passing downstream" },
+      { emoji:"📰", name:"Sentiment Agent", color:"#8A6A28", role:"Runs NLP models on news, earnings call transcripts, and social signals. Scores sentiment per asset with source weighting by credibility.", input:"News APIs, social signals, SEC filings", output:"Per-asset sentiment score (-1 to +1) with velocity (rate of change)", decision:"Detects sentiment regime shifts; triggers urgency flag if score moves >0.3 in <30 min" },
       { emoji:"⚡", name:"Signal Generator", color:"#60A5FA", role:"Runs a multi-factor model combining technical indicators (RSI, MACD, Bollinger), sentiment score, and momentum into a weighted ensemble signal.", input:"Normalized price data + sentiment score + macro context", output:"BUY/SELL/HOLD with confidence %, trend strength, and reasoning tags", decision:"Confidence threshold: >75% for standard signal; <60% triggers WATCH state; routes to LLM for narrative" },
       { emoji:"💼", name:"Portfolio Agent", color:"#60A5FA", role:"Applies portfolio constraints: max concentration, sector exposure, correlation limits, and position sizing rules based on the Kelly Criterion.", input:"Current holdings, sector weights, correlation matrix", output:"Position-adjusted signal with suggested allocation %", decision:"Blocks signals that increase concentration beyond limits or create >0.7 correlation with existing positions" },
       { emoji:"🤖", name:"LLM Reasoner", color:"#60A5FA", role:"Synthesizes all agent outputs into a structured investment narrative using Claude AI. Adapts depth and terminology to user's stated experience level.", input:"All agent outputs + user profile + chat history context", output:"Structured markdown: thesis, risks, catalysts, time horizon", decision:"If evidence is contradictory, explicitly states uncertainty and presents both bull/bear cases" },
@@ -4955,8 +4955,8 @@ const AGENT_SPECS = {
     scalabilityF: "Resilience4J circuit breakers on all external data sources with exponential backoff (initial: 1s, max: 60s, jitter: 20%). Dead letter queues (DLQ) on Kafka for failed tasks with replay-on-recovery. Each agent exposes /health with liveness and readiness probes. Orchestrator uses weighted round-robin with health-aware routing. Global idempotency keys prevent duplicate signal emission on retry.",
     scalabilityO: "Redis-backed signal cache at 5s TTL reduces LLM inference calls by ~68% in backtests. Priority queue tiering: CRITICAL (alert triggers) → HIGH (live signals) → NORMAL (portfolio refresh) → BATCH (reports). LLM calls batched where query semantics allow. Async streaming for AI Assistant responses. P95 latency target: <800ms; P99: <2s. Cost optimization via prompt caching (Anthropic beta) for repeated ticker contexts.",
     agents: [
-      { emoji:"📡", name:"Data Ingestor Agent", color:"#A78BFA", role:"Polls multi-source real-time OHLCV, L2 order book, tick data, and macro indicators. Implements cross-source reconciliation and outlier detection via z-score thresholding (σ>4 flagged).", input:"Exchange WebSocket feeds, REST APIs, alternative data providers, macro data (FRED, BLS)", output:"Normalized, timestamped OHLCV + volume profiles + order book imbalance ratio + macro snapshot (JSON schema v2)", decision:"Cross-validates prices across ≥2 sources. Data gaps >15s trigger staleness flag. Anomalous ticks quarantined pending validation. Publishes to Kafka topic: market.ingest.normalized" },
-      { emoji:"📰", name:"Sentiment NLP Agent", color:"#A78BFA", role:"Runs transformer-based NLP (FinBERT) on news corpus, earnings transcripts, 8-K filings, and social signal proxies. Implements entity disambiguation and source credibility weighting (Reuters>Bloomberg>Twitter).", input:"News APIs, SEC EDGAR real-time, social signal aggregators, earnings call audio-to-text pipeline", output:"Per-asset sentiment score vector (-1 to +1), velocity (Δscore/Δt), momentum regime tag, entity co-occurrence graph", decision:"Regime shift detected if |Δsentiment| >0.3 in <30min → urgency=HIGH. Source credibility weights applied via Bayesian prior. Conflicting signals from high-credibility sources trigger UNCERTAIN flag" },
+      { emoji:"📡", name:"Data Ingestor Agent", color:"#8A6A28", role:"Polls multi-source real-time OHLCV, L2 order book, tick data, and macro indicators. Implements cross-source reconciliation and outlier detection via z-score thresholding (σ>4 flagged).", input:"Exchange WebSocket feeds, REST APIs, alternative data providers, macro data (FRED, BLS)", output:"Normalized, timestamped OHLCV + volume profiles + order book imbalance ratio + macro snapshot (JSON schema v2)", decision:"Cross-validates prices across ≥2 sources. Data gaps >15s trigger staleness flag. Anomalous ticks quarantined pending validation. Publishes to Kafka topic: market.ingest.normalized" },
+      { emoji:"📰", name:"Sentiment NLP Agent", color:"#8A6A28", role:"Runs transformer-based NLP (FinBERT) on news corpus, earnings transcripts, 8-K filings, and social signal proxies. Implements entity disambiguation and source credibility weighting (Reuters>Bloomberg>Twitter).", input:"News APIs, SEC EDGAR real-time, social signal aggregators, earnings call audio-to-text pipeline", output:"Per-asset sentiment score vector (-1 to +1), velocity (Δscore/Δt), momentum regime tag, entity co-occurrence graph", decision:"Regime shift detected if |Δsentiment| >0.3 in <30min → urgency=HIGH. Source credibility weights applied via Bayesian prior. Conflicting signals from high-credibility sources trigger UNCERTAIN flag" },
       { emoji:"⚡", name:"Signal Generator Agent", color:"#60A5FA", role:"Multi-factor ensemble model: technical (RSI, MACD, Bollinger, ATR, VWAP deviation), fundamental (P/E, EV/EBITDA z-scores), sentiment score, options flow (put/call ratio, IV skew), and macro regime. Shapley values attribute confidence to each factor.", input:"Normalized OHLCV + sentiment vector + macro regime + options flow + fundamental factors", output:"Directional signal (BUY/SELL/HOLD), confidence interval [μ±σ], factor attribution (Shapley), expected return distribution, time horizon", decision:"Signal emitted if P(direction) >75%. 60–75% → WATCH with uncertainty disclosure. <60% → ABSTAIN. Contradictory factor signals trigger LLM for narrative disambiguation. All decisions logged to audit trail." },
       { emoji:"💼", name:"Portfolio Context Agent", color:"#60A5FA", role:"Applies portfolio-level constraints: Kelly Criterion position sizing, max sector concentration (configurable), pairwise correlation enforcement (ρ<0.7 threshold), beta-adjusted exposure, and liquidity-adjusted sizing (ADV/20).", input:"Current holdings, sector weights, pairwise correlation matrix, factor exposures, ADV data", output:"Kelly-optimal position size %, sector-adjusted allocation, correlation impact analysis, risk budget consumed", decision:"Signals violating concentration or correlation limits are downgraded or blocked. Position sizes floored at min-lot and capped at risk budget. Changes to existing positions evaluated on incremental risk basis." },
       { emoji:"🤖", name:"LLM Reasoner Agent", color:"#60A5FA", role:"Orchestrates Claude Sonnet calls with structured prompting. Maintains per-user context window (last 5 interactions). Adapts terminology depth (beginner→professional) via system prompt calibration. Implements chain-of-thought for uncertainty cases.", input:"Aggregated agent outputs, user profile (level, goals, risk), chat history, market context snapshot", output:"Structured JSON: {thesis, bull_case, bear_case, catalysts, risks, time_horizon, confidence_rationale, suggested_action}", decision:"If Shapley attribution shows factor conflict: presents dual-scenario output. Hallucination mitigation: all quantitative claims must be grounded in agent-provided data. Refusal if data insufficient for minimum confidence threshold." },
@@ -5669,13 +5669,13 @@ setInterval(() => {
 
 // ==================== INTERACTIVE AI AGENTS ====================
 const AGENT_DEFINITIONS = [
-  { id:'orchestrator', icon:'🧠', name:'Orchestrator',     role:'Routing & Coordination', color:'#A78BFA',
+  { id:'orchestrator', icon:'🧠', name:'Orchestrator',     role:'Routing & Coordination', color:'#8A6A28',
     desc:'The cortex of the system. Receives every query, decides which specialist agents to invoke, manages retries, and assembles the final response from sub-agent outputs.',
     suggests:['Plan a multi-agent analysis for AAPL','Why was last NVDA signal downgraded?','How is workflow priority decided?'] },
-  { id:'ingestor', icon:'📡', name:'Data Ingestor', role:'Market Data Feeds', color:'#A78BFA',
+  { id:'ingestor', icon:'📡', name:'Data Ingestor', role:'Market Data Feeds', color:'#8A6A28',
     desc:'Maintains live connections to global exchanges, news feeds, and economic data. Detects feed lag, normalizes timestamps, FX-converts to USD, and pushes to the signal pipeline.',
     suggests:['What feeds are currently active?','Show me ingestion latency by region','How fresh is Tokyo data?'] },
-  { id:'sentiment', icon:'📰', name:'Sentiment Agent', role:'News & Social Analysis', color:'#A78BFA',
+  { id:'sentiment', icon:'📰', name:'Sentiment Agent', role:'News & Social Analysis', color:'#8A6A28',
     desc:'NLP pipeline parsing 50K+ daily articles, social posts, and SEC filings. Outputs ticker-level sentiment scores (-100 to +100), trend velocity, and unusual-attention spikes.',
     suggests:['What is sentiment on TSLA right now?','Show me top 5 sentiment movers today','Any unusual buzz on small-caps?'] },
   { id:'signal', icon:'⚡', name:'Signal Generator', role:'Quant Alpha Signals', color:'#60A5FA',
@@ -5690,10 +5690,10 @@ const AGENT_DEFINITIONS = [
   { id:'risk', icon:'🛡️', name:'Risk Validator', role:'Pre-Trade Checks', color:'#ffd32a',
     desc:'Final gatekeeper before any signal reaches the user. Validates against position limits, regulatory constraints, single-name caps, and runs anomaly detection on confidence outliers.',
     suggests:['Why was the PLTR signal downgraded?','What position-size cap applies to me?','Show flagged signals from this week'] },
-  { id:'macro', icon:'🌐', name:'Macro Agent', role:'Cross-Asset & Regime', color:'#A78BFA',
+  { id:'macro', icon:'🌐', name:'Macro Agent', role:'Cross-Asset & Regime', color:'#8A6A28',
     desc:'Tracks central bank policy, yield curves, FX, commodities, and geopolitical events. Produces regime-shift alerts (e.g. "rates pivot detected") that condition all equity signals.',
     suggests:['What\'s the current macro regime?','How will Fed cuts affect tech?','Is the dollar trending lower?'] },
-  { id:'output', icon:'📤', name:'Output Router', role:'Delivery & Personalization', color:'#A78BFA',
+  { id:'output', icon:'📤', name:'Output Router', role:'Delivery & Personalization', color:'#8A6A28',
     desc:'Last hop. Personalizes phrasing for your experience level, picks the right surface (push, in-app, email), and adapts response length to your stated preference.',
     suggests:['Switch my explanation level to advanced','Mute alerts after 9pm','How do you decide push vs in-app?'] }
 ];
@@ -5795,7 +5795,7 @@ function composeAgentReply(agentId, q) {
   const a = AGENT_DEFINITIONS.find(x => x.id === agentId);
   switch (agentId) {
     case 'orchestrator':
-      if (stock) return `<strong>Routing plan for ${stock.t}:</strong><br>1. <span style="color:var(--green);">Ingestor</span> → fetch latest tick + 30d history<br>2. <span style="color:var(--green);">Sentiment</span> → score recent news (~12 articles in cache)<br>3. <span style="color:var(--blue);">Signal Gen</span> → recompute factor scores<br>4. <span style="color:var(--blue);">LLM Reasoner</span> → synthesize narrative<br>5. <span style="color:var(--yellow);">Risk Validator</span> → check position limits<br>6. <span style="color:#A78BFA;">Output</span> → personalize for your level<br><br>Total estimated latency: <strong>~480ms</strong>. Workflow ID: <code style="background:var(--surface3);padding:1px 5px;border-radius:3px;">orch_${Date.now().toString(36)}</code>`;
+      if (stock) return `<strong>Routing plan for ${stock.t}:</strong><br>1. <span style="color:var(--green);">Ingestor</span> → fetch latest tick + 30d history<br>2. <span style="color:var(--green);">Sentiment</span> → score recent news (~12 articles in cache)<br>3. <span style="color:var(--blue);">Signal Gen</span> → recompute factor scores<br>4. <span style="color:var(--blue);">LLM Reasoner</span> → synthesize narrative<br>5. <span style="color:var(--yellow);">Risk Validator</span> → check position limits<br>6. <span style="color:#8A6A28;">Output</span> → personalize for your level<br><br>Total estimated latency: <strong>~480ms</strong>. Workflow ID: <code style="background:var(--surface3);padding:1px 5px;border-radius:3px;">orch_${Date.now().toString(36)}</code>`;
       return `Workflow priority is decided by 3 inputs: (1) <strong>query type</strong> — alerts beat reports beat backtests; (2) <strong>data freshness</strong> — live signals route fast-lane; (3) <strong>user tier</strong>. P95 first-token latency is <strong>182ms</strong>.`;
     case 'ingestor':
       return `<strong>Live feed status:</strong><br>• 🇺🇸 NYSE/NASDAQ — <span style="color:var(--green);">connected</span>, lag 80ms<br>• 🇬🇧 LSE — <span style="color:var(--green);">connected</span>, lag 110ms<br>• 🇯🇵 TSE — <span style="color:var(--yellow);">stale</span> (market closed)<br>• 🇨🇳 SSE/SZSE — <span style="color:var(--green);">connected</span>, lag 220ms<br>• 🇮🇳 NSE — <span style="color:var(--green);">connected</span>, lag 95ms<br><br>Universe coverage: <strong>100,000,000+ securities across 100+ exchanges</strong>. ${stock ? 'Latest tick on '+stock.t+' was ingested ~'+Math.floor(Math.random()*60)+'s ago.' : ''}`;
@@ -6645,10 +6645,10 @@ function _renderLegalHistoryBlock(ticker) {
   const records = getCompanyLegalHistory(ticker);
   if (!records || !records.length) return '';
   const statusColor = { 'Settled':'#22C55E', 'Dismissed':'#60A5FA', 'Cleared':'#22C55E', 'Blocked':'#EF4444', 'Verdict against':'#EF4444', 'Verdict':'#F59E0B', 'Mixed':'#F59E0B', 'Partially decided':'#F59E0B', 'Abandoned':'#60A5FA', 'Ongoing':'#F59E0B' };
-  const typeColor = { 'Antitrust':'#A78BFA', 'Criminal':'#EF4444', 'Securities':'#60A5FA', 'Privacy':'#34D399', 'Consumer':'#FBBF24', 'Environmental':'#4ADE80', 'Employment':'#FB923C', 'Tax':'#F472B6', 'Labor':'#FB923C', 'Data Breach':'#60A5FA', 'Bribery':'#EF4444', 'Product Liability':'#EF4444', 'Export Control':'#F59E0B', 'Consumer Safety':'#EF4444', 'Trade Secret':'#A78BFA', 'Patent':'#A78BFA', 'Operational':'#60A5FA', 'Mortgage':'#FBBF24', 'Regulatory':'#60A5FA', 'Commodity':'#FBBF24', 'Civil':'#60A5FA' };
+  const typeColor = { 'Antitrust':'#8A6A28', 'Criminal':'#EF4444', 'Securities':'#60A5FA', 'Privacy':'#34D399', 'Consumer':'#FBBF24', 'Environmental':'#4ADE80', 'Employment':'#FB923C', 'Tax':'#F472B6', 'Labor':'#FB923C', 'Data Breach':'#60A5FA', 'Bribery':'#EF4444', 'Product Liability':'#EF4444', 'Export Control':'#F59E0B', 'Consumer Safety':'#EF4444', 'Trade Secret':'#8A6A28', 'Patent':'#8A6A28', 'Operational':'#60A5FA', 'Mortgage':'#FBBF24', 'Regulatory':'#60A5FA', 'Commodity':'#FBBF24', 'Civil':'#60A5FA' };
   const rows = records.map(r => {
     const sc = statusColor[r.status] || '#888';
-    const tc = typeColor[r.type] || '#A78BFA';
+    const tc = typeColor[r.type] || '#8A6A28';
     const amt = r.amount ? `<span style="color:#22C55E;font-weight:700;margin-left:8px;">${_escapeHtml(r.amount)}</span>` : '';
     return `<div style="padding:12px;border:1px solid rgba(255,255,255,0.06);border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:8px;">
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
@@ -8235,7 +8235,7 @@ window.addEventListener('resize', () => {
     const S = 160; canvas.width = S; canvas.height = S;
     const cx = S / 2, cy = S / 2, R = S * 0.4, r = S * 0.26;
     const slices = [
-      { pct: 58, color: '#A78BFA' },
+      { pct: 58, color: '#8A6A28' },
       { pct: 22, color: '#60A5FA' },
       { pct: 12, color: '#F59E0B' },
       { pct:  8, color: '#4B5563' },
@@ -8268,7 +8268,7 @@ window.addEventListener('resize', () => {
     const H = 30; canvas.width = W; canvas.height = H;
     const min = Math.min(...data), max = Math.max(...data);
     const norm = v => H - 2 - ((v - min) / (max - min || 1)) * (H - 4);
-    const color = isUp ? '#A78BFA' : '#EF4444';
+    const color = isUp ? '#8A6A28' : '#EF4444';
     const xAt  = (i) => (i / (data.length - 1)) * W;
 
     const grad = ctx.createLinearGradient(0, 0, 0, H);
@@ -8288,7 +8288,7 @@ window.addEventListener('resize', () => {
   function renderAll() {
     renderAreaChart('lp-perf-chart', [
       { data: [100,104,102,108,110,109,115,117,114,120,122,124.8], color: '#60A5FA' },
-      { data: [100,108,105,114,119,117,128,133,129,138,143,147.2], color: '#A78BFA' },
+      { data: [100,108,105,114,119,117,128,133,129,138,143,147.2], color: '#8A6A28' },
     ], { height: 160 });
     renderDonut('lp-alloc-chart');
     renderSparkline('lp-spark-aapl', [182,184,181,186,187,185,189,190,188,189], true);
@@ -9995,7 +9995,7 @@ window.qeRL  = window.QESecurity.rateLimit;
       text-shadow: 0 0 6px rgba(124,58,237,0.4);
     }
     .qe-tm-row { display: inline-flex; gap: 6px; align-items: center; }
-    .qe-tm-led { width: 6px; height: 6px; border-radius: 50%; background: #A78BFA; box-shadow: 0 0 6px #A78BFA; animation: qeLedPulse 2s ease-in-out infinite; }
+    .qe-tm-led { width: 6px; height: 6px; border-radius: 50%; background: #8A6A28; box-shadow: 0 0 6px #8A6A28; animation: qeLedPulse 2s ease-in-out infinite; }
     @keyframes qeLedPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
     /* Make every header more cinematic */
@@ -10043,7 +10043,7 @@ window.qeRL  = window.QESecurity.rateLimit;
 
     /* Nav-item gets sharper futuristic feel */
     .nav-item { transition: all 200ms cubic-bezier(0.23,1,0.32,1); }
-    .nav-item.active { box-shadow: inset 3px 0 0 0 #A78BFA, 0 0 16px rgba(124,58,237,0.10); }
+    .nav-item.active { box-shadow: inset 3px 0 0 0 #8A6A28, 0 0 16px rgba(124,58,237,0.10); }
 
     @media (max-width: 768px) {
       #qe-vp-tl, #qe-vp-bl { left: 68px; }
@@ -11475,7 +11475,7 @@ window.qeRL  = window.QESecurity.rateLimit;
       cursor:pointer; transition:all 150ms; font-family:var(--font-mono);
     }
     .uvg-ctrl-btn:hover { border-color:rgba(167,139,250,0.4); color:var(--text-primary); background:rgba(124,58,237,0.15); }
-    .uvg-ctrl-btn.active { background:rgba(124,58,237,0.25); border-color:rgba(167,139,250,0.6); color:#A78BFA; }
+    .uvg-ctrl-btn.active { background:rgba(124,58,237,0.25); border-color:rgba(167,139,250,0.6); color:#8A6A28; }
 
     /* Node detail panel */
     #uv-galaxy-node-panel {
@@ -11507,9 +11507,9 @@ window.qeRL  = window.QESecurity.rateLimit;
       padding:12px 16px; z-index:10;
     }
     .uvg-ai-header { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
-    .uvg-ai-pulse { width:6px; height:6px; border-radius:50%; background:#A78BFA; box-shadow:0 0 8px rgba(167,139,250,0.7); animation:pulse 1.6s ease-in-out infinite; }
+    .uvg-ai-pulse { width:6px; height:6px; border-radius:50%; background:#8A6A28; box-shadow:0 0 8px rgba(167,139,250,0.7); animation:pulse 1.6s ease-in-out infinite; }
     .uvg-ai-title { font-family:var(--font-mono); font-size:9px; letter-spacing:0.14em; color:var(--text-muted); }
-    .uvg-ai-badge { margin-left:auto; font-family:var(--font-mono); font-size:9px; padding:2px 7px; border-radius:100px; background:rgba(124,58,237,0.15); color:#A78BFA; border:1px solid rgba(167,139,250,0.2); }
+    .uvg-ai-badge { margin-left:auto; font-family:var(--font-mono); font-size:9px; padding:2px 7px; border-radius:100px; background:rgba(124,58,237,0.15); color:#8A6A28; border:1px solid rgba(167,139,250,0.2); }
     .uvg-ai-recs { display:flex; gap:8px; overflow-x:auto; padding-bottom:2px; }
     .uvg-ai-recs::-webkit-scrollbar { display:none; }
     .uvg-ai-rec { flex-shrink:0; padding:7px 12px; border-radius:100px; font-size:11px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); color:var(--text-secondary); cursor:pointer; transition:all 150ms; white-space:nowrap; display:flex; align-items:center; gap:5px; }
@@ -11548,14 +11548,14 @@ window.qeRL  = window.QESecurity.rateLimit;
     .ai-thinking-text { font-family:var(--font-mono); font-size:11px; color:var(--text-muted); letter-spacing:0.06em; }
     .ai-thinking-dots::after { content:''; animation:thinkDots 1.4s steps(4,end) infinite; }
     @keyframes thinkDots { 0%{content:'';} 25%{content:'.';} 50%{content:'..';} 75%{content:'...';} }
-    .stream-cursor { display:inline-block; width:2px; height:14px; background:#A78BFA; margin-left:2px; vertical-align:middle; animation:cursorBlink 0.7s step-end infinite; }
+    .stream-cursor { display:inline-block; width:2px; height:14px; background:#8A6A28; margin-left:2px; vertical-align:middle; animation:cursorBlink 0.7s step-end infinite; }
     @keyframes cursorBlink { 0%,100%{opacity:1;} 50%{opacity:0;} }
     .ai-confidence-bar { display:flex; align-items:center; gap:8px; margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.05); }
     .ai-conf-label { font-family:var(--font-mono); font-size:9px; color:var(--text-muted); letter-spacing:0.08em; }
     .ai-conf-track { flex:1; height:3px; background:rgba(255,255,255,0.06); border-radius:2px; overflow:hidden; }
-    .ai-conf-fill { height:100%; border-radius:2px; background:linear-gradient(90deg,#A78BFA,#22C55E); transition:width 0.8s var(--ease-out-strong); }
+    .ai-conf-fill { height:100%; border-radius:2px; background:linear-gradient(90deg,#8A6A28,#22C55E); transition:width 0.8s var(--ease-out-strong); }
     .ai-conf-pct { font-family:var(--font-mono); font-size:9px; color:var(--text-muted); }
-    .ai-context-chip { display:inline-flex; align-items:center; gap:4px; padding:2px 7px; border-radius:100px; background:rgba(124,58,237,0.1); border:1px solid rgba(167,139,250,0.15); font-size:9px; color:#A78BFA; font-family:var(--font-mono); margin-right:4px; margin-bottom:4px; }
+    .ai-context-chip { display:inline-flex; align-items:center; gap:4px; padding:2px 7px; border-radius:100px; background:rgba(124,58,237,0.1); border:1px solid rgba(167,139,250,0.15); font-size:9px; color:#8A6A28; font-family:var(--font-mono); margin-right:4px; margin-bottom:4px; }
     .ai-response-header { display:flex; align-items:center; gap:6px; margin-bottom:6px; flex-wrap:wrap; }
     .ai-fallback-note { margin-top:6px; font-size:10px; color:var(--text-muted); font-family:var(--font-mono); opacity:0.7; }
   `;
@@ -11565,7 +11565,7 @@ window.qeRL  = window.QESecurity.rateLimit;
   const CATEGORIES = {
     physics:     { label:'Physics',     color:'#60A5FA', emoji:'⚛' },
     markets:     { label:'Markets',     color:'#22C55E', emoji:'📈' },
-    ai:          { label:'AI Agents',   color:'#A78BFA', emoji:'🤖' },
+    ai:          { label:'AI Agents',   color:'#8A6A28', emoji:'🤖' },
     sectors:     { label:'Sectors',     color:'#F59E0B', emoji:'🏭' },
     simulations: { label:'Simulations', color:'#F43F5E', emoji:'🎲' },
     macro:       { label:'Macro',       color:'#06B6D4', emoji:'🏛' },
@@ -12594,8 +12594,8 @@ FORMAT: Use **bold** for key terms. Bullet points for lists. Max 280 words unles
       .replace(/`(.*?)`/g, '<code style="background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:4px;font-family:var(--font-mono);font-size:12px;">$1</code>')
       .replace(/^### (.+)$/gm, '<div style="font-size:13px;font-weight:700;margin:8px 0 4px;color:var(--text-primary);">$1</div>')
       .replace(/^## (.+)$/gm, '<div style="font-size:14px;font-weight:700;margin:10px 0 4px;color:var(--text-primary);">$1</div>')
-      .replace(/^• (.+)$/gm, '<div style="display:flex;gap:6px;margin:2px 0;"><span style="color:#A78BFA;margin-top:2px;">•</span><span>$1</span></div>')
-      .replace(/^- (.+)$/gm, '<div style="display:flex;gap:6px;margin:2px 0;"><span style="color:#A78BFA;margin-top:2px;">•</span><span>$1</span></div>')
+      .replace(/^• (.+)$/gm, '<div style="display:flex;gap:6px;margin:2px 0;"><span style="color:#8A6A28;margin-top:2px;">•</span><span>$1</span></div>')
+      .replace(/^- (.+)$/gm, '<div style="display:flex;gap:6px;margin:2px 0;"><span style="color:#8A6A28;margin-top:2px;">•</span><span>$1</span></div>')
       .replace(/\n\n/g, '</p><p style="margin:6px 0;">')
       .replace(/\n/g, '<br>');
   }
@@ -14424,7 +14424,7 @@ function ptStartPriceRefresh() {
 // ─── Agent Definitions ────────────────────────────────────────────
 const QE_AGENTS = [
   {
-    id:'market', name:'Market Intelligence', emoji:'📡', color:'#A78BFA',
+    id:'market', name:'Market Intelligence', emoji:'📡', color:'#8A6A28',
     role:'MARKET ANALYST', flowNode:'cfn-ingest',
     domain:'global market analysis, indices, macro events, unusual activity',
     systemPrompt:`You are the Market Intelligence engine for Quant Entelloq — an institutional-grade buy-side market analyst with 20+ years synthesizing global macro data for hedge funds and sovereign wealth managers.
@@ -14494,7 +14494,7 @@ You never produce vague strategy outlines. Be specific. A trader should be able 
     suggestions:['Build a complete momentum breakout strategy for large-cap equities','Design an earnings volatility capture strategy','Create a systematic sector rotation framework based on macro regimes']
   },
   {
-    id:'research', name:'Research AI', emoji:'🔬', color:'#22D3EE',
+    id:'research', name:'Research AI', emoji:'🔬', color:'#2C6087',
     role:'RESEARCH ANALYST', flowNode:'cfn-reasoner',
     domain:'fundamental analysis, sector research, competitive dynamics, valuation',
     systemPrompt:`You are the Fundamental Research engine for Quant Entelloq — a senior equity analyst writing at the level of Goldman Sachs, Morgan Stanley, and Bernstein Research.
@@ -14505,7 +14505,7 @@ Write with conviction. Use real financial terminology. Back every claim with num
     suggestions:['Write a research note on NVIDIA with a price target','Analyze the competitive moat and valuation of Microsoft','Deep dive into the energy sector: best opportunities right now']
   },
   {
-    id:'prediction', name:'Prediction AI', emoji:'🔮', color:'#A78BFA',
+    id:'prediction', name:'Prediction AI', emoji:'🔮', color:'#8A6A28',
     role:'PREDICTIVE ANALYST', flowNode:'cfn-prediction',
     domain:'probabilistic forecasts, trend detection, scenario analysis, regime prediction',
     systemPrompt:`You are the Predictive Analytics engine for Quant Entelloq — a probabilistic forecasting system combining technical analysis, macro regime detection, and Bayesian inference.
@@ -14834,7 +14834,7 @@ async function cmdOrchestrate() {
     if (ag?.flowNode) _cmdSetFlowNode(ag.flowNode, 'running');
   });
 
-  _cmdAddFeed('ORCHESTRATOR','#A78BFA',`Dispatching ${selectedAgentIds.length} agents in parallel: ${selectedAgentIds.join(', ')}`);
+  _cmdAddFeed('ORCHESTRATOR','#8A6A28',`Dispatching ${selectedAgentIds.length} agents in parallel: ${selectedAgentIds.join(', ')}`);
 
   // Fan-out — stagger starts by 200ms for visual cascade, then run fully parallel
   const promises = selectedAgentIds.map((id, i) =>
@@ -15216,7 +15216,7 @@ function _cmdLoadDemoMode() {
   flowIds.forEach((id, i) => setTimeout(() => _cmdSetFlowNode(id, 'done'), i * 80));
   // Add demo feed items
   const demoItems = [
-    ['Market Intelligence','#A78BFA','S&P 500 breadth at 68% above 50-DMA — bullish internals'],
+    ['Market Intelligence','#8A6A28','S&P 500 breadth at 68% above 50-DMA — bullish internals'],
     ['Risk Agent','#F87171','Portfolio tech concentration 41% — above 35% threshold'],
     ['Prediction Agent','#60A5FA','12-month target: S&P 6,250 with 74% confidence'],
     ['Sentiment Agent','#34D399','Social momentum positive — NVDA trending +18% volume'],
@@ -16033,7 +16033,7 @@ setTimeout(() => {
       ? 'linear-gradient(90deg,#DC2626,#EF4444)'
       : pct >= 70
         ? 'linear-gradient(90deg,#D97706,#F59E0B)'
-        : 'linear-gradient(90deg,#7C3AED,#A78BFA)';
+        : 'linear-gradient(90deg,#7C3AED,#8A6A28)';
   };
 
   // ── Logout ───────────────────────────────────────────────────
@@ -16475,7 +16475,7 @@ setTimeout(() => {
         '</div>' +
         '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
           '<span class="qz-pill" style="background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);color:#34D399;">● PURE CLIENT</span>' +
-          '<span class="qz-pill" style="background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);color:#A78BFA;">⚡ 0 LATENCY</span>' +
+          '<span class="qz-pill" style="background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);color:#8A6A28;">⚡ 0 LATENCY</span>' +
         '</div>' +
       '</div>' +
     '</div>';
@@ -16547,7 +16547,7 @@ setTimeout(() => {
         _qlMetric('Sharpe Ratio', '1.42', '+0.18 vs S&P', '#34D399') +
         _qlMetric('Sortino Ratio', '2.15', '+0.42 vs S&P', '#34D399') +
         _qlMetric('Max Drawdown', '-8.4%', 'Last 90 days', '#F87171') +
-        _qlMetric('Calmar Ratio', '3.18', 'Annualized', '#A78BFA') +
+        _qlMetric('Calmar Ratio', '3.18', 'Annualized', '#8A6A28') +
         _qlMetric('Volatility (σ)', '18.2%', 'Annualized', 'var(--text-secondary)') +
         _qlMetric('Beta', '0.92', 'vs SPY', 'var(--text-secondary)') +
         _qlMetric('VaR 95%', '-$1,840', '1-day, $100k', '#F59E0B') +
@@ -16685,8 +16685,8 @@ setTimeout(() => {
         '<div style="font-size:11px;letter-spacing:0.16em;color:var(--accent);font-weight:600;margin-bottom:14px;">◐ BACKTEST RESULT — ' + ticker + '</div>' +
         '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">' +
           _qlMetric('Total Return', (r.totalRet*100).toFixed(2) + '%', 'over ' + days + ' days', color) +
-          _qlMetric('Sharpe Ratio', r.sharpe.toFixed(2), 'risk-adjusted', '#A78BFA') +
-          _qlMetric('Sortino Ratio', r.sortino.toFixed(2), 'downside-adjusted', '#A78BFA') +
+          _qlMetric('Sharpe Ratio', r.sharpe.toFixed(2), 'risk-adjusted', '#8A6A28') +
+          _qlMetric('Sortino Ratio', r.sortino.toFixed(2), 'downside-adjusted', '#8A6A28') +
           _qlMetric('Max Drawdown', '-' + (r.maxDD*100).toFixed(2) + '%', 'peak to trough', '#F87171') +
           _qlMetric('Win Rate', (r.winRate*100).toFixed(1) + '%', r.trades.filter(function(t){return t.side==='sell';}).length + ' trades', '#34D399') +
           _qlMetric('Final Equity', '$' + Math.round(r.finalEquity).toLocaleString(), 'from $10,000', color) +
@@ -16727,8 +16727,8 @@ setTimeout(() => {
         '<div style="font-family:var(--font-mono);font-size:34px;font-weight:700;color:#fff;margin-top:4px;">$' + bs.price.toFixed(2) + '</div>' +
       '</div>' +
       '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;">' +
-        _qlMetric('Delta (Δ)', bs.delta.toFixed(4), 'price sensitivity', '#A78BFA') +
-        _qlMetric('Gamma (Γ)', bs.gamma.toFixed(4), 'Δ sensitivity', '#22D3EE') +
+        _qlMetric('Delta (Δ)', bs.delta.toFixed(4), 'price sensitivity', '#8A6A28') +
+        _qlMetric('Gamma (Γ)', bs.gamma.toFixed(4), 'Δ sensitivity', '#2C6087') +
         _qlMetric('Vega (ν)', bs.vega.toFixed(4), 'vol sensitivity', '#34D399') +
         _qlMetric('Theta (Θ)', bs.theta.toFixed(4), 'time decay/day', '#F87171') +
         _qlMetric('Rho (ρ)', bs.rho.toFixed(4), 'rate sensitivity', '#F59E0B') +
@@ -16762,7 +16762,7 @@ setTimeout(() => {
       '<div style="display:flex;align-items:flex-end;gap:1px;height:90px;margin-bottom:14px;background:rgba(0,0,0,0.3);border-radius:6px;padding:6px;">' + bars + '</div>' +
       '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">' +
         _qlMetric('Mean', '$' + mc.mean.toFixed(2), ((mc.mean/S0-1)*100).toFixed(1) + '%', changeColor) +
-        _qlMetric('Median', '$' + mc.median.toFixed(2), ((mc.median/S0-1)*100).toFixed(1) + '%', '#A78BFA') +
+        _qlMetric('Median', '$' + mc.median.toFixed(2), ((mc.median/S0-1)*100).toFixed(1) + '%', '#8A6A28') +
         _qlMetric('VaR 5%', '$' + mc.p05.toFixed(2), 'downside tail', '#F87171') +
       '</div>' +
       '<div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">' +
@@ -16787,8 +16787,8 @@ setTimeout(() => {
       '</div>' +
       '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px;">' +
         _qlMetric('Full Kelly', '$' + Math.round(f*acct).toLocaleString(), (f*100).toFixed(2) + '% of account', color) +
-        _qlMetric('Half Kelly', '$' + Math.round(halfK*acct).toLocaleString(), (halfK*100).toFixed(2) + '% (recommended)', '#A78BFA') +
-        _qlMetric('Quarter Kelly', '$' + Math.round(quarterK*acct).toLocaleString(), (quarterK*100).toFixed(2) + '% (conservative)', '#22D3EE') +
+        _qlMetric('Half Kelly', '$' + Math.round(halfK*acct).toLocaleString(), (halfK*100).toFixed(2) + '% (recommended)', '#8A6A28') +
+        _qlMetric('Quarter Kelly', '$' + Math.round(quarterK*acct).toLocaleString(), (quarterK*100).toFixed(2) + '% (conservative)', '#2C6087') +
       '</div>';
   };
 
@@ -16966,8 +16966,8 @@ setTimeout(() => {
       '<div style="font-size:11px;letter-spacing:0.16em;color:var(--accent);font-weight:600;margin-bottom:14px;">' + ticker + ' — FACTOR LOADINGS</div>' +
       '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">' +
         _qlxMetric('Alpha (α, annual)', alphaAnn.toFixed(2) + '%' + sig(tA), 'SE: ' + (seA*252*100).toFixed(2) + '%   t = ' + tA.toFixed(2), Math.abs(tA) > 1.96 ? '#34D399' : 'var(--text-secondary)') +
-        _qlxMetric('Market β', beta.toFixed(3) + sig(tB), 't = ' + tB.toFixed(2) + '   SE: ' + seB.toFixed(3), '#A78BFA') +
-        _qlxMetric('SMB load (s)', s.toFixed(3) + sig(tS), 't = ' + tS.toFixed(2) + '   ' + (s>0?'small-cap tilt':'large-cap tilt'), '#22D3EE') +
+        _qlxMetric('Market β', beta.toFixed(3) + sig(tB), 't = ' + tB.toFixed(2) + '   SE: ' + seB.toFixed(3), '#8A6A28') +
+        _qlxMetric('SMB load (s)', s.toFixed(3) + sig(tS), 't = ' + tS.toFixed(2) + '   ' + (s>0?'small-cap tilt':'large-cap tilt'), '#2C6087') +
         _qlxMetric('HML load (h)', h.toFixed(3) + sig(tH), 't = ' + tH.toFixed(2) + '   ' + (h>0?'value tilt':'growth tilt'), '#F59E0B') +
       '</div>' +
       '<div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">' +
@@ -17047,7 +17047,7 @@ setTimeout(() => {
       var y = Math.round(((p.mu - minMu)/range)*60);
       return '<circle cx="' + x + '" cy="' + (60-y) + '" r="1.2" fill="rgba(167,139,250,0.7)"/>';
     }).join('');
-    var sharpeColor = sharpe > 0.8 ? '#34D399' : sharpe > 0.3 ? '#A78BFA' : '#F59E0B';
+    var sharpeColor = sharpe > 0.8 ? '#34D399' : sharpe > 0.3 ? '#8A6A28' : '#F59E0B';
     document.getElementById('qlx-mvo-result').innerHTML =
       '<div style="font-size:11px;letter-spacing:0.16em;color:var(--accent);font-weight:600;margin-bottom:14px;">TANGENCY (MAX SHARPE)</div>' +
       '<div style="background:linear-gradient(135deg,rgba(167,139,250,0.12),rgba(34,211,238,0.05));border:1px solid rgba(167,139,250,0.3);border-radius:10px;padding:14px;margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">' +
@@ -17056,9 +17056,9 @@ setTimeout(() => {
       '</div>' +
       '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">' +
         _qlxMetric('Expected return', (pmu*100).toFixed(2) + '%', 'per year', '#34D399') +
-        _qlxMetric('Volatility', (psd*100).toFixed(2) + '%', 'per year (σ)', '#A78BFA') +
+        _qlxMetric('Volatility', (psd*100).toFixed(2) + '%', 'per year (σ)', '#8A6A28') +
         _qlxMetric('Sharpe ratio', sharpe.toFixed(3), 'risk-adjusted excess return', sharpeColor) +
-        _qlxMetric('Min-var portfolio', (mvWA*100).toFixed(0) + '% / ' + (mvWB*100).toFixed(0) + '%', 'μ=' + (mvMu*100).toFixed(1) + '% σ=' + (mvSd*100).toFixed(1) + '%', '#22D3EE') +
+        _qlxMetric('Min-var portfolio', (mvWA*100).toFixed(0) + '% / ' + (mvWB*100).toFixed(0) + '%', 'μ=' + (mvMu*100).toFixed(1) + '% σ=' + (mvSd*100).toFixed(1) + '%', '#2C6087') +
       '</div>' +
       '<div style="margin-top:14px;background:rgba(0,0,0,0.3);border-radius:8px;padding:6px;"><svg viewBox="0 0 100 60" preserveAspectRatio="none" style="width:100%;height:60px;"><polyline points="0,60 100,60" stroke="rgba(255,255,255,0.1)" stroke-width="0.3"/>' + bars + '</svg><div style="font-size:9.5px;color:var(--text-muted);text-align:center;margin-top:4px;letter-spacing:0.06em;">EFFICIENT FRONTIER (σ → μ)</div></div>';
   };
@@ -17181,7 +17181,7 @@ setTimeout(() => {
     var ranked = raw.map(function(r){ return { ticker: r.ticker, ret: r.ret, z: sd > 0 ? (r.ret - mu)/sd : 0 }; }).sort(function(a,b){return b.z - a.z;});
     var rows = ranked.map(function(r, i) {
       var decile = Math.min(10, Math.max(1, 10 - Math.floor(i/Math.max(1, Math.ceil(ranked.length/10)))));
-      var col = r.z > 1 ? '#34D399' : r.z > 0 ? '#A78BFA' : r.z > -1 ? '#F59E0B' : '#F87171';
+      var col = r.z > 1 ? '#34D399' : r.z > 0 ? '#8A6A28' : r.z > -1 ? '#F59E0B' : '#F87171';
       var sign = decile >= 8 ? 'LONG' : decile <= 3 ? 'SHORT' : 'NEUTRAL';
       var sigCol = decile >= 8 ? '#34D399' : decile <= 3 ? '#F87171' : 'var(--text-muted)';
       return '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);"><td style="padding:8px 10px;font-weight:600;">#' + (i+1) + '</td><td style="padding:8px 10px;font-family:var(--font-mono);font-weight:600;">' + r.ticker + '</td><td style="padding:8px 10px;text-align:right;font-family:var(--font-mono);color:' + (r.ret>0?'#34D399':'#F87171') + ';">' + (r.ret*100).toFixed(2) + '%</td><td style="padding:8px 10px;text-align:right;font-family:var(--font-mono);color:' + col + ';">' + r.z.toFixed(2) + '</td><td style="padding:8px 10px;text-align:right;font-family:var(--font-mono);color:var(--text-muted);">D' + decile + '</td><td style="padding:8px 10px;text-align:right;font-size:10px;letter-spacing:0.08em;color:' + sigCol + ';font-weight:600;">' + sign + '</td></tr>';
@@ -17283,7 +17283,7 @@ setTimeout(() => {
         '</div>' +
         '<div style="display:flex;gap:6px;flex-wrap:wrap;">' +
           '<span style="font-size:9.5px;letter-spacing:0.1em;font-weight:600;font-family:var(--font-mono);padding:4px 9px;border-radius:4px;background:rgba(16,185,129,0.10);border:1px solid rgba(16,185,129,0.3);color:#34D399;">SECURE-PROXY</span>' +
-          '<span style="font-size:9.5px;letter-spacing:0.1em;font-weight:600;font-family:var(--font-mono);padding:4px 9px;border-radius:4px;background:rgba(167,139,250,0.10);border:1px solid rgba(167,139,250,0.3);color:#A78BFA;">10 TOOLS</span>' +
+          '<span style="font-size:9.5px;letter-spacing:0.1em;font-weight:600;font-family:var(--font-mono);padding:4px 9px;border-radius:4px;background:rgba(167,139,250,0.10);border:1px solid rgba(167,139,250,0.3);color:#8A6A28;">10 TOOLS</span>' +
         '</div>' +
       '</div>' +
     '</div>';
@@ -17481,7 +17481,7 @@ setTimeout(() => {
       '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;">' +
         _mini('Valid', good.length, '#34D399') + _mini('Invalid', bad.length, bad.length?'#F87171':'var(--text-secondary)') +
         _mini('Duplicates', hasDups.length, hasDups.length?'#F59E0B':'var(--text-secondary)') +
-        _mini('Total value', '$' + Math.round(totalValue).toLocaleString(), '#A78BFA') +
+        _mini('Total value', '$' + Math.round(totalValue).toLocaleString(), '#8A6A28') +
       '</div>' +
       '<div style="max-height:280px;overflow:auto;border:1px solid rgba(255,255,255,0.05);border-radius:8px;">' +
         '<table class="qz-data" style="width:100%;font-size:12px;"><thead><tr><th>#</th><th style="text-align:left;">TICKER</th><th style="text-align:right;">QTY</th><th style="text-align:right;">COST</th><th style="text-align:right;">VALUE</th><th>STATUS</th></tr></thead><tbody>' + tableRows + '</tbody></table>' +
@@ -18019,7 +18019,7 @@ async function qzCoachReview() {
     '.qz-disclaimer-banner strong{color:#FCD34D;font-weight:600}',
     '#qz-global-footer-disclaimer{position:fixed;bottom:0;left:0;right:0;z-index:50;padding:6px 18px;background:rgba(10,11,14,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,0.05);color:rgba(255,255,255,0.45);font-size:10.5px;letter-spacing:0.01em;text-align:center;font-family:var(--font-mono);pointer-events:none}',
     '#qz-global-footer-disclaimer a{color:rgba(167,139,250,0.7);text-decoration:none;pointer-events:auto}',
-    '#qz-global-footer-disclaimer a:hover{color:#A78BFA}',
+    '#qz-global-footer-disclaimer a:hover{color:#8A6A28}',
     '/* Make space at the bottom of every page so footer doesnt cover content */',
     '.page-content,#app .main-content{padding-bottom:48px !important}',
     '@media (max-width: 768px){#qz-global-footer-disclaimer{font-size:9.5px;padding:5px 8px}}',
@@ -18179,7 +18179,7 @@ async function qzCoachReview() {
     // Subtle glow on focused inputs site-wide
     'input:focus,select:focus,textarea:focus{outline:none}',
     // Premium gradient text helper
-    '.qz-gradient-text-premium{background:linear-gradient(135deg,#A78BFA,#22D3EE,#34D399);background-size:200% 200%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:qzGradShift 8s ease-in-out infinite}',
+    '.qz-gradient-text-premium{background:linear-gradient(135deg,#8A6A28,#2C6087,#34D399);background-size:200% 200%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:qzGradShift 8s ease-in-out infinite}',
     '@keyframes qzGradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}',
     // Tab hover (Quant Lab tabs etc.)
     '.ql-tab:hover{color:#fff !important}',
@@ -18289,7 +18289,7 @@ async function qzCoachReview() {
     '<defs>' +
       '<linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
         '<stop offset="0" stop-color="#E4A11B"/>' +
-        '<stop offset="1" stop-color="#67E8F9"/>' +
+        '<stop offset="1" stop-color="#2F6E7A"/>' +
       '</linearGradient>' +
       '<linearGradient id="m" x1="0" y1="0" x2="0" y2="1">' +
         '<stop offset="0" stop-color="#F4F4F0"/>' +
@@ -18304,9 +18304,9 @@ async function qzCoachReview() {
     '<line x1="2" y1="32" x2="14" y2="32" stroke="url(#g)" stroke-width="0.8" opacity="0.55"/>' +
     '<line x1="6" y1="26" x2="14" y2="32" stroke="url(#g)" stroke-width="0.8" opacity="0.55"/>' +
     '<line x1="6" y1="38" x2="14" y2="32" stroke="url(#g)" stroke-width="0.8" opacity="0.55"/>' +
-    '<circle cx="2" cy="32" r="1.5" fill="#67E8F9"/>' +
-    '<circle cx="6" cy="26" r="1.2" fill="#67E8F9"/>' +
-    '<circle cx="6" cy="38" r="1.2" fill="#67E8F9"/>' +
+    '<circle cx="2" cy="32" r="1.5" fill="#2F6E7A"/>' +
+    '<circle cx="6" cy="26" r="1.2" fill="#2F6E7A"/>' +
+    '<circle cx="6" cy="38" r="1.2" fill="#2F6E7A"/>' +
     // Central node — stylized "E" inside the circle
     '<path d="M 26 26 L 38 26 L 38 28.5 L 28.5 28.5 L 28.5 30.8 L 35 30.8 L 35 33.3 L 28.5 33.3 L 28.5 35.6 L 38 35.6 L 38 38 L 26 38 Z" fill="url(#m)"/>' +
     // Right-side accent (mirrored circuit)
@@ -18405,7 +18405,7 @@ async function qzCoachReview() {
       }
       .qz-xp-toast::before {
         content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%;
-        background: linear-gradient(180deg, #E4A11B, #67E8F9);
+        background: linear-gradient(180deg, #E4A11B, #2F6E7A);
       }
       .qz-xp-toast-amt {
         font-size: 17px !important;
@@ -18432,7 +18432,7 @@ async function qzCoachReview() {
       }
       .qz-lu-lvl {
         font-size: 84px !important;
-        background: linear-gradient(135deg, #E4A11B 0%, #67E8F9 100%) !important;
+        background: linear-gradient(135deg, #E4A11B 0%, #2F6E7A 100%) !important;
         -webkit-background-clip: text !important;
         background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
@@ -18474,7 +18474,7 @@ async function qzCoachReview() {
         background: rgba(244,244,240,0.06) !important;
       }
       .qz-rpg-w-fill {
-        background: linear-gradient(90deg, #E4A11B, #67E8F9) !important;
+        background: linear-gradient(90deg, #E4A11B, #2F6E7A) !important;
         box-shadow: 0 0 12px rgba(228,161,27,0.5) !important;
       }
       .qz-rpg-widget {
@@ -18511,7 +18511,7 @@ async function qzCoachReview() {
           var cy = Math.sin(angle) * dist;
           p.style.cssText =
             'position: absolute; top: 50%; left: 50%; width: 8px; height: 8px; border-radius: 2px;' +
-            'background: ' + (i % 3 === 0 ? '#E4A11B' : (i % 3 === 1 ? '#67E8F9' : '#F4F4F0')) + ';' +
+            'background: ' + (i % 3 === 0 ? '#E4A11B' : (i % 3 === 1 ? '#2F6E7A' : '#F4F4F0')) + ';' +
             'pointer-events: none;' +
             '--cx: ' + cx + 'px; --cy: ' + cy + 'px;' +
             'animation: qeConfetti 1400ms cubic-bezier(0.22, 1, 0.36, 1) forwards;';
@@ -18578,7 +18578,7 @@ async function qzCoachReview() {
       #qe-scroll-progress {
         position: fixed; top: 0; left: 0; right: 0;
         height: 2px; z-index: 99998;
-        background: linear-gradient(90deg, var(--qe-amber, #E4A11B), var(--qe-cyan, #67E8F9));
+        background: linear-gradient(90deg, var(--qe-amber, #E4A11B), var(--qe-cyan, #2F6E7A));
         transform-origin: left center;
         transform: scaleX(0);
         transition: transform 80ms linear;
@@ -19591,9 +19591,9 @@ async function qzCoachReview() {
       done ? 'opacity: 0.72;' : '',
     ].join('');
     card.innerHTML =
-      '<div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#A78BFA,#22D3EE);display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:13px;color:#0a0b0e;letter-spacing:-0.04em;flex-shrink:0;">' + c.mono + '</div>' +
+      '<div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#8A6A28,#2C6087);display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:13px;color:#0a0b0e;letter-spacing:-0.04em;flex-shrink:0;">' + c.mono + '</div>' +
       '<div style="flex:1;min-width:240px;">' +
-        '<div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.14em;color:#A78BFA;font-weight:600;">DAILY CHALLENGE · ' + (done ? 'COMPLETED' : 'ACTIVE') + '</div>' +
+        '<div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.14em;color:#8A6A28;font-weight:600;">DAILY CHALLENGE · ' + (done ? 'COMPLETED' : 'ACTIVE') + '</div>' +
         '<div style="font-family:var(--font-display);font-size:16px;font-weight:700;color:#fff;margin-top:2px;letter-spacing:-0.01em;">' + c.title + '</div>' +
         '<div style="font-size:12.5px;color:var(--text-muted);margin-top:3px;line-height:1.5;">' + c.text + '</div>' +
       '</div>' +
@@ -19655,8 +19655,8 @@ async function qzCoachReview() {
     var streak = (typeof qzAcademy === 'object') ? qzAcademy.streak().days : 0;
     var sess = currentSession();
     strip.innerHTML =
-      tile('LEVEL', 'L' + rpg.level, (lvl ? lvl.title : ''), '#A78BFA') +
-      tile('TOTAL XP', rpg.xp.toLocaleString(), (nxt ? (nxt.xp - rpg.xp).toLocaleString() + ' to next' : 'MAX'), '#22D3EE') +
+      tile('LEVEL', 'L' + rpg.level, (lvl ? lvl.title : ''), '#8A6A28') +
+      tile('TOTAL XP', rpg.xp.toLocaleString(), (nxt ? (nxt.xp - rpg.xp).toLocaleString() + ' to next' : 'MAX'), '#2C6087') +
       tile('STREAK', streak + 'd', streak >= 7 ? 'on fire' : streak >= 2 ? 'keep going' : 'starting', streak >= 7 ? '#FBBF24' : streak >= 2 ? '#34D399' : 'var(--text-secondary)') +
       tile('MARKET', sess.name, sess.weekend ? 'weekend' : 'NYSE session', sess.color);
     return strip;
@@ -19816,7 +19816,7 @@ async function qzCoachReview() {
       }
       .qz-mentor-avatar {
         width: 36px; height: 36px; border-radius: 9px;
-        background: linear-gradient(135deg, #A78BFA, #22D3EE);
+        background: linear-gradient(135deg, #8A6A28, #2C6087);
         display: grid; place-items: center; flex-shrink: 0;
         font-family: var(--font-display); font-weight: 800; font-size: 15px;
         color: #0a0b0e; letter-spacing: -0.04em;
@@ -19824,7 +19824,7 @@ async function qzCoachReview() {
       }
       .qz-mentor-name {
         font-family: var(--font-mono); font-size: 9.5px;
-        letter-spacing: 0.16em; color: #A78BFA; font-weight: 600;
+        letter-spacing: 0.16em; color: #8A6A28; font-weight: 600;
       }
       .qz-mentor-role {
         font-size: 11px; color: var(--text-muted); margin-top: 1px;
@@ -20241,7 +20241,7 @@ async function qzCoachReview() {
       #qz-copilot-dock {
         position: fixed; bottom: 56px; right: 22px; z-index: 99990;
         width: 52px; height: 52px; border-radius: 13px;
-        background: linear-gradient(135deg, #A78BFA 0%, #22D3EE 100%);
+        background: linear-gradient(135deg, #8A6A28 0%, #2C6087 100%);
         border: none; cursor: pointer; padding: 0;
         box-shadow: 0 8px 28px rgba(167,139,250,0.32), 0 0 0 1px rgba(255,255,255,0.06) inset;
         display: grid; place-items: center;
@@ -20291,7 +20291,7 @@ async function qzCoachReview() {
       }
       .qz-cop-hdr-avatar {
         width: 32px; height: 32px; border-radius: 8px;
-        background: linear-gradient(135deg, #A78BFA, #22D3EE);
+        background: linear-gradient(135deg, #8A6A28, #2C6087);
         display: grid; place-items: center; flex-shrink: 0;
         font-family: var(--font-display); font-weight: 800; font-size: 14px;
         color: #0a0b0e; letter-spacing: -0.04em;
@@ -20323,7 +20323,7 @@ async function qzCoachReview() {
       .qz-cop-body::-webkit-scrollbar-thumb { background: rgba(167,139,250,0.3); border-radius: 2px; }
 
       /* Welcome screen */
-      .qz-cop-welcome-eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: #A78BFA; font-weight: 600; }
+      .qz-cop-welcome-eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: #8A6A28; font-weight: 600; }
       .qz-cop-welcome-h1 { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: #fff; letter-spacing: -0.015em; margin: 6px 0 4px; line-height: 1.2; }
       .qz-cop-welcome-sub { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 18px; }
       .qz-cop-cap-list { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 16px; }
@@ -20364,8 +20364,8 @@ async function qzCoachReview() {
         color: var(--text-muted); font-weight: 600; text-transform: uppercase;
         margin-bottom: 5px;
       }
-      .qz-cop-msg-role.user { color: #22D3EE; }
-      .qz-cop-msg-role.ai   { color: #A78BFA; }
+      .qz-cop-msg-role.user { color: #2C6087; }
+      .qz-cop-msg-role.ai   { color: #8A6A28; }
       .qz-cop-msg-bubble {
         font-size: 13px; line-height: 1.6;
         color: rgba(255,255,255,0.9);
@@ -20386,7 +20386,7 @@ async function qzCoachReview() {
         padding: 7px 14px; background: rgba(34,211,238,0.04);
         border-top: 1px solid rgba(255,255,255,0.05);
         font-family: var(--font-mono); font-size: 10px;
-        color: #67E8F9; letter-spacing: 0.05em;
+        color: #2F6E7A; letter-spacing: 0.05em;
         display: flex; align-items: center; gap: 6px;
       }
       .qz-cop-ctx-strip::before { content: "CONTEXT"; opacity: 0.6; }
@@ -20849,16 +20849,16 @@ async function qzCoachReview() {
 
   const ACHIEVEMENTS = [
     { id:'first_position',    name:'Investor',          desc:'Add your first holding',          mono:'I',  color:'#34D399' },
-    { id:'diversifier',       name:'Diversifier',       desc:'Hold 5+ positions',               mono:'D',  color:'#A78BFA' },
-    { id:'allocator',         name:'Allocator',         desc:'Hold 10+ positions',              mono:'A',  color:'#22D3EE' },
+    { id:'diversifier',       name:'Diversifier',       desc:'Hold 5+ positions',               mono:'D',  color:'#8A6A28' },
+    { id:'allocator',         name:'Allocator',         desc:'Hold 10+ positions',              mono:'A',  color:'#2C6087' },
     { id:'quant_apprentice',  name:'Quant Apprentice',  desc:'Run your first backtest',         mono:'QA', color:'#60A5FA' },
     { id:'quant_researcher',  name:'Quant Researcher',  desc:'Run 10 backtests',                mono:'QR', color:'#818CF8' },
     { id:'risk_aware',        name:'Risk-Aware',        desc:'Compute VaR for your portfolio',  mono:'R',  color:'#F87171' },
     { id:'market_analyst',    name:'Market Analyst',    desc:'Read 100 intelligence items',     mono:'MA', color:'#F59E0B' },
     { id:'polymath',          name:'Polymath',          desc:'Use every Quant Lab tool',        mono:'P',  color:'#F472B6' },
     { id:'sentinel',          name:'Sentinel',          desc:'Set 5 price alerts',              mono:'S',  color:'#10B981' },
-    { id:'orchestrator',      name:'Orchestrator',      desc:'Run the 10-agent orchestrator',   mono:'O',  color:'#A78BFA' },
-    { id:'strategist',        name:'Strategist',        desc:'Reach Level 5',                   mono:'L5', color:'#22D3EE' },
+    { id:'orchestrator',      name:'Orchestrator',      desc:'Run the 10-agent orchestrator',   mono:'O',  color:'#8A6A28' },
+    { id:'strategist',        name:'Strategist',        desc:'Reach Level 5',                   mono:'L5', color:'#2C6087' },
     { id:'master',            name:'Quant Master',      desc:'Reach Level 8',                   mono:'L8', color:'#F59E0B' },
   ];
 
@@ -20989,11 +20989,11 @@ async function qzCoachReview() {
         width: 44px; height: 44px; border-radius: 10px;
         display: grid; place-items: center; flex-shrink: 0;
         font-family: var(--font-display); font-weight: 800; font-size: 14px;
-        background: linear-gradient(135deg, var(--ach-color, #A78BFA), color-mix(in srgb, var(--ach-color, #A78BFA) 60%, #22D3EE));
+        background: linear-gradient(135deg, var(--ach-color, #8A6A28), color-mix(in srgb, var(--ach-color, #8A6A28) 60%, #2C6087));
         color: #0a0b0e; letter-spacing: -0.04em;
-        box-shadow: 0 4px 14px color-mix(in srgb, var(--ach-color, #A78BFA) 40%, transparent);
+        box-shadow: 0 4px 14px color-mix(in srgb, var(--ach-color, #8A6A28) 40%, transparent);
       }
-      .qz-ach-eyebrow { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.14em; color: var(--ach-color, #A78BFA); font-weight: 600; }
+      .qz-ach-eyebrow { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.14em; color: var(--ach-color, #8A6A28); font-weight: 600; }
       .qz-ach-name { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: #fff; margin-top: 2px; }
       .qz-ach-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
@@ -21020,7 +21020,7 @@ async function qzCoachReview() {
       }
       .qz-lu-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; color: #34D399; font-weight: 600; }
       .qz-lu-lvl { font-family: var(--font-display); font-size: 64px; font-weight: 800; line-height: 1; margin: 14px 0 6px;
-        background: linear-gradient(135deg, #A78BFA 0%, #22D3EE 100%);
+        background: linear-gradient(135deg, #8A6A28 0%, #2C6087 100%);
         -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
         letter-spacing: -0.04em; }
       .qz-lu-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
@@ -21038,13 +21038,13 @@ async function qzCoachReview() {
       }
       .qz-rpg-widget:hover { border-color: rgba(167,139,250,0.4); transform: translateY(-1px); }
       .qz-rpg-w-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-      .qz-rpg-w-lvl { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; color: #A78BFA; font-weight: 600; }
+      .qz-rpg-w-lvl { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; color: #8A6A28; font-weight: 600; }
       .qz-rpg-w-xp  { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); }
       .qz-rpg-w-title { font-family: var(--font-display); font-size: 12.5px; font-weight: 600; color: #fff; margin-bottom: 8px; letter-spacing: -0.005em; }
       .qz-rpg-w-bar { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
       .qz-rpg-w-fill {
         height: 100%;
-        background: linear-gradient(90deg, #A78BFA, #22D3EE);
+        background: linear-gradient(90deg, #8A6A28, #2C6087);
         border-radius: 2px;
         transition: width 600ms cubic-bezier(0.16,1,0.3,1);
         box-shadow: 0 0 10px rgba(167,139,250,0.4);
@@ -21068,7 +21068,7 @@ async function qzCoachReview() {
       .qz-quest-hdr { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
       .qz-quest-lvl-stack { font-family: var(--font-display); font-size: 24px; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
       .qz-quest-mono { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px;
-        border-radius: 9px; background: linear-gradient(135deg, #A78BFA, #22D3EE); color: #0a0b0e;
+        border-radius: 9px; background: linear-gradient(135deg, #8A6A28, #2C6087); color: #0a0b0e;
         font-family: var(--font-display); font-weight: 800; font-size: 14px; letter-spacing: -0.04em; margin-right: 10px; }
       .qz-quest-tab-row { display: flex; gap: 0; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 14px; }
       .qz-quest-tab { padding: 10px 16px; background: transparent; border: none; cursor: pointer;
@@ -21089,7 +21089,7 @@ async function qzCoachReview() {
       .qz-quest-item.done .qz-quest-check { background: #34D399; border-color: #34D399; color: #0a0b0e; }
       .qz-quest-item.done .qz-quest-check::after { content: "✓"; font-weight: 700; }
       .qz-quest-text { flex: 1; font-size: 13px; color: rgba(255,255,255,0.9); }
-      .qz-quest-xp { font-family: var(--font-mono); font-size: 11px; color: #A78BFA; font-weight: 600; letter-spacing: 0.04em; }
+      .qz-quest-xp { font-family: var(--font-mono); font-size: 11px; color: #8A6A28; font-weight: 600; letter-spacing: 0.04em; }
 
       .qz-ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
       .qz-ach-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
@@ -21265,7 +21265,7 @@ async function qzCoachReview() {
     '</div>' +
     '<div style="margin-bottom:18px;">' +
       '<div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;color:var(--text-muted);margin-bottom:4px;letter-spacing:0.05em;"><span>' + STATE.xp.toLocaleString() + ' XP TOTAL</span><span>' + (nxt ? 'NEXT: ' + nxt.title + ' @ ' + nxt.xp.toLocaleString() : 'MAX LEVEL') + '</span></div>' +
-      '<div style="height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;"><div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#A78BFA,#22D3EE);box-shadow:0 0 12px rgba(167,139,250,0.4);transition:width 600ms cubic-bezier(0.16,1,0.3,1);"></div></div>' +
+      '<div style="height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;"><div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#8A6A28,#2C6087);box-shadow:0 0 12px rgba(167,139,250,0.4);transition:width 600ms cubic-bezier(0.16,1,0.3,1);"></div></div>' +
     '</div>' +
     '<div class="qz-quest-tab-row">' +
       '<button class="qz-quest-tab ' + (_qPanelTab==='quests'?'active':'') + '" onclick="qzQuestTab(\'quests\')">Active Quests</button>' +
@@ -21374,7 +21374,7 @@ async function qzCoachReview() {
             '<div class="qz-padd-result-tk">' + t + '</div>' +
             '<div class="qz-padd-result-nm">' + nm + '</div>' +
             '<div class="qz-padd-result-ex">' + ex + '</div>' +
-            '<div style="font-size:11px;color:#A78BFA;">+ Add →</div>' +
+            '<div style="font-size:11px;color:#8A6A28;">+ Add →</div>' +
           '</div>';
         }).join('');
     }
@@ -21409,7 +21409,7 @@ async function qzCoachReview() {
         '<div class="qz-padd-result-tk">' + s.ticker + '</div>' +
         '<div class="qz-padd-result-nm">' + (s.name || '') + '</div>' +
         '<div class="qz-padd-result-ex">' + (s.exchange || s.asset_type || '') + '</div>' +
-        '<div style="font-size:11px;color:#A78BFA;">$' + (s.price ? s.price.toFixed(2) : '—') + '</div>' +
+        '<div style="font-size:11px;color:#8A6A28;">$' + (s.price ? s.price.toFixed(2) : '—') + '</div>' +
       '</div>';
     }).join('');
   }
@@ -21779,7 +21779,7 @@ async function qzCoachReview() {
       st.textContent = [
         // Replace emoji glyph inside .cmd-agent-icon with the data-mono attribute
         '.cmd-agent-icon { font-size: 0 !important; position: relative; min-width: 36px; min-height: 36px; border-radius: 9px !important; display: grid !important; place-items: center !important; overflow: hidden; }',
-        '.cmd-agent-icon[data-mono]::after { content: attr(data-mono); font-family: var(--font-display, "DM Sans"), sans-serif !important; font-size: 13.5px !important; font-weight: 700; color: var(--agent-color, #A78BFA) !important; letter-spacing: -0.03em; line-height: 1; }',
+        '.cmd-agent-icon[data-mono]::after { content: attr(data-mono); font-family: var(--font-display, "DM Sans"), sans-serif !important; font-size: 13.5px !important; font-weight: 700; color: var(--agent-color, #8A6A28) !important; letter-spacing: -0.03em; line-height: 1; }',
         // Hide audio waves on idle agents (less noise)
         '.cmd-agent-card:not(.cmd-agent-active) .cmd-agent-wave { display: none !important; }',
         // Tighter card
@@ -21793,7 +21793,7 @@ async function qzCoachReview() {
         // Chat panel emoji removal (the smiley etc in agent header)
         '.qz-chat-toolbar [style*="color:rgba(74,222,128,0.6)"] { display: none; }',
         // Memory indicator
-        '.qz-mem-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 4px; background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.18); color: #67E8F9; font-size: 9.5px; font-family: var(--font-mono); letter-spacing: 0.06em; font-weight: 600; margin-left: 8px; }',
+        '.qz-mem-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 4px; background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.18); color: #2F6E7A; font-size: 9.5px; font-family: var(--font-mono); letter-spacing: 0.06em; font-weight: 600; margin-left: 8px; }',
       ].join('\n');
       document.head.appendChild(st);
     }
@@ -21965,7 +21965,7 @@ async function qzCoachReview() {
           var cntEl = document.getElementById('cmd-stat-queries');
           if (cntEl && window.cmdState) cntEl.textContent = window.cmdState.queryCount;
           if (typeof _cmdAddFeed === 'function') {
-            _cmdAddFeed('SMART ROUTER','#22D3EE','Routed to single specialist: ' + singleId.toUpperCase());
+            _cmdAddFeed('SMART ROUTER','#2C6087','Routed to single specialist: ' + singleId.toUpperCase());
           }
           try { await window._cmdRunAgent(singleId, query); } catch(_){}
           if (window.cmdState) window.cmdState.running = false;
@@ -22095,7 +22095,7 @@ async function qzCoachReview() {
       '  font-size: 0 !important;',
       '  width: 30px !important; height: 30px !important;',
       '  min-width: 30px !important; min-height: 30px !important;',
-      '  background: linear-gradient(135deg, #A78BFA 0%, #22D3EE 100%) !important;',
+      '  background: linear-gradient(135deg, #8A6A28 0%, #2C6087 100%) !important;',
       '  border-radius: 7px !important;',
       '  box-shadow: 0 4px 20px rgba(167,139,250,0.32), 0 0 1px rgba(255,255,255,0.12) inset !important;',
       '  position: relative !important;',
@@ -22237,7 +22237,7 @@ async function qzCoachReview() {
     .qe-reel-caption.show { opacity: 1; }
     .qe-reel-caption em {
       font-style: italic;
-      background: linear-gradient(135deg, #A78BFA, #67E8F9);
+      background: linear-gradient(135deg, #8A6A28, #2F6E7A);
       -webkit-background-clip: text; background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -22296,7 +22296,7 @@ async function qzCoachReview() {
     .qe-reel-mark {
       width: 220px; height: 220px;
       border-radius: 36px;
-      background: linear-gradient(135deg, #A78BFA, #67E8F9);
+      background: linear-gradient(135deg, #8A6A28, #2F6E7A);
       display: grid; place-items: center;
       font-family: 'Fraunces', serif; font-weight: 700;
       font-size: 140px; color: #0A0A0B;
@@ -22324,7 +22324,7 @@ async function qzCoachReview() {
     }
     .qe-reel-wordmark em {
       font-style: italic;
-      background: linear-gradient(135deg, #A78BFA, #67E8F9);
+      background: linear-gradient(135deg, #8A6A28, #2F6E7A);
       -webkit-background-clip: text; background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -22340,7 +22340,7 @@ async function qzCoachReview() {
       font-family: 'JetBrains Mono', monospace;
       font-size: 14px;
       letter-spacing: 0.16em;
-      color: #67E8F9;
+      color: #2F6E7A;
       margin-top: 14px;
     }
 
@@ -22595,7 +22595,7 @@ async function qzCoachReview() {
       row.className = 'qe-debris-row';
       row.style.top = (10 + i * 14) + 'vh';
       row.style.left = '0';
-      row.style.color = i % 2 === 0 ? '#A78BFA' : '#67E8F9';
+      row.style.color = i % 2 === 0 ? '#8A6A28' : '#2F6E7A';
       row.style.opacity = '0.35';
       row.style.animationDelay = (i * 0.4) + 's';
       var content = '';
@@ -22667,13 +22667,13 @@ async function qzCoachReview() {
     card.className = 'qe-reel-card';
     card.style.cssText += 'width:680px;max-width:80vw;top:50%;left:50%;transform:translate(-50%,-50%) translateY(20px) scale(0.95);';
     card.innerHTML = `
-      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.22em;color:#A78BFA;text-transform:uppercase;margin-bottom:14px;">— UNITED STATES MARKET</div>
-      <div style="font-family:'Fraunces',serif;font-size:36px;font-weight:500;letter-spacing:-0.02em;line-height:1.15;color:#fff;">AAPL leads US BUYs at <strong style="color:#67E8F9;">94% confidence</strong></div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.22em;color:#8A6A28;text-transform:uppercase;margin-bottom:14px;">— UNITED STATES MARKET</div>
+      <div style="font-family:'Fraunces',serif;font-size:36px;font-weight:500;letter-spacing:-0.02em;line-height:1.15;color:#fff;">AAPL leads US BUYs at <strong style="color:#2F6E7A;">94% confidence</strong></div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px;">
         <div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;color:rgba(244,244,240,0.5);text-transform:uppercase;">Securities</div><div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:600;color:#fff;margin-top:4px;">149</div></div>
         <div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;color:rgba(244,244,240,0.5);text-transform:uppercase;">Exchanges</div><div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:600;color:#fff;margin-top:4px;">7</div></div>
         <div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;color:rgba(244,244,240,0.5);text-transform:uppercase;">Sentiment</div><div style="font-family:'Fraunces',serif;font-size:22px;font-weight:500;color:#34D399;margin-top:4px;">Bullish</div></div>
-        <div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;color:rgba(244,244,240,0.5);text-transform:uppercase;">Latency</div><div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:600;color:#A78BFA;margin-top:4px;">103ms</div></div>
+        <div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;color:rgba(244,244,240,0.5);text-transform:uppercase;">Latency</div><div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:600;color:#8A6A28;margin-top:4px;">103ms</div></div>
       </div>
     `;
     stage.appendChild(card);
@@ -22695,7 +22695,7 @@ async function qzCoachReview() {
     var cards = [
       { tag: 'BULLISH', color: '#34D399', title: 'AI Infrastructure Momentum', body: 'NVDA, AMD, AVGO showing breakout consolidation. Capex cycle accelerating.' },
       { tag: 'BEARISH', color: '#B3453D', title: 'Regional Banks · Credit Stress', body: 'Loan-loss provisions trending up. Watch KRE, RF, ZION.' },
-      { tag: 'MACRO',   color: '#67E8F9', title: 'Yield Curve · Steepening', body: 'Long-end selloff. Risk-on for cyclicals, drag on long-duration tech.' },
+      { tag: 'MACRO',   color: '#2F6E7A', title: 'Yield Curve · Steepening', body: 'Long-end selloff. Risk-on for cyclicals, drag on long-duration tech.' },
     ];
     cards.forEach(function(c, i) {
       var card = document.createElement('div');
@@ -22723,12 +22723,12 @@ async function qzCoachReview() {
     card.className = 'qe-reel-card';
     card.style.cssText += 'width:760px;max-width:85vw;top:50%;left:50%;transform:translate(-50%,-50%);padding:30px;';
     card.innerHTML = `
-      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.22em;color:#A78BFA;text-transform:uppercase;margin-bottom:10px;">— 06 — FAMA-FRENCH 3-FACTOR REGRESSION</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.22em;color:#8A6A28;text-transform:uppercase;margin-bottom:10px;">— 06 — FAMA-FRENCH 3-FACTOR REGRESSION</div>
       <div style="font-family:'Fraunces',serif;font-size:24px;font-weight:500;color:#fff;letter-spacing:-0.02em;margin-bottom:18px;">AAPL — Factor Loadings</div>
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
         <div style="background:rgba(244,244,240,0.03);border:1px solid rgba(244,244,240,0.06);border-radius:8px;padding:14px;"><div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:rgba(244,244,240,0.5);">ALPHA (α, ANNUAL)</div><div style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;color:#34D399;margin-top:4px;">19.04%<span style="font-size:14px;">***</span></div><div style="font-size:11px;color:rgba(244,244,240,0.5);margin-top:3px;">t = 2.66 · SE 7.15%</div></div>
-        <div style="background:rgba(244,244,240,0.03);border:1px solid rgba(244,244,240,0.06);border-radius:8px;padding:14px;"><div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:rgba(244,244,240,0.5);">MARKET β</div><div style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;color:#A78BFA;margin-top:4px;">1.090<span style="font-size:14px;">***</span></div><div style="font-size:11px;color:rgba(244,244,240,0.5);margin-top:3px;">t = 44.96 · n = 756</div></div>
-        <div style="background:rgba(244,244,240,0.03);border:1px solid rgba(244,244,240,0.06);border-radius:8px;padding:14px;"><div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:rgba(244,244,240,0.5);">R-SQUARED</div><div style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;color:#67E8F9;margin-top:4px;">75.2%</div><div style="font-size:11px;color:rgba(244,244,240,0.5);margin-top:3px;">variance explained</div></div>
+        <div style="background:rgba(244,244,240,0.03);border:1px solid rgba(244,244,240,0.06);border-radius:8px;padding:14px;"><div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:rgba(244,244,240,0.5);">MARKET β</div><div style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;color:#8A6A28;margin-top:4px;">1.090<span style="font-size:14px;">***</span></div><div style="font-size:11px;color:rgba(244,244,240,0.5);margin-top:3px;">t = 44.96 · n = 756</div></div>
+        <div style="background:rgba(244,244,240,0.03);border:1px solid rgba(244,244,240,0.06);border-radius:8px;padding:14px;"><div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:rgba(244,244,240,0.5);">R-SQUARED</div><div style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;color:#2F6E7A;margin-top:4px;">75.2%</div><div style="font-size:11px;color:rgba(244,244,240,0.5);margin-top:3px;">variance explained</div></div>
         <div style="background:rgba(244,244,240,0.03);border:1px solid rgba(244,244,240,0.06);border-radius:8px;padding:14px;"><div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:rgba(244,244,240,0.5);">SHARPE</div><div style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;color:#fff;margin-top:4px;">2.84</div><div style="font-size:11px;color:rgba(244,244,240,0.5);margin-top:3px;">risk-adjusted</div></div>
       </div>
     `;
@@ -22745,18 +22745,18 @@ async function qzCoachReview() {
     card.style.cssText += 'width:540px;max-width:80vw;top:50%;left:50%;transform:translate(-50%,-50%);padding:28px;';
     card.innerHTML = `
       <div style="display:flex;align-items:center;gap:11px;margin-bottom:18px;">
-        <div style="width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,#A78BFA,#67E8F9);display:grid;place-items:center;font-family:'Fraunces',serif;font-weight:800;font-size:15px;color:#0A0A0B;">Q</div>
+        <div style="width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,#8A6A28,#2F6E7A);display:grid;place-items:center;font-family:'Fraunces',serif;font-weight:800;font-size:15px;color:#0A0A0B;">Q</div>
         <div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;color:#A78BFA;font-weight:600;">QUANT ENTELLOQ COPILOT</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;color:#8A6A28;font-weight:600;">QUANT ENTELLOQ COPILOT</div>
           <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#34D399;margin-top:2px;">● ONLINE</div>
         </div>
       </div>
       <div style="background:rgba(103,232,249,0.05);border:1px solid rgba(103,232,249,0.15);border-radius:8px;padding:12px 14px;margin-bottom:10px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:#67E8F9;margin-bottom:6px;">YOU</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:#2F6E7A;margin-bottom:6px;">YOU</div>
         <div style="font-size:13.5px;line-height:1.55;color:#fff;" id="qe-reel-q1"></div>
       </div>
       <div style="background:rgba(244,244,240,0.025);border:1px solid rgba(244,244,240,0.05);border-radius:8px;padding:12px 14px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:#A78BFA;margin-bottom:6px;">COPILOT</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:#8A6A28;margin-bottom:6px;">COPILOT</div>
         <div style="font-size:13.5px;line-height:1.55;color:rgba(244,244,240,0.9);" id="qe-reel-a1">Tech concentration is your biggest single-factor risk — <strong style="color:#fff;">68% of portfolio</strong> sits in 5 names. Sharpe is healthy at 1.84 but a 10% drawdown in NVDA alone takes 6.8% off equity. Hedge or trim.</div>
       </div>
     `;
@@ -22786,16 +22786,16 @@ async function qzCoachReview() {
   // Rapid 12-cut montage from 44s to 50s
   var MONTAGE = [
     { tag: 'PORTFOLIO',    val: '$284,903', sub: '+2.30%', color: '#34D399' },
-    { tag: 'BACKTEST',     val: 'Sharpe 2.84', sub: 'SMA 10/30', color: '#A78BFA' },
-    { tag: 'OPPORTUNITY',  val: 'NVDA · 94%', sub: 'high conviction', color: '#67E8F9' },
+    { tag: 'BACKTEST',     val: 'Sharpe 2.84', sub: 'SMA 10/30', color: '#8A6A28' },
+    { tag: 'OPPORTUNITY',  val: 'NVDA · 94%', sub: 'high conviction', color: '#2F6E7A' },
     { tag: 'INTELLIGENCE', val: '1,247', sub: 'items processed', color: '#FBBF24' },
     { tag: 'VOLATILITY',   val: '18.2%', sub: 'annualized σ', color: '#B3453D' },
-    { tag: 'AI AGENTS',    val: '4 / 4', sub: 'specialists online', color: '#A78BFA' },
+    { tag: 'AI AGENTS',    val: '4 / 4', sub: 'specialists online', color: '#8A6A28' },
     { tag: 'PAPER',        val: '$100k', sub: 'simulated cash', color: '#34D399' },
-    { tag: 'WATCHLIST',    val: '12', sub: 'symbols tracked', color: '#67E8F9' },
+    { tag: 'WATCHLIST',    val: '12', sub: 'symbols tracked', color: '#2F6E7A' },
     { tag: 'STREAK',       val: '7d', sub: 'on fire', color: '#FBBF24' },
-    { tag: 'LATENCY',      val: '103ms', sub: 'AI response', color: '#A78BFA' },
-    { tag: 'COVERAGE',     val: '100M+', sub: 'global assets', color: '#67E8F9' },
+    { tag: 'LATENCY',      val: '103ms', sub: 'AI response', color: '#8A6A28' },
+    { tag: 'COVERAGE',     val: '100M+', sub: 'global assets', color: '#2F6E7A' },
     { tag: 'MODELS',       val: '10', sub: 'quant tools', color: '#34D399' },
   ];
   MONTAGE.forEach(function(m, i) {
@@ -22857,7 +22857,7 @@ async function qzCoachReview() {
     t.style.cssText = 'text-align:center;';
     t.innerHTML = `
       <div style="font-family:'Fraunces',serif;font-size:clamp(48px,7vw,96px);font-weight:500;letter-spacing:-0.035em;line-height:1.05;color:#F4F4F0;">Understand the market.</div>
-      <div style="font-family:'Fraunces',serif;font-size:clamp(48px,7vw,96px);font-weight:500;letter-spacing:-0.035em;line-height:1.05;color:#F4F4F0;margin-top:12px;font-style:italic;background:linear-gradient(135deg,#A78BFA,#67E8F9);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">Don't chase it.</div>
+      <div style="font-family:'Fraunces',serif;font-size:clamp(48px,7vw,96px);font-weight:500;letter-spacing:-0.035em;line-height:1.05;color:#F4F4F0;margin-top:12px;font-style:italic;background:linear-gradient(135deg,#8A6A28,#2F6E7A);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">Don't chase it.</div>
     `;
     t.style.opacity = '0';
     t.style.transition = 'opacity 900ms ease';
@@ -23018,7 +23018,7 @@ async function qzCoachReview() {
           z-index: 10001;
           width: 60px; height: 60px;
           border-radius: 50%;
-          background: linear-gradient(135deg, #A78BFA, #67E8F9);
+          background: linear-gradient(135deg, #8A6A28, #2F6E7A);
           border: none;
           cursor: pointer;
           display: grid; place-items: center;
@@ -23474,29 +23474,29 @@ async function qzCoachReview() {
   s.id = 'qe-no-yellow-css';
   s.textContent = `
     :root {
-      --qe-amber: #67E8F9;
+      --qe-amber: #2F6E7A;
       --qe-amber-soft: rgba(103,232,249,0.10);
       --qe-amber-glow: rgba(103,232,249,0.32);
-      --qe-cyan: #67E8F9;
+      --qe-cyan: #2F6E7A;
       --qe-cyan-soft: rgba(103,232,249,0.10);
-      --accent: #A78BFA;
-      --accent-2: #67E8F9;
+      --accent: #8A6A28;
+      --accent-2: #2F6E7A;
     }
 
     .sidebar .nav-item.active {
       background: rgba(167,139,250,0.06) !important;
-      border-left-color: #A78BFA !important;
+      border-left-color: #8A6A28 !important;
     }
 
     input:focus, textarea:focus, select:focus {
-      border-color: #A78BFA !important;
+      border-color: #8A6A28 !important;
       box-shadow: 0 0 0 3px rgba(167,139,250,0.10) !important;
     }
 
     .btn-primary,
     button.btn-primary,
     [class*="btn-primary"] {
-      background: linear-gradient(135deg, #A78BFA, #22D3EE) !important;
+      background: linear-gradient(135deg, #8A6A28, #2C6087) !important;
       color: #0A0A0B !important;
       box-shadow:
         0 1px 0 rgba(255,255,255,0.22) inset,
@@ -23513,14 +23513,14 @@ async function qzCoachReview() {
         0 2px 4px rgba(0,0,0,0.4) !important;
     }
 
-    .logo-text span { color: #A78BFA !important; }
+    .logo-text span { color: #8A6A28 !important; }
 
     .qz-disclaimer-banner {
       background: rgba(103,232,249,0.04) !important;
       border-color: rgba(103,232,249,0.22) !important;
-      border-left-color: #67E8F9 !important;
+      border-left-color: #2F6E7A !important;
     }
-    .qz-disclaimer-banner strong { color: #67E8F9 !important; }
+    .qz-disclaimer-banner strong { color: #2F6E7A !important; }
 
     #qz-copilot-dock {
       border-color: rgba(167,139,250,0.42) !important;
@@ -23545,9 +23545,9 @@ async function qzCoachReview() {
       border-color: rgba(167,139,250,0.22) !important;
     }
     .qz-rpg-widget:hover { border-color: rgba(167,139,250,0.4) !important; }
-    .qz-rpg-w-lvl { color: #A78BFA !important; }
+    .qz-rpg-w-lvl { color: #8A6A28 !important; }
     .qz-rpg-w-fill {
-      background: linear-gradient(90deg, #A78BFA, #67E8F9) !important;
+      background: linear-gradient(90deg, #8A6A28, #2F6E7A) !important;
       box-shadow: 0 0 12px rgba(167,139,250,0.5) !important;
     }
 
@@ -23556,9 +23556,9 @@ async function qzCoachReview() {
       box-shadow: 0 16px 40px rgba(0,0,0,0.55), 0 0 24px rgba(167,139,250,0.18) !important;
     }
     .qz-xp-toast::before {
-      background: linear-gradient(180deg, #A78BFA, #67E8F9) !important;
+      background: linear-gradient(180deg, #8A6A28, #2F6E7A) !important;
     }
-    .qz-xp-toast-amt { color: #67E8F9 !important; }
+    .qz-xp-toast-amt { color: #2F6E7A !important; }
 
     .qz-lu-card {
       box-shadow:
@@ -23567,23 +23567,23 @@ async function qzCoachReview() {
         0 0 0 1px rgba(167,139,250,0.4) inset !important;
     }
     .qz-lu-lvl {
-      background: linear-gradient(135deg, #A78BFA 0%, #67E8F9 100%) !important;
+      background: linear-gradient(135deg, #8A6A28 0%, #2F6E7A 100%) !important;
       -webkit-background-clip: text !important;
       background-clip: text !important;
       -webkit-text-fill-color: transparent !important;
     }
-    .qz-lu-eyebrow { color: #67E8F9 !important; }
+    .qz-lu-eyebrow { color: #2F6E7A !important; }
     .qz-lu-btn {
-      background: linear-gradient(135deg, #A78BFA, #67E8F9) !important;
+      background: linear-gradient(135deg, #8A6A28, #2F6E7A) !important;
       box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset, 0 8px 22px -8px rgba(167,139,250,0.5) !important;
     }
 
     #qe-scroll-progress {
-      background: linear-gradient(90deg, #A78BFA, #67E8F9) !important;
+      background: linear-gradient(90deg, #8A6A28, #2F6E7A) !important;
     }
 
     body.qe-cursor-hover #qe-cursor-ring {
-      border-color: #A78BFA !important;
+      border-color: #8A6A28 !important;
     }
 
     body::after {
@@ -23593,7 +23593,7 @@ async function qzCoachReview() {
     }
 
     #qz-global-footer-disclaimer a { color: rgba(167,139,250,0.7) !important; }
-    #qz-global-footer-disclaimer a:hover { color: #A78BFA !important; }
+    #qz-global-footer-disclaimer a:hover { color: #8A6A28 !important; }
   `;
   document.head.appendChild(s);
 })();
@@ -23664,7 +23664,7 @@ async function qzCoachReview() {
       .qe-welcome-mark {
         width: 64px; height: 64px;
         border-radius: 14px;
-        background: linear-gradient(135deg, #A78BFA, #67E8F9);
+        background: linear-gradient(135deg, #8A6A28, #2F6E7A);
         display: grid; place-items: center;
         margin: 0 auto 22px;
         font-family: 'Fraunces', serif;
@@ -23695,7 +23695,7 @@ async function qzCoachReview() {
       }
       .qe-welcome-title em {
         font-style: italic;
-        background: linear-gradient(135deg, #A78BFA, #67E8F9);
+        background: linear-gradient(135deg, #8A6A28, #2F6E7A);
         -webkit-background-clip: text; background-clip: text;
         -webkit-text-fill-color: transparent;
       }
@@ -23744,7 +23744,7 @@ async function qzCoachReview() {
         width: 48px; height: 48px;
         margin: 0 auto 14px;
         border-radius: 12px;
-        background: linear-gradient(135deg, #A78BFA, #67E8F9);
+        background: linear-gradient(135deg, #8A6A28, #2F6E7A);
         display: grid; place-items: center;
         opacity: 0.85;
       }
@@ -23779,7 +23779,7 @@ async function qzCoachReview() {
       }
       .qe-welcome-cta {
         padding: 14px 24px;
-        background: linear-gradient(135deg, #A78BFA, #67E8F9);
+        background: linear-gradient(135deg, #8A6A28, #2F6E7A);
         color: #0A0A0B;
         border: none;
         border-radius: 8px;
@@ -24315,7 +24315,7 @@ async function qzCoachReview() {
       #qe-mdrawer-brand-mark {
         width: 32px; height: 32px;
         border-radius: 7px;
-        background: linear-gradient(135deg, #A78BFA, #67E8F9);
+        background: linear-gradient(135deg, #8A6A28, #2F6E7A);
         display: grid; place-items: center;
         font-family: 'Fraunces', serif;
         font-weight: 700;
@@ -24331,7 +24331,7 @@ async function qzCoachReview() {
         color: #F4F4F0;
       }
       #qe-mdrawer-brand-text em {
-        color: #A78BFA;
+        color: #8A6A28;
         font-weight: 600;
         font-style: normal;
       }
@@ -24397,7 +24397,7 @@ async function qzCoachReview() {
         content: '';
         position: absolute; left: 0; top: 25%; bottom: 25%;
         width: 2px;
-        background: linear-gradient(180deg, #A78BFA, #67E8F9);
+        background: linear-gradient(180deg, #8A6A28, #2F6E7A);
         border-radius: 1px;
       }
       .qe-mdrawer-live {
@@ -24421,7 +24421,7 @@ async function qzCoachReview() {
       #qe-mdrawer-footer-avatar {
         width: 32px; height: 32px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #A78BFA, #67E8F9);
+        background: linear-gradient(135deg, #8A6A28, #2F6E7A);
         display: grid; place-items: center;
         font-family: 'DM Sans', sans-serif;
         font-weight: 700;
@@ -24753,8 +24753,8 @@ async function qzCoachReview() {
         letter-spacing: -0.015em;
         line-height: 1;
       }
-      .qe-pg2-tile-val.pos { color: #5EEAD4; }
-      .qe-pg2-tile-val.neg { color: #FB7185; }
+      .qe-pg2-tile-val.pos { color: #16794A; }
+      .qe-pg2-tile-val.neg { color: #B3453D; }
       .qe-pg2-tile-sub {
         font-size: 10.5px;
         color: rgba(244,244,240,0.42);
@@ -24784,7 +24784,7 @@ async function qzCoachReview() {
       }
       .qe-pg2-search:focus {
         outline: none;
-        border-color: #A78BFA;
+        border-color: #8A6A28;
         box-shadow: 0 0 0 3px rgba(167,139,250,0.10);
       }
       .qe-pg2-chip-row {
@@ -24840,8 +24840,8 @@ async function qzCoachReview() {
         user-select: none;
       }
       .qe-pg2-table th:hover { color: #F4F4F0; }
-      .qe-pg2-table th.sort-asc::after  { content: ' ↑'; color: #A78BFA; }
-      .qe-pg2-table th.sort-desc::after { content: ' ↓'; color: #A78BFA; }
+      .qe-pg2-table th.sort-asc::after  { content: ' ↑'; color: #8A6A28; }
+      .qe-pg2-table th.sort-desc::after { content: ' ↓'; color: #8A6A28; }
       .qe-pg2-table td {
         padding: 13px 16px;
         border-bottom: 1px solid rgba(244,244,240,0.03);
@@ -24858,8 +24858,8 @@ async function qzCoachReview() {
       .qe-pg2-table .ta-r { text-align: right; }
       .qe-pg2-table .ta-c { text-align: center; }
 
-      .qe-pg2-side-buy  { color: #5EEAD4; }
-      .qe-pg2-side-sell { color: #FB7185; }
+      .qe-pg2-side-buy  { color: #16794A; }
+      .qe-pg2-side-sell { color: #B3453D; }
 
       .qe-pg2-signal {
         display: inline-block;
@@ -24874,12 +24874,12 @@ async function qzCoachReview() {
       .qe-pg2-signal.buy {
         background: rgba(94,234,212,0.10);
         border: 1px solid rgba(94,234,212,0.3);
-        color: #5EEAD4;
+        color: #16794A;
       }
       .qe-pg2-signal.sell {
         background: rgba(251,113,133,0.10);
         border: 1px solid rgba(251,113,133,0.3);
-        color: #FB7185;
+        color: #B3453D;
       }
       .qe-pg2-signal.hold {
         background: rgba(244,244,240,0.05);
@@ -24898,7 +24898,7 @@ async function qzCoachReview() {
       }
       .qe-pg2-conf-fill {
         height: 100%;
-        background: linear-gradient(90deg, #A78BFA, #67E8F9);
+        background: linear-gradient(90deg, #8A6A28, #2F6E7A);
         transition: width 400ms cubic-bezier(0.22,1,0.36,1);
       }
 
@@ -24937,7 +24937,7 @@ async function qzCoachReview() {
         font-family: 'JetBrains Mono', monospace;
         font-size: 10px;
         letter-spacing: 0.22em;
-        color: #A78BFA;
+        color: #8A6A28;
         text-transform: uppercase;
         margin-bottom: 14px;
       }
@@ -25235,7 +25235,7 @@ async function qzCoachReview() {
           '<td class="ta-r ' + changeCls + '" style="font-weight:600;">' + (r.change >= 0 ? '+' : '') + Number(r.change || 0).toFixed(2) + '%</td>' +
           '<td class="ta-c">' + sparkSVG(r.ticker, sparkColor) + '</td>' +
           '<td class="ta-c"><span class="qe-pg2-signal ' + sigCls + '">' + (r.signal || 'HOLD') + '</span></td>' +
-          '<td class="ta-r"><div class="qe-pg2-conf-bar"><div class="qe-pg2-conf-fill" style="width:' + (r.conf || 0) + '%;"></div></div> <span style="color:#A78BFA;margin-left:8px;">' + (r.conf || 0) + '%</span></td>' +
+          '<td class="ta-r"><div class="qe-pg2-conf-bar"><div class="qe-pg2-conf-fill" style="width:' + (r.conf || 0) + '%;"></div></div> <span style="color:#8A6A28;margin-left:8px;">' + (r.conf || 0) + '%</span></td>' +
           '<td class="ta-r"><button class="qe-pg2-action" data-watch="' + r.ticker + '">Watch</button></td>' +
         '</tr>';
       }).join('') +
@@ -25878,7 +25878,7 @@ async function qzCoachReview() {
       mono: 'NX',
       role: 'ALPHA SYNTHESIS ENGINE',
       emoji: '◆',
-      color: '#A78BFA',
+      color: '#8A6A28',
       flowNode: 'cfn-ingest',
       domain: 'multi-modal alpha synthesis combining technicals, fundamentals, sentiment, and flow',
       systemPrompt: "You are NEXUS-7 — the Alpha Synthesis Engine for Quant Entelloq. Your function is to fuse signals from technical (momentum, mean-reversion, breakout, volume profile), fundamental (valuation multiples, revisions, quality factors), sentiment (news NLP, options skew, positioning), and flow (dark pool prints, block trades, ETF creations) into a single unified ALPHA SCORE from -100 (max short) to +100 (max long). Output format: lead with [ALPHA SCORE: ±X] [CONVICTION: LOW/MED/HIGH/EXTREME] [HORIZON: 1D/1W/1M/3M], then a 3-line synthesis explaining which signal sets dominate and which dissent. Never hedge with 'it depends' — every output ends with a concrete BUY/SELL/HOLD with target price + stop. Cite the dominant factor weight (e.g., 'momentum 42%, sentiment 28%, valuation 18%, flow 12%').",
@@ -25910,7 +25910,7 @@ async function qzCoachReview() {
       mono: 'OR',
       role: 'MACRO REGIME DETECTOR',
       emoji: '◉',
-      color: '#67E8F9',
+      color: '#2F6E7A',
       flowNode: 'cfn-reasoner',
       domain: 'cross-asset macro regimes, central bank policy, geopolitics, liquidity cycles',
       systemPrompt: "You are ORACLE-X — the Macro Regime Detector for Quant Entelloq. You classify the global macro environment into one of eight regimes (Reflation / Disinflation / Stagflation / Recession / Recovery / Late Cycle / Crisis / Goldilocks) using inputs from rate curves (UST 2s10s, 3m10y, real yields), credit (IG/HY spreads, CDX), FX (DXY regime, EM stress), commodities (oil + copper + gold ratios), and volatility (VIX term structure, MOVE index). Output: lead with [REGIME: ...] [PHASE TRANSITION PROB: X%], then the 3 dominant macro forces, the 2-3 highest-confidence trades that historically work in this regime (with hit rate from prior cycles), and a watchlist of 3 macro indicators whose flip would change the regime call. Include forward-looking Fed/ECB/BoJ policy expectations baked into pricing. Never give a regime call without a hit-rate citation from analogous periods.",
@@ -26191,7 +26191,7 @@ async function qzCoachReview() {
           // Show explanation
           var exp = document.getElementById('qe-daily-explanation');
           if (exp) {
-            exp.innerHTML = (isCorrect ? '<strong style="color:#5EEAD4;">✓ Correct.</strong> ' : '<strong style="color:#FB7185;">✗ Not quite.</strong> ')
+            exp.innerHTML = (isCorrect ? '<strong style="color:#16794A;">✓ Correct.</strong> ' : '<strong style="color:#B3453D;">✗ Not quite.</strong> ')
                           + '<strong>' + q.opts[q.correct] + '</strong> — ' + q.explain;
             exp.classList.add('show');
           }
@@ -26439,9 +26439,9 @@ async function qzCoachReview() {
   // The same 5 agents (mirrored from qe-overhaul-v2) so this block
   // is self-sufficient even if overhaul-v2 hasn't booted yet.
   var NEW_AGENTS = [
-    { id:'nexus',   name:'NEXUS-7',     mono:'NX', role:'ALPHA SYNTHESIS ENGINE',     emoji:'◆', color:'#A78BFA', tagline:'Multi-modal alpha synthesis · technicals + fundamentals + sentiment + flow' },
+    { id:'nexus',   name:'NEXUS-7',     mono:'NX', role:'ALPHA SYNTHESIS ENGINE',     emoji:'◆', color:'#8A6A28', tagline:'Multi-modal alpha synthesis · technicals + fundamentals + sentiment + flow' },
     { id:'aegis',   name:'AEGIS-PRIME', mono:'AG', role:'RISK QUANTIFICATION MATRIX', emoji:'◈', color:'#B3453D', tagline:'VaR · CVaR · stress tests · Kelly sizing' },
-    { id:'oracle',  name:'ORACLE-X',    mono:'OR', role:'MACRO REGIME DETECTOR',      emoji:'◉', color:'#67E8F9', tagline:'8-regime classifier · cross-asset confirmation' },
+    { id:'oracle',  name:'ORACLE-X',    mono:'OR', role:'MACRO REGIME DETECTOR',      emoji:'◉', color:'#2F6E7A', tagline:'8-regime classifier · cross-asset confirmation' },
     { id:'phoenix', name:'PHOENIX-9',   mono:'PX', role:'CATALYST DISCOVERY SYSTEM',  emoji:'◇', color:'#FCD34D', tagline:'Event-driven · earnings · M&A · FDA · insider clusters' },
     { id:'forge',   name:'FORGE-Δ',     mono:'FG', role:'STRATEGY BACKTEST ENGINE',   emoji:'◊', color:'#16794A', tagline:'Walk-forward · Monte Carlo · regime decomposition' }
   ];
@@ -26808,7 +26808,7 @@ async function qzCoachReview() {
       // Activity feed
       try {
         if (typeof window._cmdAddFeed === 'function') {
-          window._cmdAddFeed('ORCHESTRATOR', '#A78BFA',
+          window._cmdAddFeed('ORCHESTRATOR', '#8A6A28',
             'Dispatching ' + ids.length + ' specialist' + (ids.length===1?'':'s') + ': ' + ids.map(function(i){return i.toUpperCase();}).join(' · '));
         }
       } catch(_){}
@@ -26938,9 +26938,9 @@ async function qzCoachReview() {
   'use strict';
 
   var AGENTS = [
-    { id:'nexus',   name:'NEXUS-7',     mono:'NX', role:'Alpha Synthesis Engine',     color:'#A78BFA' },
+    { id:'nexus',   name:'NEXUS-7',     mono:'NX', role:'Alpha Synthesis Engine',     color:'#8A6A28' },
     { id:'aegis',   name:'AEGIS-PRIME', mono:'AG', role:'Risk Quantification Matrix', color:'#B3453D' },
-    { id:'oracle',  name:'ORACLE-X',    mono:'OR', role:'Macro Regime Detector',      color:'#67E8F9' },
+    { id:'oracle',  name:'ORACLE-X',    mono:'OR', role:'Macro Regime Detector',      color:'#2F6E7A' },
     { id:'phoenix', name:'PHOENIX-9',   mono:'PX', role:'Catalyst Discovery System',  color:'#FCD34D' },
     { id:'forge',   name:'FORGE-Δ',     mono:'FG', role:'Strategy Backtest Engine',   color:'#16794A' }
   ];
@@ -27379,7 +27379,7 @@ async function qzCoachReview() {
       + '</div>'
       + '<div class="qe-side-eyebrow">Activity Log</div>'
       + '<div class="qe-side-log" id="qe-side-log">'
-      +   '<div class="qe-side-log-item"><span class="qe-side-log-time">--:--</span><span class="qe-side-log-agent" style="--c:#A78BFA;">SYSTEM</span>All 5 specialists online. Awaiting query.</div>'
+      +   '<div class="qe-side-log-item"><span class="qe-side-log-time">--:--</span><span class="qe-side-log-agent" style="--c:#8A6A28;">SYSTEM</span>All 5 specialists online. Awaiting query.</div>'
       + '</div>';
     shell.appendChild(side);
 
@@ -27394,7 +27394,7 @@ async function qzCoachReview() {
     var item = document.createElement('div');
     item.className = 'qe-side-log-item';
     item.innerHTML = '<span class="qe-side-log-time">' + time + '</span>'
-                   + '<span class="qe-side-log-agent" style="--c:' + (color || '#A78BFA') + ';">' + agent + '</span>'
+                   + '<span class="qe-side-log-agent" style="--c:' + (color || '#8A6A28') + ';">' + agent + '</span>'
                    + text;
     log.insertBefore(item, log.firstChild);
     // Cap at 30 items
@@ -27409,7 +27409,7 @@ async function qzCoachReview() {
     var query = (input.value || '').trim();
     if (!query) { input.focus(); return; }
 
-    pushLog('ORCHESTRATOR', 'Broadcasting: "' + (query.length > 38 ? query.slice(0,38)+'…' : query) + '"', '#A78BFA');
+    pushLog('ORCHESTRATOR', 'Broadcasting: "' + (query.length > 38 ? query.slice(0,38)+'…' : query) + '"', '#8A6A28');
 
     if (btn) { btn.disabled = true; btn.textContent = 'Running…'; }
     input.value = '';
@@ -27430,9 +27430,9 @@ async function qzCoachReview() {
             : null;
           // Look up agent metadata
           var meta = {
-            nexus:   { id:'nexus',   name:'NEXUS-7',     color:'#A78BFA' },
+            nexus:   { id:'nexus',   name:'NEXUS-7',     color:'#8A6A28' },
             aegis:   { id:'aegis',   name:'AEGIS-PRIME', color:'#B3453D' },
-            oracle:  { id:'oracle',  name:'ORACLE-X',    color:'#67E8F9' },
+            oracle:  { id:'oracle',  name:'ORACLE-X',    color:'#2F6E7A' },
             phoenix: { id:'phoenix', name:'PHOENIX-9',   color:'#FCD34D' },
             forge:   { id:'forge',   name:'FORGE-Δ',     color:'#16794A' }
           }[id];
@@ -29522,7 +29522,7 @@ async function qzCoachReview() {
       });
       state.chart.priceScale('').applyOptions({ scaleMargins: { top: 0.84, bottom: 0 } });
       state.maSeries = state.chart.addLineSeries({
-        color: '#A78BFA',
+        color: '#8A6A28',
         lineWidth: 1.5,
         priceLineVisible: false,
         lastValueVisible: false,
@@ -29927,12 +29927,12 @@ async function qzCoachReview() {
     var base = Y(1);
     return '<svg viewBox="0 0 '+W+' '+Hh+'" xmlns="http://www.w3.org/2000/svg">'
       + '<defs><linearGradient id="qeRlEq" x1="0" y1="0" x2="0" y2="1">'
-      + '<stop offset="0" stop-color="#5EEAD4" stop-opacity=".34"/><stop offset="1" stop-color="#5EEAD4" stop-opacity="0"/></linearGradient></defs>'
+      + '<stop offset="0" stop-color="#16794A" stop-opacity=".34"/><stop offset="1" stop-color="#16794A" stop-opacity="0"/></linearGradient></defs>'
       + '<line x1="'+pad+'" y1="'+base.toFixed(1)+'" x2="'+(W-pad)+'" y2="'+base.toFixed(1)+'" stroke="#6b6790" stroke-width="1" stroke-dasharray="3 4" opacity=".5"/>'
       + '<path d="'+area+'" fill="url(#qeRlEq)"/>'
-      + '<path d="'+d+'" fill="none" stroke="#5EEAD4" stroke-width="2.2" stroke-linejoin="round"/>'
+      + '<path d="'+d+'" fill="none" stroke="#16794A" stroke-width="2.2" stroke-linejoin="round"/>'
       + '<text x="'+pad+'" y="14" fill="#8B86A8" font-family="JetBrains Mono,monospace" font-size="10">growth of $1 · L/S portfolio</text>'
-      + '<text x="'+(W-pad)+'" y="14" text-anchor="end" fill="#5EEAD4" font-family="JetBrains Mono,monospace" font-size="11">$'+eq[n-1].toFixed(2)+'</text>'
+      + '<text x="'+(W-pad)+'" y="14" text-anchor="end" fill="#16794A" font-family="JetBrains Mono,monospace" font-size="11">$'+eq[n-1].toFixed(2)+'</text>'
       + '</svg>';
   }
 
@@ -29943,7 +29943,7 @@ async function qzCoachReview() {
     if(xhi-xlo<1e-6){xlo-=1;xhi+=1;} if(yhi-ylo<1e-6){ylo-=.01;yhi+=.01;}
     function X(v){ return pad + (W-2*pad)*((v-xlo)/(xhi-xlo)); }
     function Y(v){ return Hh-pad - (Hh-2*pad)*((v-ylo)/(yhi-ylo)); }
-    var dots=''; for(var i=0;i<pts.length;i++){ dots += '<circle cx="'+X(pts[i][0]).toFixed(1)+'" cy="'+Y(pts[i][1]).toFixed(1)+'" r="2.6" fill="#A78BFA" opacity=".55"/>'; }
+    var dots=''; for(var i=0;i<pts.length;i++){ dots += '<circle cx="'+X(pts[i][0]).toFixed(1)+'" cy="'+Y(pts[i][1]).toFixed(1)+'" r="2.6" fill="#8A6A28" opacity=".55"/>'; }
     var x1=xlo, x2=xhi, y1=reg.intercept+reg.slope*x1, y2=reg.intercept+reg.slope*x2;
     var zeroY = (0>=ylo&&0<=yhi) ? Y(0) : null;
     var line = '<line x1="'+X(x1).toFixed(1)+'" y1="'+Y(y1).toFixed(1)+'" x2="'+X(x2).toFixed(1)+'" y2="'+Y(y2).toFixed(1)+'" stroke="#E879F9" stroke-width="2.4"/>';
