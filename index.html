@@ -57,7 +57,7 @@
   upgrade-insecure-requests;
 ">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
-<meta http-equiv="Permissions-Policy" content="microphone=(self), camera=(), geolocation=(), payment=(), usb=(), bluetooth=(), midi=()">
+<meta http-equiv="Permissions-Policy" content="microphone=(), camera=(), geolocation=(), payment=(), usb=(), bluetooth=(), midi=()">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
 
@@ -7507,7 +7507,7 @@ function _lp3Enter(user) {
             </div>
             <div class="chat-input-row" style="position:relative;">
               <button class="qz-mic-btn" id="chat-mic-btn" onclick="qzChatMic()" title="Click to speak — voice conversation enabled">🎙</button>
-              <input class="input" id="chat-input" placeholder="Ask about markets, stocks, or strategy — or click 🎙 to speak…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}" autocomplete="off">
+              <input class="input" id="chat-input" placeholder="Ask about markets, stocks, or strategy…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}" autocomplete="off">
               <button class="btn btn-primary" onclick="sendChat()" style="white-space:nowrap;">Send ↵</button>
             </div>
             <div class="qz-chat-toolbar">
@@ -7572,7 +7572,7 @@ function _lp3Enter(user) {
           </div>
           <div class="cmd-query-bar">
             <span style="font-size:18px;">⚛</span>
-            <input class="cmd-query-input" id="cmd-query-input" placeholder="Ask all 10 agents — or click 🎙 to speak your query aloud…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();cmdOrchestrate();}">
+            <input class="cmd-query-input" id="cmd-query-input" placeholder="Ask all 10 agents aloud…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();cmdOrchestrate();}">
             <button class="qz-mic-btn" id="cmd-mic-btn" onclick="qzCmdMic()" title="Speak your query — voice input enabled" style="border-radius:8px;width:38px;height:38px;flex-shrink:0;">🎙</button>
             <button class="cmd-orch-btn" onclick="cmdOrchestrate()">Orchestrate ↵</button>
           </div>
@@ -9485,7 +9485,7 @@ function _lp3Enter(user) {
   .qe-mh-dot.pre { background: #ffd32a; animation: qePulse 1.6s infinite; }
 </style>
 
-<div id="qe-mic-live-badge">MIC LIVE</div>
+
 <!-- The orb is a static element - guaranteed visible regardless of script state.
      Click toggles panel; double-click instantly starts listening. -->
 <div id="qe-orb-static" onclick="qeOrbClick()" ondblclick="qeStartListening()" role="button" aria-label="QUANT ENTELLOQ AI — click to open, double-click to talk">
@@ -17071,6 +17071,20 @@ body.qe-in-app .modal-overlay:not(#auth-modal) .btn-primary:hover {
 }
 #app .qz-disclaimer-banner strong { color: #DFC591 !important; }
 
+/* —— 18b · VOICE REMOVED — permanent hide for any voice element that late
+   code still injects (the JS kill-layer nulls the APIs; this guarantees
+   nothing voice-related can ever render). */
+#qe-orb, #qe-orb-static, #qe-voice-panel, #qe-panel-static, #qe-orb-tooltip-static,
+#qz-tts-fab, #chat-mic-btn, #cmd-mic-btn, #qe-wake-indicator, #qe-mic-banner,
+#qz-jarvis-hint, #qz-live-toggle, #chat-tts-toggle, #cmd-audio-badge,
+#qe-mic-live-badge, #qe-shortcuts-static, .qe-tts-btn, .cmd-agent-speak-btn,
+.qe-voice-controls, elevenlabs-convai {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 /* —— 19 · Warm-glass counterstrike — Premium v4 paints 21 card classes
    rgba(10,15,30,.72)+blur with !important; retint the in-app subset to
    the warm surface (landing .lp-* classes intentionally excluded). */
@@ -17105,6 +17119,6 @@ body.qe-in-app .modal-overlay:not(#auth-modal) .btn-primary:hover {
   box-shadow: 0 0 0 1px rgba(198,163,95,0.32), 0 0 50px rgba(198,163,95,0.08), 0 24px 64px rgba(10,8,6,0.50) !important;
 }
 </style>
-<script defer src="js/app.min.js?v=20260714-9"></script>
+<script defer src="js/app.min.js?v=20260714-10"></script>
 </body>
 </html>

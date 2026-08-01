@@ -11,6 +11,74 @@
 // (which returns HTTP 405 on the static host).
 window._QZ_SERVER_MODE = false;
 
+// ==================== VOICE: PERMANENTLY DISABLED ====================
+// All voice activation was removed from Quant Entelloq: wake-word listening,
+// push-to-talk, the double-clap mic detector, the AI orb / voice panel, and
+// text-to-speech. The large engines were deleted from this file outright; a few
+// helpers were interleaved with non-voice logic and could not be excised without
+// destabilising their host blocks. This layer is the authoritative guarantee:
+// it disables the underlying browser APIs so no surviving code path can ever
+// open the microphone or speak, neutralises the exported voice globals, clears
+// the stored voice preferences, and sweeps any voice DOM that late code injects.
+(function qzVoiceDisabled() {
+  'use strict';
+  var NOOP = function () {};
+  var VOICE_FNS = ['qzSpeak', 'qzToggleTTS', 'qzChatMic', 'qzCmdMic', 'qeStartListening',
+    'qeToggleWakeStatic', 'qeToggleWake', 'qzToggleLive', 'qeAcceptWake', 'qeDeclineWake',
+    'qeOrbClick', '_cmdSpeakAgent', '_cmdQueueSpeak', 'qeAskQuestion'];
+  var VOICE_SEL = ['#qe-orb', '#qe-orb-static', '#qe-voice-panel', '#qe-panel-static',
+    '#qz-tts-fab', '#chat-mic-btn', '#cmd-mic-btn', '#qe-wake-indicator', '#qe-mic-banner',
+    '#qz-jarvis-hint', '#qz-live-toggle', '#chat-tts-toggle', '#cmd-audio-badge',
+    '#qe-shortcuts-static', '#qe-orb-tooltip', '.qe-tts-btn', '.cmd-agent-speak-btn',
+    '.qe-voice-controls', 'elevenlabs-convai'];
+
+  // 1. Speech recognition can never be constructed — every listen path early-returns.
+  try { window.SpeechRecognition = undefined; window.webkitSpeechRecognition = undefined; } catch (_) {}
+
+  // 2. Nothing is ever spoken.
+  try {
+    if (window.speechSynthesis) {
+      try { window.speechSynthesis.cancel(); } catch (_) {}
+      window.speechSynthesis.speak = NOOP;
+    }
+  } catch (_) {}
+
+  // 3. Audio capture is refused (kills the double-clap detector and any mic prompt).
+  try {
+    var md = navigator.mediaDevices;
+    if (md && typeof md.getUserMedia === 'function') {
+      var _gum = md.getUserMedia.bind(md);
+      md.getUserMedia = function (c) {
+        if (c && c.audio) return Promise.reject(new DOMException('Voice disabled', 'NotAllowedError'));
+        return _gum(c);
+      };
+    }
+  } catch (_) {}
+
+  // 4. Re-neutralise globals + strip voice DOM. Runs repeatedly because later
+  //    modules assign these after this block executes.
+  function sweep() {
+    for (var i = 0; i < VOICE_FNS.length; i++) { try { window[VOICE_FNS[i]] = NOOP; } catch (_) {} }
+    for (var j = 0; j < VOICE_SEL.length; j++) {
+      try {
+        var els = document.querySelectorAll(VOICE_SEL[j]);
+        for (var k = 0; k < els.length; k++) els[k].remove();
+      } catch (_) {}
+    }
+  }
+  sweep();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', sweep);
+  else sweep();
+  window.addEventListener('load', sweep);
+  for (var t = 1; t <= 6; t++) setTimeout(sweep, t * 1200);
+
+  // 5. Forget stored voice preferences so nothing re-arms on the next boot.
+  try {
+    ['qz_live_mode', 'qz_tts_mode', 'qz_tts', 'qe-wake-pref', 'qe-greeted', 'qz_mic_banner_shown']
+      .forEach(function (k) { try { localStorage.removeItem(k); } catch (_) {} });
+  } catch (_) {}
+})();
+
 // ==================== STATE ====================
 const state = {
   user: null,
@@ -348,9 +416,6 @@ function _qzUpdateLiveUI(on) {
   }
 }
 document.addEventListener('DOMContentLoaded', function() {
-  var on;
-  try { on = localStorage.getItem('qz_live_mode') === 'on'; } catch(_) { on = false; }
-  _qzUpdateLiveUI(on);
   setTimeout(_qzbtUpdateParams, 400);
   setTimeout(_qzkInit, 600);
 });
@@ -8469,106 +8534,6 @@ window.addEventListener('resize', () => {
       to   { transform:translateY(-20vh) rotate(360deg); opacity:0; }
     }
 
-    /* === AI ORB ASSISTANT === */
-    #qe-orb {
-      position:fixed; bottom:24px; right:24px; width:72px; height:72px; z-index:9000;
-      cursor:pointer; transition:transform 240ms cubic-bezier(0.23, 1, 0.32, 1);
-      filter:drop-shadow(0 0 20px rgba(124,58,237,0.5)) drop-shadow(0 0 40px rgba(30,144,255,0.3));
-    }
-    #qe-orb:hover { transform:scale(1.1); }
-    #qe-orb svg { width:100%; height:100%; }
-    .qe-orb-halo {
-      animation:orbHalo 3.2s cubic-bezier(0.4,0,0.2,1) infinite;
-      transform-origin:center;
-    }
-    .qe-orb-halo-2 { animation-delay:1.6s; }
-    @keyframes orbHalo {
-      0%   { opacity:0.8; transform:scale(0.8); }
-      100% { opacity:0; transform:scale(2.0); }
-    }
-    .qe-orb-core {
-      animation:orbBreathe 3.6s cubic-bezier(0.4,0,0.2,1) infinite;
-      transform-origin:center;
-    }
-    @keyframes orbBreathe {
-      0%,100% { transform:scale(1); filter:brightness(1); }
-      50%     { transform:scale(1.04); filter:brightness(1.15); }
-    }
-    .qe-orb-eye-group { transform-origin:50% 50%; transition:transform 200ms cubic-bezier(0.23,1,0.32,1); }
-    #qe-orb.speaking .qe-orb-core { animation:orbSpeak 0.6s cubic-bezier(0.4,0,0.2,1) infinite alternate; }
-    @keyframes orbSpeak {
-      from { filter:brightness(1) drop-shadow(0 0 4px var(--green)); }
-      to   { filter:brightness(1.4) drop-shadow(0 0 16px var(--green)); }
-    }
-    #qe-orb.listening .qe-orb-halo, #qe-orb.listening .qe-orb-halo-2 { animation-duration:1.6s; }
-    #qe-orb-tooltip {
-      position:absolute; bottom:80px; right:0; padding:8px 12px; background:var(--surface2);
-      border:1px solid var(--border); border-radius:8px; font-size:11px; font-family:var(--font-mono);
-      color:var(--text-secondary); white-space:nowrap; opacity:0; pointer-events:none;
-      transition:opacity 200ms ease, transform 200ms cubic-bezier(0.23,1,0.32,1);
-      transform:translateY(4px);
-    }
-    #qe-orb:hover #qe-orb-tooltip { opacity:1; transform:translateY(0); }
-
-    /* === VOICE PANEL === */
-    #qe-voice-panel {
-      position:fixed; bottom:108px; right:24px; width:380px; max-width:calc(100vw - 48px);
-      z-index:8999; background:linear-gradient(180deg, rgba(20,20,20,0.96), rgba(12,12,12,0.96));
-      border:1px solid rgba(124,58,237,0.20); border-radius:18px; padding:20px;
-      backdrop-filter:saturate(140%) blur(20px); -webkit-backdrop-filter:saturate(140%) blur(20px);
-      box-shadow:0 32px 80px -16px rgba(0,0,0,0.7), 0 0 0 1px rgba(124,58,237,0.10);
-      transform:translateY(20px) scale(0.96); opacity:0; pointer-events:none;
-      transition:transform 280ms cubic-bezier(0.23,1,0.32,1), opacity 280ms ease;
-    }
-    #qe-voice-panel.open { transform:translateY(0) scale(1); opacity:1; pointer-events:auto; }
-    .qe-voice-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
-    .qe-voice-title { font-family:var(--font-display); font-size:14px; font-weight:800; letter-spacing:-0.01em;
-      background:linear-gradient(135deg,#A78BFA,#7C3AED); -webkit-background-clip:text; background-clip:text; color:transparent; }
-    .qe-voice-close { background:transparent; border:none; color:var(--text-muted); cursor:pointer; font-size:18px; padding:0 4px; }
-    .qe-voice-status { font-family:var(--font-mono); font-size:10px; letter-spacing:0.10em; color:var(--text-muted); margin-bottom:12px; display:flex; align-items:center; gap:6px; }
-    .qe-voice-status .qe-status-dot { width:5px; height:5px; border-radius:50%; background:var(--text-muted); }
-    .qe-voice-status.listening .qe-status-dot { background:var(--violet); box-shadow:0 0 8px rgba(167,139,250,0.6); animation:pulse 1.4s infinite; }
-    .qe-voice-status.speaking  .qe-status-dot { background:var(--blue); box-shadow:0 0 8px var(--blue); animation:pulse 0.8s infinite; }
-    .qe-waveform { display:flex; align-items:center; justify-content:center; height:60px; gap:3px; margin-bottom:14px; }
-    .qe-wave-bar {
-      width:3px; height:8px; background:linear-gradient(180deg, var(--green), var(--blue));
-      border-radius:2px; transition:height 120ms ease;
-    }
-    #qe-voice-panel.idle .qe-wave-bar { animation:waveIdle 2s ease-in-out infinite; }
-    .qe-wave-bar:nth-child(1) { animation-delay:0s; } .qe-wave-bar:nth-child(2) { animation-delay:0.1s; }
-    .qe-wave-bar:nth-child(3) { animation-delay:0.2s; } .qe-wave-bar:nth-child(4) { animation-delay:0.15s; }
-    .qe-wave-bar:nth-child(5) { animation-delay:0.05s; } .qe-wave-bar:nth-child(6) { animation-delay:0.25s; }
-    .qe-wave-bar:nth-child(7) { animation-delay:0.18s; } .qe-wave-bar:nth-child(8) { animation-delay:0.08s; }
-    .qe-wave-bar:nth-child(9) { animation-delay:0.22s; } .qe-wave-bar:nth-child(10){ animation-delay:0.12s; }
-    .qe-wave-bar:nth-child(11){ animation-delay:0.16s; } .qe-wave-bar:nth-child(12){ animation-delay:0.06s; }
-    @keyframes waveIdle { 0%,100% { height:6px; opacity:0.3; } 50% { height:14px; opacity:0.7; } }
-    #qe-voice-panel.speaking .qe-wave-bar { animation:waveSpeak 0.4s ease-in-out infinite alternate; }
-    @keyframes waveSpeak { 0% { height:6px; opacity:0.4; } 100% { height:36px; opacity:1; } }
-    #qe-voice-panel.listening .qe-wave-bar { animation:waveListen 0.6s ease-in-out infinite alternate; background:linear-gradient(180deg, var(--green), #7C3AED); }
-    @keyframes waveListen { 0% { height:8px; } 100% { height:28px; } }
-
-    .qe-transcript { min-height:60px; max-height:140px; overflow-y:auto; padding:12px 14px;
-      background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:10px;
-      font-size:12px; color:var(--text-secondary); line-height:1.6; margin-bottom:14px;
-      font-family:var(--font-body);
-    }
-    .qe-transcript b { color:var(--green); font-family:var(--font-mono); font-size:10px; letter-spacing:0.06em; display:block; margin-bottom:2px; }
-    .qe-transcript-msg { margin-bottom:10px; }
-    .qe-transcript-msg.user b { color:var(--blue); }
-    .qe-voice-controls { display:flex; gap:8px; }
-    .qe-voice-btn {
-      flex:1; padding:10px; border:none; border-radius:10px; font-size:12px; font-weight:600; cursor:pointer;
-      font-family:var(--font-body); transition:all 180ms cubic-bezier(0.23,1,0.32,1);
-    }
-    .qe-voice-btn-primary { background:linear-gradient(135deg, #A78BFA, #7C3AED); color:#fff; }
-    .qe-voice-btn-primary:hover { transform:translateY(-1px); box-shadow:0 8px 24px -8px rgba(124,58,237,0.5); }
-    .qe-voice-btn-primary:active { transform:scale(0.97); }
-    .qe-voice-btn-primary.listening { background:linear-gradient(135deg, #ff4757, #ff7080); }
-    .qe-voice-btn-secondary { background:var(--surface2); border:1px solid var(--border); color:var(--text-primary); }
-    .qe-voice-btn-secondary:hover { background:var(--surface3); border-color:rgba(255,255,255,0.18); }
-    .qe-voice-suggests { display:flex; flex-wrap:wrap; gap:5px; margin-top:12px; }
-    .qe-voice-suggest { padding:5px 10px; background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:100px; font-size:10px; color:var(--text-muted); cursor:pointer; transition:all 140ms ease; }
-    .qe-voice-suggest:hover { background:rgba(124,58,237,0.10); border-color:rgba(124,58,237,0.25); color:var(--text-primary); }
 
     /* === MAGNETIC BUTTON / CARD AURA === */
     .magnetic { transition:transform 200ms cubic-bezier(0.23,1,0.32,1); will-change:transform; }
@@ -8622,59 +8587,6 @@ window.addEventListener('resize', () => {
 
   // === INJECT IMMERSIVE DOM ===
   const orbHTML = `
-    <div id="qe-orb" title="Talk to Quantum AI">
-      <svg viewBox="0 0 100 100">
-        <defs>
-          <radialGradient id="qeOrbGrad" cx="35%" cy="35%">
-            <stop offset="0%"  stop-color="#fff" stop-opacity="0.95"/>
-            <stop offset="40%" stop-color="#7C3AED" stop-opacity="0.9"/>
-            <stop offset="100%" stop-color="#7C3AED" stop-opacity="0.8"/>
-          </radialGradient>
-          <radialGradient id="qeOrbHalo" cx="50%" cy="50%">
-            <stop offset="0%"  stop-color="#A78BFA" stop-opacity="0.5"/>
-            <stop offset="100%" stop-color="#A78BFA" stop-opacity="0"/>
-          </radialGradient>
-          <filter id="qeBlur"><feGaussianBlur stdDeviation="0.8"/></filter>
-        </defs>
-        <circle class="qe-orb-halo"   cx="50" cy="50" r="44" fill="url(#qeOrbHalo)"/>
-        <circle class="qe-orb-halo qe-orb-halo-2" cx="50" cy="50" r="40" fill="url(#qeOrbHalo)"/>
-        <circle class="qe-orb-core"   cx="50" cy="50" r="30" fill="url(#qeOrbGrad)" filter="url(#qeBlur)"/>
-        <g class="qe-orb-eye-group" id="qe-orb-eye-group">
-          <circle cx="50" cy="50" r="4" fill="#0a0a0a" opacity="0.85"/>
-          <circle cx="48.5" cy="48.5" r="1.2" fill="#fff" opacity="0.95"/>
-        </g>
-      </svg>
-      <div id="qe-orb-tooltip">🎙️  Click to ask Quantum AI</div>
-    </div>
-    <div id="qe-voice-panel" class="idle">
-      <div class="qe-voice-header">
-        <div class="qe-voice-title">⚛  QUANTUM AI</div>
-        <button class="qe-voice-close" onclick="qeClosePanel()">×</button>
-      </div>
-      <div class="qe-voice-status idle" id="qe-voice-status">
-        <span class="qe-status-dot"></span><span id="qe-voice-status-text">READY</span>
-      </div>
-      <div class="qe-waveform">
-        <div class="qe-wave-bar"></div><div class="qe-wave-bar"></div><div class="qe-wave-bar"></div>
-        <div class="qe-wave-bar"></div><div class="qe-wave-bar"></div><div class="qe-wave-bar"></div>
-        <div class="qe-wave-bar"></div><div class="qe-wave-bar"></div><div class="qe-wave-bar"></div>
-        <div class="qe-wave-bar"></div><div class="qe-wave-bar"></div><div class="qe-wave-bar"></div>
-      </div>
-      <div class="qe-transcript" id="qe-transcript">
-        <div class="qe-transcript-msg" style="color:var(--text-muted);font-style:italic;">
-          Ask me about any stock, sector, or market. I can pull data on 100,000,000+ securities, run analysis, or guide you through Quant Entelloq.
-        </div>
-      </div>
-      <div class="qe-voice-controls">
-        <button class="qe-voice-btn qe-voice-btn-primary" id="qe-mic-btn" onclick="qeToggleListen()">🎙️ Hold to talk</button>
-        <button class="qe-voice-btn qe-voice-btn-secondary" onclick="qeStopSpeak()">Stop</button>
-      </div>
-      <div class="qe-voice-suggests" id="qe-voice-suggests">
-        <div class="qe-voice-suggest" onclick="qeAskQuestion('What is NVDA price?')">NVDA price?</div>
-        <div class="qe-voice-suggest" onclick="qeAskQuestion('Show me top gainers today')">Top gainers</div>
-        <div class="qe-voice-suggest" onclick="qeAskQuestion('Open the universe')">Open universe</div>
-        <div class="qe-voice-suggest" onclick="qeAskQuestion('How is the macro regime')">Macro regime</div>
-        <div class="qe-voice-suggest" onclick="qeAskQuestion('Switch to Japan')">Switch to Japan</div>
       </div>
     </div>
     <div id="qe-cursor-aura"></div>
@@ -8931,11 +8843,14 @@ window.addEventListener('resize', () => {
     if (typeof showPage === 'function') showPage(page, null);
   }
 
-  // Click orb to open
-  orb.addEventListener('click', () => {
-    const panel = document.getElementById('qe-voice-panel');
-    if (panel.classList.contains('open')) qeClosePanel(); else qeOpenPanel();
-  });
+  // Voice orb removed — binding kept null-guarded so the immersive layer
+  // continues past this point (it also owns the non-voice aura/HUD effects).
+  if (orb) {
+    orb.addEventListener('click', () => {
+      const panel = document.getElementById('qe-voice-panel');
+      if (panel && panel.classList.contains('open')) qeClosePanel(); else if (panel) qeOpenPanel();
+    });
+  }
 
   // === MAGNETIC AURA — only on the element being hovered ===
   document.addEventListener('mousemove', (e) => {
@@ -9057,117 +8972,6 @@ window.addEventListener('resize', () => {
     if (title) title.innerHTML = '⚛  QUANT ENTELLOQ';
   }, 100);
 
-  // === WAKE-WORD LISTENING (background ambient) ===
-  // Uses a separate continuous SpeechRecognition instance that runs in the background
-  // and only fires when "Hey Quant Entelloq" / "Quant Entelloq" is detected.
-  const SpeechRecBg = window.SpeechRecognition || window.webkitSpeechRecognition;
-  let wakeRec = null;
-  let wakeOn = false;
-  let wakeRetries = 0;
-
-  function _injectWakeToggle() {
-    const ctrls = document.querySelector('.qe-voice-controls');
-    if (!ctrls || document.getElementById('qe-wake-btn')) return;
-    const btn = document.createElement('button');
-    btn.id = 'qe-wake-btn';
-    btn.className = 'qe-voice-btn qe-voice-btn-secondary';
-    btn.style.cssText = 'flex:0 0 auto; min-width:auto; padding:10px 12px; font-size:11px;';
-    btn.innerHTML = '👂 Wake';
-    btn.title = 'Toggle ambient "Hey Quant Entelloq" listening';
-    btn.onclick = qeToggleWake;
-    ctrls.appendChild(btn);
-  }
-  setTimeout(_injectWakeToggle, 200);
-
-  window.qeToggleWake = function qeToggleWake() {
-    if (!SpeechRecBg) {
-      qeAddTranscript('Quant Entelloq', 'Wake-word listening needs Chrome or Edge. Use the talk button or suggestion chips.');
-      return;
-    }
-    if (wakeOn) {
-      try { wakeRec && wakeRec.stop(); } catch(_){}
-      wakeOn = false;
-      const btn = document.getElementById('qe-wake-btn');
-      if (btn) { btn.innerHTML = '👂 Wake'; btn.classList.remove('listening'); }
-      qeAddTranscript('Quant Entelloq', 'Ambient listening off.');
-      return;
-    }
-    try {
-      wakeRec = new SpeechRecBg();
-      wakeRec.continuous = true;
-      wakeRec.interimResults = true;
-      wakeRec.lang = 'en-US';
-      wakeRec.onresult = (e) => {
-        const last = e.results[e.results.length - 1];
-        const text = last[0].transcript.toLowerCase();
-        // Wake phrase detection
-        if (/\bhey,?\s*quant\s*edge\b|\bquant\s*edge\b/.test(text) && last.isFinal) {
-          // Strip the wake phrase, keep any trailing command
-          const cmd = text.replace(/.*?(hey,?\s*)?quant\s*edge[,.\s]*/i, '').trim();
-          qeWakeAcknowledge();
-          if (cmd && cmd.length > 2) {
-            // Combined wake + command
-            setTimeout(() => qeHandleQuery(cmd), 300);
-          } else {
-            // Open mic for command
-            setTimeout(() => qeToggleListen(), 400);
-          }
-        }
-      };
-      wakeRec.onend = () => {
-        if (wakeOn && wakeRetries < 30) { wakeRetries++; setTimeout(() => { try { wakeRec.start(); } catch(_){} }, 300); }
-      };
-      wakeRec.onerror = (e) => {
-        if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
-          wakeOn = false;
-          qeAddTranscript('Quant Entelloq', 'Microphone permission needed for ambient listening.');
-          const btn = document.getElementById('qe-wake-btn');
-          if (btn) { btn.innerHTML = '👂 Wake'; btn.classList.remove('listening'); }
-        }
-      };
-      wakeRec.start();
-      wakeOn = true;
-      wakeRetries = 0;
-      const btn = document.getElementById('qe-wake-btn');
-      if (btn) { btn.innerHTML = '👂 LIVE'; btn.classList.add('listening'); }
-      qeAddTranscript('Quant Entelloq', 'Ambient listening on. Say "Hey Quant Entelloq" anywhere on the platform.');
-      qeOpenPanel();
-    } catch (err) {
-      console.warn('wake start failed', err);
-    }
-  };
-
-  function qeWakeAcknowledge() {
-    // Brief visual + audio cue when wake phrase detected
-    const orb = document.getElementById('qe-orb');
-    if (orb) {
-      orb.classList.add('listening');
-      setTimeout(() => orb.classList.remove('listening'), 1500);
-    }
-    // Soft confirmation tone via WebAudio
-    try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
-      o.frequency.value = 880;
-      o.type = 'sine';
-      g.gain.setValueAtTime(0, ctx.currentTime);
-      g.gain.linearRampToValueAtTime(0.06, ctx.currentTime + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.25);
-      o.connect(g); g.connect(ctx.destination);
-      o.start();
-      o.stop(ctx.currentTime + 0.3);
-    } catch(_) {}
-    // Pulse the screen with a quick green halo
-    const halo = document.createElement('div');
-    halo.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9500;background:radial-gradient(ellipse at 90% 90%, rgba(124,58,237,0.18), transparent 50%);animation:wakePulse 1.2s ease-out forwards;';
-    document.body.appendChild(halo);
-    setTimeout(() => halo.remove(), 1300);
-  }
-  // Inject wake-pulse keyframe
-  const wakeKeyframes = document.createElement('style');
-  wakeKeyframes.textContent = '@keyframes wakePulse { 0%{opacity:1;} 100%{opacity:0;} } #qe-wake-btn.listening { background:linear-gradient(135deg, #A78BFA, #7C3AED) !important; color:#fff !important; box-shadow:0 0 20px rgba(167,139,250,0.5); }';
-  document.head.appendChild(wakeKeyframes);
 
   // === MARKET HOURS CONTEXTUAL OVERLAY (no longer a page — voice-summoned) ===
   function qeShowMarketHoursOverlay() {
@@ -9306,7 +9110,6 @@ window.addEventListener('resize', () => {
   shortcuts.id = 'qe-shortcuts';
   shortcuts.innerHTML = `
     <button class="qe-shortcut" onclick="qeShowMarketHoursOverlay()" title="Market Hours">🕐</button>
-    <button class="qe-shortcut" onclick="qeOpenPanel()" title="Talk to Quant Entelloq">⚛</button>
   `;
   document.body.appendChild(shortcuts);
   const shortcutCSS = document.createElement('style');
@@ -9939,187 +9742,6 @@ window.qeRL  = window.QESecurity.rateLimit;
   };
   window.qeAsk = function(text) { handleQuery(text); };
 
-  // === WAKE-WORD — robust, aggressive auto-restart, multi-pattern matching ===
-  let wakeRec = null, wakeOn = false, wakeRetries = 0;
-  let _wakeKeepalive = null;
-  // Match many spoken variations of "Quant Entelloq" — extremely lenient
-  const _wakePatterns = [
-    /\bhey[\s,]*quant[\s,]*entelloq\b/i,
-    /\bok[\s,]*quant[\s,]*entelloq\b/i,
-    /\bhi[\s,]*quant[\s,]*entelloq\b/i,
-    /\bhello[\s,]*quant[\s,]*entelloq\b/i,
-    /\bquant[\s,]*entelloq\b/i,
-    /\bquantentelloq\b/i,
-    /\bhey[\s,]*entelloq\b/i,       // short form
-    /\bok[\s,]*entelloq\b/i,        // short form
-    /\bentelloq\b/i,                // bare name
-    /\bentello[\s,]*q\b/i,          // mis-segmented
-    /\bintellog\b/i,                // phonetic mishearing
-    /\bintello\b/i,                 // dropped q
-    /\benter[\s,]*lock\b/i,         // phonetic mishearing
-    /\binto[\s,]*lock\b/i,          // phonetic mishearing
-    /\bok[\s,]*quantum\b/i,         // very common mishearing
-    /\bhey[\s,]*quantum\b/i         // very common mishearing
-  ];
-  function _matchesWakePhrase(text) {
-    return _wakePatterns.some(rx => rx.test(text));
-  }
-  function _stripWakePhrase(text) {
-    let t = text;
-    _wakePatterns.forEach(rx => { t = t.replace(rx, ''); });
-    return t.replace(/^[,.\s]+/, '').replace(/[,.\s]+$/, '').trim();
-  }
-
-  // === LIVE TRANSCRIPT — shows what the mic is hearing in real time ===
-  let _transcriptHideTimer = null;
-  function showLiveTranscript(text, matched) {
-    let el = document.getElementById('qe-live-transcript');
-    if (!el) {
-      el = document.createElement('div');
-      el.id = 'qe-live-transcript';
-      el.style.cssText = 'position:fixed;bottom:118px;right:24px;z-index:99997;max-width:340px;padding:10px 14px;border-radius:12px;background:linear-gradient(180deg,rgba(8,12,20,0.95),rgba(4,6,14,0.97));border:1px solid rgba(245,158,11,0.30);color:#fff;font-family:DM Mono,monospace;font-size:12px;line-height:1.5;backdrop-filter:blur(16px);box-shadow:0 16px 48px -12px rgba(0,0,0,0.7),0 0 0 1px rgba(245,158,11,0.10);opacity:0;transform:translateY(8px);transition:opacity 200ms,transform 280ms cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;';
-      document.body.appendChild(el);
-    }
-    el.textContent = text;
-    el.style.borderColor = matched ? 'rgba(124,58,237,0.50)' : 'rgba(245,158,11,0.30)';
-    el.style.color = matched ? '#7C3AED' : '#fff';
-    el.style.opacity = '1';
-    el.style.transform = 'translateY(0)';
-    clearTimeout(_transcriptHideTimer);
-    _transcriptHideTimer = setTimeout(() => {
-      if (el) { el.style.opacity = '0'; el.style.transform = 'translateY(8px)'; }
-    }, matched ? 2400 : 1400);
-  }
-
-  function _setWakeBtnState(on) {
-    const btn = document.getElementById('qe-wake-btn-static');
-    if (btn) {
-      if (on) { btn.textContent = '👂 LIVE'; btn.style.background = 'linear-gradient(135deg, #A78BFA, #7C3AED)'; btn.style.color = '#fff'; }
-      else { btn.textContent = '👂 Wake'; btn.style.background = ''; btn.style.color = ''; }
-    }
-    // Pulse the wake-dot indicator
-    const dot = document.getElementById('qe-wake-indicator');
-    if (dot) {
-      dot.style.background = on ? '#A78BFA' : '#888';
-      dot.style.boxShadow = on ? '0 0 12px #A78BFA' : 'none';
-    }
-    // The big MIC LIVE badge
-    const badge = document.getElementById('qe-mic-live-badge');
-    if (badge) badge.classList.toggle('live', on);
-  }
-
-  function _wakeRestart(delay = 100) {
-    if (!wakeOn) return;
-    wakeRetries++;
-    if (wakeRetries > 200) return; // safety cap
-    clearTimeout(_wakeKeepalive);
-    _wakeKeepalive = setTimeout(() => {
-      try {
-        wakeRec.start();
-      } catch (e) {
-        // "already started" or "invalid state" — retry after a longer delay
-        clearTimeout(_wakeKeepalive);
-        _wakeKeepalive = setTimeout(() => { try { wakeRec.start(); } catch(_){} }, 800);
-      }
-    }, delay);
-  }
-
-  window.qeToggleWakeStatic = function() {
-    if (!SR) {
-      addMsg('Quant Entelloq', 'Wake-word listening needs Chrome or Edge.');
-      return;
-    }
-    if (wakeOn) {
-      wakeOn = false;
-      try { wakeRec && wakeRec.abort && wakeRec.abort(); } catch(_){}
-      try { wakeRec && wakeRec.stop && wakeRec.stop(); } catch(_){}
-      clearTimeout(_wakeKeepalive);
-      _setWakeBtnState(false);
-      addMsg('Quant Entelloq', 'Ambient listening off.');
-      try { localStorage.setItem('qe-wake-pref', 'declined'); } catch(_){}
-      return;
-    }
-    try {
-      wakeRec = new SR();
-      wakeRec.continuous = true;
-      wakeRec.interimResults = true;
-      wakeRec.lang = 'en-US';
-      wakeRec.maxAlternatives = 3;
-
-      wakeRec.onresult = (e) => {
-        let bestText = '';
-        // Check ALL recent results (interim + final) and ALL alternatives
-        for (let i = e.resultIndex; i < e.results.length; i++) {
-          const result = e.results[i];
-          for (let j = 0; j < result.length; j++) {
-            const text = (result[j].transcript || '').toLowerCase().trim();
-            if (text.length > bestText.length) bestText = text;
-            if (_matchesWakePhrase(text)) {
-              const cmd = _stripWakePhrase(text);
-              // No logging of voice input — contains user speech data
-              showLiveTranscript('✓ ' + text, true);
-              wakeChime();
-              if (cmd && cmd.length > 1) setTimeout(() => handleQuery(cmd), 250);
-              else setTimeout(() => qeStartListening(), 350);
-              try { wakeRec.abort(); } catch(_){}
-              _wakeRestart(800);
-              return;
-            }
-          }
-        }
-        // Show user what's being heard, even if no match — helps debug
-        if (bestText) showLiveTranscript('🎙 ' + bestText, false);
-      };
-
-      wakeRec.onend = () => { if (wakeOn) _wakeRestart(150); };
-
-      wakeRec.onerror = (e) => {
-        if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
-          wakeOn = false;
-          _setWakeBtnState(false);
-          addMsg('Quant Entelloq', 'Mic permission denied. Click 🎙️ Talk and grant access.');
-          try { localStorage.removeItem('qe-wake-pref'); } catch(_){}
-          return;
-        }
-        // 'no-speech' / 'audio-capture' / 'aborted' / 'network' — just restart
-        if (wakeOn) _wakeRestart(300);
-      };
-
-      wakeRec.start();
-      wakeOn = true; wakeRetries = 0;
-      _setWakeBtnState(true);
-      addMsg('Quant Entelloq', '⚛  Wake online. Say <b style="color:#7C3AED;">"Hey Quant Entelloq"</b> from anywhere.');
-      try { localStorage.setItem('qe-wake-pref', 'enabled'); } catch(_){}
-
-      // Keep-alive watchdog: every 25s, if recognition silently died, restart
-      setInterval(() => {
-        if (wakeOn && wakeRec && wakeRec.readyState === undefined) { /* recognition has no readyState; rely on onend */ }
-      }, 25000);
-    } catch (err) {
-      console.warn('[Quant Entelloq wake]', err);
-      addMsg('Quant Entelloq', 'Failed to start wake listener — try clicking 🎙️ Talk first.');
-    }
-  };
-  function wakeChime() {
-    try {
-      const c = new (window.AudioContext || window.webkitAudioContext)();
-      const o = c.createOscillator(), g = c.createGain();
-      o.frequency.value = 880; o.type = 'sine';
-      g.gain.setValueAtTime(0, c.currentTime);
-      g.gain.linearRampToValueAtTime(0.05, c.currentTime + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 0.30);
-      o.connect(g); g.connect(c.destination);
-      o.start(); o.stop(c.currentTime + 0.32);
-    } catch(_){}
-    const halo = document.createElement('div');
-    halo.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:99500;background:radial-gradient(ellipse at 90% 90%, rgba(124,58,237,0.18), transparent 50%);animation:qeFadeOut 1.2s ease-out forwards;';
-    document.body.appendChild(halo);
-    setTimeout(() => halo.remove(), 1300);
-  }
-  // Inject fade-out keyframe
-  const k = document.createElement('style');
-  k.textContent = '@keyframes qeFadeOut { from{opacity:1;} to{opacity:0;} }';
-  document.head.appendChild(k);
 
   // === INTENT ROUTER ===
   function clickNav(page) {
@@ -10147,7 +9769,6 @@ window.qeRL  = window.QESecurity.rateLimit;
       const reply = intentReply(q) || { text: 'Sorry, I did not catch that.', spoken: 'Sorry, I did not catch that.' };
       addMsg('Quant Entelloq', reply.text);
       // Speak with a tiny delay so panel transition completes first
-      setTimeout(() => speak(reply.spoken || stripHtml(reply.text)), 80);
       if (reply.action) setTimeout(reply.action, 700);
     } catch (err) {
       console.warn('[QE handleQuery]', err);
@@ -10595,72 +10216,6 @@ window.qeRL  = window.QESecurity.rateLimit;
   document.body.appendChild(b);
   setTimeout(() => { if (b.parentNode) b.remove(); }, 12000);
 }
-// Legacy prompt — only show if user explicitly declined wake before, never again block
-  function maybePromptForVoice() {
-    const app = document.getElementById('app');
-    if (!app || app.style.display === 'none' || !app.offsetParent) {
-      setTimeout(maybePromptForVoice, 1500);
-      return;
-    }
-    let pref = null;
-    try { pref = localStorage.getItem('qe-wake-pref'); } catch(_){}
-    if (pref === 'enabled' || pref === 'declined') return;
-    // Show one-time prompt
-    const prompt = document.createElement('div');
-    prompt.id = 'qe-wake-prompt';
-    prompt.innerHTML = `
-      <div class="qe-wp-glow"></div>
-      <div class="qe-wp-icon">⚛</div>
-      <div class="qe-wp-title">Activate QUANT ENTELLOQ AI?</div>
-      <div class="qe-wp-sub">Say <b style="color:#7C3AED;">"Hey Quant Entelloq"</b> from anywhere — I'll handle navigation, lookups, and analysis.<br><span style="font-size:11px;color:#666;">Microphone access stays in your browser. No audio is sent anywhere.</span></div>
-      <div class="qe-wp-btns">
-        <button class="qe-wp-btn-secondary" onclick="qeDeclineWake()">Not now</button>
-        <button class="qe-wp-btn-primary" onclick="qeAcceptWake()">⚛ Activate</button>
-      </div>
-    `;
-    document.body.appendChild(prompt);
-    setTimeout(() => prompt.classList.add('open'), 50);
-  }
-  window.qeAcceptWake = function() {
-    try { localStorage.setItem('qe-wake-pref', 'enabled'); } catch(_){}
-    const p = document.getElementById('qe-wake-prompt'); if (p) { p.classList.remove('open'); setTimeout(() => p.remove(), 300); }
-    setTimeout(qeToggleWakeStatic, 350);
-  };
-  window.qeDeclineWake = function() {
-    try { localStorage.setItem('qe-wake-pref', 'declined'); } catch(_){}
-    const p = document.getElementById('qe-wake-prompt'); if (p) { p.classList.remove('open'); setTimeout(() => p.remove(), 300); }
-  };
-  // Inject prompt CSS
-  const promptCSS = document.createElement('style');
-  promptCSS.textContent = `
-    #qe-wake-prompt { position:fixed; bottom:120px; right:28px; width:340px; max-width:calc(100vw - 56px);
-      z-index:99996; padding:24px; border-radius:18px;
-      background:linear-gradient(180deg, rgba(20,20,20,0.97), rgba(8,8,8,0.97));
-      border:1px solid rgba(124,58,237,0.30);
-      box-shadow:0 32px 80px -16px rgba(0,0,0,0.7), 0 0 0 1px rgba(124,58,237,0.15);
-      backdrop-filter:saturate(140%) blur(20px);
-      transform:translateY(20px) scale(0.96); opacity:0;
-      transition:transform 320ms cubic-bezier(0.23,1,0.32,1), opacity 280ms;
-      color:#fff;
-    }
-    #qe-wake-prompt.open { transform:translateY(0) scale(1); opacity:1; }
-    .qe-wp-glow { position:absolute; inset:auto -40px -40px auto; width:200px; height:200px; border-radius:50%;
-      background:radial-gradient(circle, rgba(124,58,237,0.20), transparent 60%); pointer-events:none; }
-    .qe-wp-icon { font-size:36px; margin-bottom:10px; filter:drop-shadow(0 0 12px rgba(124,58,237,0.6)); }
-    .qe-wp-title { font-family:'Syne',sans-serif; font-size:18px; font-weight:800; letter-spacing:-0.01em; margin-bottom:8px;
-      background:linear-gradient(135deg, #7C3AED, #7C3AED); -webkit-background-clip:text; background-clip:text; color:transparent; }
-    .qe-wp-sub { font-size:13px; color:#b8b8b8; line-height:1.6; margin-bottom:18px; }
-    .qe-wp-btns { display:flex; gap:8px; }
-    .qe-wp-btn-primary, .qe-wp-btn-secondary { flex:1; padding:11px; border:none; border-radius:10px; font-size:12px; font-weight:700; cursor:pointer;
-      transition:all 200ms cubic-bezier(0.23,1,0.32,1); font-family:'DM Sans',sans-serif; }
-    .qe-wp-btn-primary { background:linear-gradient(135deg, #A78BFA, #7C3AED); color:#fff; }
-    .qe-wp-btn-primary:hover { transform:translateY(-1px); box-shadow:0 8px 24px -8px rgba(124,58,237,0.6); }
-    .qe-wp-btn-secondary { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); color:#fff; }
-    .qe-wp-btn-secondary:hover { background:rgba(255,255,255,0.08); }
-  `;
-  document.head.appendChild(promptCSS);
-  // Trigger prompt 4 seconds after app is shown (gives user time to land)
-  setTimeout(maybePromptForVoice, 4000);
 
   // ============================================================================
   // GOOGLE FINANCE DEEP-LINK + reliable price source. Google's data API is not
@@ -15040,7 +14595,6 @@ function renderCommandCenter() {
         </div>
         <div class="cmd-agent-footer">
           <span class="cmd-agent-latency" style="color:${agent.color};font-size:10px;">${st.conf?st.conf+'% conf':''}</span>
-          <button class="cmd-agent-speak-btn" id="cmd-speak-${agent.id}" title="Speak response" onclick="event.stopPropagation();_cmdSpeakAgent('${agent.id}')">🔊</button>
           <button class="cmd-agent-query-btn" onclick="event.stopPropagation();cmdOpenAgent('${agent.id}')">Query →</button>
         </div>
       </div>`;
@@ -15852,8 +15406,6 @@ setTimeout(() => {
     var pk = localStorage.getItem('qe_poly_key') || localStorage.getItem('qe_polygon_key');
     if (pk) _showSavedKey('polygon', pk);
 
-    // Init TTS toggle UI state
-    _syncTTSUI();
   });
 
   // Patch saveClaudeKey to also show the saved indicator
@@ -16487,7 +16039,6 @@ setTimeout(() => {
   // ── Logout ───────────────────────────────────────────────────
   window.qzLogout = function() {
     clearSession();
-    if (window.speechSynthesis) window.speechSynthesis.cancel();
     fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' }).catch(function(){});
     // Return to landing page so they can scroll freely before logging back in
     var app = document.getElementById('app');
@@ -26128,7 +25679,6 @@ async function qzCoachReview() {
   // ────────────────────────────────────────────────────────────────────
   function boot() {
     _hookPageRouting();
-    injectJarvisHint();
     addDataRibbon();
   }
   // Initial boot
