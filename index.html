@@ -15634,6 +15634,21 @@ body.qe-in-app .modal-overlay:not(#auth-modal) * {
   backdrop-filter: none !important;
 }
 
+/* ── Prose weight ──────────────────────────────────────────────────
+   Everything above is 700. Running paragraphs at 700 reads as a wall
+   and actually costs legibility (bold flattens word-shape cues), so
+   long-form copy steps down to 600 — still visibly bold, but readable
+   in bulk. Labels, numbers, tickers, buttons and headings stay 700/800
+   where the weight genuinely helps you find things. */
+#app p, #landing p, #qz-lesson-modal p, #onboarding p, #qe-tour-overlay .qe-tour-body,
+#app .qz-brief, #app .qz-coach-note, #app .qz-coach-check, #app .qz-learn-b,
+#app .qz-home-empty, #app .settings-row-sub, #app .card-sub, #app .ent-sig-reason,
+#landing .qzl-lead, #landing .qzl-hero-lead, #landing .qzl-step p, #landing .qzl-card p,
+#landing .qzl-honest p, #landing .qzl-founder-quote, #landing .lp3-card-lock,
+#qz-lesson-modal .lesson-body, #app .qz-row-nm {
+  font-weight: 600 !important;
+}
+
 /* Empty-state blocks kept dark fills (measured 1.09:1). */
 #app [class*="-empty"], #app [class*="empty-"], #app .qz-home-empty,
 #app [class*="qe-pg2-empty"] {
@@ -15664,6 +15679,6 @@ body.qe-in-app .modal-overlay:not(#auth-modal) * {
   -webkit-text-fill-color: initial !important;
 }
 </style>
-<script defer src="js/app.min.js?v=20260714-16"></script>
+<script defer src="js/app.min.js?v=20260714-17"></script>
 </body>
 </html>
