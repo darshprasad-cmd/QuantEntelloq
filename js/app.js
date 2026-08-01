@@ -29656,6 +29656,10 @@ async function qzCoachReview() {
     return !!(l && !l.classList.contains('hidden') && getComputedStyle(l).display !== 'none');
   }
   function build() {
+    // Retired: the light launch page now carries this methodology copy as
+    // static markup (#lp3-method). Injecting the old dark section on top of it
+    // duplicated the content and broke the light palette.
+    if (true) return;
     if (!landingVisible()) return;
     var landing = document.getElementById('landing');
     if (!landing || document.getElementById('qe-method')) return;
