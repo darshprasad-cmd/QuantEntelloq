@@ -15832,6 +15832,115 @@ body { --qz-candles: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2
   background: #EFEBE2 !important;
   border: 1px solid rgba(26,23,20,0.10) !important;
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   27 · LIVELY ACCENTS — a designed 8-hue system over Warm Paper.
+   Text stays black + bold everywhere (the standing legibility rule);
+   colour enters through SURFACES: nav hue identities, widget ribbons,
+   tinted icon tiles, active-state washes, progress cues. One tokenised
+   set, applied by fixed assignment — lively, never chaotic.
+   ══════════════════════════════════════════════════════════════════ */
+:root {
+  --acc-blue:#2E6FE0;   --tint-blue:#EAF1FE;
+  --acc-teal:#0E9488;   --tint-teal:#E4F6F3;
+  --acc-green:#1B9E57;  --tint-green:#E7F6EC;
+  --acc-amber:#E8960C;  --tint-amber:#FDF3DE;
+  --acc-coral:#E85D4A;  --tint-coral:#FDEDE9;
+  --acc-violet:#7C5CD6; --tint-violet:#F1EDFB;
+  --acc-pink:#D6519F;   --tint-pink:#FBECF5;
+  --acc-brass:#8A6A28;  --tint-brass:#F6F0E1;
+}
+
+/* ── Nav:每 section owns a hue. Active = tint wash + accent bar. ── */
+#app .nav-item { border-left: 3px solid transparent !important; transition: background 160ms ease, border-color 160ms ease !important; }
+#app .nav-item[onclick*="'home'"].active     { background: var(--tint-brass) !important;  border-left-color: var(--acc-brass) !important; }
+#app .nav-item[onclick*="'markets'"].active  { background: var(--tint-blue) !important;   border-left-color: var(--acc-blue) !important; }
+#app .nav-item[onclick*="'learn'"].active    { background: var(--tint-violet) !important; border-left-color: var(--acc-violet) !important; }
+#app .nav-item[onclick*="'portfolio'"].active{ background: var(--tint-green) !important;  border-left-color: var(--acc-green) !important; }
+#app .nav-item[onclick*="'ai'"].active       { background: var(--tint-pink) !important;   border-left-color: var(--acc-pink) !important; }
+#app .nav-item[onclick*="'profile'"].active  { background: var(--tint-teal) !important;   border-left-color: var(--acc-teal) !important; }
+#app .nav-item[onclick*="'home'"]:hover:not(.active)     { background: var(--tint-brass) !important; }
+#app .nav-item[onclick*="'markets'"]:hover:not(.active)  { background: var(--tint-blue) !important; }
+#app .nav-item[onclick*="'learn'"]:hover:not(.active)    { background: var(--tint-violet) !important; }
+#app .nav-item[onclick*="'portfolio'"]:hover:not(.active){ background: var(--tint-green) !important; }
+#app .nav-item[onclick*="'ai'"]:hover:not(.active)       { background: var(--tint-pink) !important; }
+#app .nav-item[onclick*="'profile'"]:hover:not(.active)  { background: var(--tint-teal) !important; }
+
+/* ── Home widgets: cycling ribbon + colour dot before each title. ── */
+#app .qz-home-grid > .qz-home-card { border-top: 3px solid var(--band) !important; }
+#app .qz-home-grid > .qz-home-card:nth-child(8n+1) { border-top-color: var(--acc-brass) !important; }
+#app .qz-home-grid > .qz-home-card:nth-child(8n+2) { border-top-color: var(--acc-blue) !important; }
+#app .qz-home-grid > .qz-home-card:nth-child(8n+3) { border-top-color: var(--acc-teal) !important; }
+#app .qz-home-grid > .qz-home-card:nth-child(8n+4) { border-top-color: var(--acc-green) !important; }
+#app .qz-home-grid > .qz-home-card:nth-child(8n+5) { border-top-color: var(--acc-violet) !important; }
+#app .qz-home-grid > .qz-home-card:nth-child(8n+6) { border-top-color: var(--acc-amber) !important; }
+#app .qz-home-grid > .qz-home-card:nth-child(8n+7) { border-top-color: var(--acc-pink) !important; }
+#app .qz-home-grid > .qz-home-card:nth-child(8n+8) { border-top-color: var(--acc-coral) !important; }
+#app .qz-home-card-title::before {
+  content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  margin-right: 8px; vertical-align: 1px; background: var(--dot, var(--acc-brass));
+}
+#app .qz-home-grid > .qz-home-card:nth-child(8n+1) .qz-home-card-title::before { background: var(--acc-brass); }
+#app .qz-home-grid > .qz-home-card:nth-child(8n+2) .qz-home-card-title::before { background: var(--acc-blue); }
+#app .qz-home-grid > .qz-home-card:nth-child(8n+3) .qz-home-card-title::before { background: var(--acc-teal); }
+#app .qz-home-grid > .qz-home-card:nth-child(8n+4) .qz-home-card-title::before { background: var(--acc-green); }
+#app .qz-home-grid > .qz-home-card:nth-child(8n+5) .qz-home-card-title::before { background: var(--acc-violet); }
+#app .qz-home-grid > .qz-home-card:nth-child(8n+6) .qz-home-card-title::before { background: var(--acc-amber); }
+#app .qz-home-grid > .qz-home-card:nth-child(8n+7) .qz-home-card-title::before { background: var(--acc-pink); }
+#app .qz-home-grid > .qz-home-card:nth-child(8n+8) .qz-home-card-title::before { background: var(--acc-coral); }
+
+/* ── Subtabs + level pills: tinted, friendly active states. ── */
+#app .qz-subtab { transition: background 160ms ease !important; }
+#app .qz-subtab:hover:not(.active) { background: var(--tint-blue) !important; }
+#app .qz-subtab.active { background: var(--tint-blue) !important; border: 1px solid var(--acc-blue) !important; }
+#app .qz-levelbtn:hover:not(.active) { background: var(--tint-green) !important; }
+#app .qz-levelbtn.active { background: var(--tint-green) !important; border: 1px solid var(--acc-green) !important; }
+
+/* ── Learn: coloured category system — the heart of "appreciate to
+   learn". Icon tiles get a tint + accent ring per category row; cards
+   carry a cycling ribbon. ── */
+#app .qz-learn-cat { border-left: 4px solid var(--acc-violet) !important; padding-left: 10px !important; }
+#app .qz-learn-ic {
+  background: var(--tint-violet) !important;
+  border: 1.5px solid var(--acc-violet) !important;
+}
+#app .qz-learn-rowscroll .qz-learn-card:nth-child(6n+1) .qz-learn-ic { background: var(--tint-violet) !important; border-color: var(--acc-violet) !important; }
+#app .qz-learn-rowscroll .qz-learn-card:nth-child(6n+2) .qz-learn-ic { background: var(--tint-blue) !important;   border-color: var(--acc-blue) !important; }
+#app .qz-learn-rowscroll .qz-learn-card:nth-child(6n+3) .qz-learn-ic { background: var(--tint-teal) !important;   border-color: var(--acc-teal) !important; }
+#app .qz-learn-rowscroll .qz-learn-card:nth-child(6n+4) .qz-learn-ic { background: var(--tint-amber) !important;  border-color: var(--acc-amber) !important; }
+#app .qz-learn-rowscroll .qz-learn-card:nth-child(6n+5) .qz-learn-ic { background: var(--tint-green) !important;  border-color: var(--acc-green) !important; }
+#app .qz-learn-rowscroll .qz-learn-card:nth-child(6n+6) .qz-learn-ic { background: var(--tint-pink) !important;   border-color: var(--acc-pink) !important; }
+#app .qz-learn-card { border-top: 3px solid var(--band) !important; transition: transform 160ms ease, box-shadow 160ms ease !important; }
+#app .qz-learn-rowscroll .qz-learn-card:nth-child(6n+1) { border-top-color: var(--acc-violet) !important; }
+#app .qz-learn-rowscroll .qz-learn-card:nth-child(6n+2) { border-top-color: var(--acc-blue) !important; }
+#app .qz-learn-rowscroll .qz-learn-card:nth-child(6n+3) { border-top-color: var(--acc-teal) !important; }
+#app .qz-learn-rowscroll .qz-learn-card:nth-child(6n+4) { border-top-color: var(--acc-amber) !important; }
+#app .qz-learn-rowscroll .qz-learn-card:nth-child(6n+5) { border-top-color: var(--acc-green) !important; }
+#app .qz-learn-rowscroll .qz-learn-card:nth-child(6n+6) { border-top-color: var(--acc-pink) !important; }
+#app .qz-learn-card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px -14px rgba(26,23,20,0.28) !important; }
+
+/* ── AI Trade Coach loop: each step its own hue (arrows stay muted). ── */
+#app .qz-coach-steps .qz-coach-step { border-top: 3px solid var(--band) !important; }
+#app .qz-coach-steps .qz-coach-step:nth-of-type(5n+1) { border-top-color: var(--acc-blue) !important; }
+#app .qz-coach-steps .qz-coach-step:nth-of-type(5n+2) { border-top-color: var(--acc-teal) !important; }
+#app .qz-coach-steps .qz-coach-step:nth-of-type(5n+3) { border-top-color: var(--acc-amber) !important; }
+#app .qz-coach-steps .qz-coach-step:nth-of-type(5n+4) { border-top-color: var(--acc-violet) !important; }
+#app .qz-coach-steps .qz-coach-step:nth-of-type(5n+5) { border-top-color: var(--acc-green) !important; }
+#app .qz-coach-ticket { border: 1px solid var(--acc-green) !important; background: var(--tint-green) !important; }
+
+/* ── Markets/News/Signals cards: cycling left edge for scan rhythm. ── */
+#app .ent-sig-card:nth-child(4n+1), #app .news-item:nth-child(4n+1) { border-left: 3px solid var(--acc-blue) !important; }
+#app .ent-sig-card:nth-child(4n+2), #app .news-item:nth-child(4n+2) { border-left: 3px solid var(--acc-teal) !important; }
+#app .ent-sig-card:nth-child(4n+3), #app .news-item:nth-child(4n+3) { border-left: 3px solid var(--acc-violet) !important; }
+#app .ent-sig-card:nth-child(4n+4), #app .news-item:nth-child(4n+4) { border-left: 3px solid var(--acc-amber) !important; }
+
+/* ── Learning affordances pop: Explain chips violet, brighter action
+   greens, Daily-Challenge options wash on hover. ── */
+#app .qz-explain { background: var(--tint-violet) !important; border: 1px solid var(--acc-violet) !important; }
+#app .btn-green { background: var(--acc-green) !important; }
+#app .qe-daily-opt:hover { background: var(--tint-amber) !important; border-color: var(--acc-amber) !important; }
+#app .qe-daily-opt.correct { background: var(--tint-green) !important; border-color: var(--acc-green) !important; }
+#app .qe-daily-opt.wrong { background: var(--tint-coral) !important; border-color: var(--acc-coral) !important; }
 </style>
 <script defer src="js/app.min.js?v=20260714-21"></script>
 </body>
