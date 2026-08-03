@@ -10207,7 +10207,7 @@ function _lp3Enter(user) {
  *  poster. NOT generic, NOT vibecoded, NOT Emil-Kowalski spring-y.     *
  *                                                                      *
  *  Adds:                                                               *
- *    - Distinctive font stack: Fraunces (display) + JetBrains Mono     *
+ *    - Distinctive font stack: Fraunces (display) + DM Mono     *
  *    - Void-black palette with warm-amber accent + cool-cyan data      *
  *    - SVG grain texture + distant aurora background gradients         *
  *    - Cinematic symmetric easing cubic-bezier(0.65, 0, 0.35, 1)       *
@@ -10223,12 +10223,12 @@ function _lp3Enter(user) {
   'use strict';
 
   // ─────────────────────────────────────────────────────────────────
-  //  1. Load distinctive fonts (Fraunces editorial serif + JetBrains Mono)
+  //  1. Load distinctive fonts (Fraunces editorial serif + DM Mono)
   // ─────────────────────────────────────────────────────────────────
   if (!document.querySelector('link[href*="Fraunces"]')) {
     var fl = document.createElement('link');
     fl.rel = 'stylesheet';
-    fl.href = 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap';
+    fl.href = 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=DM+Mono:wght@300;400;500&display=swap';
     document.head.appendChild(fl);
   }
 
@@ -15796,6 +15796,6 @@ body:not(.qe-in-app) #qz-search-overlay {
   filter: none !important;
 }
 </style>
-<script defer src="js/app.min.js?v=20260714-19"></script>
+<script defer src="js/app.min.js?v=20260714-20"></script>
 </body>
 </html>

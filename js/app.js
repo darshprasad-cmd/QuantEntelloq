@@ -22534,7 +22534,7 @@ async function qzCoachReview() {
         size: Math.random() * 2 + 1,
         life: 1,
         decay: 0.003 + Math.random() * 0.005,
-        color: color || (Math.random() > 0.5 ? '167,139,250' : '103,232,249')
+        color: color || (Math.random() > 0.5 ? '138,106,40' : '47,110,122')
       });
     }
   }
@@ -25279,7 +25279,7 @@ async function qzCoachReview() {
         '</select>' +
       '</div>' +
       '<div class="qe-pg2-table-shell">' + tableHTML + '</div>' +
-      (filtered.length > 50 ? '<div style="margin-top:14px;font-size:11px;color:rgba(26,23,20,0.45);font-family:JetBrains Mono,monospace;letter-spacing:0.08em;text-align:center;">Showing top 50 of ' + filtered.length + ' matches · refine filters to see more</div>' : '');
+      (filtered.length > 50 ? '<div style="margin-top:14px;font-size:11px;color:rgba(26,23,20,0.45);font-family:DM Mono,monospace;letter-spacing:0.08em;text-align:center;">Showing top 50 of ' + filtered.length + ' matches · refine filters to see more</div>' : '');
 
     // Wire interactions
     var srch = document.getElementById('qe-scanner-search');
@@ -26498,7 +26498,7 @@ async function qzCoachReview() {
         +     '<span class="cmd-agent-latency" style="margin-left:auto;">—</span>'
         +   '</div>'
         +   '<div class="cmd-agent-output" id="cmd-out-' + agent.id + '" '
-        +        'style="background:rgba(0,0,0,0.4);border-left:2px solid ' + agent.color + ';border-radius:0 6px 6px 0;padding:10px 12px;font-family:JetBrains Mono,monospace;font-size:11.5px;line-height:1.55;color:rgba(26,23,20,0.78);">'
+        +        'style="background:rgba(0,0,0,0.4);border-left:2px solid ' + agent.color + ';border-radius:0 6px 6px 0;padding:10px 12px;font-family:DM Mono,monospace;font-size:11.5px;line-height:1.55;color:rgba(26,23,20,0.78);">'
         +     safeTag
         +   '</div>'
         +   '<div class="cmd-agent-conf-bar"><div class="cmd-agent-conf-fill" style="width:0%;background:' + agent.color + ';"></div></div>'
@@ -28247,7 +28247,7 @@ async function qzCoachReview() {
       +     '<div class="qe-cw-cflag" id="qe-cw-flag-2"></div>'
       +   '</div>'
       +   '<div class="qe-cw-macro" id="qe-cw-macro"></div>'
-      +   '<div style="margin-top:10px;font-family:JetBrains Mono,monospace;font-size:10px;letter-spacing:0.08em;color:rgba(26,23,20,0.42);">'
+      +   '<div style="margin-top:10px;font-family:DM Mono,monospace;font-size:10px;letter-spacing:0.08em;color:rgba(26,23,20,0.42);">'
       +     '<span id="qe-cw-cbank"></span> · Reg: <span id="qe-cw-reg"></span>'
       +   '</div>'
       + '</div>';
@@ -29938,8 +29938,8 @@ async function qzCoachReview() {
       + '<line x1="'+pad+'" y1="'+base.toFixed(1)+'" x2="'+(W-pad)+'" y2="'+base.toFixed(1)+'" stroke="#6b6790" stroke-width="1" stroke-dasharray="3 4" opacity=".5"/>'
       + '<path d="'+area+'" fill="url(#qeRlEq)"/>'
       + '<path d="'+d+'" fill="none" stroke="#16794A" stroke-width="2.2" stroke-linejoin="round"/>'
-      + '<text x="'+pad+'" y="14" fill="#7A7165" font-family="JetBrains Mono,monospace" font-size="10">growth of $1 · L/S portfolio</text>'
-      + '<text x="'+(W-pad)+'" y="14" text-anchor="end" fill="#16794A" font-family="JetBrains Mono,monospace" font-size="11">$'+eq[n-1].toFixed(2)+'</text>'
+      + '<text x="'+pad+'" y="14" fill="#7A7165" font-family="DM Mono,monospace" font-size="10">growth of $1 · L/S portfolio</text>'
+      + '<text x="'+(W-pad)+'" y="14" text-anchor="end" fill="#16794A" font-family="DM Mono,monospace" font-size="11">$'+eq[n-1].toFixed(2)+'</text>'
       + '</svg>';
   }
 
@@ -29957,8 +29957,8 @@ async function qzCoachReview() {
     return '<svg viewBox="0 0 '+W+' '+Hh+'" xmlns="http://www.w3.org/2000/svg">'
       + (zeroY!==null? '<line x1="'+pad+'" y1="'+zeroY.toFixed(1)+'" x2="'+(W-pad)+'" y2="'+zeroY.toFixed(1)+'" stroke="#6b6790" stroke-width="1" stroke-dasharray="3 4" opacity=".45"/>':'')
       + dots + line
-      + '<text x="'+pad+'" y="14" fill="#7A7165" font-family="JetBrains Mono,monospace" font-size="10">forward 21d return (demeaned) vs factor z-score</text>'
-      + '<text x="'+(W-pad)+'" y="'+(Hh-8)+'" text-anchor="end" fill="#8A6A28" font-family="JetBrains Mono,monospace" font-size="10">slope '+sgn(reg.slope*100,2)+'%/σ</text>'
+      + '<text x="'+pad+'" y="14" fill="#7A7165" font-family="DM Mono,monospace" font-size="10">forward 21d return (demeaned) vs factor z-score</text>'
+      + '<text x="'+(W-pad)+'" y="'+(Hh-8)+'" text-anchor="end" fill="#8A6A28" font-family="DM Mono,monospace" font-size="10">slope '+sgn(reg.slope*100,2)+'%/σ</text>'
       + '</svg>';
   }
 
