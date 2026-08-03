@@ -1106,7 +1106,7 @@ function qzLearnOpen(id) {
   if (!m) {
     m = document.createElement('div');
     m.id = 'qz-lesson-modal';
-    m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:9100;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);padding:20px;';
+    m.style.cssText = 'position:fixed;inset:0;background:rgba(255,255,255,0.72);z-index:9100;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);padding:20px;';
     m.onclick = function(e){ if (e.target === m) m.remove(); };
     document.body.appendChild(m);
   }
@@ -1482,7 +1482,7 @@ function _qzShowComingSoon(page) {
 
   var overlay = document.createElement('div');
   overlay.id = 'qz-coming-soon';
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:99998;background:rgba(8,9,11,0.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;transition:opacity 220ms cubic-bezier(0.16,1,0.3,1);';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:99998;background:rgba(255,255,255,0.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;transition:opacity 220ms cubic-bezier(0.16,1,0.3,1);';
   overlay.innerHTML =
     '<div style="background:linear-gradient(135deg,#FFFFFF,#FBFAF7);border:1px solid rgba(138,106,40,0.22);border-radius:20px;padding:44px 40px;max-width:480px;width:100%;text-align:center;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(138,106,40,0.20),0 40px 100px rgba(0,0,0,0.55);">' +
       '<div style="position:absolute;top:-60px;right:-30px;width:280px;height:280px;background:radial-gradient(circle,rgba(138,106,40,0.20),transparent 65%);pointer-events:none;filter:blur(20px);"></div>' +
@@ -1813,7 +1813,7 @@ function _qzRenderUnifiedIntel() {
 function _qzIntelCard(n) {
   var sColor = n.sentiment === 'bullish' ? '#16794A' : n.sentiment === 'bearish' ? '#B3453D' : '#8A6512';
   var sBg = n.sentiment === 'bullish' ? 'rgba(22,121,74,0.12)' : n.sentiment === 'bearish' ? 'rgba(179,69,61,0.12)' : 'rgba(138,101,18,0.12)';
-  var impactColor = n.impact >= 8 ? '#8A6A28' : n.impact >= 6 ? '#2C6087' : 'rgba(26,23,20,0.55)';
+  var impactColor = n.impact >= 8 ? '#8A6A28' : n.impact >= 6 ? '#2C6087' : 'rgba(255,255,255,0.55)';
   return '<div class="qz-intel-card" style="position:relative;">' +
     '<div style="position:absolute;left:0;top:22px;bottom:22px;width:3px;background:' + sColor + ';box-shadow:0 0 12px ' + sColor + '80;border-radius:0 2px 2px 0;"></div>' +
     '<div style="margin-left:10px;">' +
@@ -2054,8 +2054,8 @@ function _renderTVPortChart(container, period) {
     },
     crosshair: {
       mode: 1,
-      vertLine: { color: 'rgba(138,106,40,0.55)', width: 1, style: 2, labelBackgroundColor: '#1a1a1a' },
-      horzLine: { color: 'rgba(138,106,40,0.55)', width: 1, style: 2, labelBackgroundColor: '#1a1a1a' },
+      vertLine: { color: 'rgba(138,106,40,0.55)', width: 1, style: 2, labelBackgroundColor: '#1A1714' },
+      horzLine: { color: 'rgba(138,106,40,0.55)', width: 1, style: 2, labelBackgroundColor: '#1A1714' },
     },
     timeScale: {
       borderColor: 'rgba(26,23,20,0.11)',
@@ -2084,7 +2084,7 @@ function _renderTVPortChart(container, period) {
     },
     crosshairMarkerRadius: 5,
     crosshairMarkerBorderColor: '#8A6A28',
-    crosshairMarkerBackgroundColor: '#0d0d0d',
+    crosshairMarkerBackgroundColor: '#FFFFFF',
     lastValueVisible: true,
     priceLineVisible: true,
     priceLineColor: 'rgba(138,106,40,0.3)',
@@ -2151,7 +2151,7 @@ function renderSentimentChart() {
     ctx.beginPath();
     ctx.roundRect(x, y, bW * 0.6, h, 3);
     ctx.fill();
-    ctx.fillStyle = 'rgba(26,23,20,0.55)';
+    ctx.fillStyle = 'rgba(255,255,255,0.55)';
     ctx.font = '10px DM Mono, monospace';
     ctx.textAlign = 'center';
     ctx.fillText(l, x + bW * 0.3, H - 2);
@@ -2323,7 +2323,7 @@ function addLedgerEntry() {
   const today = new Date().toISOString().split('T')[0];
   const modal = document.createElement('div');
   modal.id = 'ledger-modal';
-  modal.style.cssText = 'position:fixed;inset:0;z-index:900;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.65);backdrop-filter:blur(6px);';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:900;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.65);backdrop-filter:blur(6px);';
   modal.innerHTML = `
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;width:440px;max-width:94vw;box-shadow:0 32px 64px -16px rgba(0,0,0,0.6);">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;">
@@ -3776,7 +3776,7 @@ function _showStockDetailModal(opts) {
   if (!modal) {
     modal = document.createElement('div');
     modal.id = 'stock-detail-modal';
-    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.78);z-index:9000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);animation:fadeInUp 220ms var(--ease-out-strong);';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(255,255,255,0.78);z-index:9000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);animation:fadeInUp 220ms var(--ease-out-strong);';
     modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
     document.body.appendChild(modal);
   }
@@ -8252,7 +8252,7 @@ window.addEventListener('resize', () => {
     });
     // donut hole
     ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--surface') || '#111';
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--surface') || '#FFFFFF';
     ctx.fill();
     // centre label
     ctx.fillStyle = '#1A1714';
@@ -9043,10 +9043,10 @@ window.addEventListener('resize', () => {
   overlayCSS.textContent = `
     .qe-overlay { position:fixed; inset:0; z-index:7000; opacity:0; pointer-events:none; transition:opacity 280ms cubic-bezier(0.23,1,0.32,1); }
     .qe-overlay.open { opacity:1; pointer-events:auto; }
-    .qe-overlay-backdrop { position:absolute; inset:0; background:rgba(0,0,0,0.65); backdrop-filter:blur(8px); }
+    .qe-overlay-backdrop { position:absolute; inset:0; background:rgba(255,255,255,0.65); backdrop-filter:blur(8px); }
     .qe-overlay-panel { position:absolute; inset:50% auto auto 50%; transform:translate(-50%,-50%) scale(0.96); width:min(720px, 92vw); max-height:84vh; overflow-y:auto;
       padding:28px 32px; border-radius:22px;
-      background:linear-gradient(180deg, rgba(20,20,20,0.97), rgba(10,10,10,0.97));
+      background:linear-gradient(180deg, rgba(255,255,255,0.97), rgba(255,255,255,0.97));
       border:1px solid rgba(138,106,40,0.22);
       box-shadow:0 40px 80px -20px rgba(0,0,0,0.7), 0 0 0 1px rgba(138,106,40,0.10);
       transition:transform 320ms cubic-bezier(0.23,1,0.32,1);
@@ -9117,7 +9117,7 @@ window.addEventListener('resize', () => {
   const shortcutCSS = document.createElement('style');
   shortcutCSS.textContent = `
     #qe-shortcuts { position:fixed; bottom:24px; right:108px; display:flex; gap:8px; z-index:8990; }
-    .qe-shortcut { width:44px; height:44px; border-radius:50%; border:1px solid rgba(138,106,40,0.20); background:linear-gradient(180deg, rgba(20,20,20,0.92), rgba(12,12,12,0.92)); color:var(--text-secondary); font-size:18px; cursor:pointer;
+    .qe-shortcut { width:44px; height:44px; border-radius:50%; border:1px solid rgba(138,106,40,0.20); background:linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.92)); color:var(--text-secondary); font-size:18px; cursor:pointer;
       backdrop-filter:saturate(140%) blur(12px); transition:all 200ms cubic-bezier(0.23,1,0.32,1);
       display:flex; align-items:center; justify-content:center;
     }
@@ -9157,7 +9157,7 @@ window.addEventListener('resize', () => {
       position:relative; padding:18px 22px; border-radius:18px;
       background:
         linear-gradient(135deg, rgba(138,106,40,0.06), transparent 30%, rgba(44,96,135,0.06) 100%),
-        linear-gradient(180deg, rgba(20,20,20,0.85), rgba(10,10,10,0.92));
+        linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.92));
       border:1px solid transparent;
       background-clip:padding-box;
       box-shadow:0 24px 60px -24px rgba(138,106,40,0.20), inset 0 1px 0 0 rgba(255,255,255,0.05);
@@ -10003,7 +10003,7 @@ window.qeRL  = window.QESecurity.rateLimit;
     /* Make every header more cinematic */
     .top-bar {
       border-bottom: 1px solid rgba(138,106,40,0.10) !important;
-      background: linear-gradient(180deg, rgba(8,8,8,0.95), rgba(0,0,0,0.85)) !important;
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85)) !important;
     }
     .top-bar::after {
       content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
@@ -10020,7 +10020,7 @@ window.qeRL  = window.QESecurity.rateLimit;
     /* Search bar — futuristic neon edge */
     .search-bar {
       border: 1px solid rgba(138,106,40,0.18) !important;
-      background: linear-gradient(180deg, rgba(8,8,8,0.95), rgba(15,15,15,0.85)) !important;
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85)) !important;
       box-shadow: inset 0 0 12px rgba(138,106,40,0.04), 0 0 16px rgba(138,106,40,0.06);
       transition: all 200ms cubic-bezier(0.23,1,0.32,1);
     }
@@ -10213,7 +10213,7 @@ window.qeRL  = window.QESecurity.rateLimit;
   try { localStorage.setItem('qz_mic_banner_shown', '1'); } catch(_) {}
   const b = document.createElement('div');
   b.id = 'qe-mic-banner';
-  b.style.cssText = 'position:fixed;top:80px;right:24px;z-index:99998;padding:14px 20px;border-radius:14px;background:linear-gradient(180deg,#FBFAF7,rgba(8,10,18,0.97));border:1px solid rgba(138,101,18,0.30);color:#fff;font-family:DM Sans,sans-serif;font-size:13px;max-width:340px;backdrop-filter:blur(16px);box-shadow:0 16px 48px -8px rgba(0,0,0,0.6);animation:qeFadeIn 360ms cubic-bezier(0.34,1.56,0.64,1);';
+  b.style.cssText = 'position:fixed;top:80px;right:24px;z-index:99998;padding:14px 20px;border-radius:14px;background:linear-gradient(180deg,#FBFAF7,rgba(255,255,255,0.97));border:1px solid rgba(138,101,18,0.30);color:#fff;font-family:DM Sans,sans-serif;font-size:13px;max-width:340px;backdrop-filter:blur(16px);box-shadow:0 16px 48px -8px rgba(0,0,0,0.6);animation:qeFadeIn 360ms cubic-bezier(0.34,1.56,0.64,1);';
   b.innerHTML = '🎙️ <b>Voice needs microphone access.</b><br><span style="font-size:12px;color:rgba(220,235,255,0.7);">Click the orb in the bottom-right and allow mic permission to Talk to Quant Entelloq.</span>';
   document.body.appendChild(b);
   setTimeout(() => { if (b.parentNode) b.remove(); }, 12000);
@@ -11454,7 +11454,7 @@ window.qeRL  = window.QESecurity.rateLimit;
 
     /* Legend */
     #uv-galaxy-legend {
-      position:absolute; top:16px; left:16px; background:rgba(8,8,16,0.85);
+      position:absolute; top:16px; left:16px; background:rgba(255,255,255,0.85);
       backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.08);
       border-radius:12px; padding:12px 14px; z-index:10; min-width:160px;
     }
@@ -11472,7 +11472,7 @@ window.qeRL  = window.QESecurity.rateLimit;
     }
     .uvg-ctrl-btn {
       width:34px; height:34px; border-radius:8px; border:1px solid rgba(255,255,255,0.1);
-      background:rgba(10,10,20,0.85); backdrop-filter:blur(8px); color:var(--text-secondary);
+      background:rgba(255,255,255,0.85); backdrop-filter:blur(8px); color:var(--text-secondary);
       font-size:16px; display:flex; align-items:center; justify-content:center;
       cursor:pointer; transition:all 150ms; font-family:var(--font-mono);
     }
@@ -17417,7 +17417,7 @@ setTimeout(() => {
     }
     var modal = document.createElement('div');
     modal.id = 'qz-pimport-modal';
-    modal.style.cssText = 'position:fixed;inset:0;background:rgba(8,9,11,0.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(255,255,255,0.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;';
     modal.innerHTML =
       '<div style="background:#FBFAF7;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:28px;max-width:680px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 30px 80px rgba(0,0,0,0.5);">' +
         '<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:18px;">' +
@@ -18019,7 +18019,7 @@ async function qzCoachReview() {
     '.qz-disclaimer-banner{display:flex;align-items:center;gap:10px;padding:10px 14px;margin:0 0 14px 0;background:rgba(138,101,18,0.06);border:1px solid rgba(138,101,18,0.22);border-left:3px solid #8A6512;border-radius:8px;font-size:11.5px;color:rgba(255,255,255,0.78);line-height:1.5;letter-spacing:0.005em}',
     '.qz-disclaimer-banner .qz-d-icon{flex-shrink:0;font-size:13px;opacity:0.85}',
     '.qz-disclaimer-banner strong{color:#A98338;font-weight:600}',
-    '#qz-global-footer-disclaimer{position:fixed;bottom:0;left:0;right:0;z-index:50;padding:6px 18px;background:rgba(10,11,14,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,0.05);color:rgba(255,255,255,0.45);font-size:10.5px;letter-spacing:0.01em;text-align:center;font-family:var(--font-mono);pointer-events:none}',
+    '#qz-global-footer-disclaimer{position:fixed;bottom:0;left:0;right:0;z-index:50;padding:6px 18px;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,0.05);color:rgba(255,255,255,0.45);font-size:10.5px;letter-spacing:0.01em;text-align:center;font-family:var(--font-mono);pointer-events:none}',
     '#qz-global-footer-disclaimer a{color:rgba(138,106,40,0.7);text-decoration:none;pointer-events:auto}',
     '#qz-global-footer-disclaimer a:hover{color:#8A6A28}',
     '/* Make space at the bottom of every page so footer doesnt cover content */',
@@ -18343,7 +18343,7 @@ async function qzCoachReview() {
       es.textContent = `
         /* Sidebar brand mark */
         .sidebar .sidebar-logo .logo-icon {
-          background: #0A0A0B url("${markSrc}") no-repeat ${posSmall} / ${sizeSmall} !important;
+          background: #FFFFFF url("${markSrc}") no-repeat ${posSmall} / ${sizeSmall} !important;
           border-radius: 7px !important;
           box-shadow: 0 4px 18px rgba(138,106,40,0.18), 0 0 0 1px rgba(26,23,20,0.06) inset !important;
         }
@@ -18351,7 +18351,7 @@ async function qzCoachReview() {
 
         /* Copilot dock */
         #qz-copilot-dock {
-          background: #0A0A0B url("${markSrc}") no-repeat ${posSmall} / ${sizeSmall} !important;
+          background: #FFFFFF url("${markSrc}") no-repeat ${posSmall} / ${sizeSmall} !important;
           border: 1px solid rgba(138,106,40,0.4) !important;
           box-shadow: 0 8px 28px rgba(0,0,0,0.5), 0 0 24px rgba(138,106,40,0.22), 0 0 0 1px rgba(255,255,255,0.05) inset !important;
         }
@@ -18359,26 +18359,26 @@ async function qzCoachReview() {
 
         /* Copilot header avatar */
         .qz-cop-hdr-avatar {
-          background: #0A0A0B url("${markSrc}") no-repeat ${posSmall} / ${sizeSmall} !important;
+          background: #FFFFFF url("${markSrc}") no-repeat ${posSmall} / ${sizeSmall} !important;
           font-size: 0 !important; color: transparent !important;
         }
 
         /* Mentor avatar */
         .qz-mentor-avatar {
-          background: #0A0A0B url("${markSrc}") no-repeat ${posSmall} / ${sizeSmall} !important;
+          background: #FFFFFF url("${markSrc}") no-repeat ${posSmall} / ${sizeSmall} !important;
           font-size: 0 !important; color: transparent !important;
           box-shadow: 0 4px 14px rgba(138,106,40,0.25) !important;
         }
 
         /* Quest panel mono */
         .qz-quest-mono {
-          background: #0A0A0B url("${markSrc}") no-repeat ${posSmall} / ${sizeSmall} !important;
+          background: #FFFFFF url("${markSrc}") no-repeat ${posSmall} / ${sizeSmall} !important;
           font-size: 0 !important; color: transparent !important;
         }
 
         /* Daily challenge badge */
         #qz-daily-challenge-card > div:first-child {
-          background: #0A0A0B url("${markSrc}") no-repeat ${posSmall} / ${sizeSmall} !important;
+          background: #FFFFFF url("${markSrc}") no-repeat ${posSmall} / ${sizeSmall} !important;
           font-size: 0 !important; color: transparent !important;
         }
       `;
@@ -18426,7 +18426,7 @@ async function qzCoachReview() {
         padding: 48px 56px !important;
         min-width: 440px !important;
         border-radius: 20px !important;
-        background: rgba(10,10,11,0.98) !important;
+        background: rgba(255,255,255,0.98) !important;
         box-shadow:
           0 40px 100px rgba(0,0,0,0.65),
           0 0 80px rgba(138,106,40,0.32),
@@ -18640,7 +18640,7 @@ async function qzCoachReview() {
       /* ── Page transition overlay (fade through deep black) ── */
       #qe-page-trans {
         position: fixed; inset: 0; z-index: 99997;
-        background: #0A0A0B;
+        background: #FFFFFF;
         pointer-events: none;
         opacity: 0;
         transition: opacity 320ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -18969,7 +18969,7 @@ async function qzCoachReview() {
       s.textContent = `
         /* ── Sidebar brand mark ── */
         .sidebar .sidebar-logo .logo-icon {
-          background: #0A0A0B url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
+          background: #FFFFFF url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
           box-shadow:
             0 4px 20px rgba(138,106,40,0.18),
             0 0 0 1px rgba(26,23,20,0.06) inset !important;
@@ -18981,7 +18981,7 @@ async function qzCoachReview() {
 
         /* ── Copilot floating dock ── */
         #qz-copilot-dock {
-          background: #0A0A0B url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
+          background: #FFFFFF url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
           border: 1px solid rgba(138,106,40,0.42) !important;
           box-shadow:
             0 8px 28px rgba(0,0,0,0.45),
@@ -18992,14 +18992,14 @@ async function qzCoachReview() {
 
         /* ── Copilot header avatar ── */
         .qz-cop-hdr-avatar {
-          background: #0A0A0B url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
+          background: #FFFFFF url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
           color: transparent !important;
           font-size: 0 !important;
         }
 
         /* ── Mentor walkthrough avatar ── */
         .qz-mentor-avatar {
-          background: #0A0A0B url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
+          background: #FFFFFF url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
           color: transparent !important;
           font-size: 0 !important;
           box-shadow: 0 4px 14px rgba(138,106,40,0.25) !important;
@@ -19007,21 +19007,21 @@ async function qzCoachReview() {
 
         /* ── Quest panel level monogram ── */
         .qz-quest-mono {
-          background: #0A0A0B url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
+          background: #FFFFFF url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
           color: transparent !important;
           font-size: 0 !important;
         }
 
         /* ── Daily challenge badge (RS / MT / WB etc.) — keep mono but on brand bg ── */
         #qz-daily-challenge-card > div:first-child {
-          background: #0A0A0B url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
+          background: #FFFFFF url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
           color: transparent !important;
           font-size: 0 !important;
         }
 
         /* ── Quant Lab academic hero icon (was QL gradient square) ── */
         .qz-page-hero [style*="border-radius:11px"][style*="grid"]:first-child {
-          background: #0A0A0B url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
+          background: #FFFFFF url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
           color: transparent !important;
           font-size: 0 !important;
         }
@@ -21002,7 +21002,7 @@ async function qzCoachReview() {
       /* ── Level-up celebration (center modal) ── */
       #qz-levelup-overlay {
         position: fixed; inset: 0; z-index: 99997;
-        background: radial-gradient(circle at center, rgba(138,106,40,0.15), rgba(8,9,11,0.92));
+        background: radial-gradient(circle at center, rgba(138,106,40,0.15), rgba(255,255,255,0.92));
         backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
         display: grid; place-items: center;
         animation: qzLuFade 320ms cubic-bezier(0.16,1,0.3,1);
@@ -21055,7 +21055,7 @@ async function qzCoachReview() {
       /* ── Quest panel modal ── */
       #qz-quest-modal-back {
         position: fixed; inset: 0; z-index: 99995;
-        background: rgba(8,9,11,0.78); backdrop-filter: blur(14px);
+        background: rgba(255,255,255,0.78); backdrop-filter: blur(14px);
         -webkit-backdrop-filter: blur(14px);
         display: none; align-items: center; justify-content: center;
         padding: 24px;
@@ -21103,7 +21103,7 @@ async function qzCoachReview() {
       /* ── Portfolio Add v2 Modal ── */
       #qz-padd-back {
         position: fixed; inset: 0; z-index: 99994;
-        background: rgba(8,9,11,0.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+        background: rgba(255,255,255,0.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
         display: none; align-items: center; justify-content: center; padding: 24px;
       }
       #qz-padd-back.open { display: flex; }
@@ -23048,7 +23048,7 @@ async function qzCoachReview() {
           content: '';
           position: absolute; left: 0; right: 0;
           height: 2.2px;
-          background: #0A0A0B;
+          background: #FFFFFF;
           border-radius: 1px;
           transition: transform 240ms cubic-bezier(0.22,1,0.36,1), opacity 200ms;
         }
@@ -23260,7 +23260,7 @@ async function qzCoachReview() {
         /* === Overlay backdrop === */
         .qe-mobile-overlay {
           position: fixed; inset: 0;
-          background: rgba(8,9,11,0.72);
+          background: rgba(255,255,255,0.72);
           backdrop-filter: blur(6px);
           -webkit-backdrop-filter: blur(6px);
           z-index: 9400;
@@ -23637,7 +23637,7 @@ async function qzCoachReview() {
     css.textContent = `
       #qe-welcome-overlay {
         position: fixed; inset: 0; z-index: 99996;
-        background: rgba(8,9,11,0.88);
+        background: rgba(255,255,255,0.88);
         backdrop-filter: blur(18px);
         -webkit-backdrop-filter: blur(18px);
         display: grid; place-items: center;
@@ -24295,7 +24295,7 @@ async function qzCoachReview() {
         width: 300px;
         max-width: 86vw;
         z-index: 100000;
-        background: #0A0A0B;
+        background: #FFFFFF;
         border-right: 1px solid rgba(138,106,40,0.22);
         transform: translateX(-105%);
         transition: transform 320ms cubic-bezier(0.22,1,0.36,1);
@@ -24313,7 +24313,7 @@ async function qzCoachReview() {
         padding: 20px 22px 18px;
         border-bottom: 1px solid rgba(26,23,20,0.06);
         position: sticky; top: 0;
-        background: #0A0A0B;
+        background: #FFFFFF;
         z-index: 2;
       }
       #qe-mdrawer-brand {
@@ -24453,7 +24453,7 @@ async function qzCoachReview() {
       /* Backdrop overlay */
       #qe-mdrawer-back {
         position: fixed; inset: 0;
-        background: rgba(8,9,11,0.74);
+        background: rgba(255,255,255,0.74);
         backdrop-filter: blur(6px);
         -webkit-backdrop-filter: blur(6px);
         z-index: 99999;
