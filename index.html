@@ -14882,6 +14882,8 @@ function _lp3Enter(user) {
 
 /* —— 0 · Token rebind — scoped, NEVER :root (landing keeps violet) — */
 #app,
+#qz-market-clock,
+#qe-watermark,
 #page-agents,
 #page-markets,
 #stock-detail-modal,
@@ -15678,7 +15680,37 @@ body.qe-in-app .modal-overlay:not(#auth-modal) * {
   color: inherit !important;
   -webkit-text-fill-color: initial !important;
 }
+
+/* —— 24 · Light overlay scrims + floating widgets ————————————
+   The cmd-K search overlay kept its dark-theme scrim (rgba(8,8,14,.84)
+   + blur 14px) — on paper it smeared the black bold text into
+   illegible blobs (user screenshot). Scrim is now paper-tinted with a
+   gentle blur; the market clock + brand watermark chips go light. */
+#qz-search-overlay {
+  background: rgba(251,250,247,0.90) !important;
+  backdrop-filter: blur(5px) !important;
+  -webkit-backdrop-filter: blur(5px) !important;
+}
+#qz-search-modal {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(26,23,20,0.14) !important;
+  box-shadow: 0 24px 64px -24px rgba(26,23,20,0.35) !important;
+}
+#qz-market-clock {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(26,23,20,0.14) !important;
+  box-shadow: 0 8px 24px -12px rgba(26,23,20,0.25) !important;
+  color: #0B0907 !important;
+}
+#qz-market-clock .qz-mc-time { color: #0B0907 !important; }
+#qz-market-clock .qz-mc-tz, #qz-market-clock .qz-mc-bottom { color: #5A5349 !important; }
+#qe-watermark {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(26,23,20,0.14) !important;
+  color: #0B0907 !important;
+  filter: none !important;
+}
 </style>
-<script defer src="js/app.min.js?v=20260714-17"></script>
+<script defer src="js/app.min.js?v=20260714-18"></script>
 </body>
 </html>

@@ -4156,6 +4156,8 @@ const _qzap = { ticker:null, stock:null, chart:null, tf:'1D', watchlist:[] };
 
 // --- Overlay open / close ---
 function qzSearchOpen(prefill) {
+  // App-only surface: never open over the logged-out landing
+  try { if (typeof QZ_isAuthed === 'function' && !QZ_isAuthed()) return; } catch (_) {}
   const ov = document.getElementById('qz-search-overlay');
   if (!ov) return;
   ov.classList.add('open');
