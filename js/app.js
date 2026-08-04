@@ -359,7 +359,7 @@ function _qzShowAuthNotice(msg) {
   if (existing) existing.remove();
   var n = document.createElement('div');
   n.id = 'qz-auth-notice';
-  n.style.cssText = 'margin:0 0 14px;padding:11px 14px;border-radius:10px;background:rgba(138,101,18,.1);border:1px solid rgba(138,101,18,.25);color:#A98338;font-size:12px;line-height:1.5;';
+  n.style.cssText = 'margin:0 0 14px;padding:11px 14px;border-radius:10px;background:rgba(138,101,18,.1);border:1px solid rgba(138,101,18,.25);color:#14B8A6;font-size:12px;line-height:1.5;';
   n.textContent = msg;
   var card = document.getElementById('lp3-auth-inline');
   if (card) {
@@ -402,7 +402,7 @@ function _qzUpdateLiveUI(on) {
   if (on) {
     dot.style.background = 'var(--violet)';
     dot.style.animation = 'pulse 2s infinite';
-    dot.style.boxShadow = '0 0 8px rgba(138,106,40,0.5)';
+    dot.style.boxShadow = '0 0 8px rgba(15,118,110,0.5)';
     lbl.style.color = 'var(--text-muted)';
     btn.style.borderColor = 'transparent';
     btn.title = 'LIVE — Quant Entelloq speaks. Click to mute.';
@@ -411,7 +411,7 @@ function _qzUpdateLiveUI(on) {
     dot.style.animation = 'none';
     dot.style.boxShadow = 'none';
     lbl.style.color = '#555';
-    btn.style.borderColor = 'rgba(26,23,20,0.11)';
+    btn.style.borderColor = 'rgba(17,24,39,0.11)';
     btn.title = 'Offline — Quant Entelloq is silent. Click to go LIVE.';
   }
 }
@@ -514,12 +514,12 @@ function _obStartNeuralCanvas() {
         const d = Math.hypot(a.x-b.x,a.y-b.y);
         if(d<120) {
           ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
-          ctx.strokeStyle=`rgba(138,106,40,${0.18*(1-d/120)})`;
+          ctx.strokeStyle=`rgba(15,118,110,${0.18*(1-d/120)})`;
           ctx.lineWidth=0.6; ctx.stroke();
         }
       });
       ctx.beginPath(); ctx.arc(a.x,a.y,a.r,0,Math.PI*2);
-      ctx.fillStyle='rgba(138,106,40,0.5)'; ctx.fill();
+      ctx.fillStyle='rgba(15,118,110,0.5)'; ctx.fill();
     });
     if(document.getElementById('onboarding')&&!document.getElementById('onboarding').classList.contains('hidden'))
       requestAnimationFrame(frame);
@@ -554,7 +554,7 @@ function nextStep() {
     if (!err) {
       err = document.createElement('div');
       err.id = `ob-err-${cur}`;
-      err.style.cssText = 'color:var(--red);font-size:13px;margin-top:10px;padding:10px 14px;background:rgba(255,61,74,0.08);border-left:3px solid var(--red);border-radius:6px;';
+      err.style.cssText = 'color:var(--red);font-size:13px;margin-top:10px;padding:10px 14px;background:rgba(220,38,38,0.08);border-left:3px solid var(--red);border-radius:6px;';
       const nav = stepEl?.querySelector('.onboarding-nav');
       if (nav) nav.parentNode.insertBefore(err, nav);
     }
@@ -711,24 +711,24 @@ function _showRebrandToast() {
   toast.id = 'qz-rebrand-toast';
   toast.style.cssText = [
     'position:fixed;bottom:96px;left:50%;transform:translateX(-50%);z-index:99990',
-    'background:#FFFFFF;border:1px solid rgba(138,106,40,0.28)',
+    'background:#FFFFFF;border:1px solid rgba(15,118,110,0.28)',
     'border-radius:18px;padding:18px 22px 18px 18px;max-width:430px;width:calc(100% - 48px)',
     'backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)',
-    'box-shadow:0 20px 60px rgba(0,0,0,0.55),0 0 0 1px rgba(138,106,40,0.08) inset',
+    'box-shadow:0 20px 60px rgba(0,0,0,0.55),0 0 0 1px rgba(15,118,110,0.08) inset',
     'animation:obFadeUp 0.55s cubic-bezier(0.34,1.56,0.64,1)'
   ].join(';');
   toast.innerHTML = `
     <div style="display:flex;align-items:flex-start;gap:14px;">
       <div style="flex:0 0 auto;width:40px;height:40px;border-radius:12px;
-        background:linear-gradient(135deg,#6E5420,#8A6A28);
+        background:linear-gradient(135deg,#115E59,#0F766E);
         display:flex;align-items:center;justify-content:center;font-size:18px;
-        box-shadow:0 4px 16px rgba(138,106,40,0.35);">⚡</div>
+        box-shadow:0 4px 16px rgba(15,118,110,0.35);">⚡</div>
       <div style="flex:1;min-width:0;">
         <div style="font-weight:700;font-size:13.5px;color:#fff;margin-bottom:5px;font-family:var(--font-display);letter-spacing:-0.01em;">We've rebranded</div>
         <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.6;">
-          Welcome to <strong style="color:#A98338;">Quant Entelloq</strong> — your AI-native financial intelligence platform, powered by Entelloq Networks.
+          Welcome to <strong style="color:#14B8A6;">Quant Entelloq</strong> — your AI-native financial intelligence platform, powered by Entelloq Networks.
         </div>
-        <div style="font-size:11px;color:rgba(138,106,40,0.45);margin-top:3px;font-family:var(--font-mono);letter-spacing:0.05em;">Powered by Entelloq Networks</div>
+        <div style="font-size:11px;color:rgba(15,118,110,0.45);margin-top:3px;font-family:var(--font-mono);letter-spacing:0.05em;">Powered by Entelloq Networks</div>
       </div>
       <button onclick="document.getElementById('qz-rebrand-toast').remove()"
         style="flex:0 0 auto;background:none;border:none;color:rgba(255,255,255,0.25);
@@ -1484,19 +1484,19 @@ function _qzShowComingSoon(page) {
   overlay.id = 'qz-coming-soon';
   overlay.style.cssText = 'position:fixed;inset:0;z-index:99998;background:rgba(255,255,255,0.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;transition:opacity 220ms cubic-bezier(0.16,1,0.3,1);';
   overlay.innerHTML =
-    '<div style="background:linear-gradient(135deg,#FFFFFF,#FBFAF7);border:1px solid rgba(138,106,40,0.22);border-radius:20px;padding:44px 40px;max-width:480px;width:100%;text-align:center;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(138,106,40,0.20),0 40px 100px rgba(0,0,0,0.55);">' +
-      '<div style="position:absolute;top:-60px;right:-30px;width:280px;height:280px;background:radial-gradient(circle,rgba(138,106,40,0.20),transparent 65%);pointer-events:none;filter:blur(20px);"></div>' +
-      '<div style="position:absolute;bottom:-40px;left:25%;width:220px;height:220px;background:radial-gradient(circle,rgba(47,110,122,0.10),transparent 65%);pointer-events:none;"></div>' +
+    '<div style="background:linear-gradient(135deg,#FFFFFF,#FFFFFF);border:1px solid rgba(15,118,110,0.22);border-radius:20px;padding:44px 40px;max-width:480px;width:100%;text-align:center;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(15,118,110,0.20),0 40px 100px rgba(0,0,0,0.55);">' +
+      '<div style="position:absolute;top:-60px;right:-30px;width:280px;height:280px;background:radial-gradient(circle,rgba(15,118,110,0.20),transparent 65%);pointer-events:none;filter:blur(20px);"></div>' +
+      '<div style="position:absolute;bottom:-40px;left:25%;width:220px;height:220px;background:radial-gradient(circle,rgba(15,118,110,0.10),transparent 65%);pointer-events:none;"></div>' +
       '<div style="position:relative;">' +
-        '<div style="font-size:48px;margin-bottom:18px;line-height:1;filter:drop-shadow(0 0 24px rgba(138,106,40,0.40));">' + t.icon + '</div>' +
-        '<div style="display:inline-flex;align-items:center;gap:8px;font-size:10.5px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:#8A6A28;padding:5px 11px;border-radius:999px;border:1px solid rgba(138,106,40,0.30);background:rgba(138,106,40,0.10);margin-bottom:18px;box-shadow:0 0 16px rgba(138,106,40,0.20);">' +
-          '<span style="width:6px;height:6px;border-radius:50%;background:#8A6A28;box-shadow:0 0 10px #8A6A28;"></span>Launching Soon' +
+        '<div style="font-size:48px;margin-bottom:18px;line-height:1;filter:drop-shadow(0 0 24px rgba(15,118,110,0.40));">' + t.icon + '</div>' +
+        '<div style="display:inline-flex;align-items:center;gap:8px;font-size:10.5px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:#0F766E;padding:5px 11px;border-radius:999px;border:1px solid rgba(15,118,110,0.30);background:rgba(15,118,110,0.10);margin-bottom:18px;box-shadow:0 0 16px rgba(15,118,110,0.20);">' +
+          '<span style="width:6px;height:6px;border-radius:50%;background:#0F766E;box-shadow:0 0 10px #0F766E;"></span>Launching Soon' +
         '</div>' +
         '<div style="font-size:24px;font-weight:700;letter-spacing:-0.025em;color:#fff;line-height:1.15;margin-bottom:10px;">' + t.name + '</div>' +
-        '<div style="font-size:13.5px;color:rgba(26,23,20,0.62);line-height:1.55;margin-bottom:28px;">' + t.desc + '</div>' +
+        '<div style="font-size:13.5px;color:rgba(17,24,39,0.62);line-height:1.55;margin-bottom:28px;">' + t.desc + '</div>' +
         '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">' +
-          '<button onclick="_qzClose(); showPage(\'dashboard\', document.getElementById(\'nav-dashboard\'))" style="background:linear-gradient(180deg,#8A6A28,#6E5420);color:#fff;border:0;border-radius:10px;padding:11px 22px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 4px 20px rgba(138,106,40,0.40),0 0 0 1px rgba(138,106,40,0.20) inset;transition:transform 180ms,box-shadow 200ms;">← Back to Dashboard</button>' +
-          '<button onclick="_qzClose()" style="background:transparent;color:rgba(26,23,20,0.65);border:1px solid rgba(255,255,255,0.10);border-radius:10px;padding:11px 22px;font-size:13.5px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 180ms;">Close</button>' +
+          '<button onclick="_qzClose(); showPage(\'dashboard\', document.getElementById(\'nav-dashboard\'))" style="background:linear-gradient(180deg,#0F766E,#115E59);color:#fff;border:0;border-radius:10px;padding:11px 22px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 4px 20px rgba(15,118,110,0.40),0 0 0 1px rgba(15,118,110,0.20) inset;transition:transform 180ms,box-shadow 200ms;">← Back to Dashboard</button>' +
+          '<button onclick="_qzClose()" style="background:transparent;color:rgba(17,24,39,0.65);border:1px solid rgba(255,255,255,0.10);border-radius:10px;padding:11px 22px;font-size:13.5px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 180ms;">Close</button>' +
         '</div>' +
       '</div>' +
     '</div>';
@@ -1687,37 +1687,37 @@ function _qzRenderUnifiedIntel() {
   // ── Build HTML ──
   var html = '<style>' +
     '@keyframes qzIntelPulse { 0%,100% { opacity:0.85; } 50% { opacity:1; } }' +
-    '@keyframes qzIntelGlow { 0%,100% { box-shadow:0 0 16px rgba(138,106,40,0.25); } 50% { box-shadow:0 0 28px rgba(138,106,40,0.45); } }' +
+    '@keyframes qzIntelGlow { 0%,100% { box-shadow:0 0 16px rgba(15,118,110,0.25); } 50% { box-shadow:0 0 28px rgba(15,118,110,0.45); } }' +
     '@keyframes qzIntelTick { 0% { transform:translateX(0); } 100% { transform:translateX(-50%); } }' +
     '.qz-intel-card { background:#FFFFFF; border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:22px 26px; transition:border-color 220ms cubic-bezier(0.16,1,0.3,1), box-shadow 220ms cubic-bezier(0.16,1,0.3,1), transform 220ms cubic-bezier(0.16,1,0.3,1); }' +
-    '.qz-intel-card:hover { border-color:rgba(138,106,40,0.30); box-shadow:0 0 24px rgba(138,106,40,0.15), 0 8px 28px rgba(0,0,0,0.40); transform:translateY(-1px); }' +
+    '.qz-intel-card:hover { border-color:rgba(15,118,110,0.30); box-shadow:0 0 24px rgba(15,118,110,0.15), 0 8px 28px rgba(0,0,0,0.40); transform:translateY(-1px); }' +
     '.qz-intel-pill { display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; padding:3px 9px; border-radius:6px; }' +
-    '.qz-intel-section-title { font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:rgba(26,23,20,0.55); display:flex; align-items:center; gap:10px; margin:32px 0 14px; }' +
-    '.qz-intel-section-title::after { content:""; flex:1; height:1px; background:linear-gradient(90deg, rgba(138,106,40,0.20), transparent); }' +
-    '.qz-cat-chip { display:inline-flex; align-items:center; gap:6px; padding:6px 12px; font-size:11.5px; font-weight:500; color:rgba(26,23,20,0.60); background:transparent; border:1px solid rgba(255,255,255,0.06); border-radius:7px; cursor:pointer; transition:all 160ms cubic-bezier(0.16,1,0.3,1); }' +
+    '.qz-intel-section-title { font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:rgba(17,24,39,0.55); display:flex; align-items:center; gap:10px; margin:32px 0 14px; }' +
+    '.qz-intel-section-title::after { content:""; flex:1; height:1px; background:linear-gradient(90deg, rgba(15,118,110,0.20), transparent); }' +
+    '.qz-cat-chip { display:inline-flex; align-items:center; gap:6px; padding:6px 12px; font-size:11.5px; font-weight:500; color:rgba(17,24,39,0.60); background:transparent; border:1px solid rgba(255,255,255,0.06); border-radius:7px; cursor:pointer; transition:all 160ms cubic-bezier(0.16,1,0.3,1); }' +
     '.qz-cat-chip:hover { background:rgba(255,255,255,0.04); color:#fff; }' +
-    '.qz-cat-chip.active { background:rgba(138,106,40,0.14); color:#fff; border-color:rgba(138,106,40,0.40); box-shadow:0 0 16px rgba(138,106,40,0.20); }' +
+    '.qz-cat-chip.active { background:rgba(15,118,110,0.14); color:#fff; border-color:rgba(15,118,110,0.40); box-shadow:0 0 16px rgba(15,118,110,0.20); }' +
   '</style>';
 
   // ── HERO ──
-  html += '<div style="background:linear-gradient(135deg,#FFFFFF 0%,#FBFAF7 100%);border:1px solid rgba(138,106,40,0.18);border-radius:18px;padding:28px 32px;margin-bottom:24px;position:relative;overflow:hidden;">' +
-    '<div style="position:absolute;top:-60px;right:-60px;width:300px;height:300px;background:radial-gradient(circle,rgba(138,106,40,0.20),transparent 65%);pointer-events:none;filter:blur(20px);"></div>' +
-    '<div style="position:absolute;bottom:-40px;left:30%;width:240px;height:240px;background:radial-gradient(circle,rgba(47,110,122,0.10),transparent 65%);pointer-events:none;"></div>' +
+  html += '<div style="background:linear-gradient(135deg,#FFFFFF 0%,#FFFFFF 100%);border:1px solid rgba(15,118,110,0.18);border-radius:18px;padding:28px 32px;margin-bottom:24px;position:relative;overflow:hidden;">' +
+    '<div style="position:absolute;top:-60px;right:-60px;width:300px;height:300px;background:radial-gradient(circle,rgba(15,118,110,0.20),transparent 65%);pointer-events:none;filter:blur(20px);"></div>' +
+    '<div style="position:absolute;bottom:-40px;left:30%;width:240px;height:240px;background:radial-gradient(circle,rgba(15,118,110,0.10),transparent 65%);pointer-events:none;"></div>' +
     '<div style="position:relative;">' +
       '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;">' +
         '<div style="flex:1;min-width:260px;">' +
-          '<div style="display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:#8A6A28;padding:5px 12px;border-radius:999px;border:1px solid rgba(138,106,40,0.30);background:rgba(138,106,40,0.10);margin-bottom:14px;animation:qzIntelGlow 3s ease-in-out infinite;">' +
-            '<span style="width:6px;height:6px;border-radius:50%;background:#8A6A28;box-shadow:0 0 10px #8A6A28;animation:qzIntelPulse 2s ease-in-out infinite;"></span>' +
+          '<div style="display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:#0F766E;padding:5px 12px;border-radius:999px;border:1px solid rgba(15,118,110,0.30);background:rgba(15,118,110,0.10);margin-bottom:14px;animation:qzIntelGlow 3s ease-in-out infinite;">' +
+            '<span style="width:6px;height:6px;border-radius:50%;background:#0F766E;box-shadow:0 0 10px #0F766E;animation:qzIntelPulse 2s ease-in-out infinite;"></span>' +
             'Intelligence Terminal · Live' +
           '</div>' +
           '<div style="font-size:28px;font-weight:700;letter-spacing:-0.028em;line-height:1.1;margin-bottom:10px;color:#fff;">Markets, Synthesized.</div>' +
-          '<div style="font-size:14px;color:rgba(26,23,20,0.62);line-height:1.55;max-width:600px;">AI-rewritten intelligence from 32 sources + 20 newsletters + SEC filings + options flow. Every item classified, scored, and routed to what matters to your portfolio.</div>' +
+          '<div style="font-size:14px;color:rgba(17,24,39,0.62);line-height:1.55;max-width:600px;">AI-rewritten intelligence from 32 sources + 20 newsletters + SEC filings + options flow. Every item classified, scored, and routed to what matters to your portfolio.</div>' +
         '</div>' +
         '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;min-width:260px;">' +
-          '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px 16px;"><div style="font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(26,23,20,0.42);margin-bottom:4px;">Processed</div><div style="font-size:18px;font-weight:600;letter-spacing:-0.022em;color:#fff;font-variant-numeric:tabular-nums;">1,247</div></div>' +
-          '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px 16px;"><div style="font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(26,23,20,0.42);margin-bottom:4px;">Surfaced</div><div style="font-size:18px;font-weight:600;letter-spacing:-0.022em;color:#8A6A28;font-variant-numeric:tabular-nums;">' + INTEL.length + '</div></div>' +
-          '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(0,224,124,0.18);border-radius:10px;padding:12px 16px;"><div style="font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(26,23,20,0.42);margin-bottom:4px;">Bullish</div><div style="font-size:18px;font-weight:600;letter-spacing:-0.022em;color:#00E07C;font-variant-numeric:tabular-nums;">' + bullCount + '</div></div>' +
-          '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,61,74,0.18);border-radius:10px;padding:12px 16px;"><div style="font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(26,23,20,0.42);margin-bottom:4px;">Bearish</div><div style="font-size:18px;font-weight:600;letter-spacing:-0.022em;color:#FF3D4A;font-variant-numeric:tabular-nums;">' + bearCount + '</div></div>' +
+          '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px 16px;"><div style="font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(17,24,39,0.42);margin-bottom:4px;">Processed</div><div style="font-size:18px;font-weight:600;letter-spacing:-0.022em;color:#fff;font-variant-numeric:tabular-nums;">1,247</div></div>' +
+          '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px 16px;"><div style="font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(17,24,39,0.42);margin-bottom:4px;">Surfaced</div><div style="font-size:18px;font-weight:600;letter-spacing:-0.022em;color:#0F766E;font-variant-numeric:tabular-nums;">' + INTEL.length + '</div></div>' +
+          '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(22,163,74,0.18);border-radius:10px;padding:12px 16px;"><div style="font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(17,24,39,0.42);margin-bottom:4px;">Bullish</div><div style="font-size:18px;font-weight:600;letter-spacing:-0.022em;color:#16A34A;font-variant-numeric:tabular-nums;">' + bullCount + '</div></div>' +
+          '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(220,38,38,0.18);border-radius:10px;padding:12px 16px;"><div style="font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(17,24,39,0.42);margin-bottom:4px;">Bearish</div><div style="font-size:18px;font-weight:600;letter-spacing:-0.022em;color:#DC2626;font-variant-numeric:tabular-nums;">' + bearCount + '</div></div>' +
         '</div>' +
       '</div>' +
     '</div>' +
@@ -1727,39 +1727,39 @@ function _qzRenderUnifiedIntel() {
   html += '<div class="qz-intel-section-title">⚡ Opportunity Engine</div>';
   html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:24px;">';
   OPPORTUNITIES.forEach(function(o) {
-    var sColor = o.sentiment === 'bullish' ? '#00E07C' : '#FF3D4A';
-    var sBg = o.sentiment === 'bullish' ? 'rgba(0,224,124,0.12)' : 'rgba(255,61,74,0.12)';
+    var sColor = o.sentiment === 'bullish' ? '#16A34A' : '#DC2626';
+    var sBg = o.sentiment === 'bullish' ? 'rgba(22,163,74,0.12)' : 'rgba(220,38,38,0.12)';
     html += '<div class="qz-intel-card" style="position:relative;">' +
       '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px;">' +
         '<div style="font-size:24px;line-height:1;filter:drop-shadow(0 0 12px ' + sColor + '40);">' + o.icon + '</div>' +
-        '<div style="text-align:right;"><div style="font-size:11px;font-weight:600;letter-spacing:0.06em;color:rgba(26,23,20,0.42);text-transform:uppercase;">Score</div><div style="font-size:22px;font-weight:700;color:' + sColor + ';font-variant-numeric:tabular-nums;line-height:1;">' + o.score + '</div></div>' +
+        '<div style="text-align:right;"><div style="font-size:11px;font-weight:600;letter-spacing:0.06em;color:rgba(17,24,39,0.42);text-transform:uppercase;">Score</div><div style="font-size:22px;font-weight:700;color:' + sColor + ';font-variant-numeric:tabular-nums;line-height:1;">' + o.score + '</div></div>' +
       '</div>' +
       '<div style="font-size:14.5px;font-weight:600;letter-spacing:-0.012em;color:#fff;margin-bottom:6px;line-height:1.25;">' + o.title + '</div>' +
-      '<div style="font-size:12.5px;color:rgba(26,23,20,0.60);line-height:1.5;margin-bottom:12px;">' + o.desc + '</div>' +
-      '<div style="display:flex;gap:6px;flex-wrap:wrap;font-size:10.5px;color:rgba(26,23,20,0.50);font-variant-numeric:tabular-nums;">' +
+      '<div style="font-size:12.5px;color:rgba(17,24,39,0.60);line-height:1.5;margin-bottom:12px;">' + o.desc + '</div>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;font-size:10.5px;color:rgba(17,24,39,0.50);font-variant-numeric:tabular-nums;">' +
         '<span class="qz-intel-pill" style="background:' + sBg + ';color:' + sColor + ';">' + o.sentiment + '</span>' +
-        '<span class="qz-intel-pill" style="background:rgba(255,255,255,0.04);color:rgba(26,23,20,0.55);">' + o.timing + '</span>' +
+        '<span class="qz-intel-pill" style="background:rgba(255,255,255,0.04);color:rgba(17,24,39,0.55);">' + o.timing + '</span>' +
       '</div>' +
-      '<div style="margin-top:10px;font-size:11px;font-family:monospace;color:rgba(138,106,40,0.85);letter-spacing:0.04em;">' + o.tickers + '</div>' +
+      '<div style="margin-top:10px;font-size:11px;font-family:monospace;color:rgba(15,118,110,0.85);letter-spacing:0.04em;">' + o.tickers + '</div>' +
     '</div>';
   });
   html += '</div>';
 
   // ── PORTFOLIO IMPACT ──
   if (portfolioImpact.length > 0) {
-    html += '<div class="qz-intel-section-title">💼 Portfolio Impact <span style="background:rgba(138,106,40,0.14);border:1px solid rgba(138,106,40,0.30);color:#8A6A28;font-size:10.5px;padding:2px 7px;border-radius:4px;font-weight:600;letter-spacing:0.05em;">' + portfolioImpact.length + ' RELEVANT</span></div>';
+    html += '<div class="qz-intel-section-title">💼 Portfolio Impact <span style="background:rgba(15,118,110,0.14);border:1px solid rgba(15,118,110,0.30);color:#0F766E;font-size:10.5px;padding:2px 7px;border-radius:4px;font-weight:600;letter-spacing:0.05em;">' + portfolioImpact.length + ' RELEVANT</span></div>';
     html += '<div style="display:grid;gap:10px;margin-bottom:24px;">';
     portfolioImpact.slice(0, 3).forEach(function(n) {
-      var sColor = n.sentiment === 'bullish' ? '#00E07C' : n.sentiment === 'bearish' ? '#FF3D4A' : '#8A6512';
+      var sColor = n.sentiment === 'bullish' ? '#16A34A' : n.sentiment === 'bearish' ? '#DC2626' : '#B45309';
       html += '<div class="qz-intel-card" style="padding:16px 22px;">' +
         '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">' +
           '<div style="flex:1;min-width:0;">' +
-            '<div style="font-size:11px;color:rgba(138,106,40,0.85);font-weight:500;margin-bottom:4px;letter-spacing:0.02em;">Affects: ' + n.tickers.filter(function(t) { return userTickers.indexOf(t) > -1; }).join(' · ') + '</div>' +
+            '<div style="font-size:11px;color:rgba(15,118,110,0.85);font-weight:500;margin-bottom:4px;letter-spacing:0.02em;">Affects: ' + n.tickers.filter(function(t) { return userTickers.indexOf(t) > -1; }).join(' · ') + '</div>' +
             '<div style="font-size:14px;font-weight:600;color:#fff;line-height:1.3;">' + n.headline + '</div>' +
           '</div>' +
           '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;">' +
             '<span class="qz-intel-pill" style="background:' + sColor + '20;color:' + sColor + ';">' + n.sentiment + ' · ' + n.confidence + '%</span>' +
-            '<span style="font-size:10.5px;color:rgba(26,23,20,0.42);">' + n.time + '</span>' +
+            '<span style="font-size:10.5px;color:rgba(17,24,39,0.42);">' + n.time + '</span>' +
           '</div>' +
         '</div>' +
       '</div>';
@@ -1784,14 +1784,14 @@ function _qzRenderUnifiedIntel() {
   html += '</div>';
 
   // ── SOURCES STRIP (collapsed) ──
-  html += '<div style="margin-top:32px;padding:18px 22px;background:#FBFAF7;border:1px solid rgba(255,255,255,0.04);border-radius:12px;">' +
-    '<div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(26,23,20,0.45);margin-bottom:10px;">📡 Ingestion Sources · 32 active</div>' +
-    '<div style="font-size:12px;color:rgba(26,23,20,0.55);line-height:1.7;">Bloomberg · Reuters · Financial Times · WSJ · The Economist · CNBC · MarketWatch · Barron\'s · Investor\'s Business Daily · Seeking Alpha · Morningstar · Yahoo Finance · Forbes · Business Insider · Fortune · TechCrunch · The Information · Axios · Politico · SCMP · Nikkei · Handelsblatt · Les Echos · Economic Times · arXiv q-fin · SSRN · NBER · Federal Reserve · ECB · Bank of England · IMF · World Bank</div>' +
+  html += '<div style="margin-top:32px;padding:18px 22px;background:#FFFFFF;border:1px solid rgba(255,255,255,0.04);border-radius:12px;">' +
+    '<div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(17,24,39,0.45);margin-bottom:10px;">📡 Ingestion Sources · 32 active</div>' +
+    '<div style="font-size:12px;color:rgba(17,24,39,0.55);line-height:1.7;">Bloomberg · Reuters · Financial Times · WSJ · The Economist · CNBC · MarketWatch · Barron\'s · Investor\'s Business Daily · Seeking Alpha · Morningstar · Yahoo Finance · Forbes · Business Insider · Fortune · TechCrunch · The Information · Axios · Politico · SCMP · Nikkei · Handelsblatt · Les Echos · Economic Times · arXiv q-fin · SSRN · NBER · Federal Reserve · ECB · Bank of England · IMF · World Bank</div>' +
   '</div>';
 
-  html += '<div style="margin-top:14px;padding:18px 22px;background:#FBFAF7;border:1px solid rgba(138,106,40,0.10);border-radius:12px;">' +
-    '<div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(26,23,20,0.45);margin-bottom:10px;">✉️ Newsletters · 20 monitored</div>' +
-    '<div style="font-size:12px;color:rgba(26,23,20,0.55);line-height:1.7;">Stratechery · The Diff · Net Interest · Money Stuff (Levine) · The Daily Shot · Axios Markets · Axios Macro · Chartbook (Tooze) · Doomberg · Marginal Revolution · Conviction Capital · The Profile · Off Topic · Pirate Wires · Not Boring · Platformer · The Generalist · Above the Crowd · Of Dollars and Data · The Reformed Broker</div>' +
+  html += '<div style="margin-top:14px;padding:18px 22px;background:#FFFFFF;border:1px solid rgba(15,118,110,0.10);border-radius:12px;">' +
+    '<div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(17,24,39,0.45);margin-bottom:10px;">✉️ Newsletters · 20 monitored</div>' +
+    '<div style="font-size:12px;color:rgba(17,24,39,0.55);line-height:1.7;">Stratechery · The Diff · Net Interest · Money Stuff (Levine) · The Daily Shot · Axios Markets · Axios Macro · Chartbook (Tooze) · Doomberg · Marginal Revolution · Conviction Capital · The Profile · Off Topic · Pirate Wires · Not Boring · Platformer · The Generalist · Above the Crowd · Of Dollars and Data · The Reformed Broker</div>' +
   '</div>';
 
   container.innerHTML = html;
@@ -1806,14 +1806,14 @@ function _qzRenderUnifiedIntel() {
       cat === 'Bullish' ? INTEL.filter(function(n) { return n.sentiment === 'bullish'; }) :
       cat === 'Bearish' ? INTEL.filter(function(n) { return n.sentiment === 'bearish'; }) :
       INTEL.filter(function(n) { return n.cat === cat; });
-    feed.innerHTML = filtered.map(_qzIntelCard).join('') || '<div style="padding:40px;text-align:center;color:rgba(26,23,20,0.42);font-size:13px;">No intelligence items in this category.</div>';
+    feed.innerHTML = filtered.map(_qzIntelCard).join('') || '<div style="padding:40px;text-align:center;color:rgba(17,24,39,0.42);font-size:13px;">No intelligence items in this category.</div>';
   };
 }
 
 function _qzIntelCard(n) {
-  var sColor = n.sentiment === 'bullish' ? '#00E07C' : n.sentiment === 'bearish' ? '#FF3D4A' : '#8A6512';
-  var sBg = n.sentiment === 'bullish' ? 'rgba(0,224,124,0.12)' : n.sentiment === 'bearish' ? 'rgba(255,61,74,0.12)' : 'rgba(138,101,18,0.12)';
-  var impactColor = n.impact >= 8 ? '#8A6A28' : n.impact >= 6 ? '#2C6087' : 'rgba(255,255,255,0.55)';
+  var sColor = n.sentiment === 'bullish' ? '#16A34A' : n.sentiment === 'bearish' ? '#DC2626' : '#B45309';
+  var sBg = n.sentiment === 'bullish' ? 'rgba(22,163,74,0.12)' : n.sentiment === 'bearish' ? 'rgba(220,38,38,0.12)' : 'rgba(138,101,18,0.12)';
+  var impactColor = n.impact >= 8 ? '#0F766E' : n.impact >= 6 ? '#1E3A8A' : 'rgba(255,255,255,0.55)';
   return '<div class="qz-intel-card" style="position:relative;">' +
     '<div style="position:absolute;left:0;top:22px;bottom:22px;width:3px;background:' + sColor + ';box-shadow:0 0 12px ' + sColor + '80;border-radius:0 2px 2px 0;"></div>' +
     '<div style="margin-left:10px;">' +
@@ -1821,26 +1821,26 @@ function _qzIntelCard(n) {
         '<div style="font-size:15.5px;font-weight:600;letter-spacing:-0.012em;color:#fff;line-height:1.3;flex:1;min-width:0;">' + n.headline + '</div>' +
         '<div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">' +
           '<span class="qz-intel-pill" style="background:' + sBg + ';color:' + sColor + ';">' + n.sentiment + ' · ' + n.confidence + '%</span>' +
-          '<span class="qz-intel-pill" style="background:rgba(138,106,40,0.10);color:' + impactColor + ';">Impact ' + n.impact + '</span>' +
+          '<span class="qz-intel-pill" style="background:rgba(15,118,110,0.10);color:' + impactColor + ';">Impact ' + n.impact + '</span>' +
         '</div>' +
       '</div>' +
-      '<div style="font-size:11px;color:rgba(26,23,20,0.42);margin-bottom:14px;letter-spacing:0.01em;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
-        '<span class="qz-intel-pill" style="background:rgba(138,106,40,0.10);color:#8A6A28;font-size:9.5px;">' + n.cat + '</span>' +
-        '<span style="color:rgba(138,106,40,0.85);font-weight:500;">' + n.source + '</span>' +
-        '<span style="color:rgba(26,23,20,0.30);">·</span>' +
+      '<div style="font-size:11px;color:rgba(17,24,39,0.42);margin-bottom:14px;letter-spacing:0.01em;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+        '<span class="qz-intel-pill" style="background:rgba(15,118,110,0.10);color:#0F766E;font-size:9.5px;">' + n.cat + '</span>' +
+        '<span style="color:rgba(15,118,110,0.85);font-weight:500;">' + n.source + '</span>' +
+        '<span style="color:rgba(17,24,39,0.30);">·</span>' +
         '<span>' + n.time + '</span>' +
-        '<span style="color:rgba(26,23,20,0.30);">·</span>' +
+        '<span style="color:rgba(17,24,39,0.30);">·</span>' +
         '<span>' + n.horizon + ' · ' + n.vol + ' vol</span>' +
       '</div>' +
-      '<div style="font-size:13.5px;color:rgba(26,23,20,0.78);line-height:1.6;margin-bottom:14px;">' + n.summary + '</div>' +
+      '<div style="font-size:13.5px;color:rgba(17,24,39,0.78);line-height:1.6;margin-bottom:14px;">' + n.summary + '</div>' +
       '<div style="border-top:1px solid rgba(255,255,255,0.05);padding-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">' +
-        '<div><div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#8A6A28;margin-bottom:4px;">Key Takeaway</div><div style="font-size:12.5px;color:rgba(26,23,20,0.78);line-height:1.5;">' + n.takeaway + '</div></div>' +
-        '<div><div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#2C6087;margin-bottom:4px;">Implication</div><div style="font-size:12.5px;color:rgba(26,23,20,0.78);line-height:1.5;">' + n.implication + '</div></div>' +
-        '<div><div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#FF3D4A;margin-bottom:4px;">Risk</div><div style="font-size:12.5px;color:rgba(26,23,20,0.78);line-height:1.5;">' + n.risk + '</div></div>' +
+        '<div><div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#0F766E;margin-bottom:4px;">Key Takeaway</div><div style="font-size:12.5px;color:rgba(17,24,39,0.78);line-height:1.5;">' + n.takeaway + '</div></div>' +
+        '<div><div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#1E3A8A;margin-bottom:4px;">Implication</div><div style="font-size:12.5px;color:rgba(17,24,39,0.78);line-height:1.5;">' + n.implication + '</div></div>' +
+        '<div><div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#DC2626;margin-bottom:4px;">Risk</div><div style="font-size:12.5px;color:rgba(17,24,39,0.78);line-height:1.5;">' + n.risk + '</div></div>' +
       '</div>' +
-      '<div style="margin-top:12px;display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:rgba(26,23,20,0.50);">' +
-        '<div><strong style="color:#8A6A28;font-weight:600;">Sectors:</strong> ' + n.sectors.join(' · ') + '</div>' +
-        '<div><strong style="color:#8A6A28;font-weight:600;">Tickers:</strong> <span style="font-family:monospace;letter-spacing:0.04em;color:rgba(26,23,20,0.85);">' + n.tickers.join(' ') + '</span></div>' +
+      '<div style="margin-top:12px;display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:rgba(17,24,39,0.50);">' +
+        '<div><strong style="color:#0F766E;font-weight:600;">Sectors:</strong> ' + n.sectors.join(' · ') + '</div>' +
+        '<div><strong style="color:#0F766E;font-weight:600;">Tickers:</strong> <span style="font-family:monospace;letter-spacing:0.04em;color:rgba(17,24,39,0.85);">' + n.tickers.join(' ') + '</span></div>' +
       '</div>' +
     '</div>' +
   '</div>';
@@ -1870,7 +1870,7 @@ function signalCardHTML(s) {
   const isUp = s.change > 0;
   const sparkData = _sparkData(s.ticker, s.price, isUp);
   setTimeout(() => drawInlineSparkline(sparkId, sparkData, isUp), 40);
-  const mBg = (v) => v>70?'#00E07C':v>45?'#8A6512':'#FF3D4A';
+  const mBg = (v) => v>70?'#16A34A':v>45?'#B45309':'#DC2626';
   return `<div class="ent-sig-card ${sigCls}">
     <div class="ent-sig-glow"></div>
     <div class="ent-sig-head">
@@ -1918,11 +1918,11 @@ function drawInlineSparkline(id, data, isUp) {
   const range = max - min || 1;
   const chartH = H - 6;
   const norm = v => chartH - ((v - min) / range) * (chartH - 4) - 2;
-  const color = isUp ? '#00E07C' : '#FF3D4A';
+  const color = isUp ? '#16A34A' : '#DC2626';
   // Gradient fill
   const grad = ctx.createLinearGradient(0, 0, 0, chartH);
-  grad.addColorStop(0, isUp ? 'rgba(0,224,124,0.38)' : 'rgba(255,61,74,0.32)');
-  grad.addColorStop(0.7, isUp ? 'rgba(0,224,124,0.09)' : 'rgba(255,61,74,0.07)');
+  grad.addColorStop(0, isUp ? 'rgba(22,163,74,0.38)' : 'rgba(220,38,38,0.32)');
+  grad.addColorStop(0.7, isUp ? 'rgba(22,163,74,0.09)' : 'rgba(220,38,38,0.07)');
   grad.addColorStop(1, 'transparent');
   ctx.beginPath();
   data.forEach((v,i) => {
@@ -1941,7 +1941,7 @@ function drawInlineSparkline(id, data, isUp) {
   // Terminal dot with soft halo
   const lx = W - 2; const ly = norm(data[data.length-1]);
   ctx.beginPath(); ctx.arc(lx, ly, 6, 0, Math.PI*2);
-  ctx.fillStyle = isUp ? 'rgba(0,224,124,0.18)' : 'rgba(255,61,74,0.16)'; ctx.fill();
+  ctx.fillStyle = isUp ? 'rgba(22,163,74,0.18)' : 'rgba(220,38,38,0.16)'; ctx.fill();
   ctx.beginPath(); ctx.arc(lx, ly, 3, 0, Math.PI*2);
   ctx.fillStyle = color; ctx.fill();
 }
@@ -2051,23 +2051,23 @@ function _renderTVPortChart(container, period) {
       fontSize: 10,
     },
     grid: {
-      vertLines: { color: 'rgba(26,23,20,0.03)', style: 1 },
-      horzLines: { color: 'rgba(26,23,20,0.06)', style: 1 },
+      vertLines: { color: 'rgba(17,24,39,0.03)', style: 1 },
+      horzLines: { color: 'rgba(17,24,39,0.06)', style: 1 },
     },
     crosshair: {
       mode: 1,
-      vertLine: { color: 'rgba(138,106,40,0.55)', width: 1, style: 2, labelBackgroundColor: '#1A1714' },
-      horzLine: { color: 'rgba(138,106,40,0.55)', width: 1, style: 2, labelBackgroundColor: '#1A1714' },
+      vertLine: { color: 'rgba(15,118,110,0.55)', width: 1, style: 2, labelBackgroundColor: '#111827' },
+      horzLine: { color: 'rgba(15,118,110,0.55)', width: 1, style: 2, labelBackgroundColor: '#111827' },
     },
     timeScale: {
-      borderColor: 'rgba(26,23,20,0.11)',
+      borderColor: 'rgba(17,24,39,0.11)',
       timeVisible: period === '1D',
       secondsVisible: false,
       fixLeftEdge: true,
       fixRightEdge: true,
     },
     rightPriceScale: {
-      borderColor: 'rgba(26,23,20,0.11)',
+      borderColor: 'rgba(17,24,39,0.11)',
       scaleMargins: { top: 0.12, bottom: 0.08 },
     },
     handleScale: { mouseWheel: false, pinch: false },
@@ -2075,9 +2075,9 @@ function _renderTVPortChart(container, period) {
   });
 
   _tvPortSeries = _tvPortChart.addAreaSeries({
-    lineColor: '#8A6A28',
-    topColor: 'rgba(138,106,40,0.22)',
-    bottomColor: 'rgba(138,106,40,0.01)',
+    lineColor: '#0F766E',
+    topColor: 'rgba(15,118,110,0.22)',
+    bottomColor: 'rgba(15,118,110,0.01)',
     lineWidth: 2,
     priceFormat: {
       type: 'custom',
@@ -2085,11 +2085,11 @@ function _renderTVPortChart(container, period) {
       minMove: 1,
     },
     crosshairMarkerRadius: 5,
-    crosshairMarkerBorderColor: '#8A6A28',
+    crosshairMarkerBorderColor: '#0F766E',
     crosshairMarkerBackgroundColor: '#FFFFFF',
     lastValueVisible: true,
     priceLineVisible: true,
-    priceLineColor: 'rgba(138,106,40,0.3)',
+    priceLineColor: 'rgba(15,118,110,0.3)',
     priceLineWidth: 1,
     priceLineStyle: 2,
   });
@@ -2117,16 +2117,16 @@ function _renderCanvasPortChart(container, period) {
   const min = Math.min(...vals)*0.99, max = Math.max(...vals)*1.005;
   const nx = v => H - ((v-min)/(max-min))*H*0.82 - H*0.08;
   const grad = ctx.createLinearGradient(0,0,0,H);
-  grad.addColorStop(0,'rgba(138,106,40,0.22)'); grad.addColorStop(1,'rgba(138,106,40,0.01)');
+  grad.addColorStop(0,'rgba(15,118,110,0.22)'); grad.addColorStop(1,'rgba(15,118,110,0.01)');
   ctx.beginPath();
   vals.forEach((p,i) => { const x=(i/(vals.length-1))*W; i===0?ctx.moveTo(x,nx(p)):ctx.lineTo(x,nx(p)); });
   ctx.lineTo(W,H); ctx.lineTo(0,H); ctx.closePath(); ctx.fillStyle=grad; ctx.fill();
-  ctx.beginPath(); ctx.strokeStyle='rgba(138,106,40,0.9)'; ctx.lineWidth=2; ctx.lineJoin='round';
+  ctx.beginPath(); ctx.strokeStyle='rgba(15,118,110,0.9)'; ctx.lineWidth=2; ctx.lineJoin='round';
   vals.forEach((p,i) => { const x=(i/(vals.length-1))*W; i===0?ctx.moveTo(x,nx(p)):ctx.lineTo(x,nx(p)); });
   ctx.stroke();
   const lx=W-2, ly=nx(vals[vals.length-1]);
-  ctx.beginPath(); ctx.arc(lx,ly,5,0,Math.PI*2); ctx.fillStyle='rgba(138,106,40,0.9)'; ctx.fill();
-  ctx.beginPath(); ctx.arc(lx,ly,9,0,Math.PI*2); ctx.fillStyle='rgba(138,106,40,0.25)'; ctx.fill();
+  ctx.beginPath(); ctx.arc(lx,ly,5,0,Math.PI*2); ctx.fillStyle='rgba(15,118,110,0.9)'; ctx.fill();
+  ctx.beginPath(); ctx.arc(lx,ly,9,0,Math.PI*2); ctx.fillStyle='rgba(15,118,110,0.25)'; ctx.fill();
 }
 
 function renderSentimentChart() {
@@ -2147,8 +2147,8 @@ function renderSentimentChart() {
     const x = i * bW + bW * 0.2;
     const y = H - h - 16;
     const grad = ctx.createLinearGradient(0, y, 0, H - 16);
-    grad.addColorStop(0, vals[i] > 65 ? 'rgba(138,106,40,0.85)' : 'rgba(44,96,135,0.75)');
-    grad.addColorStop(1, 'rgba(138,106,40,0.05)');
+    grad.addColorStop(0, vals[i] > 65 ? 'rgba(15,118,110,0.85)' : 'rgba(30,58,138,0.75)');
+    grad.addColorStop(1, 'rgba(15,118,110,0.05)');
     ctx.fillStyle = grad;
     ctx.beginPath();
     ctx.roundRect(x, y, bW * 0.6, h, 3);
@@ -2556,14 +2556,14 @@ function calcScenario() {
   const fmtpct = v => (v>=0?'+':'') + v.toFixed(1) + '%';
   const $ = id => document.getElementById(id);
   if ($('sc-final'))       { $('sc-final').textContent = fmt(final); $('sc-final-sub').textContent = `From ${fmt(totalContrib)} contributed`; }
-  if ($('sc-profit'))      { $('sc-profit').textContent = fmtp(profit); $('sc-profit').style.color = profit>=0?'#00E07C':'#FF3D4A'; $('sc-profit-sub').textContent = profit>=0?'Net gain':'Net loss'; }
-  if ($('sc-totalret'))    { $('sc-totalret').textContent = fmtpct(totalRet); $('sc-totalret').style.color = totalRet>=0?'#00E07C':'#FF3D4A'; $('sc-ret-sub').textContent = `Over ${years} years`; }
+  if ($('sc-profit'))      { $('sc-profit').textContent = fmtp(profit); $('sc-profit').style.color = profit>=0?'#16A34A':'#DC2626'; $('sc-profit-sub').textContent = profit>=0?'Net gain':'Net loss'; }
+  if ($('sc-totalret'))    { $('sc-totalret').textContent = fmtpct(totalRet); $('sc-totalret').style.color = totalRet>=0?'#16A34A':'#DC2626'; $('sc-ret-sub').textContent = `Over ${years} years`; }
   if ($('sc-cagr'))        $('sc-cagr').textContent = cagr.toFixed(2)+'%';
   if ($('sc-real'))        $('sc-real').textContent = fmt(realValue);
   if ($('sc-aftertax'))    $('sc-aftertax').textContent = fmt(afterTax);
   if ($('sc-contrib'))     $('sc-contrib').textContent = fmt(totalContrib);
   if ($('sc-compound'))    $('sc-compound').textContent = fmt(compound);
-  if ($('sc-vsbench'))     { $('sc-vsbench').textContent = fmtpct(vsBench); $('sc-vsbench').style.color = vsBench>=0?'#00E07C':'#FF3D4A'; $('sc-vsbench-sub').textContent = `vs ${benchPct}% benchmark`; }
+  if ($('sc-vsbench'))     { $('sc-vsbench').textContent = fmtpct(vsBench); $('sc-vsbench').style.color = vsBench>=0?'#16A34A':'#DC2626'; $('sc-vsbench-sub').textContent = `vs ${benchPct}% benchmark`; }
   if ($('sc-feespaid'))    $('sc-feespaid').textContent = fmt(feesPaid);
   if ($('sc-rule72'))      $('sc-rule72').textContent = rule72 + ' yrs';
   renderScenarioChart(portfolioData, benchData);
@@ -2579,17 +2579,17 @@ function renderScenarioChart(portfolioData, benchData, containerId, height) {
   if (typeof LightweightCharts === 'undefined') return;
   _tvScChart = LightweightCharts.createChart(container, {
     width: container.offsetWidth || 600, height: height || 200,
-    layout: { background:{color:'transparent'}, textColor: '#847B6E', fontFamily:"'DM Mono',monospace", fontSize:10 },
-    grid: { vertLines:{color:'rgba(26,23,20,0.03)'}, horzLines:{color:'rgba(26,23,20,0.06)'} },
-    timeScale: { borderColor:'rgba(26,23,20,0.11)', fixLeftEdge:true, fixRightEdge:true },
-    rightPriceScale: { borderColor:'rgba(26,23,20,0.11)', scaleMargins:{top:0.08,bottom:0.06} },
-    crosshair:{mode:1,vertLine:{color:'rgba(138,106,40,0.4)',width:1,style:2,labelBackgroundColor:'#1A1714'},horzLine:{color:'rgba(138,106,40,0.4)',width:1,style:2,labelBackgroundColor:'#1A1714'}}, handleScale:{mouseWheel:false}, handleScroll:{mouseWheel:false},
+    layout: { background:{color:'transparent'}, textColor: '#64748B', fontFamily:"'DM Mono',monospace", fontSize:10 },
+    grid: { vertLines:{color:'rgba(17,24,39,0.03)'}, horzLines:{color:'rgba(17,24,39,0.06)'} },
+    timeScale: { borderColor:'rgba(17,24,39,0.11)', fixLeftEdge:true, fixRightEdge:true },
+    rightPriceScale: { borderColor:'rgba(17,24,39,0.11)', scaleMargins:{top:0.08,bottom:0.06} },
+    crosshair:{mode:1,vertLine:{color:'rgba(15,118,110,0.4)',width:1,style:2,labelBackgroundColor:'#111827'},horzLine:{color:'rgba(15,118,110,0.4)',width:1,style:2,labelBackgroundColor:'#111827'}}, handleScale:{mouseWheel:false}, handleScroll:{mouseWheel:false},
   });
   const fmtV = v => '$'+(v>=1e6?(v/1e6).toFixed(1)+'M':(v/1000).toFixed(0)+'k');
-  const portS = _tvScChart.addAreaSeries({ lineColor:'#8A6A28', topColor:'rgba(138,106,40,0.32)', bottomColor:'rgba(138,106,40,0.01)', lineWidth:2, priceFormat:{type:'custom',formatter:fmtV,minMove:1}, priceLineVisible:false, lastValueVisible:true });
+  const portS = _tvScChart.addAreaSeries({ lineColor:'#0F766E', topColor:'rgba(15,118,110,0.32)', bottomColor:'rgba(15,118,110,0.01)', lineWidth:2, priceFormat:{type:'custom',formatter:fmtV,minMove:1}, priceLineVisible:false, lastValueVisible:true });
   portS.setData(portfolioData);
   if (benchData) {
-    const bmS = _tvScChart.addLineSeries({ color:'rgba(44,96,135,0.5)', lineWidth:1, lineStyle:2, priceFormat:{type:'custom',formatter:fmtV,minMove:1}, priceLineVisible:false, lastValueVisible:false });
+    const bmS = _tvScChart.addLineSeries({ color:'rgba(30,58,138,0.5)', lineWidth:1, lineStyle:2, priceFormat:{type:'custom',formatter:fmtV,minMove:1}, priceLineVisible:false, lastValueVisible:false });
     bmS.setData(benchData);
   }
   _tvScChart.timeScale().fitContent();
@@ -2598,12 +2598,12 @@ function renderScenarioChart(portfolioData, benchData, containerId, height) {
 
 // --- Crisis scenarios ---
 const _CRISES = {
-  gfc:    { name:'2008 GFC', equityDD:-0.568, bondGain:0.18, duration:18, recovery:48, color:'#FF3D4A' },
-  covid:  { name:'COVID-19', equityDD:-0.339, bondGain:0.08, duration:2,  recovery:5,  color:'#8A6512' },
-  dotcom: { name:'Dot-com',  equityDD:-0.491, bondGain:0.22, duration:30, recovery:84, color:'#A98338' },
-  '1987': { name:'Black Monday', equityDD:-0.226, bondGain:0.06, duration:1, recovery:24, color:'#8A6A28' },
-  '2022': { name:'Rate Hike 2022', equityDD:-0.254, bondGain:-0.18, duration:9, recovery:15, color:'#2C6087' },
-  '1973': { name:'Oil Crisis 1973', equityDD:-0.482, bondGain:0.05, duration:22, recovery:96, color:'#00E07C' },
+  gfc:    { name:'2008 GFC', equityDD:-0.568, bondGain:0.18, duration:18, recovery:48, color:'#DC2626' },
+  covid:  { name:'COVID-19', equityDD:-0.339, bondGain:0.08, duration:2,  recovery:5,  color:'#B45309' },
+  dotcom: { name:'Dot-com',  equityDD:-0.491, bondGain:0.22, duration:30, recovery:84, color:'#14B8A6' },
+  '1987': { name:'Black Monday', equityDD:-0.226, bondGain:0.06, duration:1, recovery:24, color:'#0F766E' },
+  '2022': { name:'Rate Hike 2022', equityDD:-0.254, bondGain:-0.18, duration:9, recovery:15, color:'#1E3A8A' },
+  '1973': { name:'Oil Crisis 1973', equityDD:-0.482, bondGain:0.05, duration:22, recovery:96, color:'#16A34A' },
 };
 let _tvCrisisChart = null;
 function _qzscRunCrisis() {
@@ -2626,15 +2626,15 @@ function _qzscRunCrisis() {
   const fmt  = v => '$' + Math.abs(v).toLocaleString('en-US',{maximumFractionDigits:0});
   const html = `
     <div class="qzsc-metric-grid" style="margin-bottom:10px;">
-      <div class="qzsc-metric"><div class="qzsc-metric-label">Portfolio Value At Bottom</div><div class="qzsc-metric-val" style="color:#FF3D4A;font-size:18px;">${fmt(finalValue)}</div><div class="qzsc-metric-sub">From ${fmt(invest)}</div></div>
-      <div class="qzsc-metric"><div class="qzsc-metric-label">Nominal Loss</div><div class="qzsc-metric-val" style="color:#FF3D4A;font-size:18px;">-${fmt(Math.abs(netLoss))}</div><div class="qzsc-metric-sub">${totalRet.toFixed(1)}% portfolio impact</div></div>
-      <div class="qzsc-metric"><div class="qzsc-metric-label">Equity Impact</div><div class="qzsc-metric-val" style="color:#FF3D4A;font-size:18px;">${fmt(equityLoss)}</div><div class="qzsc-metric-sub">${(equityPct*100).toFixed(0)}% allocation × ${(c.equityDD*100).toFixed(1)}%</div></div>
-      <div class="qzsc-metric"><div class="qzsc-metric-label">Bond Cushion</div><div class="qzsc-metric-val" style="color:${c.bondGain>=0?'#00E07C':'#FF3D4A'};font-size:18px;">${c.bondGain>=0?'+':''}${fmt(bondChange)}</div><div class="qzsc-metric-sub">${(bondPct*100).toFixed(0)}% bonds ${c.bondGain>=0?'helped':'also fell'}</div></div>
+      <div class="qzsc-metric"><div class="qzsc-metric-label">Portfolio Value At Bottom</div><div class="qzsc-metric-val" style="color:#DC2626;font-size:18px;">${fmt(finalValue)}</div><div class="qzsc-metric-sub">From ${fmt(invest)}</div></div>
+      <div class="qzsc-metric"><div class="qzsc-metric-label">Nominal Loss</div><div class="qzsc-metric-val" style="color:#DC2626;font-size:18px;">-${fmt(Math.abs(netLoss))}</div><div class="qzsc-metric-sub">${totalRet.toFixed(1)}% portfolio impact</div></div>
+      <div class="qzsc-metric"><div class="qzsc-metric-label">Equity Impact</div><div class="qzsc-metric-val" style="color:#DC2626;font-size:18px;">${fmt(equityLoss)}</div><div class="qzsc-metric-sub">${(equityPct*100).toFixed(0)}% allocation × ${(c.equityDD*100).toFixed(1)}%</div></div>
+      <div class="qzsc-metric"><div class="qzsc-metric-label">Bond Cushion</div><div class="qzsc-metric-val" style="color:${c.bondGain>=0?'#16A34A':'#DC2626'};font-size:18px;">${c.bondGain>=0?'+':''}${fmt(bondChange)}</div><div class="qzsc-metric-sub">${(bondPct*100).toFixed(0)}% bonds ${c.bondGain>=0?'helped':'also fell'}</div></div>
       <div class="qzsc-metric"><div class="qzsc-metric-label">Crisis Duration</div><div class="qzsc-metric-val" style="font-size:18px;">${c.duration} mo</div><div class="qzsc-metric-sub">Peak-to-trough</div></div>
       <div class="qzsc-metric"><div class="qzsc-metric-label">Historical Recovery</div><div class="qzsc-metric-val" style="font-size:18px;">${recoveryMo >= 12 ? (recoveryMo/12).toFixed(1)+' yr' : recoveryMo+' mo'}</div><div class="qzsc-metric-sub">Time to new high</div></div>
     </div>
     <div style="font-size:11px;color:var(--text-muted);padding:10px 12px;background:var(--surface3);border-radius:8px;font-family:var(--font-mono);">
-      💡 With ${(equityPct*100).toFixed(0)}/${(bondPct*100).toFixed(0)} equity/bond split, you'd need to recover <strong style="color:#FF3D4A;">${fmt(recoveryAmt)}</strong> — taking approximately <strong style="color:#A98338;">${recoveryMo} months</strong> based on ${c.name} historical recovery.
+      💡 With ${(equityPct*100).toFixed(0)}/${(bondPct*100).toFixed(0)} equity/bond split, you'd need to recover <strong style="color:#DC2626;">${fmt(recoveryAmt)}</strong> — taking approximately <strong style="color:#14B8A6;">${recoveryMo} months</strong> based on ${c.name} historical recovery.
     </div>`;
   document.getElementById('qzsc-crisis-results').innerHTML = html;
   // Chart: portfolio path through crisis
@@ -2650,10 +2650,10 @@ function _qzscRunCrisis() {
   if (el && _tvCrisisChart) { try {_tvCrisisChart.remove();} catch(_){} _tvCrisisChart=null; }
   if (el && typeof LightweightCharts !== 'undefined') {
     el.innerHTML='';
-    _tvCrisisChart = LightweightCharts.createChart(el, { width:el.offsetWidth||600,height:210,layout:{background:{color:'transparent'},textColor: '#847B6E'},grid:{vertLines:{color:'rgba(26,23,20,0.03)'},horzLines:{color:'rgba(26,23,20,0.06)'}},timeScale:{borderColor:'rgba(26,23,20,0.11)'},rightPriceScale:{borderColor:'rgba(26,23,20,0.11)'},crosshair:{mode:1,vertLine:{color:'rgba(138,106,40,0.4)',width:1,style:2,labelBackgroundColor:'#1A1714'},horzLine:{color:'rgba(138,106,40,0.4)',width:1,style:2,labelBackgroundColor:'#1A1714'}},handleScale:{mouseWheel:false},handleScroll:{mouseWheel:false} });
+    _tvCrisisChart = LightweightCharts.createChart(el, { width:el.offsetWidth||600,height:210,layout:{background:{color:'transparent'},textColor: '#64748B'},grid:{vertLines:{color:'rgba(17,24,39,0.03)'},horzLines:{color:'rgba(17,24,39,0.06)'}},timeScale:{borderColor:'rgba(17,24,39,0.11)'},rightPriceScale:{borderColor:'rgba(17,24,39,0.11)'},crosshair:{mode:1,vertLine:{color:'rgba(15,118,110,0.4)',width:1,style:2,labelBackgroundColor:'#111827'},horzLine:{color:'rgba(15,118,110,0.4)',width:1,style:2,labelBackgroundColor:'#111827'}},handleScale:{mouseWheel:false},handleScroll:{mouseWheel:false} });
     const s = _tvCrisisChart.addAreaSeries({ lineColor:c.color, topColor:c.color.replace(')',',0.30)').replace('rgb','rgba'), bottomColor:'rgba(0,0,0,0)', lineWidth:2, priceFormat:{type:'custom',formatter:v=>'$'+(v/1000).toFixed(0)+'k',minMove:1}, priceLineVisible:false });
     s.setData(chartData);
-    const b = _tvCrisisChart.addLineSeries({ color:'rgba(138,106,40,0.45)',lineWidth:1,lineStyle:2,priceFormat:{type:'custom',formatter:v=>'$'+(v/1000).toFixed(0)+'k',minMove:1},priceLineVisible:false,lastValueVisible:false });
+    const b = _tvCrisisChart.addLineSeries({ color:'rgba(15,118,110,0.45)',lineWidth:1,lineStyle:2,priceFormat:{type:'custom',formatter:v=>'$'+(v/1000).toFixed(0)+'k',minMove:1},priceLineVisible:false,lastValueVisible:false });
     b.setData(baseline);
     _tvCrisisChart.timeScale().fitContent();
   }
@@ -2697,25 +2697,25 @@ function _qzscRunMonteCarlo() {
   const fmt = v => '$'+(v>=1e6?(v/1e6).toFixed(1)+'M':(v/1000).toFixed(0)+'k');
   document.getElementById('qzmc-results').innerHTML = `
     <div class="qzsc-metric-grid" style="margin-bottom:8px;">
-      <div class="qzsc-metric"><div class="qzsc-metric-label">Median Outcome (P50)</div><div class="qzsc-metric-val" style="color:#8A6A28;font-size:17px;">${fmt(p50)}</div><div class="qzsc-metric-sub">50th percentile</div></div>
-      <div class="qzsc-metric"><div class="qzsc-metric-label">Optimistic (P90)</div><div class="qzsc-metric-val" style="color:#00E07C;font-size:17px;">${fmt(p90)}</div><div class="qzsc-metric-sub">90th percentile</div></div>
-      <div class="qzsc-metric"><div class="qzsc-metric-label">Conservative (P10)</div><div class="qzsc-metric-val" style="color:#FF3D4A;font-size:17px;">${fmt(p10)}</div><div class="qzsc-metric-sub">10th percentile</div></div>
+      <div class="qzsc-metric"><div class="qzsc-metric-label">Median Outcome (P50)</div><div class="qzsc-metric-val" style="color:#0F766E;font-size:17px;">${fmt(p50)}</div><div class="qzsc-metric-sub">50th percentile</div></div>
+      <div class="qzsc-metric"><div class="qzsc-metric-label">Optimistic (P90)</div><div class="qzsc-metric-val" style="color:#16A34A;font-size:17px;">${fmt(p90)}</div><div class="qzsc-metric-sub">90th percentile</div></div>
+      <div class="qzsc-metric"><div class="qzsc-metric-label">Conservative (P10)</div><div class="qzsc-metric-val" style="color:#DC2626;font-size:17px;">${fmt(p10)}</div><div class="qzsc-metric-sub">10th percentile</div></div>
       <div class="qzsc-metric"><div class="qzsc-metric-label">P75 / P25</div><div class="qzsc-metric-val" style="font-size:14px;">${fmt(p75)}<br><span style="font-size:11px;color:var(--text-muted)">${fmt(p25)}</span></div></div>
-      <div class="qzsc-metric"><div class="qzsc-metric-label">Prob. of Doubling</div><div class="qzsc-metric-val" style="color:#00E07C;font-size:17px;">${probDouble.toFixed(0)}%</div><div class="qzsc-metric-sub">vs initial investment</div></div>
-      <div class="qzsc-metric"><div class="qzsc-metric-label">Prob. of Loss</div><div class="qzsc-metric-val" style="color:#FF3D4A;font-size:17px;">${probLoss.toFixed(1)}%</div><div class="qzsc-metric-sub">Below initial capital</div></div>
+      <div class="qzsc-metric"><div class="qzsc-metric-label">Prob. of Doubling</div><div class="qzsc-metric-val" style="color:#16A34A;font-size:17px;">${probDouble.toFixed(0)}%</div><div class="qzsc-metric-sub">vs initial investment</div></div>
+      <div class="qzsc-metric"><div class="qzsc-metric-label">Prob. of Loss</div><div class="qzsc-metric-val" style="color:#DC2626;font-size:17px;">${probLoss.toFixed(1)}%</div><div class="qzsc-metric-sub">Below initial capital</div></div>
     </div>`;
   // Draw chart: sample ~50 paths + P10/P50/P90 bands
   const el = document.getElementById('qzmc-chart');
   if (!el || typeof LightweightCharts==='undefined') return;
   el.innerHTML='';
   if (_tvMCChart) { try{_tvMCChart.remove();}catch(_){} _tvMCChart=null; }
-  _tvMCChart = LightweightCharts.createChart(el, { width:el.offsetWidth||600,height:240,layout:{background:{color:'transparent'},textColor: '#847B6E'},grid:{vertLines:{color:'rgba(26,23,20,0.03)'},horzLines:{color:'rgba(26,23,20,0.06)'}},timeScale:{borderColor:'rgba(26,23,20,0.11)'},rightPriceScale:{borderColor:'rgba(26,23,20,0.11)'},crosshair:{mode:1,vertLine:{color:'rgba(138,106,40,0.4)',width:1,style:2,labelBackgroundColor:'#1A1714'},horzLine:{color:'rgba(138,106,40,0.4)',width:1,style:2,labelBackgroundColor:'#1A1714'}},handleScale:{mouseWheel:false},handleScroll:{mouseWheel:false} });
+  _tvMCChart = LightweightCharts.createChart(el, { width:el.offsetWidth||600,height:240,layout:{background:{color:'transparent'},textColor: '#64748B'},grid:{vertLines:{color:'rgba(17,24,39,0.03)'},horzLines:{color:'rgba(17,24,39,0.06)'}},timeScale:{borderColor:'rgba(17,24,39,0.11)'},rightPriceScale:{borderColor:'rgba(17,24,39,0.11)'},crosshair:{mode:1,vertLine:{color:'rgba(15,118,110,0.4)',width:1,style:2,labelBackgroundColor:'#111827'},horzLine:{color:'rgba(15,118,110,0.4)',width:1,style:2,labelBackgroundColor:'#111827'}},handleScale:{mouseWheel:false},handleScroll:{mouseWheel:false} });
   const now = Math.floor(Date.now()/1000);
   const mkData = path => path.map((v,i) => ({ time:now - (months-i)*2592000, value:+v.toFixed(0) }));
   // Draw a sample of paths in faint color
   const step = Math.max(1, Math.floor(sims/40));
   for (let s=0; s<sims; s+=step) {
-    const ps = _tvMCChart.addLineSeries({ color:'rgba(138,106,40,0.08)', lineWidth:1, priceLineVisible:false, lastValueVisible:false, crosshairMarkerVisible:false });
+    const ps = _tvMCChart.addLineSeries({ color:'rgba(15,118,110,0.08)', lineWidth:1, priceLineVisible:false, lastValueVisible:false, crosshairMarkerVisible:false });
     ps.setData(mkData(paths[s]));
   }
   // P10 / P90 / P50 bands
@@ -2726,9 +2726,9 @@ function _qzscRunMonteCarlo() {
     return paths[pidx];
   };
   const bandPath = (pct,col,lw) => { const s=_tvMCChart.addLineSeries({color:col,lineWidth:lw,priceLineVisible:false,lastValueVisible:true,crosshairMarkerVisible:false}); s.setData(mkData(buildBand(pct))); };
-  bandPath(90,'rgba(0,224,124,0.8)',2);
-  bandPath(50,'rgba(138,106,40,0.9)',2);
-  bandPath(10,'rgba(255,61,74,0.8)',2);
+  bandPath(90,'rgba(22,163,74,0.8)',2);
+  bandPath(50,'rgba(15,118,110,0.9)',2);
+  bandPath(10,'rgba(220,38,38,0.8)',2);
   _tvMCChart.timeScale().fitContent();
   new ResizeObserver(es=>{if(_tvMCChart)_tvMCChart.applyOptions({width:es[0].contentRect.width});}).observe(el);
 }
@@ -2742,22 +2742,22 @@ function _qzscRunStress() {
   const comm   = (parseFloat(document.getElementById('qzst-comm')?.value)||5)/100;
   const cash   = (parseFloat(document.getElementById('qzst-cash')?.value)||5)/100;
   const scenarios = [
-    { name:'Fed Rate Hike +200bps',      impacts:{ us:-0.15, intl:-0.12, bond:-0.10, comm:0.05,  cash:0 }, color:'#FF3D4A' },
-    { name:'Severe Recession (-30%)',     impacts:{ us:-0.30, intl:-0.25, bond:0.12,  comm:-0.15, cash:0 }, color:'#FF3D4A' },
-    { name:'Stagflation',                 impacts:{ us:-0.20, intl:-0.18, bond:-0.08, comm:0.20,  cash:-0.05 }, color:'#8A6512' },
-    { name:'Dollar Crash (-20%)',         impacts:{ us:-0.08, intl:0.15,  bond:-0.05, comm:0.18,  cash:-0.20 }, color:'#A98338' },
-    { name:'China Credit Crisis',         impacts:{ us:-0.12, intl:-0.20, bond:0.08,  comm:-0.10, cash:0 }, color:'#8A6A28' },
-    { name:'Tech Sector Crash (-40%)',    impacts:{ us:-0.22, intl:-0.10, bond:0.05,  comm:0.02,  cash:0 }, color:'#2C6087' },
-    { name:'Oil Shock +80%',              impacts:{ us:-0.10, intl:-0.08, bond:-0.03, comm:0.22,  cash:0 }, color:'#00E07C' },
-    { name:'Global Pandemic (COVID-like)',impacts:{ us:-0.34, intl:-0.30, bond:0.10,  comm:-0.20, cash:0 }, color:'#FF3D4A' },
-    { name:'Geopolitical Conflict',       impacts:{ us:-0.15, intl:-0.20, bond:0.05,  comm:0.25,  cash:0 }, color:'#A98338' },
-    { name:'Crypto/FinTech Contagion',    impacts:{ us:-0.12, intl:-0.08, bond:0.02,  comm:0.00,  cash:0 }, color:'#8A6A28' },
+    { name:'Fed Rate Hike +200bps',      impacts:{ us:-0.15, intl:-0.12, bond:-0.10, comm:0.05,  cash:0 }, color:'#DC2626' },
+    { name:'Severe Recession (-30%)',     impacts:{ us:-0.30, intl:-0.25, bond:0.12,  comm:-0.15, cash:0 }, color:'#DC2626' },
+    { name:'Stagflation',                 impacts:{ us:-0.20, intl:-0.18, bond:-0.08, comm:0.20,  cash:-0.05 }, color:'#B45309' },
+    { name:'Dollar Crash (-20%)',         impacts:{ us:-0.08, intl:0.15,  bond:-0.05, comm:0.18,  cash:-0.20 }, color:'#14B8A6' },
+    { name:'China Credit Crisis',         impacts:{ us:-0.12, intl:-0.20, bond:0.08,  comm:-0.10, cash:0 }, color:'#0F766E' },
+    { name:'Tech Sector Crash (-40%)',    impacts:{ us:-0.22, intl:-0.10, bond:0.05,  comm:0.02,  cash:0 }, color:'#1E3A8A' },
+    { name:'Oil Shock +80%',              impacts:{ us:-0.10, intl:-0.08, bond:-0.03, comm:0.22,  cash:0 }, color:'#16A34A' },
+    { name:'Global Pandemic (COVID-like)',impacts:{ us:-0.34, intl:-0.30, bond:0.10,  comm:-0.20, cash:0 }, color:'#DC2626' },
+    { name:'Geopolitical Conflict',       impacts:{ us:-0.15, intl:-0.20, bond:0.05,  comm:0.25,  cash:0 }, color:'#14B8A6' },
+    { name:'Crypto/FinTech Contagion',    impacts:{ us:-0.12, intl:-0.08, bond:0.02,  comm:0.00,  cash:0 }, color:'#0F766E' },
   ];
   const rows = scenarios.map(sc => {
     const impact = invest*(us*sc.impacts.us + intl*sc.impacts.intl + bond*sc.impacts.bond + comm*sc.impacts.comm + cash*sc.impacts.cash);
     const final  = invest + impact;
     const pct    = impact/invest*100;
-    const col    = pct >= 0 ? '#00E07C' : '#FF3D4A';
+    const col    = pct >= 0 ? '#16A34A' : '#DC2626';
     return `<div class="qzsc-stress-row">
       <div style="width:10px;height:10px;border-radius:50%;background:${sc.color};flex-shrink:0;"></div>
       <div class="qzsc-stress-name">${sc.name}</div>
@@ -2809,7 +2809,7 @@ function _qzscRunMacro() {
     const eImpact = invest*equityPct*s.equityImpact;
     const bImpact = invest*bondPct*s.bondImpact;
     const tot     = eImpact + bImpact;
-    const col     = tot>=0?'#00E07C':'#FF3D4A';
+    const col     = tot>=0?'#16A34A':'#DC2626';
     return `<div class="qzsc-stress-row">
       <div class="qzsc-stress-name">
         <div style="font-size:11px;color:var(--text-primary);">${s.name}</div>
@@ -2822,9 +2822,9 @@ function _qzscRunMacro() {
     </div>`;
   }).join('');
   document.getElementById('qzmacro-results').innerHTML = `
-    <div style="background:${totalPct>=0?'rgba(0,224,124,0.08)':'rgba(255,61,74,0.08)'};border:1px solid ${totalPct>=0?'rgba(0,224,124,0.25)':'rgba(255,61,74,0.25)'};border-radius:10px;padding:14px;margin-bottom:12px;display:flex;align-items:center;gap:14px;">
+    <div style="background:${totalPct>=0?'rgba(22,163,74,0.08)':'rgba(220,38,38,0.08)'};border:1px solid ${totalPct>=0?'rgba(22,163,74,0.25)':'rgba(220,38,38,0.25)'};border-radius:10px;padding:14px;margin-bottom:12px;display:flex;align-items:center;gap:14px;">
       <div><div style="font-size:9px;font-family:var(--font-mono);color:var(--text-muted);text-transform:uppercase;margin-bottom:3px;">Combined Portfolio Impact</div>
-      <div style="font-size:26px;font-weight:800;color:${totalPct>=0?'#00E07C':'#FF3D4A'};font-family:var(--font-display);">${totalPct>=0?'+':''}${fmt(totalPortImpact)}</div>
+      <div style="font-size:26px;font-weight:800;color:${totalPct>=0?'#16A34A':'#DC2626'};font-family:var(--font-display);">${totalPct>=0?'+':''}${fmt(totalPortImpact)}</div>
       <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">${totalPct.toFixed(1)}% · Final value: ${fmt(finalValue)}</div></div>
     </div>
     <div style="font-size:9px;font-family:var(--font-mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px;">Shock-by-Shock Breakdown (${(equityPct*100).toFixed(0)}% equity / ${(bondPct*100).toFixed(0)}% bonds)</div>
@@ -3071,7 +3071,7 @@ function runBacktest() {
 
   // Update DOM metrics
   const fmtPct = (v,d=1) => (v>=0?'+':'')+(v*100).toFixed(d)+'%';
-  const setM = (id, val, txt) => { const el=document.getElementById(id); if(!el)return; el.textContent=txt; el.style.color=val>0?'#00E07C':val<0?'#FF3D4A':'var(--text-primary)'; };
+  const setM = (id, val, txt) => { const el=document.getElementById(id); if(!el)return; el.textContent=txt; el.style.color=val>0?'#16A34A':val<0?'#DC2626':'var(--text-primary)'; };
   setM('bt-ret', totalRet, fmtPct(totalRet));
   setM('bt-cagr', cagr, fmtPct(cagr));
   setM('bt-sharpe', sharpe-1, sharpe.toFixed(2));
@@ -3110,20 +3110,20 @@ function renderBacktestChart(equityCurve, benchCurve, capital, years) {
     _tvBtChart = LightweightCharts.createChart(container, {
       width: container.offsetWidth||600, height: 260,
       layout:{background:{color:'transparent'},textColor:'#5a5a5a',fontFamily:"'DM Mono',monospace",fontSize:10},
-      grid:{vertLines:{color:'rgba(26,23,20,0.03)'},horzLines:{color:'rgba(26,23,20,0.06)'}},
-      crosshair:{mode:1,vertLine:{color:'rgba(138,106,40,0.4)',width:1,style:2,labelBackgroundColor:'#1A1714'},horzLine:{color:'rgba(138,106,40,0.4)',width:1,style:2,labelBackgroundColor:'#1A1714'}},
-      timeScale:{borderColor:'rgba(26,23,20,0.11)',fixLeftEdge:true,fixRightEdge:true},
-      rightPriceScale:{borderColor:'rgba(26,23,20,0.11)',scaleMargins:{top:0.1,bottom:0.1}},
+      grid:{vertLines:{color:'rgba(17,24,39,0.03)'},horzLines:{color:'rgba(17,24,39,0.06)'}},
+      crosshair:{mode:1,vertLine:{color:'rgba(15,118,110,0.4)',width:1,style:2,labelBackgroundColor:'#111827'},horzLine:{color:'rgba(15,118,110,0.4)',width:1,style:2,labelBackgroundColor:'#111827'}},
+      timeScale:{borderColor:'rgba(17,24,39,0.11)',fixLeftEdge:true,fixRightEdge:true},
+      rightPriceScale:{borderColor:'rgba(17,24,39,0.11)',scaleMargins:{top:0.1,bottom:0.1}},
       handleScale:{mouseWheel:false},handleScroll:{mouseWheel:false},
     });
     const portSeries = _tvBtChart.addAreaSeries({
-      lineColor:'#8A6A28',topColor:'rgba(138,106,40,0.22)',bottomColor:'rgba(138,106,40,0.01)',
+      lineColor:'#0F766E',topColor:'rgba(15,118,110,0.22)',bottomColor:'rgba(15,118,110,0.01)',
       lineWidth:2,priceFormat:{type:'custom',formatter:v=>'$'+(v>=1000?(v/1000).toFixed(0)+'k':v.toFixed(0)),minMove:1},
       priceLineVisible:false,lastValueVisible:true,
     });
     portSeries.setData(equityCurve);
     const bmSeries = _tvBtChart.addLineSeries({
-      color:'rgba(44,96,135,0.55)',lineWidth:1,lineStyle:2,
+      color:'rgba(30,58,138,0.55)',lineWidth:1,lineStyle:2,
       priceFormat:{type:'custom',formatter:v=>'$'+(v>=1000?(v/1000).toFixed(0)+'k':v.toFixed(0)),minMove:1},
       priceLineVisible:false,lastValueVisible:false,
     });
@@ -3137,10 +3137,10 @@ function renderBacktestChart(equityCurve, benchCurve, capital, years) {
     const vals=equityCurve.map(d=>d.value);
     const mn=Math.min(...vals)*0.97, mx=Math.max(...vals)*1.03;
     const nr=v=>H-((v-mn)/(mx-mn))*H*0.85-H*0.05;
-    const gr=ctx.createLinearGradient(0,0,0,H); gr.addColorStop(0,'rgba(138,106,40,0.18)'); gr.addColorStop(1,'rgba(138,106,40,0)');
+    const gr=ctx.createLinearGradient(0,0,0,H); gr.addColorStop(0,'rgba(15,118,110,0.18)'); gr.addColorStop(1,'rgba(15,118,110,0)');
     ctx.beginPath(); vals.forEach((p,i)=>{const x=(i/(vals.length-1))*W;i===0?ctx.moveTo(x,nr(p)):ctx.lineTo(x,nr(p));});
     ctx.lineTo(W,H); ctx.lineTo(0,H); ctx.closePath(); ctx.fillStyle=gr; ctx.fill();
-    ctx.beginPath(); ctx.strokeStyle='#8A6A28'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.strokeStyle='#0F766E'; ctx.lineWidth=2;
     vals.forEach((p,i)=>{const x=(i/(vals.length-1))*W;i===0?ctx.moveTo(x,nr(p)):ctx.lineTo(x,nr(p));}); ctx.stroke();
   }
 }
@@ -3156,14 +3156,14 @@ function renderDrawdownChart(drawdownSeries) {
     _tvBtDDChart = LightweightCharts.createChart(container, {
       width:container.offsetWidth||600, height:90,
       layout:{background:{color:'transparent'},textColor:'#5a5a5a',fontFamily:"'DM Mono',monospace",fontSize:9},
-      grid:{vertLines:{visible:false},horzLines:{color:'rgba(26,23,20,0.06)'}},
-      crosshair:{mode:1,vertLine:{color:'rgba(138,106,40,0.4)',width:1,style:2,labelBackgroundColor:'#1A1714'},horzLine:{color:'rgba(138,106,40,0.4)',width:1,style:2,labelBackgroundColor:'#1A1714'}},
-      timeScale:{borderColor:'rgba(26,23,20,0.11)',fixLeftEdge:true,fixRightEdge:true,visible:false},
-      rightPriceScale:{borderColor:'rgba(26,23,20,0.11)',scaleMargins:{top:0.05,bottom:0}},
+      grid:{vertLines:{visible:false},horzLines:{color:'rgba(17,24,39,0.06)'}},
+      crosshair:{mode:1,vertLine:{color:'rgba(15,118,110,0.4)',width:1,style:2,labelBackgroundColor:'#111827'},horzLine:{color:'rgba(15,118,110,0.4)',width:1,style:2,labelBackgroundColor:'#111827'}},
+      timeScale:{borderColor:'rgba(17,24,39,0.11)',fixLeftEdge:true,fixRightEdge:true,visible:false},
+      rightPriceScale:{borderColor:'rgba(17,24,39,0.11)',scaleMargins:{top:0.05,bottom:0}},
       handleScale:{mouseWheel:false},handleScroll:{mouseWheel:false},
     });
     const ddS = _tvBtDDChart.addAreaSeries({
-      lineColor:'#FF3D4A',topColor:'rgba(255,61,74,0.35)',bottomColor:'rgba(255,61,74,0.0)',
+      lineColor:'#DC2626',topColor:'rgba(220,38,38,0.35)',bottomColor:'rgba(220,38,38,0.0)',
       lineWidth:1,priceFormat:{type:'custom',formatter:v=>v.toFixed(1)+'%',minMove:0.01},
       priceLineVisible:false,lastValueVisible:false,
     });
@@ -3177,10 +3177,10 @@ function renderDrawdownChart(drawdownSeries) {
     const vals=drawdownSeries.map(d=>d.value);
     const mn=Math.min(...vals)*1.05;
     const nr=v=>H-((v-mn)/(0-mn||1))*H*0.85-H*0.05;
-    ctx.fillStyle='rgba(255,61,74,0.18)'; ctx.beginPath();
+    ctx.fillStyle='rgba(220,38,38,0.18)'; ctx.beginPath();
     vals.forEach((p,i)=>{const x=(i/(vals.length-1))*W;i===0?ctx.moveTo(x,nr(p)):ctx.lineTo(x,nr(p));});
     ctx.lineTo(W,H); ctx.lineTo(0,H); ctx.closePath(); ctx.fill();
-    ctx.beginPath(); ctx.strokeStyle='#FF3D4A'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.strokeStyle='#DC2626'; ctx.lineWidth=1;
     vals.forEach((p,i)=>{const x=(i/(vals.length-1))*W;i===0?ctx.moveTo(x,nr(p)):ctx.lineTo(x,nr(p));}); ctx.stroke();
   }
 }
@@ -3209,8 +3209,8 @@ function renderMonthlyHeatmap(equityCurve, periodYears) {
         const pct = (ret*100).toFixed(1);
         const intensity = Math.min(Math.abs(ret)*100, 15);
         const alpha = 0.15 + (intensity/15)*0.72;
-        const bg = ret>=0 ? `rgba(0,224,124,${alpha.toFixed(2)})` : `rgba(255,61,74,${alpha.toFixed(2)})`;
-        const col = intensity>5 ? '#fff' : (ret>=0?'#00E07C':'#FF3D4A');
+        const bg = ret>=0 ? `rgba(22,163,74,${alpha.toFixed(2)})` : `rgba(220,38,38,${alpha.toFixed(2)})`;
+        const col = intensity>5 ? '#fff' : (ret>=0?'#16A34A':'#DC2626');
         html += `<div class="qzbt-hm-cell" style="background:${bg};color:${col};" title="${key}: ${pct}%">${pct}%</div>`;
       } else {
         html += `<div class="qzbt-hm-cell" style="background:var(--surface3);color:var(--text-muted);">—</div>`;
@@ -3232,7 +3232,7 @@ function renderTradeLog(trades) {
   tbody.innerHTML = shown.map((t, i) => {
     const retStr = (t.ret>=0?'+':'')+(t.ret*100).toFixed(2)+'%';
     const pnlStr = (t.pnl>=0?'+':'')+t.pnl.toFixed(0);
-    const col = t.ret>=0?'#00E07C':'#FF3D4A';
+    const col = t.ret>=0?'#16A34A':'#DC2626';
     return `<tr><td style="color:var(--text-muted);">${i+1}</td><td>${t.entry}</td><td>${t.exit}</td><td style="font-family:var(--font-mono);">$${t.entryP.toFixed(2)}</td><td style="font-family:var(--font-mono);">$${t.exitP.toFixed(2)}</td><td style="color:${col};font-weight:600;">${retStr}</td><td style="color:${col};">${pnlStr}</td></tr>`;
   }).join('');
 }
@@ -3658,7 +3658,7 @@ function _searchRender() {
 }
 
 function _searchWebRow(w, idx) {
-  const typeBadge = w.type ? `<span style="font-family:var(--font-mono);font-size:9px;padding:1px 5px;background:rgba(44,96,135,0.15);color:var(--blue);border-radius:3px;margin-left:6px;">${w.type}</span>` : '';
+  const typeBadge = w.type ? `<span style="font-family:var(--font-mono);font-size:9px;padding:1px 5px;background:rgba(30,58,138,0.15);color:var(--blue);border-radius:3px;margin-left:6px;">${w.type}</span>` : '';
   return `<div class="search-result-item ${(_searchState.selected === idx)?'active':''}" data-idx="${idx}" onclick="globalSearchPick(${idx})" style="grid-template-columns:54px 1fr auto;">
     <span class="search-result-ticker">${w.symbol}</span>
     <span class="search-result-name" title="${_escapeHtml(w.name)}">${_escapeHtml(w.name)}${typeBadge}</span>
@@ -4057,7 +4057,7 @@ function _searchAddToUniverse(stub) {
   if (m) { m.remove(); }
   // Show toast
   const toast = document.createElement('div');
-  toast.style.cssText = 'position:fixed;bottom:24px;right:24px;background:var(--surface2);border:1px solid var(--green);border-radius:var(--radius);padding:12px 18px;color:var(--text-primary);font-size:13px;z-index:9999;box-shadow:0 8px 32px rgba(138,106,40,0.2);animation:fadeInUp 240ms var(--ease-out-strong);';
+  toast.style.cssText = 'position:fixed;bottom:24px;right:24px;background:var(--surface2);border:1px solid var(--green);border-radius:var(--radius);padding:12px 18px;color:var(--text-primary);font-size:13px;z-index:9999;box-shadow:0 8px 32px rgba(15,118,110,0.2);animation:fadeInUp 240ms var(--ease-out-strong);';
   toast.innerHTML = `✓ <b>${stub.t}</b> pinned to Universe (rank #${stub.gr.toLocaleString()})`;
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 3500);
@@ -4395,12 +4395,12 @@ function _qzsSparkline(canvas, ticker, positive) {
   const mn = Math.min(...vals), mx = Math.max(...vals), rg = mx-mn||1;
   const px = i => (i/(PTS-1))*W;
   const py = i => H - ((vals[i]-mn)/rg)*H*0.82 - H*0.09;
-  const col = positive ? '#00E07C' : '#FF3D4A';
+  const col = positive ? '#16A34A' : '#DC2626';
   ctx.beginPath(); ctx.moveTo(px(0), py(0));
   for (let i=1; i<PTS; i++) ctx.lineTo(px(i), py(i));
   ctx.strokeStyle = col; ctx.lineWidth = 1.5; ctx.stroke();
   const grad = ctx.createLinearGradient(0,0,0,H);
-  grad.addColorStop(0, positive?'rgba(0,224,124,0.22)':'rgba(255,61,74,0.22)');
+  grad.addColorStop(0, positive?'rgba(22,163,74,0.22)':'rgba(220,38,38,0.22)');
   grad.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.lineTo(px(PTS-1), H); ctx.lineTo(px(0), H); ctx.closePath();
   ctx.fillStyle = grad; ctx.fill();
@@ -4620,19 +4620,19 @@ function _qzapRenderChart(tf) {
   el.innerHTML = '';
   const chart = window.LightweightCharts.createChart(el, {
     width: el.offsetWidth, height: 240,
-    layout: { background:{color:'transparent'}, textColor: '#847B6E' },
-    grid: { vertLines:{color:'rgba(26,23,20,0.03)'}, horzLines:{color:'rgba(26,23,20,0.06)'} },
+    layout: { background:{color:'transparent'}, textColor: '#64748B' },
+    grid: { vertLines:{color:'rgba(17,24,39,0.03)'}, horzLines:{color:'rgba(17,24,39,0.06)'} },
     crosshair: { mode:1 },
-    rightPriceScale: { borderColor:'rgba(26,23,20,0.11)' },
-    timeScale: { borderColor:'rgba(26,23,20,0.11)', timeVisible:true },
+    rightPriceScale: { borderColor:'rgba(17,24,39,0.11)' },
+    timeScale: { borderColor:'rgba(17,24,39,0.11)', timeVisible:true },
     handleScale:true, handleScroll:true,
   });
   _qzap.chart = chart;
-  const candle = chart.addCandlestickSeries({ upColor:'#00E07C', downColor:'#FF3D4A', borderUpColor:'#00E07C', borderDownColor:'#FF3D4A', wickUpColor:'#00E07C', wickDownColor:'#FF3D4A' });
+  const candle = chart.addCandlestickSeries({ upColor:'#16A34A', downColor:'#DC2626', borderUpColor:'#16A34A', borderDownColor:'#DC2626', wickUpColor:'#16A34A', wickDownColor:'#DC2626' });
   const data = _qzapGenOHLC(_qzap.stock, tf, _qzap._q?.regularMarketPrice);
   if (data.length) candle.setData(data);
   const vol = chart.addHistogramSeries({ color:'rgba(122,113,101,0.14)', priceFormat:{type:'volume'}, priceScaleId:'v', scaleMargins:{top:0.82,bottom:0} });
-  vol.setData(data.map(d => ({ time:d.time, value:d.volume||0, color:d.close>=d.open?'rgba(0,224,124,0.2)':'rgba(255,61,74,0.2)' })));
+  vol.setData(data.map(d => ({ time:d.time, value:d.volume||0, color:d.close>=d.open?'rgba(22,163,74,0.2)':'rgba(220,38,38,0.2)' })));
   chart.timeScale().fitContent();
   const ro = new ResizeObserver(() => { if (_qzap.chart) _qzap.chart.applyOptions({width:el.offsetWidth}); });
   ro.observe(el);
@@ -4692,7 +4692,7 @@ function _qzapRenderContent() {
   const industry = q?.industry || s?.ind || '—';
   const desc = q?.longBusinessSummary || (s?.n ? `${s.n} is a ${industry!=='—'?industry:'publicly traded'} company${s.co&&s.co!=='US'?' based in '+s.co:''} listed on ${s.ex||'a major exchange'}.` : '');
   const legalHtml = typeof _renderLegalHistoryBlock==='function' ? _renderLegalHistoryBlock(s?.t||'') : '';
-  const sigColor = analysis.signal==='BUY'?'#00E07C':analysis.signal==='SELL'?'#FF3D4A':'#7A7165';
+  const sigColor = analysis.signal==='BUY'?'#16A34A':analysis.signal==='SELL'?'#DC2626':'#64748B';
   document.getElementById('qzap-dynamic-content').innerHTML = `
     <div class="qzap-section">
       <div class="qzap-section-title">Chart Analysis</div>
@@ -4710,8 +4710,8 @@ function _qzapRenderContent() {
         <div class="qzap-metric"><div class="qzap-metric-label">P/E (TTM)</div><div class="qzap-metric-val">${pe}</div></div>
         <div class="qzap-metric"><div class="qzap-metric-label">P/E (Fwd)</div><div class="qzap-metric-val">${fpe}</div></div>
         <div class="qzap-metric"><div class="qzap-metric-label">Beta</div><div class="qzap-metric-val">${beta}</div></div>
-        <div class="qzap-metric"><div class="qzap-metric-label">52W High</div><div class="qzap-metric-val" style="color:#00E07C">${hi52}</div></div>
-        <div class="qzap-metric"><div class="qzap-metric-label">52W Low</div><div class="qzap-metric-val" style="color:#FF3D4A">${lo52}</div></div>
+        <div class="qzap-metric"><div class="qzap-metric-label">52W High</div><div class="qzap-metric-val" style="color:#16A34A">${hi52}</div></div>
+        <div class="qzap-metric"><div class="qzap-metric-label">52W Low</div><div class="qzap-metric-val" style="color:#DC2626">${lo52}</div></div>
         <div class="qzap-metric"><div class="qzap-metric-label">Day Open</div><div class="qzap-metric-val">${open}</div></div>
         <div class="qzap-metric"><div class="qzap-metric-label">Day High</div><div class="qzap-metric-val">${dayH}</div></div>
         <div class="qzap-metric"><div class="qzap-metric-label">Day Low</div><div class="qzap-metric-val">${dayL}</div></div>
@@ -4785,11 +4785,11 @@ function _qzapAnalysis(s, q) {
     bull += pos52Bull?12:0; bear += pos52Bull?0:12;
     const sup = (price*(0.91+rng(5)*0.05)).toFixed(2);
     const res = (price*(1.05+rng(6)*0.07)).toFixed(2);
-    cards.push(`<div class="qzap-analysis-card ${pct52>65?'bull':pct52<35?'bear':'neutral'}"><div class="qzap-analysis-label">52-Week Range — ${pct52}th percentile</div><div class="qzap-analysis-val">${pct52>80?'🏔️ Near 52W highs — strong uptrend, momentum carries risk of extension':pct52<20?'🔻 Near 52W lows — potential value or falling knife, confirm with volume':pct52>50?'↗️ Upper half of range — bullish bias, monitor resistance at highs':'↘️ Lower half of range — bearish bias, watch key support levels'}<br><span style="font-size:11px;color:var(--text-muted)">Support ~<strong style="color:#00E07C">${sup}</strong> · Resistance ~<strong style="color:#FF3D4A">${res}</strong></span></div></div>`);
+    cards.push(`<div class="qzap-analysis-card ${pct52>65?'bull':pct52<35?'bear':'neutral'}"><div class="qzap-analysis-label">52-Week Range — ${pct52}th percentile</div><div class="qzap-analysis-val">${pct52>80?'🏔️ Near 52W highs — strong uptrend, momentum carries risk of extension':pct52<20?'🔻 Near 52W lows — potential value or falling knife, confirm with volume':pct52>50?'↗️ Upper half of range — bullish bias, monitor resistance at highs':'↘️ Lower half of range — bearish bias, watch key support levels'}<br><span style="font-size:11px;color:var(--text-muted)">Support ~<strong style="color:#16A34A">${sup}</strong> · Resistance ~<strong style="color:#DC2626">${res}</strong></span></div></div>`);
   } else {
     const sup = price ? (price*(0.91+rng(5)*0.05)).toFixed(2) : (50+rng(5)*20).toFixed(2);
     const res = price ? (price*(1.06+rng(6)*0.07)).toFixed(2) : (70+rng(6)*20).toFixed(2);
-    cards.push(`<div class="qzap-analysis-card neutral"><div class="qzap-analysis-label">Support / Resistance</div><div class="qzap-analysis-val">Key support ~<strong style="color:#00E07C">${sup}</strong> · Key resistance ~<strong style="color:#FF3D4A">${res}</strong></div></div>`);
+    cards.push(`<div class="qzap-analysis-card neutral"><div class="qzap-analysis-label">Support / Resistance</div><div class="qzap-analysis-val">Key support ~<strong style="color:#16A34A">${sup}</strong> · Key resistance ~<strong style="color:#DC2626">${res}</strong></div></div>`);
   }
 
   // Beta / Risk
@@ -4918,12 +4918,12 @@ const AGENT_SPECS = {
     scalabilityF: "If one helper breaks, the system automatically uses a backup. You won't lose data or miss signals. Failed tasks are saved and retried automatically.",
     scalabilityO: "The system caches recent answers so it doesn't have to work as hard on repeated questions. Urgent alerts always get processed first. Most answers arrive in under 1 second.",
     agents: [
-      { emoji:"📡", name:"Data Ingestor", color:"#8A6A28", role:"Collects live stock prices, trading volumes, and market data every few seconds from financial data providers.", input:"Market data APIs, exchange feeds", output:"Clean, normalized price & volume data", decision:"Validates data freshness and flags stale or corrupted feeds automatically" },
-      { emoji:"📰", name:"Sentiment Agent", color:"#8A6A28", role:"Reads news articles and social media to figure out how people feel about a stock — positive, negative, or neutral.", input:"News headlines, social signals", output:"Sentiment score from -1.0 (very negative) to +1.0 (very positive)", decision:"Filters noise, weighs source credibility, and spots sudden sentiment shifts" },
-      { emoji:"⚡", name:"Signal Generator", color:"#2C6087", role:"Uses patterns in price data combined with sentiment scores to decide if a stock is likely to go up (BUY), down (SELL), or stay flat (HOLD).", input:"Normalized price data + sentiment score", output:"BUY / SELL / HOLD signal with a confidence percentage", decision:"If confidence is below 60%, it flags the signal as uncertain and requests more data" },
-      { emoji:"💼", name:"Portfolio Agent", color:"#2C6087", role:"Checks your current investments to make sure a new recommendation makes sense for your specific holdings and doesn't create too much risk.", input:"Your portfolio holdings + new signal", output:"Adjusted recommendation based on your situation", decision:"Blocks signals that would over-concentrate your portfolio in one area" },
-      { emoji:"🤖", name:"LLM Reasoner", color:"#2C6087", role:"The AI brain that writes the plain-English explanation for why a signal was generated, like a financial advisor explaining their thinking.", input:"All signals and data from other agents", output:"Simple explanation you can understand and act on", decision:"Simplifies complex data into clear language matched to your experience level" },
-      { emoji:"🛡️", name:"Risk Validator", color:"#A98338", role:"A safety checker that makes sure the recommendation fits your personal risk settings — conservative, moderate, or aggressive.", input:"Final signal + your risk profile", output:"Approved or flagged signal with risk notes", decision:"Blocks signals that exceed your risk tolerance and explains why" }
+      { emoji:"📡", name:"Data Ingestor", color:"#0F766E", role:"Collects live stock prices, trading volumes, and market data every few seconds from financial data providers.", input:"Market data APIs, exchange feeds", output:"Clean, normalized price & volume data", decision:"Validates data freshness and flags stale or corrupted feeds automatically" },
+      { emoji:"📰", name:"Sentiment Agent", color:"#0F766E", role:"Reads news articles and social media to figure out how people feel about a stock — positive, negative, or neutral.", input:"News headlines, social signals", output:"Sentiment score from -1.0 (very negative) to +1.0 (very positive)", decision:"Filters noise, weighs source credibility, and spots sudden sentiment shifts" },
+      { emoji:"⚡", name:"Signal Generator", color:"#1E3A8A", role:"Uses patterns in price data combined with sentiment scores to decide if a stock is likely to go up (BUY), down (SELL), or stay flat (HOLD).", input:"Normalized price data + sentiment score", output:"BUY / SELL / HOLD signal with a confidence percentage", decision:"If confidence is below 60%, it flags the signal as uncertain and requests more data" },
+      { emoji:"💼", name:"Portfolio Agent", color:"#1E3A8A", role:"Checks your current investments to make sure a new recommendation makes sense for your specific holdings and doesn't create too much risk.", input:"Your portfolio holdings + new signal", output:"Adjusted recommendation based on your situation", decision:"Blocks signals that would over-concentrate your portfolio in one area" },
+      { emoji:"🤖", name:"LLM Reasoner", color:"#1E3A8A", role:"The AI brain that writes the plain-English explanation for why a signal was generated, like a financial advisor explaining their thinking.", input:"All signals and data from other agents", output:"Simple explanation you can understand and act on", decision:"Simplifies complex data into clear language matched to your experience level" },
+      { emoji:"🛡️", name:"Risk Validator", color:"#14B8A6", role:"A safety checker that makes sure the recommendation fits your personal risk settings — conservative, moderate, or aggressive.", input:"Final signal + your risk profile", output:"Approved or flagged signal with risk notes", decision:"Blocks signals that exceed your risk tolerance and explains why" }
     ],
     failures: [
       { type:"Data Feed Down", detect:"Timeout after 5s", response:"Switch to backup feed, show warning badge", recovery:"Auto-reconnect every 30s, alert if >2min outage" },
@@ -4938,12 +4938,12 @@ const AGENT_SPECS = {
     scalabilityF: "Circuit breakers on all third-party data APIs with exponential backoff. Dead letter queues capture failed tasks for replay. Each agent reports health via heartbeat — Orchestrator reroutes work if a node goes silent for >10s.",
     scalabilityO: "Signals cached at 5s TTL reduces LLM calls by ~70%. Priority queues: ALERT > SIGNAL > REPORT. Batch-friendly tasks (weekly reports) processed off-peak. P95 latency target: <800ms end-to-end.",
     agents: [
-      { emoji:"📡", name:"Data Ingestor", color:"#8A6A28", role:"Polls real-time OHLCV data, order book depth, and macro indicators from multiple providers simultaneously.", input:"Exchange APIs, macro data feeds, alternative data", output:"Normalized, timestamped OHLCV + volume profiles + macro snapshot", decision:"Validates data integrity; flags anomalies (e.g. price spikes >5σ) before passing downstream" },
-      { emoji:"📰", name:"Sentiment Agent", color:"#8A6A28", role:"Runs NLP models on news, earnings call transcripts, and social signals. Scores sentiment per asset with source weighting by credibility.", input:"News APIs, social signals, SEC filings", output:"Per-asset sentiment score (-1 to +1) with velocity (rate of change)", decision:"Detects sentiment regime shifts; triggers urgency flag if score moves >0.3 in <30 min" },
-      { emoji:"⚡", name:"Signal Generator", color:"#2C6087", role:"Runs a multi-factor model combining technical indicators (RSI, MACD, Bollinger), sentiment score, and momentum into a weighted ensemble signal.", input:"Normalized price data + sentiment score + macro context", output:"BUY/SELL/HOLD with confidence %, trend strength, and reasoning tags", decision:"Confidence threshold: >75% for standard signal; <60% triggers WATCH state; routes to LLM for narrative" },
-      { emoji:"💼", name:"Portfolio Agent", color:"#2C6087", role:"Applies portfolio constraints: max concentration, sector exposure, correlation limits, and position sizing rules based on the Kelly Criterion.", input:"Current holdings, sector weights, correlation matrix", output:"Position-adjusted signal with suggested allocation %", decision:"Blocks signals that increase concentration beyond limits or create >0.7 correlation with existing positions" },
-      { emoji:"🤖", name:"LLM Reasoner", color:"#2C6087", role:"Synthesizes all agent outputs into a structured investment narrative using Claude AI. Adapts depth and terminology to user's stated experience level.", input:"All agent outputs + user profile + chat history context", output:"Structured markdown: thesis, risks, catalysts, time horizon", decision:"If evidence is contradictory, explicitly states uncertainty and presents both bull/bear cases" },
-      { emoji:"🛡️", name:"Risk Validator", color:"#A98338", role:"Enforces user-defined risk parameters: max drawdown, leverage limits, volatility thresholds, and compliance rules. Final gate before output.", input:"Aggregated signal + user risk profile + portfolio state", output:"APPROVED or FLAGGED with specific rule violations listed", decision:"Applies 3-tier escalation: WARN (log only), FLAG (show caution), BLOCK (suppress signal + alert user)" }
+      { emoji:"📡", name:"Data Ingestor", color:"#0F766E", role:"Polls real-time OHLCV data, order book depth, and macro indicators from multiple providers simultaneously.", input:"Exchange APIs, macro data feeds, alternative data", output:"Normalized, timestamped OHLCV + volume profiles + macro snapshot", decision:"Validates data integrity; flags anomalies (e.g. price spikes >5σ) before passing downstream" },
+      { emoji:"📰", name:"Sentiment Agent", color:"#0F766E", role:"Runs NLP models on news, earnings call transcripts, and social signals. Scores sentiment per asset with source weighting by credibility.", input:"News APIs, social signals, SEC filings", output:"Per-asset sentiment score (-1 to +1) with velocity (rate of change)", decision:"Detects sentiment regime shifts; triggers urgency flag if score moves >0.3 in <30 min" },
+      { emoji:"⚡", name:"Signal Generator", color:"#1E3A8A", role:"Runs a multi-factor model combining technical indicators (RSI, MACD, Bollinger), sentiment score, and momentum into a weighted ensemble signal.", input:"Normalized price data + sentiment score + macro context", output:"BUY/SELL/HOLD with confidence %, trend strength, and reasoning tags", decision:"Confidence threshold: >75% for standard signal; <60% triggers WATCH state; routes to LLM for narrative" },
+      { emoji:"💼", name:"Portfolio Agent", color:"#1E3A8A", role:"Applies portfolio constraints: max concentration, sector exposure, correlation limits, and position sizing rules based on the Kelly Criterion.", input:"Current holdings, sector weights, correlation matrix", output:"Position-adjusted signal with suggested allocation %", decision:"Blocks signals that increase concentration beyond limits or create >0.7 correlation with existing positions" },
+      { emoji:"🤖", name:"LLM Reasoner", color:"#1E3A8A", role:"Synthesizes all agent outputs into a structured investment narrative using Claude AI. Adapts depth and terminology to user's stated experience level.", input:"All agent outputs + user profile + chat history context", output:"Structured markdown: thesis, risks, catalysts, time horizon", decision:"If evidence is contradictory, explicitly states uncertainty and presents both bull/bear cases" },
+      { emoji:"🛡️", name:"Risk Validator", color:"#14B8A6", role:"Enforces user-defined risk parameters: max drawdown, leverage limits, volatility thresholds, and compliance rules. Final gate before output.", input:"Aggregated signal + user risk profile + portfolio state", output:"APPROVED or FLAGGED with specific rule violations listed", decision:"Applies 3-tier escalation: WARN (log only), FLAG (show caution), BLOCK (suppress signal + alert user)" }
     ],
     failures: [
       { type:"Market Data Feed Failure", detect:"Timeout >5s or checksum mismatch", response:"Failover to backup provider; show stale data badge with timestamp", recovery:"Auto-reconnect with exponential backoff; alert ops if >120s outage" },
@@ -4959,12 +4959,12 @@ const AGENT_SPECS = {
     scalabilityF: "Resilience4J circuit breakers on all external data sources with exponential backoff (initial: 1s, max: 60s, jitter: 20%). Dead letter queues (DLQ) on Kafka for failed tasks with replay-on-recovery. Each agent exposes /health with liveness and readiness probes. Orchestrator uses weighted round-robin with health-aware routing. Global idempotency keys prevent duplicate signal emission on retry.",
     scalabilityO: "Redis-backed signal cache at 5s TTL reduces LLM inference calls by ~68% in backtests. Priority queue tiering: CRITICAL (alert triggers) → HIGH (live signals) → NORMAL (portfolio refresh) → BATCH (reports). LLM calls batched where query semantics allow. Async streaming for AI Assistant responses. P95 latency target: <800ms; P99: <2s. Cost optimization via prompt caching (Anthropic beta) for repeated ticker contexts.",
     agents: [
-      { emoji:"📡", name:"Data Ingestor Agent", color:"#8A6A28", role:"Polls multi-source real-time OHLCV, L2 order book, tick data, and macro indicators. Implements cross-source reconciliation and outlier detection via z-score thresholding (σ>4 flagged).", input:"Exchange WebSocket feeds, REST APIs, alternative data providers, macro data (FRED, BLS)", output:"Normalized, timestamped OHLCV + volume profiles + order book imbalance ratio + macro snapshot (JSON schema v2)", decision:"Cross-validates prices across ≥2 sources. Data gaps >15s trigger staleness flag. Anomalous ticks quarantined pending validation. Publishes to Kafka topic: market.ingest.normalized" },
-      { emoji:"📰", name:"Sentiment NLP Agent", color:"#8A6A28", role:"Runs transformer-based NLP (FinBERT) on news corpus, earnings transcripts, 8-K filings, and social signal proxies. Implements entity disambiguation and source credibility weighting (Reuters>Bloomberg>Twitter).", input:"News APIs, SEC EDGAR real-time, social signal aggregators, earnings call audio-to-text pipeline", output:"Per-asset sentiment score vector (-1 to +1), velocity (Δscore/Δt), momentum regime tag, entity co-occurrence graph", decision:"Regime shift detected if |Δsentiment| >0.3 in <30min → urgency=HIGH. Source credibility weights applied via Bayesian prior. Conflicting signals from high-credibility sources trigger UNCERTAIN flag" },
-      { emoji:"⚡", name:"Signal Generator Agent", color:"#2C6087", role:"Multi-factor ensemble model: technical (RSI, MACD, Bollinger, ATR, VWAP deviation), fundamental (P/E, EV/EBITDA z-scores), sentiment score, options flow (put/call ratio, IV skew), and macro regime. Shapley values attribute confidence to each factor.", input:"Normalized OHLCV + sentiment vector + macro regime + options flow + fundamental factors", output:"Directional signal (BUY/SELL/HOLD), confidence interval [μ±σ], factor attribution (Shapley), expected return distribution, time horizon", decision:"Signal emitted if P(direction) >75%. 60–75% → WATCH with uncertainty disclosure. <60% → ABSTAIN. Contradictory factor signals trigger LLM for narrative disambiguation. All decisions logged to audit trail." },
-      { emoji:"💼", name:"Portfolio Context Agent", color:"#2C6087", role:"Applies portfolio-level constraints: Kelly Criterion position sizing, max sector concentration (configurable), pairwise correlation enforcement (ρ<0.7 threshold), beta-adjusted exposure, and liquidity-adjusted sizing (ADV/20).", input:"Current holdings, sector weights, pairwise correlation matrix, factor exposures, ADV data", output:"Kelly-optimal position size %, sector-adjusted allocation, correlation impact analysis, risk budget consumed", decision:"Signals violating concentration or correlation limits are downgraded or blocked. Position sizes floored at min-lot and capped at risk budget. Changes to existing positions evaluated on incremental risk basis." },
-      { emoji:"🤖", name:"LLM Reasoner Agent", color:"#2C6087", role:"Orchestrates Claude Sonnet calls with structured prompting. Maintains per-user context window (last 5 interactions). Adapts terminology depth (beginner→professional) via system prompt calibration. Implements chain-of-thought for uncertainty cases.", input:"Aggregated agent outputs, user profile (level, goals, risk), chat history, market context snapshot", output:"Structured JSON: {thesis, bull_case, bear_case, catalysts, risks, time_horizon, confidence_rationale, suggested_action}", decision:"If Shapley attribution shows factor conflict: presents dual-scenario output. Hallucination mitigation: all quantitative claims must be grounded in agent-provided data. Refusal if data insufficient for minimum confidence threshold." },
-      { emoji:"🛡️", name:"Risk Validator Agent", color:"#A98338", role:"Enforces quantitative risk framework: parametric VaR (95% 1-day), CVaR/Expected Shortfall, max drawdown limits, leverage constraints, and user-defined compliance rules. Final deterministic gate before output emission.", input:"Aggregated signal package, portfolio state, user risk parameters (VaR limit, max drawdown, leverage cap)", output:"APPROVED | WARNED | FLAGGED | BLOCKED with specific rule violations and impact quantification", decision:"3-tier escalation: WARN (log, show advisory), FLAG (display risk disclosure), BLOCK (suppress signal, emit REVIEW alert, route to Failure Handler). All decisions are deterministic — no model inference at this layer." }
+      { emoji:"📡", name:"Data Ingestor Agent", color:"#0F766E", role:"Polls multi-source real-time OHLCV, L2 order book, tick data, and macro indicators. Implements cross-source reconciliation and outlier detection via z-score thresholding (σ>4 flagged).", input:"Exchange WebSocket feeds, REST APIs, alternative data providers, macro data (FRED, BLS)", output:"Normalized, timestamped OHLCV + volume profiles + order book imbalance ratio + macro snapshot (JSON schema v2)", decision:"Cross-validates prices across ≥2 sources. Data gaps >15s trigger staleness flag. Anomalous ticks quarantined pending validation. Publishes to Kafka topic: market.ingest.normalized" },
+      { emoji:"📰", name:"Sentiment NLP Agent", color:"#0F766E", role:"Runs transformer-based NLP (FinBERT) on news corpus, earnings transcripts, 8-K filings, and social signal proxies. Implements entity disambiguation and source credibility weighting (Reuters>Bloomberg>Twitter).", input:"News APIs, SEC EDGAR real-time, social signal aggregators, earnings call audio-to-text pipeline", output:"Per-asset sentiment score vector (-1 to +1), velocity (Δscore/Δt), momentum regime tag, entity co-occurrence graph", decision:"Regime shift detected if |Δsentiment| >0.3 in <30min → urgency=HIGH. Source credibility weights applied via Bayesian prior. Conflicting signals from high-credibility sources trigger UNCERTAIN flag" },
+      { emoji:"⚡", name:"Signal Generator Agent", color:"#1E3A8A", role:"Multi-factor ensemble model: technical (RSI, MACD, Bollinger, ATR, VWAP deviation), fundamental (P/E, EV/EBITDA z-scores), sentiment score, options flow (put/call ratio, IV skew), and macro regime. Shapley values attribute confidence to each factor.", input:"Normalized OHLCV + sentiment vector + macro regime + options flow + fundamental factors", output:"Directional signal (BUY/SELL/HOLD), confidence interval [μ±σ], factor attribution (Shapley), expected return distribution, time horizon", decision:"Signal emitted if P(direction) >75%. 60–75% → WATCH with uncertainty disclosure. <60% → ABSTAIN. Contradictory factor signals trigger LLM for narrative disambiguation. All decisions logged to audit trail." },
+      { emoji:"💼", name:"Portfolio Context Agent", color:"#1E3A8A", role:"Applies portfolio-level constraints: Kelly Criterion position sizing, max sector concentration (configurable), pairwise correlation enforcement (ρ<0.7 threshold), beta-adjusted exposure, and liquidity-adjusted sizing (ADV/20).", input:"Current holdings, sector weights, pairwise correlation matrix, factor exposures, ADV data", output:"Kelly-optimal position size %, sector-adjusted allocation, correlation impact analysis, risk budget consumed", decision:"Signals violating concentration or correlation limits are downgraded or blocked. Position sizes floored at min-lot and capped at risk budget. Changes to existing positions evaluated on incremental risk basis." },
+      { emoji:"🤖", name:"LLM Reasoner Agent", color:"#1E3A8A", role:"Orchestrates Claude Sonnet calls with structured prompting. Maintains per-user context window (last 5 interactions). Adapts terminology depth (beginner→professional) via system prompt calibration. Implements chain-of-thought for uncertainty cases.", input:"Aggregated agent outputs, user profile (level, goals, risk), chat history, market context snapshot", output:"Structured JSON: {thesis, bull_case, bear_case, catalysts, risks, time_horizon, confidence_rationale, suggested_action}", decision:"If Shapley attribution shows factor conflict: presents dual-scenario output. Hallucination mitigation: all quantitative claims must be grounded in agent-provided data. Refusal if data insufficient for minimum confidence threshold." },
+      { emoji:"🛡️", name:"Risk Validator Agent", color:"#14B8A6", role:"Enforces quantitative risk framework: parametric VaR (95% 1-day), CVaR/Expected Shortfall, max drawdown limits, leverage constraints, and user-defined compliance rules. Final deterministic gate before output emission.", input:"Aggregated signal package, portfolio state, user risk parameters (VaR limit, max drawdown, leverage cap)", output:"APPROVED | WARNED | FLAGGED | BLOCKED with specific rule violations and impact quantification", decision:"3-tier escalation: WARN (log, show advisory), FLAG (display risk disclosure), BLOCK (suppress signal, emit REVIEW alert, route to Failure Handler). All decisions are deterministic — no model inference at this layer." }
     ],
     failures: [
       { type:"Market Data Feed SLA Breach", detect:"Latency P95 >5s or checksum mismatch rate >0.1%", response:"Failover to ranked backup provider list; emit stale-data badge with staleness_ms metadata; decrement source health score", recovery:"Exponential backoff reconnect (1s→60s, jitter 20%); ops paged if outage >120s; Kafka DLQ captures events for replay on recovery" },
@@ -5673,31 +5673,31 @@ setInterval(() => {
 
 // ==================== INTERACTIVE AI AGENTS ====================
 const AGENT_DEFINITIONS = [
-  { id:'orchestrator', icon:'🧠', name:'Orchestrator',     role:'Routing & Coordination', color:'#8A6A28',
+  { id:'orchestrator', icon:'🧠', name:'Orchestrator',     role:'Routing & Coordination', color:'#0F766E',
     desc:'The cortex of the system. Receives every query, decides which specialist agents to invoke, manages retries, and assembles the final response from sub-agent outputs.',
     suggests:['Plan a multi-agent analysis for AAPL','Why was last NVDA signal downgraded?','How is workflow priority decided?'] },
-  { id:'ingestor', icon:'📡', name:'Data Ingestor', role:'Market Data Feeds', color:'#8A6A28',
+  { id:'ingestor', icon:'📡', name:'Data Ingestor', role:'Market Data Feeds', color:'#0F766E',
     desc:'Maintains live connections to global exchanges, news feeds, and economic data. Detects feed lag, normalizes timestamps, FX-converts to USD, and pushes to the signal pipeline.',
     suggests:['What feeds are currently active?','Show me ingestion latency by region','How fresh is Tokyo data?'] },
-  { id:'sentiment', icon:'📰', name:'Sentiment Agent', role:'News & Social Analysis', color:'#8A6A28',
+  { id:'sentiment', icon:'📰', name:'Sentiment Agent', role:'News & Social Analysis', color:'#0F766E',
     desc:'NLP pipeline parsing 50K+ daily articles, social posts, and SEC filings. Outputs ticker-level sentiment scores (-100 to +100), trend velocity, and unusual-attention spikes.',
     suggests:['What is sentiment on TSLA right now?','Show me top 5 sentiment movers today','Any unusual buzz on small-caps?'] },
-  { id:'signal', icon:'⚡', name:'Signal Generator', role:'Quant Alpha Signals', color:'#2C6087',
+  { id:'signal', icon:'⚡', name:'Signal Generator', role:'Quant Alpha Signals', color:'#1E3A8A',
     desc:'Cross-sectional factor model running on the 100M+ universe. Combines momentum, value, growth, quality, and volatility into BUY/HOLD/SELL signals with calibrated confidence scores.',
     suggests:['Generate signal for SAP','What are today\'s top 10 BUY signals?','Why is META a HOLD this week?'] },
-  { id:'portfolio', icon:'💼', name:'Portfolio Agent', role:'Allocation & Risk', color:'#2C6087',
+  { id:'portfolio', icon:'💼', name:'Portfolio Agent', role:'Allocation & Risk', color:'#1E3A8A',
     desc:'Reads your portfolio holdings and proposes rebalances. Computes sector concentration, FX exposure, factor tilts, drawdown stress tests, and Sharpe-optimal weight adjustments.',
     suggests:['Analyze my portfolio concentration','Stress-test my book against -10% NDX','Suggest 3 rebalance trades'] },
-  { id:'llm', icon:'🤖', name:'LLM Reasoner', role:'Natural Language Reasoning', color:'#2C6087',
+  { id:'llm', icon:'🤖', name:'LLM Reasoner', role:'Natural Language Reasoning', color:'#1E3A8A',
     desc:'Claude-class model fine-tuned for financial reasoning. Synthesizes multi-source data into plain-English investment narratives, explains the "why" behind every signal.',
     suggests:['Explain why NVDA is up 4% today','Compare ASML vs AMAT for me','What\'s the bull case for India equity?'] },
-  { id:'risk', icon:'🛡️', name:'Risk Validator', role:'Pre-Trade Checks', color:'#A98338',
+  { id:'risk', icon:'🛡️', name:'Risk Validator', role:'Pre-Trade Checks', color:'#14B8A6',
     desc:'Final gatekeeper before any signal reaches the user. Validates against position limits, regulatory constraints, single-name caps, and runs anomaly detection on confidence outliers.',
     suggests:['Why was the PLTR signal downgraded?','What position-size cap applies to me?','Show flagged signals from this week'] },
-  { id:'macro', icon:'🌐', name:'Macro Agent', role:'Cross-Asset & Regime', color:'#8A6A28',
+  { id:'macro', icon:'🌐', name:'Macro Agent', role:'Cross-Asset & Regime', color:'#0F766E',
     desc:'Tracks central bank policy, yield curves, FX, commodities, and geopolitical events. Produces regime-shift alerts (e.g. "rates pivot detected") that condition all equity signals.',
     suggests:['What\'s the current macro regime?','How will Fed cuts affect tech?','Is the dollar trending lower?'] },
-  { id:'output', icon:'📤', name:'Output Router', role:'Delivery & Personalization', color:'#8A6A28',
+  { id:'output', icon:'📤', name:'Output Router', role:'Delivery & Personalization', color:'#0F766E',
     desc:'Last hop. Personalizes phrasing for your experience level, picks the right surface (push, in-app, email), and adapts response length to your stated preference.',
     suggests:['Switch my explanation level to advanced','Mute alerts after 9pm','How do you decide push vs in-app?'] }
 ];
@@ -5799,7 +5799,7 @@ function composeAgentReply(agentId, q) {
   const a = AGENT_DEFINITIONS.find(x => x.id === agentId);
   switch (agentId) {
     case 'orchestrator':
-      if (stock) return `<strong>Routing plan for ${stock.t}:</strong><br>1. <span style="color:var(--green);">Ingestor</span> → fetch latest tick + 30d history<br>2. <span style="color:var(--green);">Sentiment</span> → score recent news (~12 articles in cache)<br>3. <span style="color:var(--blue);">Signal Gen</span> → recompute factor scores<br>4. <span style="color:var(--blue);">LLM Reasoner</span> → synthesize narrative<br>5. <span style="color:var(--yellow);">Risk Validator</span> → check position limits<br>6. <span style="color:#8A6A28;">Output</span> → personalize for your level<br><br>Total estimated latency: <strong>~480ms</strong>. Workflow ID: <code style="background:var(--surface3);padding:1px 5px;border-radius:3px;">orch_${Date.now().toString(36)}</code>`;
+      if (stock) return `<strong>Routing plan for ${stock.t}:</strong><br>1. <span style="color:var(--green);">Ingestor</span> → fetch latest tick + 30d history<br>2. <span style="color:var(--green);">Sentiment</span> → score recent news (~12 articles in cache)<br>3. <span style="color:var(--blue);">Signal Gen</span> → recompute factor scores<br>4. <span style="color:var(--blue);">LLM Reasoner</span> → synthesize narrative<br>5. <span style="color:var(--yellow);">Risk Validator</span> → check position limits<br>6. <span style="color:#0F766E;">Output</span> → personalize for your level<br><br>Total estimated latency: <strong>~480ms</strong>. Workflow ID: <code style="background:var(--surface3);padding:1px 5px;border-radius:3px;">orch_${Date.now().toString(36)}</code>`;
       return `Workflow priority is decided by 3 inputs: (1) <strong>query type</strong> — alerts beat reports beat backtests; (2) <strong>data freshness</strong> — live signals route fast-lane; (3) <strong>user tier</strong>. P95 first-token latency is <strong>182ms</strong>.`;
     case 'ingestor':
       return `<strong>Live feed status:</strong><br>• 🇺🇸 NYSE/NASDAQ — <span style="color:var(--green);">connected</span>, lag 80ms<br>• 🇬🇧 LSE — <span style="color:var(--green);">connected</span>, lag 110ms<br>• 🇯🇵 TSE — <span style="color:var(--yellow);">stale</span> (market closed)<br>• 🇨🇳 SSE/SZSE — <span style="color:var(--green);">connected</span>, lag 220ms<br>• 🇮🇳 NSE — <span style="color:var(--green);">connected</span>, lag 95ms<br><br>Universe coverage: <strong>100,000,000+ securities across 100+ exchanges</strong>. ${stock ? 'Latest tick on '+stock.t+' was ingested ~'+Math.floor(Math.random()*60)+'s ago.' : ''}`;
@@ -6648,15 +6648,15 @@ function getCompanyLegalHistory(ticker) {
 function _renderLegalHistoryBlock(ticker) {
   const records = getCompanyLegalHistory(ticker);
   if (!records || !records.length) return '';
-  const statusColor = { 'Settled':'#00E07C', 'Dismissed':'#2C6087', 'Cleared':'#00E07C', 'Blocked':'#FF3D4A', 'Verdict against':'#FF3D4A', 'Verdict':'#8A6512', 'Mixed':'#8A6512', 'Partially decided':'#8A6512', 'Abandoned':'#2C6087', 'Ongoing':'#8A6512' };
-  const typeColor = { 'Antitrust':'#8A6A28', 'Criminal':'#FF3D4A', 'Securities':'#2C6087', 'Privacy':'#00E07C', 'Consumer':'#A98338', 'Environmental':'#00E07C', 'Employment':'#8A6512', 'Tax':'#FF3D4A', 'Labor':'#8A6512', 'Data Breach':'#2C6087', 'Bribery':'#FF3D4A', 'Product Liability':'#FF3D4A', 'Export Control':'#8A6512', 'Consumer Safety':'#FF3D4A', 'Trade Secret':'#8A6A28', 'Patent':'#8A6A28', 'Operational':'#2C6087', 'Mortgage':'#A98338', 'Regulatory':'#2C6087', 'Commodity':'#A98338', 'Civil':'#2C6087' };
+  const statusColor = { 'Settled':'#16A34A', 'Dismissed':'#1E3A8A', 'Cleared':'#16A34A', 'Blocked':'#DC2626', 'Verdict against':'#DC2626', 'Verdict':'#B45309', 'Mixed':'#B45309', 'Partially decided':'#B45309', 'Abandoned':'#1E3A8A', 'Ongoing':'#B45309' };
+  const typeColor = { 'Antitrust':'#0F766E', 'Criminal':'#DC2626', 'Securities':'#1E3A8A', 'Privacy':'#16A34A', 'Consumer':'#14B8A6', 'Environmental':'#16A34A', 'Employment':'#B45309', 'Tax':'#DC2626', 'Labor':'#B45309', 'Data Breach':'#1E3A8A', 'Bribery':'#DC2626', 'Product Liability':'#DC2626', 'Export Control':'#B45309', 'Consumer Safety':'#DC2626', 'Trade Secret':'#0F766E', 'Patent':'#0F766E', 'Operational':'#1E3A8A', 'Mortgage':'#14B8A6', 'Regulatory':'#1E3A8A', 'Commodity':'#14B8A6', 'Civil':'#1E3A8A' };
   const rows = records.map(r => {
     const sc = statusColor[r.status] || '#888';
-    const tc = typeColor[r.type] || '#8A6A28';
-    const amt = r.amount ? `<span style="color:#00E07C;font-weight:700;margin-left:8px;">${_escapeHtml(r.amount)}</span>` : '';
+    const tc = typeColor[r.type] || '#0F766E';
+    const amt = r.amount ? `<span style="color:#16A34A;font-weight:700;margin-left:8px;">${_escapeHtml(r.amount)}</span>` : '';
     return `<div style="padding:12px;border:1px solid rgba(255,255,255,0.06);border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:8px;">
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
-        <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(138,106,40,0.1);color:${tc};font-family:var(--font-mono);">${_escapeHtml(r.type)}</span>
+        <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(15,118,110,0.1);color:${tc};font-family:var(--font-mono);">${_escapeHtml(r.type)}</span>
         <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,0.3);color:${sc};font-family:var(--font-mono);">${_escapeHtml(r.status)}</span>
         <span style="font-size:11px;color:var(--text-muted);margin-left:auto;">${r.year}${amt}</span>
       </div>
@@ -7079,7 +7079,7 @@ function uvRenderInsights() {
           return `<div class="uv-intel-row" onclick="uvOpenStock('${E(s.t).replace(/[\\']/g,'')}')">
             <span class="ir-flag">${E(flag)}</span>
             <span class="ir-tk">${E(s.t)}</span>
-            <span class="ir-name" style="color:#A98338;">⚠ ${E(reason)}</span>
+            <span class="ir-name" style="color:#14B8A6;">⚠ ${E(reason)}</span>
             <span class="ir-ch ir-down">T${E(s.tier)}</span>
           </div>`;
         }).join('');
@@ -7399,7 +7399,7 @@ let _uvAcCtrl = null;       // AbortController for in-flight requests
 let _uvAcIdx = -1;          // keyboard selected index
 
 const _UV_TYPE_ICONS = { stock:'📈', etf:'🏦', crypto:'₿', forex:'💱', index:'📊', commodity:'🛢️' };
-const _UV_TYPE_COLORS = { stock:'var(--accent)', etf:'#2F6E7A', crypto:'#8A6512', forex:'#00E07C', index:'#FF3D4A', commodity:'#8A6512' };
+const _UV_TYPE_COLORS = { stock:'var(--accent)', etf:'#0F766E', crypto:'#B45309', forex:'#16A34A', index:'#DC2626', commodity:'#B45309' };
 
 function uvAcDebounced(q) {
   clearTimeout(_uvAcTimer);
@@ -7479,7 +7479,7 @@ function uvAcRender(q, results, isLocal) {
     </div>`;
   }).join('');
 
-  const footer = `<div onclick="uvTriggerDiscover(${JSON.stringify(q)})" style="display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;background:rgba(138,106,40,0.04);border-top:1px solid rgba(138,106,40,0.1);transition:background 80ms;" onmouseenter="this.style.background='rgba(138,106,40,0.10)'" onmouseleave="this.style.background='rgba(138,106,40,0.04)'">
+  const footer = `<div onclick="uvTriggerDiscover(${JSON.stringify(q)})" style="display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;background:rgba(15,118,110,0.04);border-top:1px solid rgba(15,118,110,0.1);transition:background 80ms;" onmouseenter="this.style.background='rgba(15,118,110,0.10)'" onmouseleave="this.style.background='rgba(15,118,110,0.04)'">
     <span style="font-size:12px;">🌐</span>
     <span style="font-size:12px;color:var(--accent-2);">Search global universe for "<strong>${uvEsc(q)}</strong>"</span>
     <span style="margin-left:auto;font-size:10px;font-family:var(--font-mono);color:var(--text-muted);">100M+ ENTITIES</span>
@@ -7501,7 +7501,7 @@ function uvAcHide() {
 
 function uvAcHover(el) {
   el.closest('#uv-ac-dropdown')?.querySelectorAll('.uv-ac-row').forEach((r,i) => { r.style.background = ''; });
-  el.style.background = 'rgba(138,106,40,0.10)';
+  el.style.background = 'rgba(15,118,110,0.10)';
 }
 
 function uvAcKeyDown(e) {
@@ -7512,11 +7512,11 @@ function uvAcKeyDown(e) {
   if (e.key === 'ArrowDown') {
     e.preventDefault();
     _uvAcIdx = Math.min(_uvAcIdx + 1, rows.length - 1);
-    rows.forEach((r,i) => r.style.background = i === _uvAcIdx ? 'rgba(138,106,40,0.12)' : '');
+    rows.forEach((r,i) => r.style.background = i === _uvAcIdx ? 'rgba(15,118,110,0.12)' : '');
   } else if (e.key === 'ArrowUp') {
     e.preventDefault();
     _uvAcIdx = Math.max(_uvAcIdx - 1, 0);
-    rows.forEach((r,i) => r.style.background = i === _uvAcIdx ? 'rgba(138,106,40,0.12)' : '');
+    rows.forEach((r,i) => r.style.background = i === _uvAcIdx ? 'rgba(15,118,110,0.12)' : '');
   } else if (e.key === 'Enter' && _uvAcIdx >= 0) {
     e.preventDefault();
     rows[_uvAcIdx]?.click();
@@ -7745,8 +7745,8 @@ function uvQuickPanel(ticker) {
       const settled = lrecs.filter(r => r.status === 'Settled').length;
       legalEl.style.display = '';
       legalEl.innerHTML = '⚖ Legal: <b style="color:var(--text-primary);">' + lrecs.length + ' case' + (lrecs.length!==1?'s':'') + '</b>'
-        + (ongoing ? ' · <span style="color:#8A6512;">' + ongoing + ' ongoing</span>' : '')
-        + (settled ? ' · <span style="color:#00E07C;">' + settled + ' settled</span>' : '')
+        + (ongoing ? ' · <span style="color:#B45309;">' + ongoing + ' ongoing</span>' : '')
+        + (settled ? ' · <span style="color:#16A34A;">' + settled + ' settled</span>' : '')
         + ' · <a onclick="if(typeof _searchOpenStock===\'function\'){const h=UNIVERSE&&UNIVERSE.find(s=>s.t===\'' + ticker.replace(/'/g,'') + '\');if(h)_searchOpenStock(h);}uvCloseQuickPanel();" style="color:var(--violet);cursor:pointer;">View full detail ↗</a>';
     } else {
       legalEl.style.display = 'none';
@@ -8239,10 +8239,10 @@ window.addEventListener('resize', () => {
     const S = 160; canvas.width = S; canvas.height = S;
     const cx = S / 2, cy = S / 2, R = S * 0.4, r = S * 0.26;
     const slices = [
-      { pct: 58, color: '#8A6A28' },
-      { pct: 22, color: '#2C6087' },
-      { pct: 12, color: '#8A6512' },
-      { pct:  8, color: '#5A5349' },
+      { pct: 58, color: '#0F766E' },
+      { pct: 22, color: '#1E3A8A' },
+      { pct: 12, color: '#B45309' },
+      { pct:  8, color: '#4B5563' },
     ];
     let angle = -Math.PI / 2;
     slices.forEach(s => {
@@ -8257,7 +8257,7 @@ window.addEventListener('resize', () => {
     ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--surface') || '#FFFFFF';
     ctx.fill();
     // centre label
-    ctx.fillStyle = '#1A1714';
+    ctx.fillStyle = '#111827';
     ctx.font = 'bold 13px "Syne",sans-serif';
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText('$284K', cx, cy);
@@ -8272,11 +8272,11 @@ window.addEventListener('resize', () => {
     const H = 30; canvas.width = W; canvas.height = H;
     const min = Math.min(...data), max = Math.max(...data);
     const norm = v => H - 2 - ((v - min) / (max - min || 1)) * (H - 4);
-    const color = isUp ? '#8A6A28' : '#FF3D4A';
+    const color = isUp ? '#0F766E' : '#DC2626';
     const xAt  = (i) => (i / (data.length - 1)) * W;
 
     const grad = ctx.createLinearGradient(0, 0, 0, H);
-    grad.addColorStop(0, isUp ? 'rgba(138,106,40,0.22)' : 'rgba(255,61,74,0.18)');
+    grad.addColorStop(0, isUp ? 'rgba(15,118,110,0.22)' : 'rgba(220,38,38,0.18)');
     grad.addColorStop(1, 'rgba(0,0,0,0)');
 
     ctx.beginPath();
@@ -8291,8 +8291,8 @@ window.addEventListener('resize', () => {
 
   function renderAll() {
     renderAreaChart('lp-perf-chart', [
-      { data: [100,104,102,108,110,109,115,117,114,120,122,124.8], color: '#2C6087' },
-      { data: [100,108,105,114,119,117,128,133,129,138,143,147.2], color: '#8A6A28' },
+      { data: [100,104,102,108,110,109,115,117,114,120,122,124.8], color: '#1E3A8A' },
+      { data: [100,108,105,114,119,117,128,133,129,138,143,147.2], color: '#0F766E' },
     ], { height: 160 });
     renderDonut('lp-alloc-chart');
     renderSparkline('lp-spark-aapl', [182,184,181,186,187,185,189,190,188,189], true);
@@ -8428,8 +8428,8 @@ window.addEventListener('resize', () => {
     if (!navbar) return;
     window.addEventListener('scroll', () => {
       if (window.scrollY > 20) {
-        navbar.style.boxShadow = '0 2px 40px rgba(138,106,40,0.08)';
-        navbar.style.borderBottomColor = 'rgba(138,106,40,0.15)';
+        navbar.style.boxShadow = '0 2px 40px rgba(15,118,110,0.08)';
+        navbar.style.borderBottomColor = 'rgba(15,118,110,0.15)';
       } else {
         navbar.style.boxShadow = '';
         navbar.style.borderBottomColor = '';
@@ -8501,7 +8501,7 @@ window.addEventListener('resize', () => {
       position:fixed !important;
       left:0; top:0; height:100vh; width:220px !important; min-width:220px !important;
       flex:0 0 220px !important; z-index:80;
-      box-shadow:0 0 40px rgba(138,106,40,0.04), 1px 0 0 0 var(--border);
+      box-shadow:0 0 40px rgba(15,118,110,0.04), 1px 0 0 0 var(--border);
       overflow-y:auto;
     }
     .main-content { margin-left:220px !important; min-height:100vh; flex:1; min-width:0; }
@@ -8514,7 +8514,7 @@ window.addEventListener('resize', () => {
     #qe-cursor-aura {
       position:fixed; pointer-events:none; z-index:9; width:600px; height:600px;
       border-radius:50%; transform:translate(-50%,-50%); left:-1000px; top:-1000px;
-      background:radial-gradient(circle, rgba(138,106,40,0.06) 0%, rgba(44,96,135,0.03) 30%, transparent 60%);
+      background:radial-gradient(circle, rgba(15,118,110,0.06) 0%, rgba(30,58,138,0.03) 30%, transparent 60%);
       filter:blur(40px); transition:opacity 400ms ease; opacity:0; mix-blend-mode:screen;
     }
     #qe-cursor-aura.active { opacity:1; }
@@ -8526,10 +8526,10 @@ window.addEventListener('resize', () => {
     }
     #qe-cursor-aura, #qe-math-layer { pointer-events:none !important; }
     .qe-math-symbol {
-      position:absolute; font-family:'DM Mono', monospace; color:rgba(138,106,40,0.06);
+      position:absolute; font-family:'DM Mono', monospace; color:rgba(15,118,110,0.06);
       font-size:36px; font-weight:300; user-select:none;
       animation:mathFloat linear infinite;
-      filter:drop-shadow(0 0 6px rgba(138,106,40,0.15));
+      filter:drop-shadow(0 0 6px rgba(15,118,110,0.15));
     }
     @keyframes mathFloat {
       from { transform:translateY(110vh) rotate(0deg); opacity:0; }
@@ -8545,7 +8545,7 @@ window.addEventListener('resize', () => {
     [data-aura]::after {
       content:''; position:absolute; left:var(--aura-x, 50%); top:var(--aura-y, 50%);
       width:300px; height:300px; transform:translate(-50%,-50%);
-      background:radial-gradient(circle, rgba(138,106,40,0.10), transparent 60%);
+      background:radial-gradient(circle, rgba(15,118,110,0.10), transparent 60%);
       pointer-events:none; opacity:0; transition:opacity 280ms ease; z-index:0;
     }
     [data-aura]:hover::after { opacity:1; }
@@ -8563,7 +8563,7 @@ window.addEventListener('resize', () => {
     }
     .hero-banner::after, .uv-hero::after {
       content:''; position:absolute; inset:0; pointer-events:none; z-index:0;
-      background:linear-gradient(115deg, transparent 30%, rgba(138,106,40,0.08) 50%, transparent 70%);
+      background:linear-gradient(115deg, transparent 30%, rgba(15,118,110,0.08) 50%, transparent 70%);
       background-size:200% 100%; animation:hologramSweep 6s linear infinite;
       mix-blend-mode:screen; opacity:0.4; border-radius:inherit;
     }
@@ -8579,7 +8579,7 @@ window.addEventListener('resize', () => {
     /* === FLOATING DATA PARTICLES (cursor reactive) === */
     .qe-particle {
       position:fixed; pointer-events:none; width:3px; height:3px; border-radius:50%;
-      background:var(--violet); box-shadow:0 0 6px rgba(138,106,40,0.6);
+      background:var(--violet); box-shadow:0 0 6px rgba(15,118,110,0.6);
       z-index:8; opacity:0; animation:particleRise 1200ms ease-out forwards;
     }
     @keyframes particleRise {
@@ -8929,18 +8929,18 @@ window.addEventListener('resize', () => {
         const d = Math.sqrt(dx*dx+dy*dy);
         if (d < 140) {
           const op = (1 - d/140) * 0.3;
-          ctx.strokeStyle = `rgba(138,106,40,${op})`;
+          ctx.strokeStyle = `rgba(15,118,110,${op})`;
           ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
         }
       }
       // Nodes
       nodes.forEach(n => {
         const grad = ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*4);
-        grad.addColorStop(0,'rgba(138,106,40,0.9)');
-        grad.addColorStop(1,'rgba(138,106,40,0)');
+        grad.addColorStop(0,'rgba(15,118,110,0.9)');
+        grad.addColorStop(1,'rgba(15,118,110,0)');
         ctx.fillStyle = grad;
         ctx.beginPath(); ctx.arc(n.x,n.y,n.r*4,0,Math.PI*2); ctx.fill();
-        ctx.fillStyle = 'rgba(138,106,40,1)';
+        ctx.fillStyle = 'rgba(15,118,110,1)';
         ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fill();
       });
       requestAnimationFrame(frame);
@@ -9049,8 +9049,8 @@ window.addEventListener('resize', () => {
     .qe-overlay-panel { position:absolute; inset:50% auto auto 50%; transform:translate(-50%,-50%) scale(0.96); width:min(720px, 92vw); max-height:84vh; overflow-y:auto;
       padding:28px 32px; border-radius:22px;
       background:linear-gradient(180deg, rgba(255,255,255,0.97), rgba(255,255,255,0.97));
-      border:1px solid rgba(138,106,40,0.22);
-      box-shadow:0 40px 80px -20px rgba(0,0,0,0.7), 0 0 0 1px rgba(138,106,40,0.10);
+      border:1px solid rgba(15,118,110,0.22);
+      box-shadow:0 40px 80px -20px rgba(0,0,0,0.7), 0 0 0 1px rgba(15,118,110,0.10);
       transition:transform 320ms cubic-bezier(0.23,1,0.32,1);
     }
     .qe-overlay.open .qe-overlay-panel { transform:translate(-50%,-50%) scale(1); }
@@ -9061,16 +9061,16 @@ window.addEventListener('resize', () => {
       transition:transform 180ms ease, border-color 180ms ease;
     }
     .qe-overlay-market:hover { transform:translateY(-1px); border-color:rgba(255,255,255,0.16); }
-    .qe-overlay-market.open { border-color:rgba(138,106,40,0.30); }
+    .qe-overlay-market.open { border-color:rgba(15,118,110,0.30); }
     .qe-overlay-market-flag { font-size:24px; }
     .qe-overlay-market-name { font-family:var(--font-display); font-size:13px; font-weight:700; }
     .qe-overlay-market-meta { font-size:11px; color:var(--text-muted); font-family:var(--font-mono); margin-top:1px; }
     .qe-overlay-market-status { display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:100px; font-size:10px; font-family:var(--font-mono); letter-spacing:0.05em; }
-    .qe-overlay-market-status.open { background:rgba(138,106,40,0.14); color:var(--green); }
-    .qe-overlay-market-status.closed { background:rgba(255,61,74,0.10); color:var(--red); }
+    .qe-overlay-market-status.open { background:rgba(15,118,110,0.14); color:var(--green); }
+    .qe-overlay-market-status.closed { background:rgba(220,38,38,0.10); color:var(--red); }
     .qe-overlay-market-status.pre { background:rgba(138,101,18,0.10); color:var(--yellow); }
     .qe-overlay-market-dot { width:5px; height:5px; border-radius:50%; }
-    .qe-overlay-market-dot.open { background:var(--violet); animation:pulse 1.6s infinite; box-shadow:0 0 6px rgba(138,106,40,0.5); }
+    .qe-overlay-market-dot.open { background:var(--violet); animation:pulse 1.6s infinite; box-shadow:0 0 6px rgba(15,118,110,0.5); }
     .qe-overlay-market-dot.closed { background:var(--red); }
     .qe-overlay-market-dot.pre { background:var(--yellow); animation:pulse 1.6s infinite; }
   `;
@@ -9119,25 +9119,17 @@ window.addEventListener('resize', () => {
   const shortcutCSS = document.createElement('style');
   shortcutCSS.textContent = `
     #qe-shortcuts { position:fixed; bottom:24px; right:108px; display:flex; gap:8px; z-index:8990; }
-    .qe-shortcut { width:44px; height:44px; border-radius:50%; border:1px solid rgba(138,106,40,0.20); background:linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.92)); color:var(--text-secondary); font-size:18px; cursor:pointer;
+    .qe-shortcut { width:44px; height:44px; border-radius:50%; border:1px solid rgba(15,118,110,0.20); background:linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.92)); color:var(--text-secondary); font-size:18px; cursor:pointer;
       backdrop-filter:saturate(140%) blur(12px); transition:all 200ms cubic-bezier(0.23,1,0.32,1);
       display:flex; align-items:center; justify-content:center;
     }
-    .qe-shortcut:hover { border-color:rgba(138,106,40,0.50); color:var(--green); transform:translateY(-2px) scale(1.08); box-shadow:0 8px 24px -8px rgba(138,106,40,0.40); }
+    .qe-shortcut:hover { border-color:rgba(15,118,110,0.50); color:var(--green); transform:translateY(-2px) scale(1.08); box-shadow:0 8px 24px -8px rgba(15,118,110,0.40); }
     .qe-shortcut:active { transform:scale(0.95); }
     @media (max-width:768px) { #qe-shortcuts { right:80px; bottom:16px; } }
   `;
   document.head.appendChild(shortcutCSS);
 
-  // === SUBTLE WAKE INDICATOR — small dot near orb showing wake state ===
-  const wakeDot = document.createElement('div');
-  wakeDot.id = 'qe-wake-indicator';
-  wakeDot.style.cssText = 'position:fixed; bottom:90px; right:38px; width:8px; height:8px; border-radius:50%; background:var(--text-muted); z-index:8995; transition:all 200ms; pointer-events:none;';
-  document.body.appendChild(wakeDot);
-  setInterval(() => {
-    if (wakeOn) { wakeDot.style.background = 'var(--green)'; wakeDot.style.boxShadow = '0 0 10px var(--green)'; }
-    else        { wakeDot.style.background = 'var(--text-muted)'; wakeDot.style.boxShadow = 'none'; }
-  }, 1000);
+  // (wake-state indicator removed with the rest of the voice layer)
 
   // ============================================================================
   // TRADING-OF-THE-FUTURE VISUALIZATION LAYER
@@ -9158,22 +9150,22 @@ window.addEventListener('resize', () => {
     .qe-hud-frame {
       position:relative; padding:18px 22px; border-radius:18px;
       background:
-        linear-gradient(135deg, rgba(138,106,40,0.06), transparent 30%, rgba(44,96,135,0.06) 100%),
+        linear-gradient(135deg, rgba(15,118,110,0.06), transparent 30%, rgba(30,58,138,0.06) 100%),
         linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.92));
       border:1px solid transparent;
       background-clip:padding-box;
-      box-shadow:0 24px 60px -24px rgba(138,106,40,0.20), inset 0 1px 0 0 rgba(255,255,255,0.05);
+      box-shadow:0 24px 60px -24px rgba(15,118,110,0.20), inset 0 1px 0 0 rgba(255,255,255,0.05);
       margin-bottom:24px; overflow:hidden;
     }
     .qe-hud-frame::before {
       content:''; position:absolute; inset:0; padding:1px; pointer-events:none; border-radius:18px;
-      background:linear-gradient(135deg, rgba(138,106,40,0.40), transparent 40%, rgba(44,96,135,0.40));
+      background:linear-gradient(135deg, rgba(15,118,110,0.40), transparent 40%, rgba(30,58,138,0.40));
       -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
       -webkit-mask-composite:xor; mask-composite:exclude;
     }
     .qe-hud-frame::after {
       content:''; position:absolute; inset:0; pointer-events:none; opacity:0.5;
-      background:repeating-linear-gradient(0deg, transparent 0 3px, rgba(138,106,40,0.025) 3px 4px);
+      background:repeating-linear-gradient(0deg, transparent 0 3px, rgba(15,118,110,0.025) 3px 4px);
     }
     .qe-hud-corner-tl, .qe-hud-corner-tr, .qe-hud-corner-bl, .qe-hud-corner-br {
       position:absolute; width:18px; height:18px; border:2px solid var(--green); pointer-events:none;
@@ -9184,7 +9176,7 @@ window.addEventListener('resize', () => {
     .qe-hud-corner-bl { bottom:6px; left:6px; border-right:0; border-top:0; }
     .qe-hud-corner-br { bottom:6px; right:6px; border-left:0; border-top:0; }
     .qe-hud-eyebrow { font-family:var(--font-mono); font-size:10px; letter-spacing:0.18em; color:var(--green); margin-bottom:6px; display:flex; align-items:center; gap:8px; }
-    .qe-hud-eyebrow::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--violet); box-shadow:0 0 8px rgba(138,106,40,0.6); animation:pulse 1.6s ease-in-out infinite; }
+    .qe-hud-eyebrow::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--violet); box-shadow:0 0 8px rgba(15,118,110,0.6); animation:pulse 1.6s ease-in-out infinite; }
     .qe-hud-title { font-family:var(--font-display); font-size:24px; font-weight:800; letter-spacing:-0.02em; line-height:1.15; margin-bottom:4px;
       background:linear-gradient(180deg, #fff, #b8b8b8); -webkit-background-clip:text; background-clip:text; color:transparent; }
     .qe-hud-stats { display:flex; gap:16px; flex-wrap:wrap; margin-top:12px; }
@@ -9207,8 +9199,8 @@ window.addEventListener('resize', () => {
     @keyframes tapeRoll { from { transform:translateX(0); } to { transform:translateX(-50%); } }
     .qe-tape-tick { display:inline-flex; gap:6px; }
     .qe-tape-tkr { color:rgba(255,255,255,0.5); }
-    .qe-tape-up { color:rgba(138,106,40,0.85); }
-    .qe-tape-dn { color:rgba(255,61,74,0.85); }
+    .qe-tape-up { color:rgba(15,118,110,0.85); }
+    .qe-tape-dn { color:rgba(220,38,38,0.85); }
     @media (max-width:768px) { #qe-trade-tape { left:56px; } }
 
     /* Reactive 3D-ish tilt for cards (parallax depth on hover) */
@@ -9262,8 +9254,8 @@ window.addEventListener('resize', () => {
         const wave = Math.sin((tick + i * 5) / 80) * 2;
         const cx = c.x;
         ctx.lineWidth = 1.2;
-        ctx.strokeStyle = c.up ? 'rgba(138,106,40,0.18)' : 'rgba(255,61,74,0.16)';
-        ctx.fillStyle  = c.up ? 'rgba(138,106,40,0.10)' : 'rgba(255,61,74,0.08)';
+        ctx.strokeStyle = c.up ? 'rgba(15,118,110,0.18)' : 'rgba(220,38,38,0.16)';
+        ctx.fillStyle  = c.up ? 'rgba(15,118,110,0.10)' : 'rgba(220,38,38,0.08)';
         ctx.beginPath(); ctx.moveTo(cx + 4, c.h + wave); ctx.lineTo(cx + 4, c.l + wave); ctx.stroke();
         const top = Math.min(c.o, c.c) + wave;
         const h = Math.abs(c.c - c.o);
@@ -9959,8 +9951,8 @@ window.qeRL  = window.QESecurity.rateLimit;
     #qe-hud-grid {
       position: fixed; inset: 0; pointer-events: none; z-index: 3;
       background-image:
-        linear-gradient(rgba(138,106,40,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(44,96,135,0.04) 1px, transparent 1px);
+        linear-gradient(rgba(15,118,110,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30,58,138,0.04) 1px, transparent 1px);
       background-size: 60px 60px;
       mask-image: radial-gradient(ellipse 90% 70% at 50% 50%, #000 30%, transparent 90%);
       -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 50%, #000 30%, transparent 90%);
@@ -9971,7 +9963,7 @@ window.qeRL  = window.QESecurity.rateLimit;
     /* Scanline running down the page edges */
     #qe-hud-scan {
       position: fixed; inset: 0; pointer-events: none; z-index: 4;
-      background: linear-gradient(180deg, transparent 0%, transparent 47%, rgba(138,106,40,0.06) 50%, transparent 53%, transparent 100%);
+      background: linear-gradient(180deg, transparent 0%, transparent 47%, rgba(15,118,110,0.06) 50%, transparent 53%, transparent 100%);
       background-size: 100% 8px;
       animation: qeScanlineMove 6s linear infinite;
       opacity: 0.4;
@@ -9982,8 +9974,8 @@ window.qeRL  = window.QESecurity.rateLimit;
     /* HUD corner brackets at viewport corners */
     .qe-hud-vp-corner {
       position: fixed; width: 32px; height: 32px; pointer-events: none; z-index: 5;
-      border: 1.5px solid rgba(138,106,40,0.30);
-      filter: drop-shadow(0 0 8px rgba(138,106,40,0.5));
+      border: 1.5px solid rgba(15,118,110,0.30);
+      filter: drop-shadow(0 0 8px rgba(15,118,110,0.5));
     }
     #qe-vp-tl { top: 12px; left: 232px; border-right: 0; border-bottom: 0; }
     #qe-vp-tr { top: 12px; right: 12px; border-left: 0; border-bottom: 0; }
@@ -9995,59 +9987,59 @@ window.qeRL  = window.QESecurity.rateLimit;
       position: fixed; top: 14px; right: 56px; z-index: 6;
       display: flex; gap: 14px; align-items: center;
       font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.10em;
-      color: rgba(138,106,40,0.65); pointer-events: none;
-      text-shadow: 0 0 6px rgba(138,106,40,0.4);
+      color: rgba(15,118,110,0.65); pointer-events: none;
+      text-shadow: 0 0 6px rgba(15,118,110,0.4);
     }
     .qe-tm-row { display: inline-flex; gap: 6px; align-items: center; }
-    .qe-tm-led { width: 6px; height: 6px; border-radius: 50%; background: #8A6A28; box-shadow: 0 0 6px #8A6A28; animation: qeLedPulse 2s ease-in-out infinite; }
+    .qe-tm-led { width: 6px; height: 6px; border-radius: 50%; background: #0F766E; box-shadow: 0 0 6px #0F766E; animation: qeLedPulse 2s ease-in-out infinite; }
     @keyframes qeLedPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
     /* Make every header more cinematic */
     .top-bar {
-      border-bottom: 1px solid rgba(138,106,40,0.10) !important;
+      border-bottom: 1px solid rgba(15,118,110,0.10) !important;
       background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85)) !important;
     }
     .top-bar::after {
       content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(138,106,40,0.50), rgba(44,96,135,0.50), transparent);
+      background: linear-gradient(90deg, transparent, rgba(15,118,110,0.50), rgba(30,58,138,0.50), transparent);
       pointer-events: none;
     }
 
     /* Glow accent on all primary buttons */
     .btn-primary {
-      box-shadow: 0 0 0 1px rgba(138,106,40,0.10), 0 0 24px -8px rgba(138,106,40,0.50) !important;
+      box-shadow: 0 0 0 1px rgba(15,118,110,0.10), 0 0 24px -8px rgba(15,118,110,0.50) !important;
     }
-    .btn-primary:hover { box-shadow: 0 0 0 1px rgba(138,106,40,0.20), 0 0 32px -4px rgba(138,106,40,0.70) !important; }
+    .btn-primary:hover { box-shadow: 0 0 0 1px rgba(15,118,110,0.20), 0 0 32px -4px rgba(15,118,110,0.70) !important; }
 
     /* Search bar — futuristic neon edge */
     .search-bar {
-      border: 1px solid rgba(138,106,40,0.18) !important;
+      border: 1px solid rgba(15,118,110,0.18) !important;
       background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85)) !important;
-      box-shadow: inset 0 0 12px rgba(138,106,40,0.04), 0 0 16px rgba(138,106,40,0.06);
+      box-shadow: inset 0 0 12px rgba(15,118,110,0.04), 0 0 16px rgba(15,118,110,0.06);
       transition: all 200ms cubic-bezier(0.23,1,0.32,1);
     }
-    .search-bar:hover { border-color: rgba(138,106,40,0.30) !important; box-shadow: inset 0 0 16px rgba(138,106,40,0.06), 0 0 24px rgba(138,106,40,0.10); }
+    .search-bar:hover { border-color: rgba(15,118,110,0.30) !important; box-shadow: inset 0 0 16px rgba(15,118,110,0.06), 0 0 24px rgba(15,118,110,0.10); }
     .search-bar:focus-within {
-      border-color: rgba(138,106,40,0.50) !important;
-      box-shadow: 0 0 0 3px rgba(138,106,40,0.12), inset 0 0 20px rgba(138,106,40,0.08), 0 0 32px rgba(138,106,40,0.20) !important;
+      border-color: rgba(15,118,110,0.50) !important;
+      box-shadow: 0 0 0 3px rgba(15,118,110,0.12), inset 0 0 20px rgba(15,118,110,0.08), 0 0 32px rgba(15,118,110,0.20) !important;
     }
 
     /* Subtle futuristic glow on every metric */
     .metric-card .metric-value, .universe-stat-val, .uv-stat-tile-val, .hero-stat-val {
-      text-shadow: 0 0 16px rgba(138,106,40,0.15);
+      text-shadow: 0 0 16px rgba(15,118,110,0.15);
     }
 
     /* Page-content cinematic frame */
     .page-content { position: relative; }
     .page-content::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(138,106,40,0.30), rgba(44,96,135,0.30), transparent);
+      background: linear-gradient(90deg, transparent, rgba(15,118,110,0.30), rgba(30,58,138,0.30), transparent);
       pointer-events: none; opacity: 0.6;
     }
 
     /* Nav-item gets sharper futuristic feel */
     .nav-item { transition: all 200ms cubic-bezier(0.23,1,0.32,1); }
-    .nav-item.active { box-shadow: inset 3px 0 0 0 #8A6A28, 0 0 16px rgba(138,106,40,0.10); }
+    .nav-item.active { box-shadow: inset 3px 0 0 0 #0F766E, 0 0 16px rgba(15,118,110,0.10); }
 
     @media (max-width: 768px) {
       #qe-vp-tl, #qe-vp-bl { left: 68px; }
@@ -10215,7 +10207,7 @@ window.qeRL  = window.QESecurity.rateLimit;
   try { localStorage.setItem('qz_mic_banner_shown', '1'); } catch(_) {}
   const b = document.createElement('div');
   b.id = 'qe-mic-banner';
-  b.style.cssText = 'position:fixed;top:80px;right:24px;z-index:99998;padding:14px 20px;border-radius:14px;background:linear-gradient(180deg,#FBFAF7,rgba(255,255,255,0.97));border:1px solid rgba(138,101,18,0.30);color:#fff;font-family:DM Sans,sans-serif;font-size:13px;max-width:340px;backdrop-filter:blur(16px);box-shadow:0 16px 48px -8px rgba(0,0,0,0.6);animation:qeFadeIn 360ms cubic-bezier(0.34,1.56,0.64,1);';
+  b.style.cssText = 'position:fixed;top:80px;right:24px;z-index:99998;padding:14px 20px;border-radius:14px;background:linear-gradient(180deg,#FFFFFF,rgba(255,255,255,0.97));border:1px solid rgba(138,101,18,0.30);color:#fff;font-family:DM Sans,sans-serif;font-size:13px;max-width:340px;backdrop-filter:blur(16px);box-shadow:0 16px 48px -8px rgba(0,0,0,0.6);animation:qeFadeIn 360ms cubic-bezier(0.34,1.56,0.64,1);';
   b.innerHTML = '🎙️ <b>Voice needs microphone access.</b><br><span style="font-size:12px;color:rgba(220,235,255,0.7);">Click the orb in the bottom-right and allow mic permission to Talk to Quant Entelloq.</span>';
   document.body.appendChild(b);
   setTimeout(() => { if (b.parentNode) b.remove(); }, 12000);
@@ -10979,7 +10971,7 @@ window.qeRL  = window.QESecurity.rateLimit;
   function flashPrice(el, isUp) {
     if (!el) return;
     el.style.transition = 'none';
-    el.style.background = isUp ? 'rgba(0,224,124,0.15)' : 'rgba(255,61,74,0.15)';
+    el.style.background = isUp ? 'rgba(22,163,74,0.15)' : 'rgba(220,38,38,0.15)';
     el.style.borderRadius = '4px';
     requestAnimationFrame(() => {
       el.style.transition = 'background 1.2s ease';
@@ -11134,21 +11126,21 @@ window.qeRL  = window.QESecurity.rateLimit;
     tvChart = LightweightCharts.createChart(container, {
       width: container.offsetWidth,
       height: 300,
-      layout: {background: {type: 'solid', color: 'transparent'}, textColor: '#847B6E'},
-      grid: {vertLines: {color: 'rgba(26,23,20,0.03)'}, horzLines: {color: 'rgba(26,23,20,0.06)'}},
-      crosshair: {mode: LightweightCharts.CrosshairMode.Normal, vertLine: {color: 'rgba(138,106,40,0.3)', width: 1, style: 2}, horzLine: {color: 'rgba(138,106,40,0.3)', width: 1, style: 2}},
-      timeScale: {borderColor: 'rgba(26,23,20,0.11)', timeVisible: true},
-      rightPriceScale: {borderColor: 'rgba(26,23,20,0.11)'},
+      layout: {background: {type: 'solid', color: 'transparent'}, textColor: '#64748B'},
+      grid: {vertLines: {color: 'rgba(17,24,39,0.03)'}, horzLines: {color: 'rgba(17,24,39,0.06)'}},
+      crosshair: {mode: LightweightCharts.CrosshairMode.Normal, vertLine: {color: 'rgba(15,118,110,0.3)', width: 1, style: 2}, horzLine: {color: 'rgba(15,118,110,0.3)', width: 1, style: 2}},
+      timeScale: {borderColor: 'rgba(17,24,39,0.11)', timeVisible: true},
+      rightPriceScale: {borderColor: 'rgba(17,24,39,0.11)'},
     });
 
     tvCandleSeries = tvChart.addCandlestickSeries({
-      upColor: '#00E07C', downColor: '#FF3D4A',
-      borderUpColor: '#00E07C', borderDownColor: '#FF3D4A',
-      wickUpColor: '#00E07C', wickDownColor: '#FF3D4A',
+      upColor: '#16A34A', downColor: '#DC2626',
+      borderUpColor: '#16A34A', borderDownColor: '#DC2626',
+      wickUpColor: '#16A34A', wickDownColor: '#DC2626',
     });
 
     tvVolumeSeries = tvChart.addHistogramSeries({
-      color: 'rgba(138,106,40,0.2)',
+      color: 'rgba(15,118,110,0.2)',
       priceFormat: {type: 'volume'},
       priceScaleId: '',
     });
@@ -11164,7 +11156,7 @@ window.qeRL  = window.QESecurity.rateLimit;
     const candles = await getCandles(ticker, timespan);
     if (!candles.length || !tvCandleSeries) return;
     const candleData = candles.map(c => ({time: Math.floor(c.t / 1000), open: c.o, high: c.h, low: c.l, close: c.c}));
-    const volumeData = candles.map(c => ({time: Math.floor(c.t / 1000), value: c.v, color: c.c >= c.o ? 'rgba(0,224,124,0.25)' : 'rgba(255,61,74,0.2)'}));
+    const volumeData = candles.map(c => ({time: Math.floor(c.t / 1000), value: c.v, color: c.c >= c.o ? 'rgba(22,163,74,0.25)' : 'rgba(220,38,38,0.2)'}));
     tvCandleSeries.setData(candleData);
     tvVolumeSeries.setData(volumeData);
     tvChart.timeScale().fitContent();
@@ -11177,7 +11169,7 @@ window.qeRL  = window.QESecurity.rateLimit;
     const time = Math.floor(data.ts / 1000);
     tvCandleSeries.update({time, open: data.open, high: data.high, low: data.low, close: data.close});
     if (tvVolumeSeries) {
-      tvVolumeSeries.update({time, value: data.volume, color: data.close >= data.open ? 'rgba(0,224,124,0.25)' : 'rgba(255,61,74,0.2)'});
+      tvVolumeSeries.update({time, value: data.volume, color: data.close >= data.open ? 'rgba(22,163,74,0.25)' : 'rgba(220,38,38,0.2)'});
     }
   });
 
@@ -11294,7 +11286,7 @@ window.qeRL  = window.QESecurity.rateLimit;
   if (!appEl) return;
   const glow = document.createElement('div');
   glow.id = 'qe-app-glow';
-  glow.style.cssText = 'position:fixed;width:600px;height:600px;border-radius:50%;pointer-events:none;z-index:0;background:radial-gradient(circle,rgba(138,106,40,0.04) 0%,transparent 70%);filter:blur(60px);transform:translate(-50%,-50%);opacity:0;transition:opacity 0.8s ease;';
+  glow.style.cssText = 'position:fixed;width:600px;height:600px;border-radius:50%;pointer-events:none;z-index:0;background:radial-gradient(circle,rgba(15,118,110,0.04) 0%,transparent 70%);filter:blur(60px);transform:translate(-50%,-50%);opacity:0;transition:opacity 0.8s ease;';
   document.body.appendChild(glow);
 
   let raf;
@@ -11381,11 +11373,11 @@ window.qeRL  = window.QESecurity.rateLimit;
       panel.classList.add('open');
       if (orb) {
         orb.style.transform = 'scale(1.3)';
-        orb.style.boxShadow = '0 0 40px rgba(138,106,40,0.8), 0 0 80px rgba(138,106,40,0.5)';
+        orb.style.boxShadow = '0 0 40px rgba(15,118,110,0.8), 0 0 80px rgba(15,118,110,0.5)';
         setTimeout(() => { orb.style.transform = ''; orb.style.boxShadow = ''; }, 400);
       }
       const ripple = document.createElement('div');
-      ripple.style.cssText = 'position:fixed;top:50%;left:50%;width:0;height:0;border-radius:50%;background:rgba(138,106,40,0.15);transform:translate(-50%,-50%);pointer-events:none;z-index:9999;';
+      ripple.style.cssText = 'position:fixed;top:50%;left:50%;width:0;height:0;border-radius:50%;background:rgba(15,118,110,0.15);transform:translate(-50%,-50%);pointer-events:none;z-index:9999;';
       document.body.appendChild(ripple);
       ripple.animate([
         {width:'0px',height:'0px',opacity:0.6},
@@ -11446,10 +11438,10 @@ window.qeRL  = window.QESecurity.rateLimit;
   css.textContent = `
     #uv-galaxy-container {
       position:relative; width:100%; height:680px; border-radius:16px;
-      background:radial-gradient(ellipse at 30% 20%, rgba(138,106,40,0.08) 0%, transparent 50%),
-                 radial-gradient(ellipse at 70% 80%, rgba(0,224,124,0.05) 0%, transparent 50%),
-                 linear-gradient(180deg, #FBFAF7, #F4F1EA);
-      border:1px solid rgba(138,106,40,0.12); overflow:hidden;
+      background:radial-gradient(ellipse at 30% 20%, rgba(15,118,110,0.08) 0%, transparent 50%),
+                 radial-gradient(ellipse at 70% 80%, rgba(22,163,74,0.05) 0%, transparent 50%),
+                 linear-gradient(180deg, #FFFFFF, #F8FAFC);
+      border:1px solid rgba(15,118,110,0.12); overflow:hidden;
     }
     #uv-galaxy-canvas { position:absolute; inset:0; width:100%; height:100%; cursor:grab; }
     #uv-galaxy-canvas:active { cursor:grabbing; }
@@ -11478,14 +11470,14 @@ window.qeRL  = window.QESecurity.rateLimit;
       font-size:16px; display:flex; align-items:center; justify-content:center;
       cursor:pointer; transition:all 150ms; font-family:var(--font-mono);
     }
-    .uvg-ctrl-btn:hover { border-color:rgba(138,106,40,0.4); color:var(--text-primary); background:rgba(138,106,40,0.15); }
-    .uvg-ctrl-btn.active { background:rgba(138,106,40,0.25); border-color:rgba(138,106,40,0.6); color:#8A6A28; }
+    .uvg-ctrl-btn:hover { border-color:rgba(15,118,110,0.4); color:var(--text-primary); background:rgba(15,118,110,0.15); }
+    .uvg-ctrl-btn.active { background:rgba(15,118,110,0.25); border-color:rgba(15,118,110,0.6); color:#0F766E; }
 
     /* Node detail panel */
     #uv-galaxy-node-panel {
       position:absolute; top:50%; right:16px; transform:translateY(-50%);
       width:220px; background:#FFFFFF; backdrop-filter:blur(20px);
-      border:1px solid rgba(138,106,40,0.2); border-radius:16px; padding:18px 16px;
+      border:1px solid rgba(15,118,110,0.2); border-radius:16px; padding:18px 16px;
       z-index:20; transition:opacity 250ms, transform 250ms;
     }
     #uv-galaxy-node-panel.hidden { opacity:0; pointer-events:none; transform:translateY(-50%) translateX(20px); }
@@ -11500,24 +11492,24 @@ window.qeRL  = window.QESecurity.rateLimit;
     .uvg-node-panel-desc { font-size:11px; color:var(--text-secondary); line-height:1.6; margin-bottom:10px; }
     .uvg-node-panel-connections { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:12px; }
     .uvg-conn-chip { padding:2px 7px; border-radius:100px; font-size:9px; font-family:var(--font-mono); background:rgba(255,255,255,0.05); color:var(--text-muted); border:1px solid var(--border); }
-    .uvg-node-panel-cta { width:100%; padding:8px; border-radius:8px; background:linear-gradient(135deg,rgba(138,106,40,0.2),rgba(138,106,40,0.3)); border:1px solid rgba(138,106,40,0.3); color:#A98338; font-size:12px; font-weight:600; cursor:pointer; transition:all 150ms; }
-    .uvg-node-panel-cta:hover { background:linear-gradient(135deg,rgba(138,106,40,0.35),rgba(138,106,40,0.45)); }
+    .uvg-node-panel-cta { width:100%; padding:8px; border-radius:8px; background:linear-gradient(135deg,rgba(15,118,110,0.2),rgba(15,118,110,0.3)); border:1px solid rgba(15,118,110,0.3); color:#14B8A6; font-size:12px; font-weight:600; cursor:pointer; transition:all 150ms; }
+    .uvg-node-panel-cta:hover { background:linear-gradient(135deg,rgba(15,118,110,0.35),rgba(15,118,110,0.45)); }
 
     /* AI Discovery */
     #uv-galaxy-ai-discovery {
       position:absolute; bottom:16px; left:16px; right:260px;
       background:#FFFFFF; backdrop-filter:blur(16px);
-      border:1px solid rgba(138,106,40,0.15); border-radius:14px;
+      border:1px solid rgba(15,118,110,0.15); border-radius:14px;
       padding:12px 16px; z-index:10;
     }
     .uvg-ai-header { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
-    .uvg-ai-pulse { width:6px; height:6px; border-radius:50%; background:#8A6A28; box-shadow:0 0 8px rgba(138,106,40,0.7); animation:pulse 1.6s ease-in-out infinite; }
+    .uvg-ai-pulse { width:6px; height:6px; border-radius:50%; background:#0F766E; box-shadow:0 0 8px rgba(15,118,110,0.7); animation:pulse 1.6s ease-in-out infinite; }
     .uvg-ai-title { font-family:var(--font-mono); font-size:9px; letter-spacing:0.14em; color:var(--text-muted); }
-    .uvg-ai-badge { margin-left:auto; font-family:var(--font-mono); font-size:9px; padding:2px 7px; border-radius:100px; background:rgba(138,106,40,0.15); color:#8A6A28; border:1px solid rgba(138,106,40,0.2); }
+    .uvg-ai-badge { margin-left:auto; font-family:var(--font-mono); font-size:9px; padding:2px 7px; border-radius:100px; background:rgba(15,118,110,0.15); color:#0F766E; border:1px solid rgba(15,118,110,0.2); }
     .uvg-ai-recs { display:flex; gap:8px; overflow-x:auto; padding-bottom:2px; }
     .uvg-ai-recs::-webkit-scrollbar { display:none; }
     .uvg-ai-rec { flex-shrink:0; padding:7px 12px; border-radius:100px; font-size:11px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); color:var(--text-secondary); cursor:pointer; transition:all 150ms; white-space:nowrap; display:flex; align-items:center; gap:5px; }
-    .uvg-ai-rec:hover { background:rgba(138,106,40,0.15); border-color:rgba(138,106,40,0.3); color:var(--text-primary); }
+    .uvg-ai-rec:hover { background:rgba(15,118,110,0.15); border-color:rgba(15,118,110,0.3); color:var(--text-primary); }
     .uvg-ai-rec-icon { font-size:12px; }
 
     /* HUD stats */
@@ -11543,23 +11535,23 @@ window.qeRL  = window.QESecurity.rateLimit;
     .ai-neural-pulse { position:relative; width:32px; height:32px; flex-shrink:0; }
     .ai-neural-pulse::before, .ai-neural-pulse::after {
       content:''; position:absolute; inset:0; border-radius:50%;
-      border:1.5px solid rgba(138,106,40,0.5); animation:neuralPulse 1.4s ease-out infinite;
+      border:1.5px solid rgba(15,118,110,0.5); animation:neuralPulse 1.4s ease-out infinite;
     }
     .ai-neural-pulse::after { animation-delay:0.7s; }
-    .ai-neural-pulse-core { position:absolute; inset:8px; border-radius:50%; background:rgba(138,106,40,0.3); animation:neuralCore 1.4s ease-in-out infinite; }
+    .ai-neural-pulse-core { position:absolute; inset:8px; border-radius:50%; background:rgba(15,118,110,0.3); animation:neuralCore 1.4s ease-in-out infinite; }
     @keyframes neuralPulse { 0%{transform:scale(0.4);opacity:1;} 100%{transform:scale(1.4);opacity:0;} }
     @keyframes neuralCore { 0%,100%{opacity:0.4;transform:scale(0.9);} 50%{opacity:1;transform:scale(1.1);} }
     .ai-thinking-text { font-family:var(--font-mono); font-size:11px; color:var(--text-muted); letter-spacing:0.06em; }
     .ai-thinking-dots::after { content:''; animation:thinkDots 1.4s steps(4,end) infinite; }
     @keyframes thinkDots { 0%{content:'';} 25%{content:'.';} 50%{content:'..';} 75%{content:'...';} }
-    .stream-cursor { display:inline-block; width:2px; height:14px; background:#8A6A28; margin-left:2px; vertical-align:middle; animation:cursorBlink 0.7s step-end infinite; }
+    .stream-cursor { display:inline-block; width:2px; height:14px; background:#0F766E; margin-left:2px; vertical-align:middle; animation:cursorBlink 0.7s step-end infinite; }
     @keyframes cursorBlink { 0%,100%{opacity:1;} 50%{opacity:0;} }
     .ai-confidence-bar { display:flex; align-items:center; gap:8px; margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.05); }
     .ai-conf-label { font-family:var(--font-mono); font-size:9px; color:var(--text-muted); letter-spacing:0.08em; }
     .ai-conf-track { flex:1; height:3px; background:rgba(255,255,255,0.06); border-radius:2px; overflow:hidden; }
-    .ai-conf-fill { height:100%; border-radius:2px; background:linear-gradient(90deg,#8A6A28,#00E07C); transition:width 0.8s var(--ease-out-strong); }
+    .ai-conf-fill { height:100%; border-radius:2px; background:linear-gradient(90deg,#0F766E,#16A34A); transition:width 0.8s var(--ease-out-strong); }
     .ai-conf-pct { font-family:var(--font-mono); font-size:9px; color:var(--text-muted); }
-    .ai-context-chip { display:inline-flex; align-items:center; gap:4px; padding:2px 7px; border-radius:100px; background:rgba(138,106,40,0.1); border:1px solid rgba(138,106,40,0.15); font-size:9px; color:#8A6A28; font-family:var(--font-mono); margin-right:4px; margin-bottom:4px; }
+    .ai-context-chip { display:inline-flex; align-items:center; gap:4px; padding:2px 7px; border-radius:100px; background:rgba(15,118,110,0.1); border:1px solid rgba(15,118,110,0.15); font-size:9px; color:#0F766E; font-family:var(--font-mono); margin-right:4px; margin-bottom:4px; }
     .ai-response-header { display:flex; align-items:center; gap:6px; margin-bottom:6px; flex-wrap:wrap; }
     .ai-fallback-note { margin-top:6px; font-size:10px; color:var(--text-muted); font-family:var(--font-mono); opacity:0.7; }
   `;
@@ -11567,12 +11559,12 @@ window.qeRL  = window.QESecurity.rateLimit;
 
   // ── GALAXY DATA ──────────────────────────────────────────
   const CATEGORIES = {
-    physics:     { label:'Physics',     color:'#2C6087', emoji:'⚛' },
-    markets:     { label:'Markets',     color:'#00E07C', emoji:'📈' },
-    ai:          { label:'AI Agents',   color:'#8A6A28', emoji:'🤖' },
-    sectors:     { label:'Sectors',     color:'#8A6512', emoji:'🏭' },
-    simulations: { label:'Simulations', color:'#FF3D4A', emoji:'🎲' },
-    macro:       { label:'Macro',       color:'#2F6E7A', emoji:'🏛' },
+    physics:     { label:'Physics',     color:'#1E3A8A', emoji:'⚛' },
+    markets:     { label:'Markets',     color:'#16A34A', emoji:'📈' },
+    ai:          { label:'AI Agents',   color:'#0F766E', emoji:'🤖' },
+    sectors:     { label:'Sectors',     color:'#B45309', emoji:'🏭' },
+    simulations: { label:'Simulations', color:'#DC2626', emoji:'🎲' },
+    macro:       { label:'Macro',       color:'#0F766E', emoji:'🏛' },
   };
 
   const NODES = [
@@ -11828,7 +11820,7 @@ window.qeRL  = window.QESecurity.rateLimit;
       // Icon
       ctx.font = `${Math.max(10, r * 0.9)}px serif`;
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillStyle = '#1A1714'; ctx.globalAlpha = 0.9;
+      ctx.fillStyle = '#111827'; ctx.globalAlpha = 0.9;
       ctx.fillText(n.icon, n.x, n.y);
       ctx.globalAlpha = 1;
 
@@ -12083,7 +12075,7 @@ function saveGroqKey() {
   localStorage.setItem('qe_groq_key', key);
   const banner = document.getElementById('ai-key-banner');
   if (banner) banner.style.display = 'none';
-  if (status) { status.style.color = '#00E07C'; status.textContent = '⚡ Groq connected — ultra-fast AI active!'; }
+  if (status) { status.style.color = '#16A34A'; status.textContent = '⚡ Groq connected — ultra-fast AI active!'; }
   if (input) input.value = '';
   // Update saved indicator
   const row = document.getElementById('groq-key-saved-row');
@@ -12131,7 +12123,7 @@ function _qzkStatus(id, msg, ok) {
   const el = document.getElementById(id);
   if (!el) return;
   el.textContent = msg;
-  el.style.color = ok ? '#00E07C' : '#FF3D4A';
+  el.style.color = ok ? '#16A34A' : '#DC2626';
   setTimeout(() => { if (el.textContent === msg) el.textContent = ''; }, 4000);
 }
 function _qzkSaveGroq() {
@@ -12598,8 +12590,8 @@ FORMAT: Use **bold** for key terms. Bullet points for lists. Max 280 words unles
       .replace(/`(.*?)`/g, '<code style="background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:4px;font-family:var(--font-mono);font-size:12px;">$1</code>')
       .replace(/^### (.+)$/gm, '<div style="font-size:13px;font-weight:700;margin:8px 0 4px;color:var(--text-primary);">$1</div>')
       .replace(/^## (.+)$/gm, '<div style="font-size:14px;font-weight:700;margin:10px 0 4px;color:var(--text-primary);">$1</div>')
-      .replace(/^• (.+)$/gm, '<div style="display:flex;gap:6px;margin:2px 0;"><span style="color:#8A6A28;margin-top:2px;">•</span><span>$1</span></div>')
-      .replace(/^- (.+)$/gm, '<div style="display:flex;gap:6px;margin:2px 0;"><span style="color:#8A6A28;margin-top:2px;">•</span><span>$1</span></div>')
+      .replace(/^• (.+)$/gm, '<div style="display:flex;gap:6px;margin:2px 0;"><span style="color:#0F766E;margin-top:2px;">•</span><span>$1</span></div>')
+      .replace(/^- (.+)$/gm, '<div style="display:flex;gap:6px;margin:2px 0;"><span style="color:#0F766E;margin-top:2px;">•</span><span>$1</span></div>')
       .replace(/\n\n/g, '</p><p style="margin:6px 0;">')
       .replace(/\n/g, '<br>');
   }
@@ -13129,7 +13121,7 @@ async function qzLoadAllNews(force){
 function njStatusDot(color) {
   const d = document.getElementById('nj-status-dot');
   if (d) d.style.background = color === 'green' ? 'var(--green)' :
-                               color === 'red'   ? 'var(--red)'   : 'rgba(138,106,40,0.9)';
+                               color === 'red'   ? 'var(--red)'   : 'rgba(15,118,110,0.9)';
 }
 function njStatusText(txt) {
   const el = document.getElementById('nj-status-text');
@@ -13220,12 +13212,12 @@ function njArticleHTML(a) {
                  a.impact === 'negative' ? 'badge-red' : 'badge-gray';
   const impLabel = a.impact.charAt(0).toUpperCase() + a.impact.slice(1);
   const tickerChips = a.tickers.map(t =>
-    `<span onclick="if(typeof _searchOpenStock==='function'){const h=UNIVERSE&&UNIVERSE.find(s=>s.t==='${t}');if(h)_searchOpenStock(h);}" style="cursor:pointer;padding:2px 7px;border-radius:100px;background:rgba(138,106,40,0.1);border:1px solid rgba(138,106,40,0.22);font-size:10px;font-family:var(--font-mono);color:var(--accent-2);margin-right:4px;">${t}</span>`
+    `<span onclick="if(typeof _searchOpenStock==='function'){const h=UNIVERSE&&UNIVERSE.find(s=>s.t==='${t}');if(h)_searchOpenStock(h);}" style="cursor:pointer;padding:2px 7px;border-radius:100px;background:rgba(15,118,110,0.1);border:1px solid rgba(15,118,110,0.22);font-size:10px;font-family:var(--font-mono);color:var(--accent-2);margin-right:4px;">${t}</span>`
   ).join('');
   const confBar = `<div style="display:flex;align-items:center;gap:6px;margin-top:8px;">
     <span style="font-size:9px;font-family:var(--font-mono);color:var(--text-muted);">SIGNAL</span>
     <div style="flex:1;height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;">
-      <div style="height:100%;width:${a.conf||65}%;background:linear-gradient(90deg,var(--accent),#00E07C);border-radius:2px;"></div>
+      <div style="height:100%;width:${a.conf||65}%;background:linear-gradient(90deg,var(--accent),#16A34A);border-radius:2px;"></div>
     </div>
     <span style="font-size:9px;font-family:var(--font-mono);color:var(--text-muted);">${a.conf||65}%</span>
   </div>`;
@@ -13343,8 +13335,8 @@ async function uvEnrichWithPolygon() {
     // Flash the live badge green
     const pill = document.querySelector('.uv-live-pill');
     if (pill) {
-      pill.style.borderColor = 'rgba(0,224,124,0.4)';
-      pill.style.background = 'rgba(0,224,124,0.08)';
+      pill.style.borderColor = 'rgba(22,163,74,0.4)';
+      pill.style.background = 'rgba(22,163,74,0.08)';
       setTimeout(() => { pill.style.borderColor = ''; pill.style.background = ''; }, 3000);
     }
     // Refresh the visible table
@@ -13378,7 +13370,7 @@ function uvSyncRealPrices() {
           chgCell.innerHTML = `<span class="${isUp?'chg-pos':'chg-neg'}">${isUp?'+':''}${q.change.toFixed(2)}%</span>`;
           // Flash animation
           chgCell.style.transition = 'none';
-          chgCell.style.background = isUp ? 'rgba(0,224,124,0.12)' : 'rgba(255,61,74,0.10)';
+          chgCell.style.background = isUp ? 'rgba(22,163,74,0.12)' : 'rgba(220,38,38,0.10)';
           requestAnimationFrame(() => {
             chgCell.style.transition = 'background 1.5s ease';
             chgCell.style.background = 'transparent';
@@ -13446,7 +13438,7 @@ async function refreshMacroData() {
       chg.style.color = isUp ? 'var(--green)' : 'var(--red)';
       chg.textContent = (isUp ? '▲ +' : '▼ ') + pct.toFixed(2) + '%';
       // Flash
-      card.style.borderColor = isUp ? 'rgba(0,224,124,0.3)' : 'rgba(255,61,74,0.2)';
+      card.style.borderColor = isUp ? 'rgba(22,163,74,0.3)' : 'rgba(220,38,38,0.2)';
       setTimeout(() => card.style.borderColor = '', 2000);
     });
   } catch(_) { await refreshMacroYahoo(); }
@@ -13493,7 +13485,7 @@ async function refreshMacroYahoo() {
           chgEl.style.color = isUp ? 'var(--green)' : 'var(--red)';
           chgEl.textContent = (isUp ? '▲ +' : '▼ ') + Math.abs(pct).toFixed(2) + '%';
         }
-        card.style.borderColor = isUp ? 'rgba(0,224,124,0.25)' : 'rgba(255,61,74,0.15)';
+        card.style.borderColor = isUp ? 'rgba(22,163,74,0.25)' : 'rgba(220,38,38,0.15)';
         setTimeout(() => { if(card) card.style.borderColor = ''; }, 2500);
         break;
       } catch (_) {}
@@ -13533,7 +13525,7 @@ async function refreshSectorData() {
           barEl.style.width = Math.min(100, Math.abs(pct) * 20) + '%';
           barEl.className = 'msc-bar-fill ' + (isUp ? 'msc-bar-up' : 'msc-bar-dn');
         }
-        card.style.borderColor = isUp ? 'rgba(0,224,124,0.2)' : 'rgba(255,61,74,0.15)';
+        card.style.borderColor = isUp ? 'rgba(22,163,74,0.2)' : 'rgba(220,38,38,0.15)';
         setTimeout(() => { if (card) card.style.borderColor = ''; }, 3000);
       } catch(_) {}
       await new Promise(r => setTimeout(r, 120));
@@ -13562,7 +13554,7 @@ async function refreshSectorData() {
         barEl.style.width = Math.min(100, Math.abs(pct) * 20) + '%';
         barEl.className = 'msc-bar-fill ' + (isUp ? 'msc-bar-up' : 'msc-bar-dn');
       }
-      card.style.borderColor = isUp ? 'rgba(0,224,124,0.2)' : 'rgba(255,61,74,0.15)';
+      card.style.borderColor = isUp ? 'rgba(22,163,74,0.2)' : 'rgba(220,38,38,0.15)';
       setTimeout(() => { if (card) card.style.borderColor = ''; }, 3000);
     });
   } catch(_) { await _refreshSectorsYahoo(); }
@@ -13715,7 +13707,7 @@ if (window.PolygonAPI) {
         if (pc) {
           pc.innerHTML = `<span style="color:${isUp?'var(--green)':'var(--red)'};font-family:var(--font-mono);">$${price.toFixed(2)}<span style="font-size:8px;margin-left:3px;color:var(--green);opacity:0.7;">●</span></span>`;
           pc.style.transition = 'none';
-          pc.style.background = isUp ? 'rgba(0,224,124,0.12)' : 'rgba(255,61,74,0.10)';
+          pc.style.background = isUp ? 'rgba(22,163,74,0.12)' : 'rgba(220,38,38,0.10)';
           requestAnimationFrame(() => { pc.style.transition = 'background 1.5s'; pc.style.background = 'transparent'; });
         }
         const cc = row.querySelector('.live-chg-cell');
@@ -13760,7 +13752,7 @@ function uvShowPolygonBanner() {
   if (window.PolygonAPI && window.PolygonAPI.isConfigured()) return;
   const banner = document.createElement('div');
   banner.id = 'uv-polygon-banner';
-  banner.style.cssText = 'background:linear-gradient(90deg,rgba(138,106,40,0.08),rgba(0,224,124,0.06));border:1px solid rgba(138,106,40,0.15);border-radius:10px;padding:10px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;font-size:12px;';
+  banner.style.cssText = 'background:linear-gradient(90deg,rgba(15,118,110,0.08),rgba(22,163,74,0.06));border:1px solid rgba(15,118,110,0.15);border-radius:10px;padding:10px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;font-size:12px;';
   banner.innerHTML = `
     <span style="font-size:18px;">🔗</span>
     <span style="color:var(--text-secondary);">Connect <strong style="color:var(--text-primary);">Polygon.io</strong> in Settings to enable real-time prices.</span>
@@ -13833,11 +13825,11 @@ function boot() {
     const el = document.getElementById('macro-live-badge');
     if (!el) return;
     el.textContent = text;
-    el.style.background = color === 'green' ? 'rgba(0,224,124,0.12)' :
+    el.style.background = color === 'green' ? 'rgba(22,163,74,0.12)' :
                           color === 'yellow'? 'rgba(138,101,18,0.10)' : 'rgba(255,255,255,0.05)';
     el.style.color = color === 'green' ? 'var(--green)' :
                      color === 'yellow'? 'var(--yellow)' : 'var(--text-muted)';
-    el.style.border = '1px solid ' + (color === 'green' ? 'rgba(0,224,124,0.25)' :
+    el.style.border = '1px solid ' + (color === 'green' ? 'rgba(22,163,74,0.25)' :
                                       color === 'yellow'? 'rgba(138,101,18,0.2)' : 'transparent');
   };
 
@@ -14091,7 +14083,7 @@ function ptRenderPositions() {
       <td>${ptFmt(p.avg_cost)}</td>
       <td>${ptFmt(p.market_value)}</td>
       <td class="${pnlClass}">${pnlStr}<br><span style="font-size:10px;">${pctStr}</span></td>
-      <td><button style="padding:4px 10px;border-radius:6px;border:1px solid rgba(255,61,74,.3);background:rgba(255,61,74,.1);color:var(--red);font-size:11px;cursor:pointer;" onclick="ptQuickClose('${p.ticker}',${p.qty})">Close</button></td>
+      <td><button style="padding:4px 10px;border-radius:6px;border:1px solid rgba(220,38,38,.3);background:rgba(220,38,38,.1);color:var(--red);font-size:11px;cursor:pointer;" onclick="ptQuickClose('${p.ticker}',${p.qty})">Close</button></td>
     </tr>`;
   }).join('');
   el.innerHTML = `<table class="pt-pos-table">
@@ -14109,7 +14101,7 @@ function ptRenderQuickClose() {
     `<div style="display:flex;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);gap:10px;">
       <div style="flex:1;"><strong style="font-size:13px;">${p.ticker}</strong> <span style="color:var(--text-muted);font-size:11px;">×${Number(p.qty).toLocaleString()}</span></div>
       <div class="pt-quick-price" id="pt-qp-${p.ticker}">${ptFmt(p.current_price)}</div>
-      <button style="padding:4px 10px;border-radius:6px;border:1px solid rgba(255,61,74,.3);background:rgba(255,61,74,.1);color:var(--red);font-size:11px;cursor:pointer;" onclick="ptQuickClose('${p.ticker}',${p.qty})">Close All</button>
+      <button style="padding:4px 10px;border-radius:6px;border:1px solid rgba(220,38,38,.3);background:rgba(220,38,38,.1);color:var(--red);font-size:11px;cursor:pointer;" onclick="ptQuickClose('${p.ticker}',${p.qty})">Close All</button>
     </div>`
   ).join('');
 }
@@ -14154,7 +14146,7 @@ function ptRenderOrders() {
         <div style="font-family:var(--font-mono);color:var(--text-primary);">${price}</div>
         <div style="color:var(--text-muted);font-size:10px;">${ts}</div>
       </div>
-      ${o.status === 'pending' ? `<button onclick="ptCancelOrder('${o.id}')" style="padding:4px 8px;border-radius:5px;border:1px solid rgba(255,61,74,.3);background:rgba(255,61,74,.1);color:var(--red);font-size:10px;cursor:pointer;">✕</button>` : ''}
+      ${o.status === 'pending' ? `<button onclick="ptCancelOrder('${o.id}')" style="padding:4px 8px;border-radius:5px;border:1px solid rgba(220,38,38,.3);background:rgba(220,38,38,.1);color:var(--red);font-size:10px;cursor:pointer;">✕</button>` : ''}
     </div>`;
   }).join('');
 }
@@ -14428,7 +14420,7 @@ function ptStartPriceRefresh() {
 // ─── Agent Definitions ────────────────────────────────────────────
 const QE_AGENTS = [
   {
-    id:'market', name:'Market Intelligence', emoji:'📡', color:'#8A6A28',
+    id:'market', name:'Market Intelligence', emoji:'📡', color:'#0F766E',
     role:'MARKET ANALYST', flowNode:'cfn-ingest',
     domain:'global market analysis, indices, macro events, unusual activity',
     systemPrompt:`You are the Market Intelligence engine for Quant Entelloq — an institutional-grade buy-side market analyst with 20+ years synthesizing global macro data for hedge funds and sovereign wealth managers.
@@ -14441,7 +14433,7 @@ You speak with precision — use specific numbers, percentages, and levels. Neve
     suggestions:['What are the top market movers today?','Analyze current S&P 500 trend','Any unusual volume or breadth signals?']
   },
   {
-    id:'quant', name:'Quant Analysis', emoji:'⚡', color:'#2C6087',
+    id:'quant', name:'Quant Analysis', emoji:'⚡', color:'#1E3A8A',
     role:'QUANTITATIVE ANALYST', flowNode:'cfn-quant',
     domain:'statistical analysis, momentum, mean reversion, factor models, arbitrage',
     systemPrompt:`You are the Quantitative Analysis engine for Quant Entelloq — a Renaissance Technologies-caliber quant with deep expertise in statistical arbitrage, factor investing, and systematic strategy design.
@@ -14454,7 +14446,7 @@ Use LaTeX-style notation where helpful (e.g., Sharpe = μ/σ). Be rigorous, cite
     suggestions:['Run momentum factor analysis on tech sector','Calculate optimal Sharpe ratio portfolio allocation','Detect mean reversion opportunities in current market']
   },
   {
-    id:'sentiment', name:'Sentiment AI', emoji:'📰', color:'#00E07C',
+    id:'sentiment', name:'Sentiment AI', emoji:'📰', color:'#16A34A',
     role:'SENTIMENT ANALYST', flowNode:'cfn-sentiment',
     domain:'news analysis, earnings calls, social sentiment, market psychology',
     systemPrompt:`You are the Sentiment Intelligence engine for Quant Entelloq — an NLP-powered financial sentiment analyst combining institutional-grade news parsing with behavioral finance expertise.
@@ -14465,7 +14457,7 @@ Output format: Lead with a SENTIMENT SCORE (-100 bearish to +100 bullish) and RE
     suggestions:['What is current market sentiment score?','Analyze NVDA earnings call sentiment','Identify any sentiment divergences from price action']
   },
   {
-    id:'risk', name:'Risk Management', emoji:'🛡️', color:'#8A6512',
+    id:'risk', name:'Risk Management', emoji:'🛡️', color:'#B45309',
     role:'RISK VALIDATOR', flowNode:'cfn-risk',
     domain:'portfolio risk, VaR, drawdown, stress testing, position sizing',
     systemPrompt:`You are the Risk Management engine for Quant Entelloq — an institutional risk officer operating to the standards of a Tier-1 prime broker's risk desk.
@@ -14476,7 +14468,7 @@ Always render a clear verdict first: ✅ APPROVED / ⚠️ WARNING / 🚫 BLOCK 
     suggestions:['Calculate portfolio VaR and expected shortfall','Stress test against 2008 and 2022 rate shock scenarios','What is the maximum safe position size for this trade?']
   },
   {
-    id:'portfolio', name:'Portfolio Optimizer', emoji:'💼', color:'#8A6A28',
+    id:'portfolio', name:'Portfolio Optimizer', emoji:'💼', color:'#0F766E',
     role:'PORTFOLIO STRATEGIST', flowNode:'cfn-portfolio',
     domain:'portfolio optimization, allocation, rebalancing, diversification',
     systemPrompt:`You are the Portfolio Optimization engine for Quant Entelloq — a multi-asset portfolio strategist applying institutional-grade optimization frameworks.
@@ -14487,7 +14479,7 @@ Output format: Present the recommended allocation as a clean percentage table fi
     suggestions:['Optimize my portfolio for maximum Sharpe ratio','Design a risk parity allocation across major asset classes','When and how should I rebalance my current positions?']
   },
   {
-    id:'strategy', name:'Strategy Builder', emoji:'🎯', color:'#FF3D4A',
+    id:'strategy', name:'Strategy Builder', emoji:'🎯', color:'#DC2626',
     role:'STRATEGY ARCHITECT', flowNode:'cfn-signal',
     domain:'trading strategies, entry/exit logic, backtesting, quant models',
     systemPrompt:`You are the Strategy Architecture engine for Quant Entelloq — an elite systematic strategy designer who has built and deployed strategies across equities, futures, options, and crypto at the institutional level.
@@ -14498,7 +14490,7 @@ You never produce vague strategy outlines. Be specific. A trader should be able 
     suggestions:['Build a complete momentum breakout strategy for large-cap equities','Design an earnings volatility capture strategy','Create a systematic sector rotation framework based on macro regimes']
   },
   {
-    id:'research', name:'Research AI', emoji:'🔬', color:'#2C6087',
+    id:'research', name:'Research AI', emoji:'🔬', color:'#1E3A8A',
     role:'RESEARCH ANALYST', flowNode:'cfn-reasoner',
     domain:'fundamental analysis, sector research, competitive dynamics, valuation',
     systemPrompt:`You are the Fundamental Research engine for Quant Entelloq — a senior equity analyst writing at the level of Goldman Sachs, Morgan Stanley, and Bernstein Research.
@@ -14509,7 +14501,7 @@ Write with conviction. Use real financial terminology. Back every claim with num
     suggestions:['Write a research note on NVIDIA with a price target','Analyze the competitive moat and valuation of Microsoft','Deep dive into the energy sector: best opportunities right now']
   },
   {
-    id:'prediction', name:'Prediction AI', emoji:'🔮', color:'#8A6A28',
+    id:'prediction', name:'Prediction AI', emoji:'🔮', color:'#0F766E',
     role:'PREDICTIVE ANALYST', flowNode:'cfn-prediction',
     domain:'probabilistic forecasts, trend detection, scenario analysis, regime prediction',
     systemPrompt:`You are the Predictive Analytics engine for Quant Entelloq — a probabilistic forecasting system combining technical analysis, macro regime detection, and Bayesian inference.
@@ -14520,7 +14512,7 @@ Always give three scenarios with explicit probabilities that sum to 100%. State 
     suggestions:['Generate a 3-scenario forecast for NVDA over the next quarter','What is the probability of an S&P 500 correction exceeding 10%?','Identify the current market regime and its typical duration']
   },
   {
-    id:'verification', name:'Verification AI', emoji:'✅', color:'#00E07C',
+    id:'verification', name:'Verification AI', emoji:'✅', color:'#16A34A',
     role:'VERIFIER', flowNode:'cfn-verify',
     domain:'fact-checking, calculation verification, consistency checking, hallucination prevention',
     systemPrompt:`You are the Verification engine for Quant Entelloq — a rigorous financial fact-checker and logical consistency validator. Your job is to catch errors that other AI agents, analysts, or traders make.
@@ -14531,7 +14523,7 @@ Output format: Start with a clear verdict — ✅ VERIFIED / ⚠️ PARTIALLY VE
     suggestions:['Verify the math in this portfolio analysis','Check this DCF valuation for errors and inconsistencies','Audit this risk calculation for methodological flaws']
   },
   {
-    id:'assistant', name:'Trading Assistant', emoji:'🤖', color:'#2C6087',
+    id:'assistant', name:'Trading Assistant', emoji:'🤖', color:'#1E3A8A',
     role:'AI ASSISTANT', flowNode:'cfn-output',
     domain:'conversational analysis, chart explanation, strategy discussion, education',
     systemPrompt:`You are the Quant Entelloq Trading Assistant — an elite AI trading companion that combines the knowledge of a seasoned portfolio manager, options strategist, macro economist, and trading coach.
@@ -14798,7 +14790,7 @@ async function cmdOrchestrate() {
 
   // Rate limit: max 5 orchestrations per 60s
   if (typeof _qeRateLimit === 'function' && !_qeRateLimit('cmd', 5, 60000)) {
-    _cmdAddFeed('SYSTEM','#FF3D4A','⚠ Too many requests — please wait a moment before running another analysis.');
+    _cmdAddFeed('SYSTEM','#DC2626','⚠ Too many requests — please wait a moment before running another analysis.');
     return;
   }
 
@@ -14806,7 +14798,7 @@ async function cmdOrchestrate() {
   if (!aiProvider) {
     if (typeof _cmdLoadDemoMode === 'function') _cmdLoadDemoMode();
     if (input) input.value = '';
-    _cmdAddFeed('⚠ Demo Mode','#8A6512','No AI key detected. Add a Groq or Claude key in Settings → AI Provider Keys, or run the backend server.');
+    _cmdAddFeed('⚠ Demo Mode','#B45309','No AI key detected. Add a Groq or Claude key in Settings → AI Provider Keys, or run the backend server.');
     return;
   }
 
@@ -14838,7 +14830,7 @@ async function cmdOrchestrate() {
     if (ag?.flowNode) _cmdSetFlowNode(ag.flowNode, 'running');
   });
 
-  _cmdAddFeed('ORCHESTRATOR','#8A6A28',`Dispatching ${selectedAgentIds.length} agents in parallel: ${selectedAgentIds.join(', ')}`);
+  _cmdAddFeed('ORCHESTRATOR','#0F766E',`Dispatching ${selectedAgentIds.length} agents in parallel: ${selectedAgentIds.join(', ')}`);
 
   // Fan-out — stagger starts by 200ms for visual cascade, then run fully parallel
   const promises = selectedAgentIds.map((id, i) =>
@@ -14948,7 +14940,7 @@ function cmdOpenAgent(agentId) {
     const ttsBtn = document.createElement('button');
     ttsBtn.id = 'cmd-modal-tts-btn';
     ttsBtn.className = 'qe-tts-btn';
-    ttsBtn.style.cssText = 'margin-top:10px;font-size:11px;cursor:pointer;border:1px solid rgba(138,106,40,0.25);';
+    ttsBtn.style.cssText = 'margin-top:10px;font-size:11px;cursor:pointer;border:1px solid rgba(15,118,110,0.25);';
     ttsBtn.innerHTML = '🔊 Read aloud';
     ttsBtn.onclick = () => {
       if (window.speechSynthesis?.speaking) { window.speechSynthesis.cancel(); ttsBtn.innerHTML = '🔊 Read aloud'; ttsBtn.classList.remove('speaking'); return; }
@@ -14970,7 +14962,7 @@ function cmdOpenAgent(agentId) {
   chips.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;';
   agent.suggestions.forEach(s => {
     const btn = document.createElement('button');
-    btn.style.cssText = `padding:4px 12px;border-radius:100px;font-size:11px;background:rgba(138,106,40,0.1);border:1px solid rgba(138,106,40,0.2);color:#A98338;cursor:pointer;font-family:var(--font-mono);transition:all 0.15s;`;
+    btn.style.cssText = `padding:4px 12px;border-radius:100px;font-size:11px;background:rgba(15,118,110,0.1);border:1px solid rgba(15,118,110,0.2);color:#14B8A6;cursor:pointer;font-family:var(--font-mono);transition:all 0.15s;`;
     btn.textContent = s;
     btn.onclick = () => { document.getElementById('cmd-modal-input').value = s; cmdAgentQuery(); };
     chips.appendChild(btn);
@@ -15081,7 +15073,7 @@ if (typeof _origSendChat === 'function') {
       if (feed) {
         const warn = document.createElement('div');
         warn.className = 'chat-msg ai';
-        warn.innerHTML = '<div class="chat-msg-label">SYSTEM</div><div class="chat-bubble" style="color:#FF3D4A;">⚠️ You\'re sending messages too quickly. Please wait a moment before continuing.</div>';
+        warn.innerHTML = '<div class="chat-msg-label">SYSTEM</div><div class="chat-bubble" style="color:#DC2626;">⚠️ You\'re sending messages too quickly. Please wait a moment before continuing.</div>';
         feed.appendChild(warn);
         feed.scrollTop = feed.scrollHeight;
       }
@@ -15220,11 +15212,11 @@ function _cmdLoadDemoMode() {
   flowIds.forEach((id, i) => setTimeout(() => _cmdSetFlowNode(id, 'done'), i * 80));
   // Add demo feed items
   const demoItems = [
-    ['Market Intelligence','#8A6A28','S&P 500 breadth at 68% above 50-DMA — bullish internals'],
-    ['Risk Agent','#FF3D4A','Portfolio tech concentration 41% — above 35% threshold'],
-    ['Prediction Agent','#2C6087','12-month target: S&P 6,250 with 74% confidence'],
-    ['Sentiment Agent','#00E07C','Social momentum positive — NVDA trending +18% volume'],
-    ['Portfolio Optimizer','#A98338','Rebalance window open — suggest trimming Tech by 6%'],
+    ['Market Intelligence','#0F766E','S&P 500 breadth at 68% above 50-DMA — bullish internals'],
+    ['Risk Agent','#DC2626','Portfolio tech concentration 41% — above 35% threshold'],
+    ['Prediction Agent','#1E3A8A','12-month target: S&P 6,250 with 74% confidence'],
+    ['Sentiment Agent','#16A34A','Social momentum positive — NVDA trending +18% volume'],
+    ['Portfolio Optimizer','#14B8A6','Rebalance window open — suggest trimming Tech by 6%'],
   ];
   setTimeout(() => {
     demoItems.forEach((item, i) => setTimeout(() => _cmdAddFeed(item[0], item[1], item[2]), i * 150));
@@ -15278,9 +15270,9 @@ function _qzInitProviderBadge() {
     } else if (provider === 'claude') {
       label.textContent = 'AI · Claude (client)';
     } else {
-      badge.style.background = 'rgba(255,61,74,0.1)';
-      badge.style.borderColor = 'rgba(255,61,74,0.25)';
-      badge.querySelector('span').style.background = '#FF3D4A';
+      badge.style.background = 'rgba(220,38,38,0.1)';
+      badge.style.borderColor = 'rgba(220,38,38,0.25)';
+      badge.querySelector('span').style.background = '#DC2626';
       label.textContent = 'AI · No key set';
     }
     return;
@@ -15988,11 +15980,11 @@ setTimeout(() => {
         var fmt = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         renewalEl.textContent  = extra.cancelAtPeriodEnd ? ('Cancels ' + fmt) : ('Renews ' + fmt);
         renewalEl.style.display = '';
-        renewalEl.style.color   = extra.cancelAtPeriodEnd ? '#FF3D4A' : 'rgba(255,255,255,0.4)';
+        renewalEl.style.color   = extra.cancelAtPeriodEnd ? '#DC2626' : 'rgba(255,255,255,0.4)';
       } else if (isPastDue) {
         renewalEl.textContent   = 'Update your payment method to restore access';
         renewalEl.style.display = '';
-        renewalEl.style.color   = '#FF3D4A';
+        renewalEl.style.color   = '#DC2626';
       } else {
         renewalEl.style.display = 'none';
       }
@@ -16034,10 +16026,10 @@ setTimeout(() => {
     if (label) label.textContent = used + ' / ' + limit;
     // Warn visually when close to limit
     if (fill) fill.style.background = pct >= 90
-      ? 'linear-gradient(90deg,#8A2B24,#FF3D4A)'
+      ? 'linear-gradient(90deg,#B91C1C,#DC2626)'
       : pct >= 70
-        ? 'linear-gradient(90deg,#D97706,#8A6512)'
-        : 'linear-gradient(90deg,#6E5420,#8A6A28)';
+        ? 'linear-gradient(90deg,#D97706,#B45309)'
+        : 'linear-gradient(90deg,#115E59,#0F766E)';
   };
 
   // ── Logout ───────────────────────────────────────────────────
@@ -16217,8 +16209,8 @@ setTimeout(() => {
     var knob = document.getElementById('qz-toggle-knob');
     var lm   = document.getElementById('qz-label-monthly');
     var ly   = document.getElementById('qz-label-yearly');
-    if (tog)  tog.style.background  = isYearly ? '#6E5420' : 'rgba(255,255,255,0.1)';
-    if (tog)  tog.style.borderColor = isYearly ? '#6E5420' : 'rgba(255,255,255,0.18)';
+    if (tog)  tog.style.background  = isYearly ? '#115E59' : 'rgba(255,255,255,0.1)';
+    if (tog)  tog.style.borderColor = isYearly ? '#115E59' : 'rgba(255,255,255,0.18)';
     if (knob) knob.style.transform  = isYearly ? 'translateX(20px)' : 'translateX(0)';
     if (lm)   lm.style.color = isYearly ? 'rgba(255,255,255,0.5)' : '#fff';
     if (lm)   lm.style.fontWeight = isYearly ? '500' : '600';
@@ -16236,8 +16228,8 @@ setTimeout(() => {
     var gKnob = document.getElementById('gate-toggle-knob');
     var glm   = document.getElementById('gate-label-monthly');
     var gly   = document.getElementById('gate-label-yearly');
-    if (gTog)  gTog.style.background  = isYearly ? '#6E5420' : 'rgba(255,255,255,0.1)';
-    if (gTog)  gTog.style.borderColor = isYearly ? '#6E5420' : 'rgba(255,255,255,0.18)';
+    if (gTog)  gTog.style.background  = isYearly ? '#115E59' : 'rgba(255,255,255,0.1)';
+    if (gTog)  gTog.style.borderColor = isYearly ? '#115E59' : 'rgba(255,255,255,0.18)';
     if (gKnob) gKnob.style.transform  = isYearly ? 'translateX(20px)' : 'translateX(0)';
     if (glm)   glm.style.color = isYearly ? 'rgba(255,255,255,0.5)' : '#fff';
     if (glm)   glm.style.fontWeight = isYearly ? '500' : '600';
@@ -16277,7 +16269,7 @@ setTimeout(() => {
   // Minimal toast — appears top-center, auto-dismisses
   function qzToast(msg, type) {
     var t = document.createElement('div');
-    var bg = type === 'success' ? 'rgba(0,224,124,0.95)' : 'rgba(255,61,74,0.95)';
+    var bg = type === 'success' ? 'rgba(22,163,74,0.95)' : 'rgba(220,38,38,0.95)';
     t.style.cssText = [
       'position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-8px)',
       'background:' + bg,
@@ -16469,17 +16461,17 @@ setTimeout(() => {
 
   // ──────────── UI ────────────
   function _qlHero(){
-    return '<div class="qz-page-hero" style="background:linear-gradient(135deg, rgba(138,106,40,0.08), rgba(47,110,122,0.04));border:1px solid rgba(138,106,40,0.18);border-radius:16px;padding:28px 30px;margin-bottom:22px;position:relative;overflow:hidden;">' +
-      '<div style="position:absolute;inset:0;background:radial-gradient(circle at 85% 30%, rgba(47,110,122,0.10), transparent 55%);pointer-events:none;"></div>' +
+    return '<div class="qz-page-hero" style="background:linear-gradient(135deg, rgba(15,118,110,0.08), rgba(15,118,110,0.04));border:1px solid rgba(15,118,110,0.18);border-radius:16px;padding:28px 30px;margin-bottom:22px;position:relative;overflow:hidden;">' +
+      '<div style="position:absolute;inset:0;background:radial-gradient(circle at 85% 30%, rgba(15,118,110,0.10), transparent 55%);pointer-events:none;"></div>' +
       '<div style="position:relative;display:flex;align-items:center;gap:18px;flex-wrap:wrap;">' +
-        '<div style="width:54px;height:54px;border-radius:14px;background:linear-gradient(135deg, var(--accent), var(--accent-2));display:grid;place-items:center;font-size:24px;box-shadow:0 0 30px rgba(138,106,40,0.4);">⚗️</div>' +
+        '<div style="width:54px;height:54px;border-radius:14px;background:linear-gradient(135deg, var(--accent), var(--accent-2));display:grid;place-items:center;font-size:24px;box-shadow:0 0 30px rgba(15,118,110,0.4);">⚗️</div>' +
         '<div style="flex:1;min-width:240px;">' +
           '<div style="font-size:24px;font-weight:700;color:#fff;letter-spacing:-0.02em;">Quant Lab</div>' +
           '<div style="font-size:13px;color:var(--text-muted);margin-top:3px;">Risk metrics · Greeks · Monte Carlo · Backtest engine · Strategy library</div>' +
         '</div>' +
         '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
-          '<span class="qz-pill" style="background:rgba(0,224,124,0.12);border:1px solid rgba(0,224,124,0.3);color:#00E07C;">● PURE CLIENT</span>' +
-          '<span class="qz-pill" style="background:rgba(138,106,40,0.12);border:1px solid rgba(138,106,40,0.3);color:#8A6A28;">⚡ 0 LATENCY</span>' +
+          '<span class="qz-pill" style="background:rgba(22,163,74,0.12);border:1px solid rgba(22,163,74,0.3);color:#16A34A;">● PURE CLIENT</span>' +
+          '<span class="qz-pill" style="background:rgba(15,118,110,0.12);border:1px solid rgba(15,118,110,0.3);color:#0F766E;">⚡ 0 LATENCY</span>' +
         '</div>' +
       '</div>' +
     '</div>';
@@ -16519,7 +16511,7 @@ setTimeout(() => {
           ]) +
           _qlInput('Annual drift (μ)', 'ql-bt-mu', '0.08', 'number', 'step="0.01"') +
         '</div>' +
-        '<button onclick="_qlRunBacktest()" style="width:100%;margin-top:16px;padding:12px;background:linear-gradient(135deg, var(--accent), var(--accent-2));border:none;border-radius:10px;color:#000;font-weight:700;font-size:13px;cursor:pointer;letter-spacing:0.03em;transition:transform 160ms ease-out;box-shadow:0 0 24px rgba(138,106,40,0.3);">▶ RUN BACKTEST</button>' +
+        '<button onclick="_qlRunBacktest()" style="width:100%;margin-top:16px;padding:12px;background:linear-gradient(135deg, var(--accent), var(--accent-2));border:none;border-radius:10px;color:#000;font-weight:700;font-size:13px;cursor:pointer;letter-spacing:0.03em;transition:transform 160ms ease-out;box-shadow:0 0 24px rgba(15,118,110,0.3);">▶ RUN BACKTEST</button>' +
       '</div>' +
       // Results panel
       '<div class="ql-card" id="ql-bt-results" style="background:#FFFFFF;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:22px;min-height:260px;">' +
@@ -16533,7 +16525,7 @@ setTimeout(() => {
     (bts.length ? ('<div class="ql-card" style="margin-top:18px;background:#FFFFFF;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:22px;">' +
       '<div style="font-size:11px;letter-spacing:0.16em;color:var(--text-muted);font-weight:600;margin-bottom:14px;">⏱ RECENT BACKTESTS</div>' +
       '<div style="display:grid;gap:8px;">' + bts.map(function(b){
-        var color = b.totalRet >= 0 ? '#00E07C' : '#FF3D4A';
+        var color = b.totalRet >= 0 ? '#16A34A' : '#DC2626';
         return '<div style="display:grid;grid-template-columns:1fr auto auto auto auto;gap:14px;padding:10px 14px;background:rgba(255,255,255,0.02);border-radius:8px;align-items:center;">' +
           '<div><strong>' + b.ticker + '</strong> <span style="color:var(--text-muted);font-size:11px;font-family:var(--font-mono);">SMA(' + b.fast + '/' + b.slow + ')</span></div>' +
           '<div style="font-family:var(--font-mono);color:' + color + ';font-weight:700;">' + (b.totalRet*100).toFixed(2) + '%</div>' +
@@ -16548,16 +16540,16 @@ setTimeout(() => {
     return '<div class="ql-card" style="background:#FFFFFF;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:22px;">' +
       '<div style="font-size:11px;letter-spacing:0.16em;color:var(--accent);font-weight:600;margin-bottom:14px;">◇ PORTFOLIO RISK METRICS</div>' +
       '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;">' +
-        _qlMetric('Sharpe Ratio', '1.42', '+0.18 vs S&P', '#00E07C') +
-        _qlMetric('Sortino Ratio', '2.15', '+0.42 vs S&P', '#00E07C') +
-        _qlMetric('Max Drawdown', '-8.4%', 'Last 90 days', '#FF3D4A') +
-        _qlMetric('Calmar Ratio', '3.18', 'Annualized', '#8A6A28') +
+        _qlMetric('Sharpe Ratio', '1.42', '+0.18 vs S&P', '#16A34A') +
+        _qlMetric('Sortino Ratio', '2.15', '+0.42 vs S&P', '#16A34A') +
+        _qlMetric('Max Drawdown', '-8.4%', 'Last 90 days', '#DC2626') +
+        _qlMetric('Calmar Ratio', '3.18', 'Annualized', '#0F766E') +
         _qlMetric('Volatility (σ)', '18.2%', 'Annualized', 'var(--text-secondary)') +
         _qlMetric('Beta', '0.92', 'vs SPY', 'var(--text-secondary)') +
-        _qlMetric('VaR 95%', '-$1,840', '1-day, $100k', '#8A6512') +
-        _qlMetric('Win Rate', '64.3%', 'Last 100 trades', '#00E07C') +
+        _qlMetric('VaR 95%', '-$1,840', '1-day, $100k', '#B45309') +
+        _qlMetric('Win Rate', '64.3%', 'Last 100 trades', '#16A34A') +
       '</div>' +
-      '<div style="margin-top:18px;padding:14px;background:rgba(47,110,122,0.05);border-left:3px solid var(--accent-2);border-radius:8px;font-size:12px;color:var(--text-secondary);line-height:1.6;">' +
+      '<div style="margin-top:18px;padding:14px;background:rgba(15,118,110,0.05);border-left:3px solid var(--accent-2);border-radius:8px;font-size:12px;color:var(--text-secondary);line-height:1.6;">' +
         '<strong style="color:#fff;">Interpretation:</strong> Risk-adjusted returns are healthy. Sharpe above 1.0 means you\'re earning more per unit of volatility than passive holding. Max drawdown well within tolerance. Consider trimming high-beta names if you want to reduce correlation to SPY.' +
       '</div>' +
     '</div>';
@@ -16625,7 +16617,7 @@ setTimeout(() => {
       '</div>' +
       '<button onclick="_qlKellyCalc()" style="width:100%;margin-top:14px;padding:12px;background:linear-gradient(135deg, var(--accent), var(--accent-2));border:none;border-radius:10px;color:#000;font-weight:700;font-size:13px;cursor:pointer;letter-spacing:0.03em;">▶ COMPUTE OPTIMAL SIZE</button>' +
       '<div id="ql-k-result" style="margin-top:16px;"></div>' +
-      '<div style="margin-top:14px;padding:14px;background:rgba(138,101,18,0.06);border-left:3px solid #8A6512;border-radius:8px;font-size:12px;color:var(--text-secondary);line-height:1.6;">' +
+      '<div style="margin-top:14px;padding:14px;background:rgba(138,101,18,0.06);border-left:3px solid #B45309;border-radius:8px;font-size:12px;color:var(--text-secondary);line-height:1.6;">' +
         '<strong style="color:#fff;">Note:</strong> Full Kelly is mathematically optimal but volatile. Most practitioners use <strong>half-Kelly</strong> or <strong>quarter-Kelly</strong> to reduce drawdown risk while keeping most of the geometric growth.' +
       '</div>' +
     '</div>';
@@ -16682,20 +16674,20 @@ setTimeout(() => {
     QL.backtests.push({ticker:ticker,fast:fast,slow:slow,days:days,sharpe:r.sharpe,sortino:r.sortino,maxDD:r.maxDD,winRate:r.winRate,totalRet:r.totalRet,finalEquity:r.finalEquity,ts:Date.now()});
     if (QL.backtests.length > 20) QL.backtests = QL.backtests.slice(-20);
     _qlSave();
-    var color = r.totalRet >= 0 ? '#00E07C' : '#FF3D4A';
+    var color = r.totalRet >= 0 ? '#16A34A' : '#DC2626';
     var resEl = document.getElementById('ql-bt-results');
     if (resEl) {
       resEl.innerHTML =
         '<div style="font-size:11px;letter-spacing:0.16em;color:var(--accent);font-weight:600;margin-bottom:14px;">◐ BACKTEST RESULT — ' + ticker + '</div>' +
         '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">' +
           _qlMetric('Total Return', (r.totalRet*100).toFixed(2) + '%', 'over ' + days + ' days', color) +
-          _qlMetric('Sharpe Ratio', r.sharpe.toFixed(2), 'risk-adjusted', '#8A6A28') +
-          _qlMetric('Sortino Ratio', r.sortino.toFixed(2), 'downside-adjusted', '#8A6A28') +
-          _qlMetric('Max Drawdown', '-' + (r.maxDD*100).toFixed(2) + '%', 'peak to trough', '#FF3D4A') +
-          _qlMetric('Win Rate', (r.winRate*100).toFixed(1) + '%', r.trades.filter(function(t){return t.side==='sell';}).length + ' trades', '#00E07C') +
+          _qlMetric('Sharpe Ratio', r.sharpe.toFixed(2), 'risk-adjusted', '#0F766E') +
+          _qlMetric('Sortino Ratio', r.sortino.toFixed(2), 'downside-adjusted', '#0F766E') +
+          _qlMetric('Max Drawdown', '-' + (r.maxDD*100).toFixed(2) + '%', 'peak to trough', '#DC2626') +
+          _qlMetric('Win Rate', (r.winRate*100).toFixed(1) + '%', r.trades.filter(function(t){return t.side==='sell';}).length + ' trades', '#16A34A') +
           _qlMetric('Final Equity', '$' + Math.round(r.finalEquity).toLocaleString(), 'from $10,000', color) +
         '</div>' +
-        '<div style="margin-top:14px;padding:12px;background:rgba(47,110,122,0.05);border-left:3px solid var(--accent-2);border-radius:6px;font-size:11px;color:var(--text-secondary);line-height:1.6;">' +
+        '<div style="margin-top:14px;padding:12px;background:rgba(15,118,110,0.05);border-left:3px solid var(--accent-2);border-radius:6px;font-size:11px;color:var(--text-secondary);line-height:1.6;">' +
           '<strong style="color:#fff;">Strategy:</strong> SMA(' + fast + ') × SMA(' + slow + ') crossover. Long when fast crosses above slow, flat otherwise. Simulated on geometric Brownian motion with annual drift ' + mu + ' and vol ' + sigma + '.' +
         '</div>';
     }
@@ -16711,7 +16703,7 @@ setTimeout(() => {
       c.style.cssText = 'flex:1;padding:9px;border-radius:8px;cursor:pointer;font-weight:600;font-size:12px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#000;';
       p.style.cssText = 'flex:1;padding:9px;border-radius:8px;cursor:pointer;font-weight:600;font-size:12px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--text-muted);';
     } else {
-      p.style.cssText = 'flex:1;padding:9px;border-radius:8px;cursor:pointer;font-weight:600;font-size:12px;border:none;background:linear-gradient(135deg,#FF3D4A,#8A6512);color:#000;';
+      p.style.cssText = 'flex:1;padding:9px;border-radius:8px;cursor:pointer;font-weight:600;font-size:12px;border:none;background:linear-gradient(135deg,#DC2626,#B45309);color:#000;';
       c.style.cssText = 'flex:1;padding:9px;border-radius:8px;cursor:pointer;font-weight:600;font-size:12px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--text-muted);';
     }
   };
@@ -16726,16 +16718,16 @@ setTimeout(() => {
     if (!el) return;
     el.innerHTML =
       '<div style="font-size:11px;letter-spacing:0.16em;color:var(--accent);font-weight:600;margin-bottom:14px;">◈ ' + _qlBSType_.toUpperCase() + ' OPTION — PRICE & GREEKS</div>' +
-      '<div style="background:linear-gradient(135deg,rgba(138,106,40,0.12),rgba(47,110,122,0.05));border:1px solid rgba(138,106,40,0.3);border-radius:10px;padding:18px;margin-bottom:12px;text-align:center;">' +
+      '<div style="background:linear-gradient(135deg,rgba(15,118,110,0.12),rgba(15,118,110,0.05));border:1px solid rgba(15,118,110,0.3);border-radius:10px;padding:18px;margin-bottom:12px;text-align:center;">' +
         '<div style="font-size:11px;letter-spacing:0.12em;color:var(--accent);">FAIR VALUE</div>' +
         '<div style="font-family:var(--font-mono);font-size:34px;font-weight:700;color:#fff;margin-top:4px;">$' + bs.price.toFixed(2) + '</div>' +
       '</div>' +
       '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;">' +
-        _qlMetric('Delta (Δ)', bs.delta.toFixed(4), 'price sensitivity', '#8A6A28') +
-        _qlMetric('Gamma (Γ)', bs.gamma.toFixed(4), 'Δ sensitivity', '#2C6087') +
-        _qlMetric('Vega (ν)', bs.vega.toFixed(4), 'vol sensitivity', '#00E07C') +
-        _qlMetric('Theta (Θ)', bs.theta.toFixed(4), 'time decay/day', '#FF3D4A') +
-        _qlMetric('Rho (ρ)', bs.rho.toFixed(4), 'rate sensitivity', '#8A6512') +
+        _qlMetric('Delta (Δ)', bs.delta.toFixed(4), 'price sensitivity', '#0F766E') +
+        _qlMetric('Gamma (Γ)', bs.gamma.toFixed(4), 'Δ sensitivity', '#1E3A8A') +
+        _qlMetric('Vega (ν)', bs.vega.toFixed(4), 'vol sensitivity', '#16A34A') +
+        _qlMetric('Theta (Θ)', bs.theta.toFixed(4), 'time decay/day', '#DC2626') +
+        _qlMetric('Rho (ρ)', bs.rho.toFixed(4), 'rate sensitivity', '#B45309') +
       '</div>';
   };
 
@@ -16757,20 +16749,20 @@ setTimeout(() => {
     var bars = hist.map(function(h, i){
       var pct = (h/maxH)*100;
       var bucketMid = lo + (i + 0.5)*range/buckets;
-      var col = bucketMid >= S0 ? '#00E07C' : '#FF3D4A';
+      var col = bucketMid >= S0 ? '#16A34A' : '#DC2626';
       return '<div style="flex:1;background:linear-gradient(to top,' + col + ' ' + pct + '%, transparent ' + pct + '%);min-height:1px;opacity:0.85;"></div>';
     }).join('');
-    var changeColor = mc.mean >= S0 ? '#00E07C' : '#FF3D4A';
+    var changeColor = mc.mean >= S0 ? '#16A34A' : '#DC2626';
     el.innerHTML =
       '<div style="font-size:11px;letter-spacing:0.16em;color:var(--accent);font-weight:600;margin-bottom:14px;">◎ ' + paths.toLocaleString() + ' PATHS — T=' + T + 'YR</div>' +
       '<div style="display:flex;align-items:flex-end;gap:1px;height:90px;margin-bottom:14px;background:rgba(255,255,255,0.3);border-radius:6px;padding:6px;">' + bars + '</div>' +
       '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">' +
         _qlMetric('Mean', '$' + mc.mean.toFixed(2), ((mc.mean/S0-1)*100).toFixed(1) + '%', changeColor) +
-        _qlMetric('Median', '$' + mc.median.toFixed(2), ((mc.median/S0-1)*100).toFixed(1) + '%', '#8A6A28') +
-        _qlMetric('VaR 5%', '$' + mc.p05.toFixed(2), 'downside tail', '#FF3D4A') +
+        _qlMetric('Median', '$' + mc.median.toFixed(2), ((mc.median/S0-1)*100).toFixed(1) + '%', '#0F766E') +
+        _qlMetric('VaR 5%', '$' + mc.p05.toFixed(2), 'downside tail', '#DC2626') +
       '</div>' +
       '<div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">' +
-        _qlMetric('Best case (95%)', '$' + mc.p95.toFixed(2), 'upside tail', '#00E07C') +
+        _qlMetric('Best case (95%)', '$' + mc.p95.toFixed(2), 'upside tail', '#16A34A') +
         _qlMetric('Range', '$' + mc.min.toFixed(0) + ' → $' + mc.max.toFixed(0), 'min/max observed', 'var(--text-secondary)') +
       '</div>';
   };
@@ -16781,18 +16773,18 @@ setTimeout(() => {
     var acct = parseFloat(document.getElementById('ql-k-acct').value) || 100000;
     var f = _kelly(wr, wl);
     var halfK = f/2, quarterK = f/4;
-    var color = f > 0.2 ? '#8A6512' : '#00E07C';
+    var color = f > 0.2 ? '#B45309' : '#16A34A';
     var el = document.getElementById('ql-k-result');
     if (!el) return;
     el.innerHTML =
-      '<div style="background:linear-gradient(135deg,rgba(138,106,40,0.10),rgba(47,110,122,0.04));border:1px solid rgba(138,106,40,0.25);border-radius:10px;padding:18px;text-align:center;">' +
+      '<div style="background:linear-gradient(135deg,rgba(15,118,110,0.10),rgba(15,118,110,0.04));border:1px solid rgba(15,118,110,0.25);border-radius:10px;padding:18px;text-align:center;">' +
         '<div style="font-size:11px;letter-spacing:0.12em;color:var(--accent);">OPTIMAL FRACTION (FULL KELLY)</div>' +
         '<div style="font-family:var(--font-mono);font-size:32px;font-weight:700;color:' + color + ';margin-top:4px;">' + (f*100).toFixed(2) + '%</div>' +
       '</div>' +
       '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px;">' +
         _qlMetric('Full Kelly', '$' + Math.round(f*acct).toLocaleString(), (f*100).toFixed(2) + '% of account', color) +
-        _qlMetric('Half Kelly', '$' + Math.round(halfK*acct).toLocaleString(), (halfK*100).toFixed(2) + '% (recommended)', '#8A6A28') +
-        _qlMetric('Quarter Kelly', '$' + Math.round(quarterK*acct).toLocaleString(), (quarterK*100).toFixed(2) + '% (conservative)', '#2C6087') +
+        _qlMetric('Half Kelly', '$' + Math.round(halfK*acct).toLocaleString(), (halfK*100).toFixed(2) + '% (recommended)', '#0F766E') +
+        _qlMetric('Quarter Kelly', '$' + Math.round(quarterK*acct).toLocaleString(), (quarterK*100).toFixed(2) + '% (conservative)', '#1E3A8A') +
       '</div>';
   };
 
@@ -16915,7 +16907,7 @@ setTimeout(() => {
     '</div>';
   }
   function _qlxCitation(html) {
-    return '<div style="margin-top:14px;padding:11px 13px;background:rgba(255,255,255,0.025);border-left:2px solid rgba(138,106,40,0.4);border-radius:6px;font-size:10.5px;color:var(--text-muted);line-height:1.55;font-style:italic;">' +
+    return '<div style="margin-top:14px;padding:11px 13px;background:rgba(255,255,255,0.025);border-left:2px solid rgba(15,118,110,0.4);border-radius:6px;font-size:10.5px;color:var(--text-muted);line-height:1.55;font-style:italic;">' +
       '<strong style="color:rgba(255,255,255,0.7);font-style:normal;letter-spacing:0.06em;">REF</strong> &nbsp; ' + html + '</div>';
   }
   function _qlxButton(label, onclick) {
@@ -16960,7 +16952,7 @@ setTimeout(() => {
     var ret = genReturnsWithLoadings(f, trueA, trueB, trueS, trueH, 0.008);
     var X = f.mkt.map(function(_,i){ return [f.mkt[i], f.smb[i], f.hml[i]]; });
     var r = olsMultiple(ret, X);
-    if (!r) { document.getElementById('qlx-ff-result').innerHTML = '<div style="color:#FF3D4A;">Regression failed (singular matrix).</div>'; return; }
+    if (!r) { document.getElementById('qlx-ff-result').innerHTML = '<div style="color:#DC2626;">Regression failed (singular matrix).</div>'; return; }
     var alpha = r.beta[0], beta = r.beta[1], s = r.beta[2], h = r.beta[3];
     var seA = r.se[0], seB = r.se[1], seS = r.se[2], seH = r.se[3];
     var tA = alpha/seA, tB = beta/seB, tS = s/seS, tH = h/seH;
@@ -16969,13 +16961,13 @@ setTimeout(() => {
     document.getElementById('qlx-ff-result').innerHTML =
       '<div style="font-size:11px;letter-spacing:0.16em;color:var(--accent);font-weight:600;margin-bottom:14px;">' + ticker + ' — FACTOR LOADINGS</div>' +
       '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">' +
-        _qlxMetric('Alpha (α, annual)', alphaAnn.toFixed(2) + '%' + sig(tA), 'SE: ' + (seA*252*100).toFixed(2) + '%   t = ' + tA.toFixed(2), Math.abs(tA) > 1.96 ? '#00E07C' : 'var(--text-secondary)') +
-        _qlxMetric('Market β', beta.toFixed(3) + sig(tB), 't = ' + tB.toFixed(2) + '   SE: ' + seB.toFixed(3), '#8A6A28') +
-        _qlxMetric('SMB load (s)', s.toFixed(3) + sig(tS), 't = ' + tS.toFixed(2) + '   ' + (s>0?'small-cap tilt':'large-cap tilt'), '#2C6087') +
-        _qlxMetric('HML load (h)', h.toFixed(3) + sig(tH), 't = ' + tH.toFixed(2) + '   ' + (h>0?'value tilt':'growth tilt'), '#8A6512') +
+        _qlxMetric('Alpha (α, annual)', alphaAnn.toFixed(2) + '%' + sig(tA), 'SE: ' + (seA*252*100).toFixed(2) + '%   t = ' + tA.toFixed(2), Math.abs(tA) > 1.96 ? '#16A34A' : 'var(--text-secondary)') +
+        _qlxMetric('Market β', beta.toFixed(3) + sig(tB), 't = ' + tB.toFixed(2) + '   SE: ' + seB.toFixed(3), '#0F766E') +
+        _qlxMetric('SMB load (s)', s.toFixed(3) + sig(tS), 't = ' + tS.toFixed(2) + '   ' + (s>0?'small-cap tilt':'large-cap tilt'), '#1E3A8A') +
+        _qlxMetric('HML load (h)', h.toFixed(3) + sig(tH), 't = ' + tH.toFixed(2) + '   ' + (h>0?'value tilt':'growth tilt'), '#B45309') +
       '</div>' +
       '<div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">' +
-        _qlxMetric('R-squared', (r.rsq*100).toFixed(1) + '%', 'fraction of variance explained', '#00E07C') +
+        _qlxMetric('R-squared', (r.rsq*100).toFixed(1) + '%', 'fraction of variance explained', '#16A34A') +
         _qlxMetric('Sample size', r.n.toString(), n + ' daily observations', 'var(--text-secondary)') +
       '</div>' +
       '<div style="margin-top:11px;font-size:10.5px;color:var(--text-muted);">Significance: * p&lt;0.10, ** p&lt;0.05, *** p&lt;0.01 (Student-t).</div>';
@@ -17021,7 +17013,7 @@ setTimeout(() => {
     // Tangency portfolio: wT = Σ^-1 (μ - rf·1) normalized
     var eA = mA - rf, eB = mB - rf;
     var det = sA*sA*sB*sB - covAB*covAB;
-    if (Math.abs(det) < 1e-12) { document.getElementById('qlx-mvo-result').innerHTML = '<div style="color:#FF3D4A;">Degenerate covariance — try different inputs.</div>'; return; }
+    if (Math.abs(det) < 1e-12) { document.getElementById('qlx-mvo-result').innerHTML = '<div style="color:#DC2626;">Degenerate covariance — try different inputs.</div>'; return; }
     var wA_unnorm = (sB*sB*eA - covAB*eB) / det;
     var wB_unnorm = (sA*sA*eB - covAB*eA) / det;
     var totalW = wA_unnorm + wB_unnorm;
@@ -17049,20 +17041,20 @@ setTimeout(() => {
     var bars = pts.map(function(p){
       var x = Math.round((p.sd/maxSd)*100);
       var y = Math.round(((p.mu - minMu)/range)*60);
-      return '<circle cx="' + x + '" cy="' + (60-y) + '" r="1.2" fill="rgba(138,106,40,0.7)"/>';
+      return '<circle cx="' + x + '" cy="' + (60-y) + '" r="1.2" fill="rgba(15,118,110,0.7)"/>';
     }).join('');
-    var sharpeColor = sharpe > 0.8 ? '#00E07C' : sharpe > 0.3 ? '#8A6A28' : '#8A6512';
+    var sharpeColor = sharpe > 0.8 ? '#16A34A' : sharpe > 0.3 ? '#0F766E' : '#B45309';
     document.getElementById('qlx-mvo-result').innerHTML =
       '<div style="font-size:11px;letter-spacing:0.16em;color:var(--accent);font-weight:600;margin-bottom:14px;">TANGENCY (MAX SHARPE)</div>' +
-      '<div style="background:linear-gradient(135deg,rgba(138,106,40,0.12),rgba(47,110,122,0.05));border:1px solid rgba(138,106,40,0.3);border-radius:10px;padding:14px;margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">' +
+      '<div style="background:linear-gradient(135deg,rgba(15,118,110,0.12),rgba(15,118,110,0.05));border:1px solid rgba(15,118,110,0.3);border-radius:10px;padding:14px;margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">' +
         '<div><div style="font-size:10px;color:var(--accent);letter-spacing:0.1em;">w_A</div><div style="font-family:var(--font-mono);font-size:22px;font-weight:700;color:#fff;">' + (wA*100).toFixed(1) + '%</div></div>' +
         '<div><div style="font-size:10px;color:var(--accent);letter-spacing:0.1em;">w_B</div><div style="font-family:var(--font-mono);font-size:22px;font-weight:700;color:#fff;">' + (wB*100).toFixed(1) + '%</div></div>' +
       '</div>' +
       '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">' +
-        _qlxMetric('Expected return', (pmu*100).toFixed(2) + '%', 'per year', '#00E07C') +
-        _qlxMetric('Volatility', (psd*100).toFixed(2) + '%', 'per year (σ)', '#8A6A28') +
+        _qlxMetric('Expected return', (pmu*100).toFixed(2) + '%', 'per year', '#16A34A') +
+        _qlxMetric('Volatility', (psd*100).toFixed(2) + '%', 'per year (σ)', '#0F766E') +
         _qlxMetric('Sharpe ratio', sharpe.toFixed(3), 'risk-adjusted excess return', sharpeColor) +
-        _qlxMetric('Min-var portfolio', (mvWA*100).toFixed(0) + '% / ' + (mvWB*100).toFixed(0) + '%', 'μ=' + (mvMu*100).toFixed(1) + '% σ=' + (mvSd*100).toFixed(1) + '%', '#2C6087') +
+        _qlxMetric('Min-var portfolio', (mvWA*100).toFixed(0) + '% / ' + (mvWB*100).toFixed(0) + '%', 'μ=' + (mvMu*100).toFixed(1) + '% σ=' + (mvSd*100).toFixed(1) + '%', '#1E3A8A') +
       '</div>' +
       '<div style="margin-top:14px;background:rgba(255,255,255,0.3);border-radius:8px;padding:6px;"><svg viewBox="0 0 100 60" preserveAspectRatio="none" style="width:100%;height:60px;"><polyline points="0,60 100,60" stroke="rgba(255,255,255,0.1)" stroke-width="0.3"/>' + bars + '</svg><div style="font-size:9.5px;color:var(--text-muted);text-align:center;margin-top:4px;letter-spacing:0.06em;">EFFICIENT FRONTIER (σ → μ)</div></div>';
   };
@@ -17132,12 +17124,12 @@ setTimeout(() => {
     document.getElementById('qlx-var-result').innerHTML =
       '<div style="font-size:11px;letter-spacing:0.16em;color:var(--accent);font-weight:600;margin-bottom:14px;">' + (c*100) + '% CONFIDENCE · ' + h + '-DAY HORIZON</div>' +
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">' +
-        _qlxMetric('Parametric VaR', '$' + Math.round(varPar).toLocaleString(), pct(varPar) + ' of portfolio · normal', '#FF3D4A') +
-        _qlxMetric('Parametric ES (CVaR)', '$' + Math.round(esPar).toLocaleString(), pct(esPar) + ' · mean loss in tail', '#8A2B24') +
-        _qlxMetric('Monte Carlo VaR', '$' + Math.round(varMC).toLocaleString(), pct(varMC) + ' · 20k paths', '#8A6512') +
-        _qlxMetric('Monte Carlo ES', '$' + Math.round(esMC).toLocaleString(), pct(esMC) + ' · tail average', '#8A6512') +
+        _qlxMetric('Parametric VaR', '$' + Math.round(varPar).toLocaleString(), pct(varPar) + ' of portfolio · normal', '#DC2626') +
+        _qlxMetric('Parametric ES (CVaR)', '$' + Math.round(esPar).toLocaleString(), pct(esPar) + ' · mean loss in tail', '#B91C1C') +
+        _qlxMetric('Monte Carlo VaR', '$' + Math.round(varMC).toLocaleString(), pct(varMC) + ' · 20k paths', '#B45309') +
+        _qlxMetric('Monte Carlo ES', '$' + Math.round(esMC).toLocaleString(), pct(esMC) + ' · tail average', '#B45309') +
       '</div>' +
-      '<div style="margin-top:12px;padding:12px;background:rgba(47,110,122,0.05);border-left:3px solid var(--accent-2);border-radius:6px;font-size:11px;color:var(--text-secondary);line-height:1.55;"><strong style="color:#fff;">Interpretation:</strong> With ' + (c*100) + '% confidence, daily losses should not exceed the VaR. When they do (the worst ' + ((1-c)*100).toFixed(0) + '% of days), the average loss is the ES. ES is preferred over VaR because it captures tail severity.</div>';
+      '<div style="margin-top:12px;padding:12px;background:rgba(15,118,110,0.05);border-left:3px solid var(--accent-2);border-radius:6px;font-size:11px;color:var(--text-secondary);line-height:1.55;"><strong style="color:#fff;">Interpretation:</strong> With ' + (c*100) + '% confidence, daily losses should not exceed the VaR. When they do (the worst ' + ((1-c)*100).toFixed(0) + '% of days), the average loss is the ES. ES is preferred over VaR because it captures tail severity.</div>';
   };
 
   // ─── TAB 9: Momentum Scanner (Jegadeesh & Titman) ──────────
@@ -17166,7 +17158,7 @@ setTimeout(() => {
     var list = (document.getElementById('qlx-mom-list').value || '').split(',').map(function(t){return t.trim().toUpperCase();}).filter(Boolean);
     var lb = parseInt(document.getElementById('qlx-mom-lb').value, 10) || 12;
     var sk = parseInt(document.getElementById('qlx-mom-skip').value, 10) || 1;
-    if (!list.length) { document.getElementById('qlx-mom-result').innerHTML = '<div style="color:#FF3D4A;">No tickers provided.</div>'; return; }
+    if (!list.length) { document.getElementById('qlx-mom-result').innerHTML = '<div style="color:#DC2626;">No tickers provided.</div>'; return; }
     // Simulate a return for each ticker — biased by ticker hash so it's deterministic within a session
     function hashSeed(s){ var h=0; for(var i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))|0; return Math.abs(h); }
     var raw = list.map(function(t){
@@ -17185,10 +17177,10 @@ setTimeout(() => {
     var ranked = raw.map(function(r){ return { ticker: r.ticker, ret: r.ret, z: sd > 0 ? (r.ret - mu)/sd : 0 }; }).sort(function(a,b){return b.z - a.z;});
     var rows = ranked.map(function(r, i) {
       var decile = Math.min(10, Math.max(1, 10 - Math.floor(i/Math.max(1, Math.ceil(ranked.length/10)))));
-      var col = r.z > 1 ? '#00E07C' : r.z > 0 ? '#8A6A28' : r.z > -1 ? '#8A6512' : '#FF3D4A';
+      var col = r.z > 1 ? '#16A34A' : r.z > 0 ? '#0F766E' : r.z > -1 ? '#B45309' : '#DC2626';
       var sign = decile >= 8 ? 'LONG' : decile <= 3 ? 'SHORT' : 'NEUTRAL';
-      var sigCol = decile >= 8 ? '#00E07C' : decile <= 3 ? '#FF3D4A' : 'var(--text-muted)';
-      return '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);"><td style="padding:8px 10px;font-weight:600;">#' + (i+1) + '</td><td style="padding:8px 10px;font-family:var(--font-mono);font-weight:600;">' + r.ticker + '</td><td style="padding:8px 10px;text-align:right;font-family:var(--font-mono);color:' + (r.ret>0?'#00E07C':'#FF3D4A') + ';">' + (r.ret*100).toFixed(2) + '%</td><td style="padding:8px 10px;text-align:right;font-family:var(--font-mono);color:' + col + ';">' + r.z.toFixed(2) + '</td><td style="padding:8px 10px;text-align:right;font-family:var(--font-mono);color:var(--text-muted);">D' + decile + '</td><td style="padding:8px 10px;text-align:right;font-size:10px;letter-spacing:0.08em;color:' + sigCol + ';font-weight:600;">' + sign + '</td></tr>';
+      var sigCol = decile >= 8 ? '#16A34A' : decile <= 3 ? '#DC2626' : 'var(--text-muted)';
+      return '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);"><td style="padding:8px 10px;font-weight:600;">#' + (i+1) + '</td><td style="padding:8px 10px;font-family:var(--font-mono);font-weight:600;">' + r.ticker + '</td><td style="padding:8px 10px;text-align:right;font-family:var(--font-mono);color:' + (r.ret>0?'#16A34A':'#DC2626') + ';">' + (r.ret*100).toFixed(2) + '%</td><td style="padding:8px 10px;text-align:right;font-family:var(--font-mono);color:' + col + ';">' + r.z.toFixed(2) + '</td><td style="padding:8px 10px;text-align:right;font-family:var(--font-mono);color:var(--text-muted);">D' + decile + '</td><td style="padding:8px 10px;text-align:right;font-size:10px;letter-spacing:0.08em;color:' + sigCol + ';font-weight:600;">' + sign + '</td></tr>';
     }).join('');
     document.getElementById('qlx-mom-result').innerHTML =
       '<div style="font-size:11px;letter-spacing:0.16em;color:var(--accent);font-weight:600;margin-bottom:14px;">' + lb + '-' + sk + ' MOMENTUM · ' + ranked.length + ' SYMBOLS</div>' +
@@ -17241,10 +17233,10 @@ setTimeout(() => {
     // Inline mini bar chart
     var spark = rollVol.map(function(v){
       var h = Math.round((v / Math.max.apply(null, rollVol)) * 40);
-      var col = v > p75 ? '#FF3D4A' : '#00E07C';
+      var col = v > p75 ? '#DC2626' : '#16A34A';
       return '<rect x="0" y="' + (40-h) + '" width="1" height="' + h + '" fill="' + col + '" opacity="0.7"/>';
     }).map(function(s, i){ return '<g transform="translate(' + i + ',0)">' + s + '</g>'; }).join('');
-    var regColor = inHigh ? '#FF3D4A' : '#00E07C';
+    var regColor = inHigh ? '#DC2626' : '#16A34A';
     document.getElementById('qlx-reg-out').innerHTML =
       '<div style="background:linear-gradient(135deg,rgba(' + (inHigh?'248,113,113':'52,211,153') + ',0.10), transparent);border:1px solid rgba(' + (inHigh?'248,113,113':'52,211,153') + ',0.3);border-radius:10px;padding:18px;text-align:center;margin-bottom:12px;">' +
         '<div style="font-size:11px;letter-spacing:0.12em;color:' + regColor + ';">CURRENT REGIME</div>' +
@@ -17253,8 +17245,8 @@ setTimeout(() => {
       '</div>' +
       '<div style="background:rgba(255,255,255,0.3);border-radius:8px;padding:8px;"><svg viewBox="0 0 ' + rollVol.length + ' 40" preserveAspectRatio="none" style="width:100%;height:50px;">' + spark + '</svg><div style="font-size:9.5px;color:var(--text-muted);text-align:center;margin-top:6px;letter-spacing:0.06em;">REALIZED VOLATILITY OVER TIME · RED = HIGH-VOL DAYS</div></div>' +
       '<div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">' +
-        _qlxMetric('Days in high-vol', hiDays.toString(), ((hiDays/rollVol.length)*100).toFixed(0) + '% of period', '#FF3D4A') +
-        _qlxMetric('Days in low-vol', loDays.toString(), ((loDays/rollVol.length)*100).toFixed(0) + '% of period', '#00E07C') +
+        _qlxMetric('Days in high-vol', hiDays.toString(), ((hiDays/rollVol.length)*100).toFixed(0) + '% of period', '#DC2626') +
+        _qlxMetric('Days in low-vol', loDays.toString(), ((loDays/rollVol.length)*100).toFixed(0) + '% of period', '#16A34A') +
       '</div>';
   };
 
@@ -17277,8 +17269,8 @@ setTimeout(() => {
   ];
 
   function _qlxHero(){
-    return '<div class="qz-page-hero" style="background:linear-gradient(135deg, rgba(138,106,40,0.06), rgba(47,110,122,0.03));border:1px solid rgba(138,106,40,0.18);border-radius:14px;padding:22px 26px;margin-bottom:18px;position:relative;overflow:hidden;">' +
-      '<div style="position:absolute;inset:0;background:radial-gradient(circle at 85% 30%, rgba(47,110,122,0.08), transparent 55%);pointer-events:none;"></div>' +
+    return '<div class="qz-page-hero" style="background:linear-gradient(135deg, rgba(15,118,110,0.06), rgba(15,118,110,0.03));border:1px solid rgba(15,118,110,0.18);border-radius:14px;padding:22px 26px;margin-bottom:18px;position:relative;overflow:hidden;">' +
+      '<div style="position:absolute;inset:0;background:radial-gradient(circle at 85% 30%, rgba(15,118,110,0.08), transparent 55%);pointer-events:none;"></div>' +
       '<div style="position:relative;display:flex;align-items:center;gap:18px;flex-wrap:wrap;">' +
         // Icon block intentionally removed — single brand mark policy
         '<div style="flex:1;min-width:240px;">' +
@@ -17286,8 +17278,8 @@ setTimeout(() => {
           '<div style="font-size:12.5px;color:var(--text-muted);margin-top:2px;">Institutional research workbench · Factor models · Portfolio optimization · Risk · Backtests</div>' +
         '</div>' +
         '<div style="display:flex;gap:6px;flex-wrap:wrap;">' +
-          '<span style="font-size:9.5px;letter-spacing:0.1em;font-weight:600;font-family:var(--font-mono);padding:4px 9px;border-radius:4px;background:rgba(0,224,124,0.10);border:1px solid rgba(0,224,124,0.3);color:#00E07C;">SECURE-PROXY</span>' +
-          '<span style="font-size:9.5px;letter-spacing:0.1em;font-weight:600;font-family:var(--font-mono);padding:4px 9px;border-radius:4px;background:rgba(138,106,40,0.10);border:1px solid rgba(138,106,40,0.3);color:#8A6A28;">10 TOOLS</span>' +
+          '<span style="font-size:9.5px;letter-spacing:0.1em;font-weight:600;font-family:var(--font-mono);padding:4px 9px;border-radius:4px;background:rgba(22,163,74,0.10);border:1px solid rgba(22,163,74,0.3);color:#16A34A;">SECURE-PROXY</span>' +
+          '<span style="font-size:9.5px;letter-spacing:0.1em;font-weight:600;font-family:var(--font-mono);padding:4px 9px;border-radius:4px;background:rgba(15,118,110,0.10);border:1px solid rgba(15,118,110,0.3);color:#0F766E;">10 TOOLS</span>' +
         '</div>' +
       '</div>' +
     '</div>';
@@ -17421,15 +17413,15 @@ setTimeout(() => {
     modal.id = 'qz-pimport-modal';
     modal.style.cssText = 'position:fixed;inset:0;background:rgba(255,255,255,0.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;';
     modal.innerHTML =
-      '<div style="background:#FBFAF7;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:28px;max-width:680px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 30px 80px rgba(0,0,0,0.5);">' +
+      '<div style="background:#FFFFFF;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:28px;max-width:680px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 30px 80px rgba(0,0,0,0.5);">' +
         '<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:18px;">' +
           '<div><div style="font-size:18px;font-weight:700;color:#fff;letter-spacing:-0.01em;">Import Portfolio</div><div style="font-size:12px;color:var(--text-muted);margin-top:3px;">Upload a CSV exported from your broker. We will preview before committing.</div></div>' +
           '<button onclick="document.getElementById(\'qz-pimport-modal\').style.display=\'none\'" style="background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--text-muted);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;">Close</button>' +
         '</div>' +
         '<div id="qz-pimport-stage1">' +
           '<label style="display:block;font-size:11px;color:var(--text-muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Select CSV or TSV file</label>' +
-          '<input type="file" id="qz-pimport-file" accept=".csv,.tsv,.txt" style="width:100%;padding:14px;background:rgba(255,255,255,0.4);border:1px dashed rgba(138,106,40,0.4);border-radius:10px;color:#fff;cursor:pointer;">' +
-          '<div style="margin-top:14px;padding:12px;background:rgba(47,110,122,0.04);border-left:3px solid var(--accent-2);border-radius:6px;font-size:11px;color:var(--text-secondary);line-height:1.6;">' +
+          '<input type="file" id="qz-pimport-file" accept=".csv,.tsv,.txt" style="width:100%;padding:14px;background:rgba(255,255,255,0.4);border:1px dashed rgba(15,118,110,0.4);border-radius:10px;color:#fff;cursor:pointer;">' +
+          '<div style="margin-top:14px;padding:12px;background:rgba(15,118,110,0.04);border-left:3px solid var(--accent-2);border-radius:6px;font-size:11px;color:var(--text-secondary);line-height:1.6;">' +
             '<strong style="color:#fff;">Expected columns:</strong> ticker · quantity · cost_basis (or avg_cost / price_paid).<br>' +
             'Optional: purchase_date. Common broker exports from Fidelity, Schwab, Robinhood, Vanguard are auto-detected.' +
           '</div>' +
@@ -17457,7 +17449,7 @@ setTimeout(() => {
   function renderError(msg) {
     document.getElementById('qz-pimport-stage2').style.display = '';
     document.getElementById('qz-pimport-stage2').innerHTML =
-      '<div style="padding:14px;background:rgba(255,61,74,0.06);border:1px solid rgba(255,61,74,0.3);border-radius:8px;color:#FF3D4A;font-size:13px;">' + msg + '</div>';
+      '<div style="padding:14px;background:rgba(220,38,38,0.06);border:1px solid rgba(220,38,38,0.3);border-radius:8px;color:#DC2626;font-size:13px;">' + msg + '</div>';
   }
 
   function renderPreview(rows) {
@@ -17471,7 +17463,7 @@ setTimeout(() => {
     var hasDups = Object.keys(dups).filter(function(k){return dups[k] > 1;});
     var totalValue = good.reduce(function(s,r){return s + r.qty*r.cost;}, 0);
     var tableRows = rows.map(function(r, i){
-      var stat = r.valid ? '<span style="color:#00E07C;">OK</span>' : '<span style="color:#FF3D4A;" title="' + r.errors.join(', ') + '">FAIL</span>';
+      var stat = r.valid ? '<span style="color:#16A34A;">OK</span>' : '<span style="color:#DC2626;" title="' + r.errors.join(', ') + '">FAIL</span>';
       return '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);' + (r.valid?'':'opacity:0.5;') + '">' +
         '<td style="padding:7px 8px;color:var(--text-muted);">' + (i+1) + '</td>' +
         '<td style="padding:7px 8px;font-family:var(--font-mono);font-weight:600;">' + (r.ticker||'—') + '</td>' +
@@ -17483,14 +17475,14 @@ setTimeout(() => {
     }).join('');
     s2.innerHTML =
       '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;">' +
-        _mini('Valid', good.length, '#00E07C') + _mini('Invalid', bad.length, bad.length?'#FF3D4A':'var(--text-secondary)') +
-        _mini('Duplicates', hasDups.length, hasDups.length?'#8A6512':'var(--text-secondary)') +
-        _mini('Total value', '$' + Math.round(totalValue).toLocaleString(), '#8A6A28') +
+        _mini('Valid', good.length, '#16A34A') + _mini('Invalid', bad.length, bad.length?'#DC2626':'var(--text-secondary)') +
+        _mini('Duplicates', hasDups.length, hasDups.length?'#B45309':'var(--text-secondary)') +
+        _mini('Total value', '$' + Math.round(totalValue).toLocaleString(), '#0F766E') +
       '</div>' +
       '<div style="max-height:280px;overflow:auto;border:1px solid rgba(255,255,255,0.05);border-radius:8px;">' +
         '<table class="qz-data" style="width:100%;font-size:12px;"><thead><tr><th>#</th><th style="text-align:left;">TICKER</th><th style="text-align:right;">QTY</th><th style="text-align:right;">COST</th><th style="text-align:right;">VALUE</th><th>STATUS</th></tr></thead><tbody>' + tableRows + '</tbody></table>' +
       '</div>' +
-      (hasDups.length ? '<div style="margin-top:10px;padding:9px 12px;background:rgba(138,101,18,0.08);border-left:3px solid #8A6512;border-radius:6px;font-size:11.5px;color:#A98338;">Duplicate tickers detected: ' + hasDups.join(', ') + '. Quantities will be merged.</div>' : '') +
+      (hasDups.length ? '<div style="margin-top:10px;padding:9px 12px;background:rgba(138,101,18,0.08);border-left:3px solid #B45309;border-radius:6px;font-size:11.5px;color:#14B8A6;">Duplicate tickers detected: ' + hasDups.join(', ') + '. Quantities will be merged.</div>' : '') +
       '<div style="display:flex;gap:10px;margin-top:14px;">' +
         '<button onclick="document.getElementById(\'qz-pimport-stage1\').style.display=\'\';document.getElementById(\'qz-pimport-stage2\').style.display=\'none\';" style="flex:1;padding:11px;background:transparent;border:1px solid rgba(255,255,255,0.12);color:var(--text-secondary);border-radius:8px;cursor:pointer;font-weight:600;">← Back</button>' +
         '<button id="qz-pimport-commit" style="flex:2;padding:11px;background:linear-gradient(135deg,var(--accent),var(--accent-2));border:none;color:#000;border-radius:8px;cursor:pointer;font-weight:700;letter-spacing:0.02em;">Import ' + good.length + ' positions →</button>' +
@@ -18018,12 +18010,12 @@ async function qzCoachReview() {
   var css = document.createElement('style');
   css.id = 'qz-compliance-css';
   css.textContent = [
-    '.qz-disclaimer-banner{display:flex;align-items:center;gap:10px;padding:10px 14px;margin:0 0 14px 0;background:rgba(138,101,18,0.06);border:1px solid rgba(138,101,18,0.22);border-left:3px solid #8A6512;border-radius:8px;font-size:11.5px;color:rgba(255,255,255,0.78);line-height:1.5;letter-spacing:0.005em}',
+    '.qz-disclaimer-banner{display:flex;align-items:center;gap:10px;padding:10px 14px;margin:0 0 14px 0;background:rgba(138,101,18,0.06);border:1px solid rgba(138,101,18,0.22);border-left:3px solid #B45309;border-radius:8px;font-size:11.5px;color:rgba(255,255,255,0.78);line-height:1.5;letter-spacing:0.005em}',
     '.qz-disclaimer-banner .qz-d-icon{flex-shrink:0;font-size:13px;opacity:0.85}',
-    '.qz-disclaimer-banner strong{color:#A98338;font-weight:600}',
+    '.qz-disclaimer-banner strong{color:#14B8A6;font-weight:600}',
     '#qz-global-footer-disclaimer{position:fixed;bottom:0;left:0;right:0;z-index:50;padding:6px 18px;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,0.05);color:rgba(255,255,255,0.45);font-size:10.5px;letter-spacing:0.01em;text-align:center;font-family:var(--font-mono);pointer-events:none}',
-    '#qz-global-footer-disclaimer a{color:rgba(138,106,40,0.7);text-decoration:none;pointer-events:auto}',
-    '#qz-global-footer-disclaimer a:hover{color:#8A6A28}',
+    '#qz-global-footer-disclaimer a{color:rgba(15,118,110,0.7);text-decoration:none;pointer-events:auto}',
+    '#qz-global-footer-disclaimer a:hover{color:#0F766E}',
     '/* Make space at the bottom of every page so footer doesnt cover content */',
     '.page-content,#app .main-content{padding-bottom:48px !important}',
     '@media (max-width: 768px){#qz-global-footer-disclaimer{font-size:9.5px;padding:5px 8px}}',
@@ -18106,16 +18098,16 @@ async function qzCoachReview() {
     '.qz-btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-display);font-size:12.5px;font-weight:600;letter-spacing:0.01em;padding:9px 16px;border-radius:8px;border:none;cursor:pointer;transition:transform 160ms var(--qz-ease),background 160ms var(--qz-ease),box-shadow 160ms var(--qz-ease);user-select:none}',
     '.qz-btn:active{transform:scale(0.97)}',
     '.qz-btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#000}',
-    '.qz-btn-primary:hover{box-shadow:0 0 24px rgba(138,106,40,0.35)}',
+    '.qz-btn-primary:hover{box-shadow:0 0 24px rgba(15,118,110,0.35)}',
     '.qz-btn-ghost{background:transparent;border:1px solid var(--qz-border-default);color:var(--text-secondary)}',
     '.qz-btn-ghost:hover{border-color:var(--qz-border-strong);color:#fff}',
-    '.qz-btn-danger{background:linear-gradient(135deg,#8A2B24,#FF3D4A);color:#fff}',
+    '.qz-btn-danger{background:linear-gradient(135deg,#B91C1C,#DC2626);color:#fff}',
     // Input primitives
     '.qz-input{width:100%;padding:9px 12px;background:rgba(255,255,255,0.4);border:1px solid var(--qz-border-default);border-radius:var(--qz-r-md);color:#fff;font-family:var(--font-mono);font-size:13px;transition:border-color 160ms var(--qz-ease)}',
-    '.qz-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(138,106,40,0.08)}',
+    '.qz-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(15,118,110,0.08)}',
     // Card primitive — for new components only (does not retrofit existing inline styles)
     '.qz-card{background:var(--qz-bg-elevated);border:1px solid var(--qz-border-subtle);border-radius:var(--qz-r-lg);padding:20px;transition:border-color 200ms var(--qz-ease),transform 200ms var(--qz-ease)}',
-    '.qz-card:hover{border-color:rgba(138,106,40,0.22);transform:translateY(-1px)}',
+    '.qz-card:hover{border-color:rgba(15,118,110,0.22);transform:translateY(-1px)}',
     // Page section header (replaces emoji-prefixed h2s in our renders)
     '.qz-section-title{font-family:var(--font-display);font-size:13px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:#fff;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--qz-border-subtle);display:flex;align-items:center;gap:10px}',
     '.qz-section-title::before{content:"";display:inline-block;width:3px;height:14px;background:linear-gradient(180deg,var(--accent),var(--accent-2));border-radius:2px}',
@@ -18124,11 +18116,11 @@ async function qzCoachReview() {
     '.qz-empty-v2 .qz-empty-eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}',
     // Tighter scrollbars
     '.qz-scroll-thin::-webkit-scrollbar{width:6px;height:6px}',
-    '.qz-scroll-thin::-webkit-scrollbar-thumb{background:rgba(138,106,40,0.25);border-radius:3px}',
+    '.qz-scroll-thin::-webkit-scrollbar-thumb{background:rgba(15,118,110,0.25);border-radius:3px}',
     // Replace overly-bright .qz-pill defaults — restrained
     '.qz-pill-v2{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:600;letter-spacing:0.1em;font-family:var(--font-mono);text-transform:uppercase}',
-    '.qz-pill-v2-pos{background:rgba(0,224,124,0.10);border:1px solid rgba(0,224,124,0.3);color:#00E07C}',
-    '.qz-pill-v2-neg{background:rgba(255,61,74,0.10);border:1px solid rgba(255,61,74,0.3);color:#FF3D4A}',
+    '.qz-pill-v2-pos{background:rgba(22,163,74,0.10);border:1px solid rgba(22,163,74,0.3);color:#16A34A}',
+    '.qz-pill-v2-neg{background:rgba(220,38,38,0.10);border:1px solid rgba(220,38,38,0.3);color:#DC2626}',
     '.qz-pill-v2-neutral{background:rgba(255,255,255,0.04);border:1px solid var(--qz-border-default);color:var(--text-secondary)}',
     // Subtle focus ring across all buttons site-wide
     'button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}',
@@ -18158,32 +18150,32 @@ async function qzCoachReview() {
     // Premium scrollbars
     '::-webkit-scrollbar{width:10px;height:10px}',
     '::-webkit-scrollbar-track{background:rgba(255,255,255,0.02)}',
-    '::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgba(138,106,40,0.4),rgba(47,110,122,0.3));border-radius:5px;border:2px solid transparent;background-clip:padding-box}',
-    '::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,rgba(138,106,40,0.7),rgba(47,110,122,0.6));background-clip:padding-box;border:2px solid transparent}',
+    '::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgba(15,118,110,0.4),rgba(15,118,110,0.3));border-radius:5px;border:2px solid transparent;background-clip:padding-box}',
+    '::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,rgba(15,118,110,0.7),rgba(15,118,110,0.6));background-clip:padding-box;border:2px solid transparent}',
     // Premium pills
     '.qz-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:10px;font-weight:600;letter-spacing:0.08em;font-family:var(--font-mono);text-transform:uppercase;transition:transform 200ms cubic-bezier(0.16,1,0.3,1)}',
     '.qz-pill:hover{transform:translateY(-1px)}',
     // Card hover lift with accent rim
     '.qz-card-premium,.ql-card,.qe-feat-card,.intel-card{transition:transform 240ms cubic-bezier(0.16,1,0.3,1),border-color 240ms,box-shadow 240ms !important}',
-    '.qz-card-premium:hover,.ql-card:hover{transform:translateY(-2px);border-color:rgba(138,106,40,0.32) !important;box-shadow:0 12px 32px -12px rgba(138,106,40,0.25),0 0 0 1px rgba(138,106,40,0.18) inset !important}',
+    '.qz-card-premium:hover,.ql-card:hover{transform:translateY(-2px);border-color:rgba(15,118,110,0.32) !important;box-shadow:0 12px 32px -12px rgba(15,118,110,0.25),0 0 0 1px rgba(15,118,110,0.18) inset !important}',
     // Button press feedback
     'button:not(.ql-tab):not(.qzs-tab):not(.pt-tab):active{transform:scale(0.97);transition:transform 90ms ease-out}',
     // Live indicator pulse
     '@keyframes qzLivePulse{0%,100%{opacity:1}50%{opacity:0.5}}',
-    '.qz-live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#00E07C;box-shadow:0 0 8px rgba(0,224,124,0.7);animation:qzLivePulse 1.8s ease-in-out infinite;margin-right:6px;vertical-align:middle}',
+    '.qz-live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#16A34A;box-shadow:0 0 8px rgba(22,163,74,0.7);animation:qzLivePulse 1.8s ease-in-out infinite;margin-right:6px;vertical-align:middle}',
     // Number flash animation (price tick)
-    '@keyframes qzNumFlash{0%{color:#fff;text-shadow:0 0 12px rgba(138,106,40,0.6)}100%{color:inherit;text-shadow:none}}',
+    '@keyframes qzNumFlash{0%{color:#fff;text-shadow:0 0 12px rgba(15,118,110,0.6)}100%{color:inherit;text-shadow:none}}',
     '.pt-price-flash,.qz-num-flash{animation:qzNumFlash 480ms ease-out}',
     // Bloomberg-style data tables
     'table.qz-data,table.pt-positions-table{border-collapse:separate;border-spacing:0;width:100%;font-size:12px}',
     'table.qz-data th,table.pt-positions-table th{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-weight:600;padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.015)}',
     'table.qz-data td,table.pt-positions-table td{padding:11px 12px;border-bottom:1px solid rgba(255,255,255,0.03);font-family:var(--font-mono)}',
     'table.qz-data tbody tr,table.pt-positions-table tbody tr{transition:background 160ms ease-out}',
-    'table.qz-data tbody tr:hover,table.pt-positions-table tbody tr:hover{background:rgba(138,106,40,0.04)}',
+    'table.qz-data tbody tr:hover,table.pt-positions-table tbody tr:hover{background:rgba(15,118,110,0.04)}',
     // Subtle glow on focused inputs site-wide
     'input:focus,select:focus,textarea:focus{outline:none}',
     // Premium gradient text helper
-    '.qz-gradient-text-premium{background:linear-gradient(135deg,#8A6A28,#2C6087,#00E07C);background-size:200% 200%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:qzGradShift 8s ease-in-out infinite}',
+    '.qz-gradient-text-premium{background:linear-gradient(135deg,#0F766E,#1E3A8A,#16A34A);background-size:200% 200%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:qzGradShift 8s ease-in-out infinite}',
     '@keyframes qzGradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}',
     // Tab hover (Quant Lab tabs etc.)
     '.ql-tab:hover{color:#fff !important}',
@@ -18292,11 +18284,11 @@ async function qzCoachReview() {
   var SVG_EMBLEM = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">' +
     '<defs>' +
       '<linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
-        '<stop offset="0" stop-color="#A98338"/>' +
-        '<stop offset="1" stop-color="#2F6E7A"/>' +
+        '<stop offset="0" stop-color="#14B8A6"/>' +
+        '<stop offset="1" stop-color="#0F766E"/>' +
       '</linearGradient>' +
       '<linearGradient id="m" x1="0" y1="0" x2="0" y2="1">' +
-        '<stop offset="0" stop-color="#1A1714"/>' +
+        '<stop offset="0" stop-color="#111827"/>' +
         '<stop offset="1" stop-color="#8B8B85"/>' +
       '</linearGradient>' +
     '</defs>' +
@@ -18308,14 +18300,14 @@ async function qzCoachReview() {
     '<line x1="2" y1="32" x2="14" y2="32" stroke="url(#g)" stroke-width="0.8" opacity="0.55"/>' +
     '<line x1="6" y1="26" x2="14" y2="32" stroke="url(#g)" stroke-width="0.8" opacity="0.55"/>' +
     '<line x1="6" y1="38" x2="14" y2="32" stroke="url(#g)" stroke-width="0.8" opacity="0.55"/>' +
-    '<circle cx="2" cy="32" r="1.5" fill="#2F6E7A"/>' +
-    '<circle cx="6" cy="26" r="1.2" fill="#2F6E7A"/>' +
-    '<circle cx="6" cy="38" r="1.2" fill="#2F6E7A"/>' +
+    '<circle cx="2" cy="32" r="1.5" fill="#0F766E"/>' +
+    '<circle cx="6" cy="26" r="1.2" fill="#0F766E"/>' +
+    '<circle cx="6" cy="38" r="1.2" fill="#0F766E"/>' +
     // Central node — stylized "E" inside the circle
     '<path d="M 26 26 L 38 26 L 38 28.5 L 28.5 28.5 L 28.5 30.8 L 35 30.8 L 35 33.3 L 28.5 33.3 L 28.5 35.6 L 38 35.6 L 38 38 L 26 38 Z" fill="url(#m)"/>' +
     // Right-side accent (mirrored circuit)
     '<line x1="50" y1="32" x2="62" y2="32" stroke="url(#g)" stroke-width="0.8" opacity="0.35"/>' +
-    '<circle cx="62" cy="32" r="1.2" fill="#A98338" opacity="0.7"/>' +
+    '<circle cx="62" cy="32" r="1.2" fill="#14B8A6" opacity="0.7"/>' +
   '</svg>';
   var SVG_DATA_URI = 'data:image/svg+xml;utf8,' + encodeURIComponent(SVG_EMBLEM);
 
@@ -18347,15 +18339,15 @@ async function qzCoachReview() {
         .sidebar .sidebar-logo .logo-icon {
           background: #FFFFFF url("${markSrc}") no-repeat ${posSmall} / ${sizeSmall} !important;
           border-radius: 7px !important;
-          box-shadow: 0 4px 18px rgba(138,106,40,0.18), 0 0 0 1px rgba(26,23,20,0.06) inset !important;
+          box-shadow: 0 4px 18px rgba(15,118,110,0.18), 0 0 0 1px rgba(17,24,39,0.06) inset !important;
         }
         .sidebar .sidebar-logo .logo-icon::after { content: "" !important; display: none !important; }
 
         /* Copilot dock */
         #qz-copilot-dock {
           background: #FFFFFF url("${markSrc}") no-repeat ${posSmall} / ${sizeSmall} !important;
-          border: 1px solid rgba(138,106,40,0.4) !important;
-          box-shadow: 0 8px 28px rgba(0,0,0,0.5), 0 0 24px rgba(138,106,40,0.22), 0 0 0 1px rgba(255,255,255,0.05) inset !important;
+          border: 1px solid rgba(15,118,110,0.4) !important;
+          box-shadow: 0 8px 28px rgba(0,0,0,0.5), 0 0 24px rgba(15,118,110,0.22), 0 0 0 1px rgba(255,255,255,0.05) inset !important;
         }
         #qz-copilot-dock .qz-cop-mono { display: none !important; }
 
@@ -18369,7 +18361,7 @@ async function qzCoachReview() {
         .qz-mentor-avatar {
           background: #FFFFFF url("${markSrc}") no-repeat ${posSmall} / ${sizeSmall} !important;
           font-size: 0 !important; color: transparent !important;
-          box-shadow: 0 4px 14px rgba(138,106,40,0.25) !important;
+          box-shadow: 0 4px 14px rgba(15,118,110,0.25) !important;
         }
 
         /* Quest panel mono */
@@ -18400,26 +18392,26 @@ async function qzCoachReview() {
       .qz-xp-toast {
         min-width: 260px !important;
         padding: 14px 18px !important;
-        background: linear-gradient(135deg, #FBFAF7, #FFFFFF) !important;
-        border: 1px solid rgba(138,106,40,0.35) !important;
+        background: linear-gradient(135deg, #FFFFFF, #FFFFFF) !important;
+        border: 1px solid rgba(15,118,110,0.35) !important;
         border-radius: 12px !important;
-        box-shadow: 0 16px 40px rgba(0,0,0,0.55), 0 0 24px rgba(138,106,40,0.18) !important;
+        box-shadow: 0 16px 40px rgba(0,0,0,0.55), 0 0 24px rgba(15,118,110,0.18) !important;
         position: relative;
         overflow: hidden;
       }
       .qz-xp-toast::before {
         content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%;
-        background: linear-gradient(180deg, #A98338, #2F6E7A);
+        background: linear-gradient(180deg, #14B8A6, #0F766E);
       }
       .qz-xp-toast-amt {
         font-size: 17px !important;
-        color: #A98338 !important;
+        color: #14B8A6 !important;
         font-family: 'DM Mono', monospace !important;
         font-weight: 700 !important;
       }
       .qz-xp-toast-lbl {
         font-size: 12px !important;
-        color: rgba(26,23,20,0.85) !important;
+        color: rgba(17,24,39,0.85) !important;
         font-family: 'DM Sans', sans-serif !important;
       }
 
@@ -18431,12 +18423,12 @@ async function qzCoachReview() {
         background: rgba(255,255,255,0.98) !important;
         box-shadow:
           0 40px 100px rgba(0,0,0,0.65),
-          0 0 80px rgba(138,106,40,0.32),
-          0 0 0 1px rgba(138,106,40,0.4) inset !important;
+          0 0 80px rgba(15,118,110,0.32),
+          0 0 0 1px rgba(15,118,110,0.4) inset !important;
       }
       .qz-lu-lvl {
         font-size: 84px !important;
-        background: linear-gradient(135deg, #A98338 0%, #2F6E7A 100%) !important;
+        background: linear-gradient(135deg, #14B8A6 0%, #0F766E 100%) !important;
         -webkit-background-clip: text !important;
         background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
@@ -18447,22 +18439,22 @@ async function qzCoachReview() {
         font-size: 26px !important;
         font-weight: 500 !important;
         letter-spacing: -0.02em !important;
-        color: #1A1714 !important;
+        color: #111827 !important;
       }
       .qz-lu-eyebrow {
         font-family: 'DM Mono', monospace !important;
         font-size: 11.5px !important;
         letter-spacing: 0.24em !important;
-        color: #A98338 !important;
+        color: #14B8A6 !important;
       }
       .qz-lu-btn {
-        background: linear-gradient(180deg, #A98338, #8A6A28) !important;
+        background: linear-gradient(180deg, #14B8A6, #0F766E) !important;
         color: #0A0A0B !important;
         font-family: 'DM Sans', sans-serif !important;
         font-weight: 700 !important;
         padding: 13px 32px !important;
         border-radius: 7px !important;
-        box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset, 0 8px 22px -8px rgba(138,106,40,0.5) !important;
+        box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset, 0 8px 22px -8px rgba(15,118,110,0.5) !important;
       }
 
       /* Confetti-style burst from center on level-up */
@@ -18475,21 +18467,21 @@ async function qzCoachReview() {
       /* Progress widget — make XP bar more prominent */
       .qz-rpg-w-bar {
         height: 5px !important;
-        background: rgba(26,23,20,0.06) !important;
+        background: rgba(17,24,39,0.06) !important;
       }
       .qz-rpg-w-fill {
-        background: linear-gradient(90deg, #A98338, #2F6E7A) !important;
-        box-shadow: 0 0 12px rgba(138,106,40,0.5) !important;
+        background: linear-gradient(90deg, #14B8A6, #0F766E) !important;
+        box-shadow: 0 0 12px rgba(15,118,110,0.5) !important;
       }
       .qz-rpg-widget {
-        background: linear-gradient(135deg, rgba(138,106,40,0.05), rgba(47,110,122,0.03)) !important;
-        border-color: rgba(138,106,40,0.22) !important;
+        background: linear-gradient(135deg, rgba(15,118,110,0.05), rgba(15,118,110,0.03)) !important;
+        border-color: rgba(15,118,110,0.22) !important;
       }
       .qz-rpg-widget:hover {
-        border-color: rgba(138,106,40,0.4) !important;
+        border-color: rgba(15,118,110,0.4) !important;
       }
       .qz-rpg-w-lvl {
-        color: #A98338 !important;
+        color: #14B8A6 !important;
       }
     `;
     document.head.appendChild(rp);
@@ -18515,7 +18507,7 @@ async function qzCoachReview() {
           var cy = Math.sin(angle) * dist;
           p.style.cssText =
             'position: absolute; top: 50%; left: 50%; width: 8px; height: 8px; border-radius: 2px;' +
-            'background: ' + (i % 3 === 0 ? '#A98338' : (i % 3 === 1 ? '#2F6E7A' : '#1A1714')) + ';' +
+            'background: ' + (i % 3 === 0 ? '#14B8A6' : (i % 3 === 1 ? '#0F766E' : '#111827')) + ';' +
             'pointer-events: none;' +
             '--cx: ' + cx + 'px; --cy: ' + cy + 'px;' +
             'animation: qeConfetti 1400ms cubic-bezier(0.22, 1, 0.36, 1) forwards;';
@@ -18582,7 +18574,7 @@ async function qzCoachReview() {
       #qe-scroll-progress {
         position: fixed; top: 0; left: 0; right: 0;
         height: 2px; z-index: 99998;
-        background: linear-gradient(90deg, var(--qe-amber, #A98338), var(--qe-cyan, #2F6E7A));
+        background: linear-gradient(90deg, var(--qe-amber, #14B8A6), var(--qe-cyan, #0F766E));
         transform-origin: left center;
         transform: scaleX(0);
         transition: transform 80ms linear;
@@ -18973,8 +18965,8 @@ async function qzCoachReview() {
         .sidebar .sidebar-logo .logo-icon {
           background: #FFFFFF url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
           box-shadow:
-            0 4px 20px rgba(138,106,40,0.18),
-            0 0 0 1px rgba(26,23,20,0.06) inset !important;
+            0 4px 20px rgba(15,118,110,0.18),
+            0 0 0 1px rgba(17,24,39,0.06) inset !important;
         }
         .sidebar .sidebar-logo .logo-icon::after {
           content: "" !important;
@@ -18984,11 +18976,11 @@ async function qzCoachReview() {
         /* ── Copilot floating dock ── */
         #qz-copilot-dock {
           background: #FFFFFF url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
-          border: 1px solid rgba(138,106,40,0.42) !important;
+          border: 1px solid rgba(15,118,110,0.42) !important;
           box-shadow:
             0 8px 28px rgba(0,0,0,0.45),
             0 0 0 1px rgba(255,255,255,0.06) inset,
-            0 0 24px rgba(138,106,40,0.22) !important;
+            0 0 24px rgba(15,118,110,0.22) !important;
         }
         #qz-copilot-dock .qz-cop-mono { display: none !important; }
 
@@ -19004,7 +18996,7 @@ async function qzCoachReview() {
           background: #FFFFFF url('${smallMarkSrc}') no-repeat ${smallPos} / ${smallSize} !important;
           color: transparent !important;
           font-size: 0 !important;
-          box-shadow: 0 4px 14px rgba(138,106,40,0.25) !important;
+          box-shadow: 0 4px 14px rgba(15,118,110,0.25) !important;
         }
 
         /* ── Quest panel level monogram ── */
@@ -19191,13 +19183,13 @@ async function qzCoachReview() {
         }
         #qe-cursor-dot {
           width: 6px; height: 6px; border-radius: 50%;
-          background: #1A1714;
+          background: #111827;
           transform: translate3d(-100px, -100px, 0);
           transition: width 200ms var(--qe-atlas-ease), height 200ms var(--qe-atlas-ease), background 200ms var(--qe-atlas-ease);
         }
         #qe-cursor-ring {
           width: 32px; height: 32px; border-radius: 50%;
-          border: 1px solid rgba(26,23,20,0.6);
+          border: 1px solid rgba(17,24,39,0.6);
           margin-left: -16px; margin-top: -16px;
           transform: translate3d(-100px, -100px, 0);
           transition: transform 400ms var(--qe-atlas-ease), width 300ms var(--qe-atlas-ease), height 300ms var(--qe-atlas-ease), border-color 300ms var(--qe-atlas-ease);
@@ -19208,7 +19200,7 @@ async function qzCoachReview() {
         body.qe-cursor-hover #qe-cursor-ring {
           width: 56px; height: 56px;
           margin-left: -28px; margin-top: -28px;
-          border-color: var(--qe-amber, #A98338);
+          border-color: var(--qe-amber, #14B8A6);
           border-width: 1.5px;
         }
       }
@@ -19434,7 +19426,7 @@ async function qzCoachReview() {
     cs.textContent = `
       #qz-market-clock {
         position: fixed; bottom: 56px; right: 88px; z-index: 99989;
-        background: #FBFAF7;
+        background: #FFFFFF;
         backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
         border: 1px solid rgba(255,255,255,0.06);
         border-radius: 12px;
@@ -19483,11 +19475,11 @@ async function qzCoachReview() {
   function getETNow() {
     return new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
   }
-  var CLOSED = { name: 'CLOSED', color: '#7A7165', bg: 'rgba(122,113,101,0.10)', border: 'rgba(122,113,101,0.28)' };
+  var CLOSED = { name: 'CLOSED', color: '#64748B', bg: 'rgba(122,113,101,0.10)', border: 'rgba(122,113,101,0.28)' };
   var SESSIONS = [
-    { name: 'PREMARKET',  start: 4*60,      end: 9*60+30, color: '#A98338', bg: 'rgba(251,191,36,0.10)', border: 'rgba(251,191,36,0.3)' },
-    { name: 'OPEN',       start: 9*60+30,   end: 16*60,   color: '#00E07C', bg: 'rgba(0,224,124,0.10)', border: 'rgba(0,224,124,0.32)' },
-    { name: 'AFTER-HRS',  start: 16*60,     end: 20*60,   color: '#A98338', bg: 'rgba(251,191,36,0.10)', border: 'rgba(251,191,36,0.3)' },
+    { name: 'PREMARKET',  start: 4*60,      end: 9*60+30, color: '#14B8A6', bg: 'rgba(251,191,36,0.10)', border: 'rgba(251,191,36,0.3)' },
+    { name: 'OPEN',       start: 9*60+30,   end: 16*60,   color: '#16A34A', bg: 'rgba(22,163,74,0.10)', border: 'rgba(22,163,74,0.32)' },
+    { name: 'AFTER-HRS',  start: 16*60,     end: 20*60,   color: '#14B8A6', bg: 'rgba(251,191,36,0.10)', border: 'rgba(251,191,36,0.3)' },
   ];
 
   function currentSession() {
@@ -19587,24 +19579,24 @@ async function qzCoachReview() {
     card.style.cssText = [
       'margin: 14px 0 18px;',
       'padding: 16px 20px;',
-      'background: linear-gradient(135deg, rgba(138,106,40,0.06), rgba(47,110,122,0.03));',
-      'border: 1px solid rgba(138,106,40,0.22);',
+      'background: linear-gradient(135deg, rgba(15,118,110,0.06), rgba(15,118,110,0.03));',
+      'border: 1px solid rgba(15,118,110,0.22);',
       'border-radius: 12px;',
       'display: flex; align-items: center; gap: 16px;',
       'flex-wrap: wrap;',
       done ? 'opacity: 0.72;' : '',
     ].join('');
     card.innerHTML =
-      '<div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#8A6A28,#2C6087);display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:13px;color:#0a0b0e;letter-spacing:-0.04em;flex-shrink:0;">' + c.mono + '</div>' +
+      '<div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#0F766E,#1E3A8A);display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:13px;color:#0a0b0e;letter-spacing:-0.04em;flex-shrink:0;">' + c.mono + '</div>' +
       '<div style="flex:1;min-width:240px;">' +
-        '<div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.14em;color:#8A6A28;font-weight:600;">DAILY CHALLENGE · ' + (done ? 'COMPLETED' : 'ACTIVE') + '</div>' +
+        '<div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.14em;color:#0F766E;font-weight:600;">DAILY CHALLENGE · ' + (done ? 'COMPLETED' : 'ACTIVE') + '</div>' +
         '<div style="font-family:var(--font-display);font-size:16px;font-weight:700;color:#fff;margin-top:2px;letter-spacing:-0.01em;">' + c.title + '</div>' +
         '<div style="font-size:12.5px;color:var(--text-muted);margin-top:3px;line-height:1.5;">' + c.text + '</div>' +
       '</div>' +
       (done
-        ? '<div style="font-family:var(--font-mono);font-size:11px;color:#00E07C;font-weight:600;letter-spacing:0.06em;flex-shrink:0;">DONE  +' + c.xp + ' XP</div>'
+        ? '<div style="font-family:var(--font-mono);font-size:11px;color:#16A34A;font-weight:600;letter-spacing:0.06em;flex-shrink:0;">DONE  +' + c.xp + ' XP</div>'
         : '<button id="qz-dc-start" style="padding:10px 18px;background:linear-gradient(135deg,var(--accent),var(--accent-2));border:none;border-radius:8px;color:#000;font-weight:700;font-size:12.5px;cursor:pointer;letter-spacing:0.02em;flex-shrink:0;">Start →</button>' +
-        '<div style="font-family:var(--font-mono);font-size:11px;color:#00E07C;font-weight:600;letter-spacing:0.06em;flex-shrink:0;">+' + c.xp + ' XP</div>'
+        '<div style="font-family:var(--font-mono);font-size:11px;color:#16A34A;font-weight:600;letter-spacing:0.06em;flex-shrink:0;">+' + c.xp + ' XP</div>'
       );
 
     // Wire the Start button
@@ -19659,9 +19651,9 @@ async function qzCoachReview() {
     var streak = (typeof qzAcademy === 'object') ? qzAcademy.streak().days : 0;
     var sess = currentSession();
     strip.innerHTML =
-      tile('LEVEL', 'L' + rpg.level, (lvl ? lvl.title : ''), '#8A6A28') +
-      tile('TOTAL XP', rpg.xp.toLocaleString(), (nxt ? (nxt.xp - rpg.xp).toLocaleString() + ' to next' : 'MAX'), '#2C6087') +
-      tile('STREAK', streak + 'd', streak >= 7 ? 'on fire' : streak >= 2 ? 'keep going' : 'starting', streak >= 7 ? '#A98338' : streak >= 2 ? '#00E07C' : 'var(--text-secondary)') +
+      tile('LEVEL', 'L' + rpg.level, (lvl ? lvl.title : ''), '#0F766E') +
+      tile('TOTAL XP', rpg.xp.toLocaleString(), (nxt ? (nxt.xp - rpg.xp).toLocaleString() + ' to next' : 'MAX'), '#1E3A8A') +
+      tile('STREAK', streak + 'd', streak >= 7 ? 'on fire' : streak >= 2 ? 'keep going' : 'starting', streak >= 7 ? '#14B8A6' : streak >= 2 ? '#16A34A' : 'var(--text-secondary)') +
       tile('MARKET', sess.name, sess.weekend ? 'weekend' : 'NYSE session', sess.color);
     return strip;
   }
@@ -19802,11 +19794,11 @@ async function qzCoachReview() {
     s.textContent = `
       .qz-mentor-card {
         position: fixed; top: 84px; right: 24px; z-index: 99988;
-        width: 340px; background: #FBFAF7;
-        border: 1px solid rgba(138,106,40,0.32);
+        width: 340px; background: #FFFFFF;
+        border: 1px solid rgba(15,118,110,0.32);
         border-radius: 12px; padding: 18px;
         box-shadow: 0 20px 50px rgba(0,0,0,0.5),
-                    0 0 32px rgba(138,106,40,0.15),
+                    0 0 32px rgba(15,118,110,0.15),
                     0 0 0 1px rgba(255,255,255,0.04) inset;
         animation: qzMentorIn 380ms cubic-bezier(0.16,1,0.3,1);
         font-family: var(--font-display, "DM Sans"), sans-serif;
@@ -19820,15 +19812,15 @@ async function qzCoachReview() {
       }
       .qz-mentor-avatar {
         width: 36px; height: 36px; border-radius: 9px;
-        background: linear-gradient(135deg, #8A6A28, #2C6087);
+        background: linear-gradient(135deg, #0F766E, #1E3A8A);
         display: grid; place-items: center; flex-shrink: 0;
         font-family: var(--font-display); font-weight: 800; font-size: 15px;
         color: #0a0b0e; letter-spacing: -0.04em;
-        box-shadow: 0 4px 14px rgba(138,106,40,0.3);
+        box-shadow: 0 4px 14px rgba(15,118,110,0.3);
       }
       .qz-mentor-name {
         font-family: var(--font-mono); font-size: 9.5px;
-        letter-spacing: 0.16em; color: #8A6A28; font-weight: 600;
+        letter-spacing: 0.16em; color: #0F766E; font-weight: 600;
       }
       .qz-mentor-role {
         font-size: 11px; color: var(--text-muted); margin-top: 1px;
@@ -19848,7 +19840,7 @@ async function qzCoachReview() {
         display: inline-flex; align-items: center; gap: 5px;
         margin-top: 12px;
         font-family: var(--font-mono); font-size: 10px;
-        color: #00E07C; letter-spacing: 0.08em; font-weight: 600;
+        color: #16A34A; letter-spacing: 0.08em; font-weight: 600;
       }
       .qz-mentor-actions {
         display: flex; gap: 8px; margin-top: 14px;
@@ -19881,7 +19873,7 @@ async function qzCoachReview() {
         margin-left: 6px; padding: 1px 6px;
         background: rgba(138,101,18,0.10);
         border: 1px solid rgba(138,101,18,0.3);
-        color: #A98338; font-family: var(--font-mono);
+        color: #14B8A6; font-family: var(--font-mono);
         font-size: 9px; letter-spacing: 0.06em; font-weight: 600;
         border-radius: 4px; vertical-align: 1px;
       }
@@ -20042,13 +20034,13 @@ async function qzCoachReview() {
   function showStreakToast(days) {
     var t = document.createElement('div');
     t.className = 'qz-ach-toast';
-    t.style.setProperty('--ach-color', '#A98338');
+    t.style.setProperty('--ach-color', '#14B8A6');
     t.style.position = 'fixed';
     t.style.bottom = '128px';
     t.style.right = '22px';
     t.style.zIndex = '99996';
     t.innerHTML = '<div class="qz-ach-badge">' + days + '</div>' +
-      '<div><div class="qz-ach-eyebrow" style="color:#A98338;">DAILY STREAK</div>' +
+      '<div><div class="qz-ach-eyebrow" style="color:#14B8A6;">DAILY STREAK</div>' +
       '<div class="qz-ach-name">' + days + '-Day Streak</div>' +
       '<div class="qz-ach-desc">Logged in ' + days + ' consecutive days. Compounding works.</div></div>';
     document.body.appendChild(t);
@@ -20245,14 +20237,14 @@ async function qzCoachReview() {
       #qz-copilot-dock {
         position: fixed; bottom: 56px; right: 22px; z-index: 99990;
         width: 52px; height: 52px; border-radius: 13px;
-        background: linear-gradient(135deg, #8A6A28 0%, #2C6087 100%);
+        background: linear-gradient(135deg, #0F766E 0%, #1E3A8A 100%);
         border: none; cursor: pointer; padding: 0;
-        box-shadow: 0 8px 28px rgba(138,106,40,0.32), 0 0 0 1px rgba(255,255,255,0.06) inset;
+        box-shadow: 0 8px 28px rgba(15,118,110,0.32), 0 0 0 1px rgba(255,255,255,0.06) inset;
         display: grid; place-items: center;
         transition: transform 220ms cubic-bezier(0.16,1,0.3,1), box-shadow 220ms;
         animation: qzCopilotPulse 3.4s ease-in-out infinite;
       }
-      #qz-copilot-dock:hover { transform: translateY(-2px) scale(1.04); box-shadow: 0 14px 38px rgba(138,106,40,0.5); }
+      #qz-copilot-dock:hover { transform: translateY(-2px) scale(1.04); box-shadow: 0 14px 38px rgba(15,118,110,0.5); }
       #qz-copilot-dock:active { transform: scale(0.96); }
       #qz-copilot-dock .qz-cop-mono {
         font-family: var(--font-display, "DM Sans"), sans-serif;
@@ -20262,22 +20254,22 @@ async function qzCoachReview() {
       #qz-copilot-dock .qz-cop-online {
         position: absolute; bottom: 6px; right: 6px;
         width: 8px; height: 8px; border-radius: 50%;
-        background: #00E07C; box-shadow: 0 0 8px rgba(0,224,124,0.7);
-        border: 1.5px solid #FBFAF7;
+        background: #16A34A; box-shadow: 0 0 8px rgba(22,163,74,0.7);
+        border: 1.5px solid #FFFFFF;
       }
       @keyframes qzCopilotPulse {
-        0%, 100% { box-shadow: 0 8px 28px rgba(138,106,40,0.32), 0 0 0 0 rgba(138,106,40,0.45); }
-        50%      { box-shadow: 0 8px 28px rgba(138,106,40,0.32), 0 0 0 12px rgba(138,106,40,0); }
+        0%, 100% { box-shadow: 0 8px 28px rgba(15,118,110,0.32), 0 0 0 0 rgba(15,118,110,0.45); }
+        50%      { box-shadow: 0 8px 28px rgba(15,118,110,0.32), 0 0 0 12px rgba(15,118,110,0); }
       }
 
       /* Panel (open state) */
       #qz-copilot-panel {
         position: fixed; bottom: 22px; right: 22px; z-index: 99991;
         width: 400px; height: min(680px, calc(100vh - 60px));
-        background: #FBFAF7; border: 1px solid rgba(138,106,40,0.25);
+        background: #FFFFFF; border: 1px solid rgba(15,118,110,0.25);
         border-radius: 16px; overflow: hidden;
         display: none; flex-direction: column;
-        box-shadow: 0 30px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.05) inset, 0 0 60px rgba(138,106,40,0.12);
+        box-shadow: 0 30px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.05) inset, 0 0 60px rgba(15,118,110,0.12);
         transform-origin: bottom right;
         animation: qzCopilotIn 260ms cubic-bezier(0.16,1,0.3,1);
       }
@@ -20291,11 +20283,11 @@ async function qzCoachReview() {
       .qz-cop-hdr {
         display: flex; align-items: center; gap: 11px;
         padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.05);
-        background: linear-gradient(180deg, rgba(138,106,40,0.05), transparent);
+        background: linear-gradient(180deg, rgba(15,118,110,0.05), transparent);
       }
       .qz-cop-hdr-avatar {
         width: 32px; height: 32px; border-radius: 8px;
-        background: linear-gradient(135deg, #8A6A28, #2C6087);
+        background: linear-gradient(135deg, #0F766E, #1E3A8A);
         display: grid; place-items: center; flex-shrink: 0;
         font-family: var(--font-display); font-weight: 800; font-size: 14px;
         color: #0a0b0e; letter-spacing: -0.04em;
@@ -20305,13 +20297,13 @@ async function qzCoachReview() {
         color: #fff; line-height: 1.1; letter-spacing: -0.005em;
       }
       .qz-cop-hdr-sub {
-        font-family: var(--font-mono); font-size: 10px; color: #00E07C;
+        font-family: var(--font-mono); font-size: 10px; color: #16A34A;
         letter-spacing: 0.1em; margin-top: 2px;
       }
       .qz-cop-hdr-sub::before {
         content: ""; display: inline-block; width: 6px; height: 6px;
-        border-radius: 50%; background: #00E07C; margin-right: 5px;
-        box-shadow: 0 0 6px rgba(0,224,124,0.7); vertical-align: 1px;
+        border-radius: 50%; background: #16A34A; margin-right: 5px;
+        box-shadow: 0 0 6px rgba(22,163,74,0.7); vertical-align: 1px;
       }
       .qz-cop-hdr-btn {
         background: transparent; border: 1px solid rgba(255,255,255,0.08);
@@ -20324,10 +20316,10 @@ async function qzCoachReview() {
       /* Body (welcome OR messages) */
       .qz-cop-body { flex: 1; overflow-y: auto; padding: 16px; scrollbar-width: thin; }
       .qz-cop-body::-webkit-scrollbar { width: 4px; }
-      .qz-cop-body::-webkit-scrollbar-thumb { background: rgba(138,106,40,0.3); border-radius: 2px; }
+      .qz-cop-body::-webkit-scrollbar-thumb { background: rgba(15,118,110,0.3); border-radius: 2px; }
 
       /* Welcome screen */
-      .qz-cop-welcome-eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: #8A6A28; font-weight: 600; }
+      .qz-cop-welcome-eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: #0F766E; font-weight: 600; }
       .qz-cop-welcome-h1 { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: #fff; letter-spacing: -0.015em; margin: 6px 0 4px; line-height: 1.2; }
       .qz-cop-welcome-sub { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 18px; }
       .qz-cop-cap-list { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 16px; }
@@ -20347,16 +20339,16 @@ async function qzCoachReview() {
       .qz-cop-actions { display: flex; flex-direction: column; gap: 6px; }
       .qz-cop-action {
         text-align: left; padding: 11px 13px;
-        background: rgba(138,106,40,0.04);
-        border: 1px solid rgba(138,106,40,0.18);
+        background: rgba(15,118,110,0.04);
+        border: 1px solid rgba(15,118,110,0.18);
         border-radius: 9px; color: #fff;
         font-family: var(--font-display); font-size: 12.5px; font-weight: 500;
         cursor: pointer; transition: all 180ms cubic-bezier(0.16,1,0.3,1);
         letter-spacing: -0.005em;
       }
       .qz-cop-action:hover {
-        background: rgba(138,106,40,0.12);
-        border-color: rgba(138,106,40,0.4);
+        background: rgba(15,118,110,0.12);
+        border-color: rgba(15,118,110,0.4);
         transform: translateY(-1px);
       }
       .qz-cop-action-arrow { float: right; opacity: 0.5; font-family: var(--font-mono); }
@@ -20368,8 +20360,8 @@ async function qzCoachReview() {
         color: var(--text-muted); font-weight: 600; text-transform: uppercase;
         margin-bottom: 5px;
       }
-      .qz-cop-msg-role.user { color: #2C6087; }
-      .qz-cop-msg-role.ai   { color: #8A6A28; }
+      .qz-cop-msg-role.user { color: #1E3A8A; }
+      .qz-cop-msg-role.ai   { color: #0F766E; }
       .qz-cop-msg-bubble {
         font-size: 13px; line-height: 1.6;
         color: rgba(255,255,255,0.9);
@@ -20378,8 +20370,8 @@ async function qzCoachReview() {
         border: 1px solid rgba(255,255,255,0.04);
       }
       .qz-cop-msg.user .qz-cop-msg-bubble {
-        background: rgba(47,110,122,0.05);
-        border-color: rgba(47,110,122,0.15);
+        background: rgba(15,118,110,0.05);
+        border-color: rgba(15,118,110,0.15);
       }
       .qz-cop-msg-bubble strong { color: #fff; font-weight: 600; }
       .qz-cop-msg-bubble em     { color: rgba(255,255,255,0.7); font-style: italic; }
@@ -20387,10 +20379,10 @@ async function qzCoachReview() {
 
       /* Context strip (above input — shows what Copilot knows) */
       .qz-cop-ctx-strip {
-        padding: 7px 14px; background: rgba(47,110,122,0.04);
+        padding: 7px 14px; background: rgba(15,118,110,0.04);
         border-top: 1px solid rgba(255,255,255,0.05);
         font-family: var(--font-mono); font-size: 10px;
-        color: #2F6E7A; letter-spacing: 0.05em;
+        color: #0F766E; letter-spacing: 0.05em;
         display: flex; align-items: center; gap: 6px;
       }
       .qz-cop-ctx-strip::before { content: "CONTEXT"; opacity: 0.6; }
@@ -20852,18 +20844,18 @@ async function qzCoachReview() {
   };
 
   const ACHIEVEMENTS = [
-    { id:'first_position',    name:'Investor',          desc:'Add your first holding',          mono:'I',  color:'#00E07C' },
-    { id:'diversifier',       name:'Diversifier',       desc:'Hold 5+ positions',               mono:'D',  color:'#8A6A28' },
-    { id:'allocator',         name:'Allocator',         desc:'Hold 10+ positions',              mono:'A',  color:'#2C6087' },
-    { id:'quant_apprentice',  name:'Quant Apprentice',  desc:'Run your first backtest',         mono:'QA', color:'#2C6087' },
-    { id:'quant_researcher',  name:'Quant Researcher',  desc:'Run 10 backtests',                mono:'QR', color:'#8A6A28' },
-    { id:'risk_aware',        name:'Risk-Aware',        desc:'Compute VaR for your portfolio',  mono:'R',  color:'#FF3D4A' },
-    { id:'market_analyst',    name:'Market Analyst',    desc:'Read 100 intelligence items',     mono:'MA', color:'#8A6512' },
-    { id:'polymath',          name:'Polymath',          desc:'Use every Quant Lab tool',        mono:'P',  color:'#FF3D4A' },
-    { id:'sentinel',          name:'Sentinel',          desc:'Set 5 price alerts',              mono:'S',  color:'#00E07C' },
-    { id:'orchestrator',      name:'Orchestrator',      desc:'Run the 10-agent orchestrator',   mono:'O',  color:'#8A6A28' },
-    { id:'strategist',        name:'Strategist',        desc:'Reach Level 5',                   mono:'L5', color:'#2C6087' },
-    { id:'master',            name:'Quant Master',      desc:'Reach Level 8',                   mono:'L8', color:'#8A6512' },
+    { id:'first_position',    name:'Investor',          desc:'Add your first holding',          mono:'I',  color:'#16A34A' },
+    { id:'diversifier',       name:'Diversifier',       desc:'Hold 5+ positions',               mono:'D',  color:'#0F766E' },
+    { id:'allocator',         name:'Allocator',         desc:'Hold 10+ positions',              mono:'A',  color:'#1E3A8A' },
+    { id:'quant_apprentice',  name:'Quant Apprentice',  desc:'Run your first backtest',         mono:'QA', color:'#1E3A8A' },
+    { id:'quant_researcher',  name:'Quant Researcher',  desc:'Run 10 backtests',                mono:'QR', color:'#0F766E' },
+    { id:'risk_aware',        name:'Risk-Aware',        desc:'Compute VaR for your portfolio',  mono:'R',  color:'#DC2626' },
+    { id:'market_analyst',    name:'Market Analyst',    desc:'Read 100 intelligence items',     mono:'MA', color:'#B45309' },
+    { id:'polymath',          name:'Polymath',          desc:'Use every Quant Lab tool',        mono:'P',  color:'#DC2626' },
+    { id:'sentinel',          name:'Sentinel',          desc:'Set 5 price alerts',              mono:'S',  color:'#16A34A' },
+    { id:'orchestrator',      name:'Orchestrator',      desc:'Run the 10-agent orchestrator',   mono:'O',  color:'#0F766E' },
+    { id:'strategist',        name:'Strategist',        desc:'Reach Level 5',                   mono:'L5', color:'#1E3A8A' },
+    { id:'master',            name:'Quant Master',      desc:'Reach Level 8',                   mono:'L8', color:'#B45309' },
   ];
 
   function defaultState() {
@@ -20963,68 +20955,68 @@ async function qzCoachReview() {
         pointer-events: none;
       }
       .qz-xp-toast {
-        background: #FBFAF7;
-        border: 1px solid rgba(138,106,40,0.32);
+        background: #FFFFFF;
+        border: 1px solid rgba(15,118,110,0.32);
         border-radius: 10px; padding: 10px 14px;
         display: flex; align-items: center; gap: 10px;
         font-family: var(--font-display, "DM Sans"), sans-serif;
         color: #fff; min-width: 220px;
-        box-shadow: 0 12px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(138,106,40,0.15);
+        box-shadow: 0 12px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(15,118,110,0.15);
         animation: qzXpSlide 360ms cubic-bezier(0.16,1,0.3,1);
       }
       @keyframes qzXpSlide {
         from { transform: translateX(20px); opacity: 0; }
         to   { transform: translateX(0);    opacity: 1; }
       }
-      .qz-xp-toast-amt { font-family: var(--font-mono); font-weight: 700; color: #00E07C; font-size: 14px; }
+      .qz-xp-toast-amt { font-family: var(--font-mono); font-weight: 700; color: #16A34A; font-size: 14px; }
       .qz-xp-toast-lbl { font-size: 11.5px; color: rgba(255,255,255,0.85); }
 
       /* ── Achievement toast ── */
       .qz-ach-toast {
-        background: #FBFAF7;
-        border: 1px solid rgba(138,106,40,0.35);
+        background: #FFFFFF;
+        border: 1px solid rgba(15,118,110,0.35);
         border-radius: 12px; padding: 14px 16px;
         display: flex; align-items: center; gap: 14px;
         min-width: 280px;
-        box-shadow: 0 16px 40px rgba(0,0,0,0.5), 0 0 28px rgba(138,106,40,0.18);
+        box-shadow: 0 16px 40px rgba(0,0,0,0.5), 0 0 28px rgba(15,118,110,0.18);
         animation: qzXpSlide 420ms cubic-bezier(0.16,1,0.3,1);
       }
       .qz-ach-badge {
         width: 44px; height: 44px; border-radius: 10px;
         display: grid; place-items: center; flex-shrink: 0;
         font-family: var(--font-display); font-weight: 800; font-size: 14px;
-        background: linear-gradient(135deg, var(--ach-color, #8A6A28), color-mix(in srgb, var(--ach-color, #8A6A28) 60%, #2C6087));
+        background: linear-gradient(135deg, var(--ach-color, #0F766E), color-mix(in srgb, var(--ach-color, #0F766E) 60%, #1E3A8A));
         color: #0a0b0e; letter-spacing: -0.04em;
-        box-shadow: 0 4px 14px color-mix(in srgb, var(--ach-color, #8A6A28) 40%, transparent);
+        box-shadow: 0 4px 14px color-mix(in srgb, var(--ach-color, #0F766E) 40%, transparent);
       }
-      .qz-ach-eyebrow { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.14em; color: var(--ach-color, #8A6A28); font-weight: 600; }
+      .qz-ach-eyebrow { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.14em; color: var(--ach-color, #0F766E); font-weight: 600; }
       .qz-ach-name { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: #fff; margin-top: 2px; }
       .qz-ach-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
       /* ── Level-up celebration (center modal) ── */
       #qz-levelup-overlay {
         position: fixed; inset: 0; z-index: 99997;
-        background: radial-gradient(circle at center, rgba(138,106,40,0.15), rgba(255,255,255,0.92));
+        background: radial-gradient(circle at center, rgba(15,118,110,0.15), rgba(255,255,255,0.92));
         backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
         display: grid; place-items: center;
         animation: qzLuFade 320ms cubic-bezier(0.16,1,0.3,1);
       }
       @keyframes qzLuFade { from { opacity: 0; } to { opacity: 1; } }
       .qz-lu-card {
-        background: #FBFAF7;
-        border: 1px solid rgba(138,106,40,0.35);
+        background: #FFFFFF;
+        border: 1px solid rgba(15,118,110,0.35);
         border-radius: 18px; padding: 36px 44px;
         text-align: center; min-width: 380px;
-        box-shadow: 0 30px 80px rgba(0,0,0,0.5), 0 0 60px rgba(138,106,40,0.2);
+        box-shadow: 0 30px 80px rgba(0,0,0,0.5), 0 0 60px rgba(15,118,110,0.2);
         animation: qzLuPop 480ms cubic-bezier(0.16,1,0.3,1);
       }
       @keyframes qzLuPop {
         from { transform: scale(0.92); opacity: 0; }
         to   { transform: scale(1);    opacity: 1; }
       }
-      .qz-lu-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; color: #00E07C; font-weight: 600; }
+      .qz-lu-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; color: #16A34A; font-weight: 600; }
       .qz-lu-lvl { font-family: var(--font-display); font-size: 64px; font-weight: 800; line-height: 1; margin: 14px 0 6px;
-        background: linear-gradient(135deg, #8A6A28 0%, #2C6087 100%);
+        background: linear-gradient(135deg, #0F766E 0%, #1E3A8A 100%);
         -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
         letter-spacing: -0.04em; }
       .qz-lu-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
@@ -21034,24 +21026,24 @@ async function qzCoachReview() {
       /* ── Sidebar progress widget (above user row) ── */
       .qz-rpg-widget {
         margin: 10px 16px 6px; padding: 11px 12px;
-        background: rgba(138,106,40,0.04);
-        border: 1px solid rgba(138,106,40,0.18);
+        background: rgba(15,118,110,0.04);
+        border: 1px solid rgba(15,118,110,0.18);
         border-radius: 9px;
         cursor: pointer;
         transition: border-color 200ms ease, transform 200ms ease;
       }
-      .qz-rpg-widget:hover { border-color: rgba(138,106,40,0.4); transform: translateY(-1px); }
+      .qz-rpg-widget:hover { border-color: rgba(15,118,110,0.4); transform: translateY(-1px); }
       .qz-rpg-w-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-      .qz-rpg-w-lvl { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; color: #8A6A28; font-weight: 600; }
+      .qz-rpg-w-lvl { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; color: #0F766E; font-weight: 600; }
       .qz-rpg-w-xp  { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); }
       .qz-rpg-w-title { font-family: var(--font-display); font-size: 12.5px; font-weight: 600; color: #fff; margin-bottom: 8px; letter-spacing: -0.005em; }
       .qz-rpg-w-bar { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
       .qz-rpg-w-fill {
         height: 100%;
-        background: linear-gradient(90deg, #8A6A28, #2C6087);
+        background: linear-gradient(90deg, #0F766E, #1E3A8A);
         border-radius: 2px;
         transition: width 600ms cubic-bezier(0.16,1,0.3,1);
-        box-shadow: 0 0 10px rgba(138,106,40,0.4);
+        box-shadow: 0 0 10px rgba(15,118,110,0.4);
       }
 
       /* ── Quest panel modal ── */
@@ -21064,7 +21056,7 @@ async function qzCoachReview() {
       }
       #qz-quest-modal-back.open { display: flex; }
       .qz-quest-modal {
-        background: #FBFAF7; border: 1px solid rgba(255,255,255,0.06);
+        background: #FFFFFF; border: 1px solid rgba(255,255,255,0.06);
         border-radius: 16px; max-width: 680px; width: 100%;
         max-height: 86vh; overflow: auto; padding: 28px;
         box-shadow: 0 30px 80px rgba(0,0,0,0.5);
@@ -21072,7 +21064,7 @@ async function qzCoachReview() {
       .qz-quest-hdr { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
       .qz-quest-lvl-stack { font-family: var(--font-display); font-size: 24px; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
       .qz-quest-mono { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px;
-        border-radius: 9px; background: linear-gradient(135deg, #8A6A28, #2C6087); color: #0a0b0e;
+        border-radius: 9px; background: linear-gradient(135deg, #0F766E, #1E3A8A); color: #0a0b0e;
         font-family: var(--font-display); font-weight: 800; font-size: 14px; letter-spacing: -0.04em; margin-right: 10px; }
       .qz-quest-tab-row { display: flex; gap: 0; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 14px; }
       .qz-quest-tab { padding: 10px 16px; background: transparent; border: none; cursor: pointer;
@@ -21087,19 +21079,19 @@ async function qzCoachReview() {
       }
       .qz-quest-item.done { opacity: 0.55; }
       .qz-quest-check { width: 22px; height: 22px; border-radius: 50%;
-        border: 1.5px solid rgba(138,106,40,0.4);
+        border: 1.5px solid rgba(15,118,110,0.4);
         display: grid; place-items: center; flex-shrink: 0;
         font-size: 12px; color: transparent; }
-      .qz-quest-item.done .qz-quest-check { background: #00E07C; border-color: #00E07C; color: #0a0b0e; }
+      .qz-quest-item.done .qz-quest-check { background: #16A34A; border-color: #16A34A; color: #0a0b0e; }
       .qz-quest-item.done .qz-quest-check::after { content: "✓"; font-weight: 700; }
       .qz-quest-text { flex: 1; font-size: 13px; color: rgba(255,255,255,0.9); }
-      .qz-quest-xp { font-family: var(--font-mono); font-size: 11px; color: #8A6A28; font-weight: 600; letter-spacing: 0.04em; }
+      .qz-quest-xp { font-family: var(--font-mono); font-size: 11px; color: #0F766E; font-weight: 600; letter-spacing: 0.04em; }
 
       .qz-ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
       .qz-ach-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
         border-radius: 10px; padding: 14px; text-align: center; transition: all 220ms cubic-bezier(0.16,1,0.3,1); }
       .qz-ach-card.locked { opacity: 0.4; filter: grayscale(0.5); }
-      .qz-ach-card:not(.locked):hover { transform: translateY(-2px); border-color: rgba(138,106,40,0.3); }
+      .qz-ach-card:not(.locked):hover { transform: translateY(-2px); border-color: rgba(15,118,110,0.3); }
       .qz-ach-card .qz-ach-badge { margin: 0 auto 8px; }
 
       /* ── Portfolio Add v2 Modal ── */
@@ -21109,7 +21101,7 @@ async function qzCoachReview() {
         display: none; align-items: center; justify-content: center; padding: 24px;
       }
       #qz-padd-back.open { display: flex; }
-      .qz-padd { background: #FBFAF7; border: 1px solid rgba(255,255,255,0.06);
+      .qz-padd { background: #FFFFFF; border: 1px solid rgba(255,255,255,0.06);
         border-radius: 16px; max-width: 640px; width: 100%; max-height: 90vh; overflow: auto;
         padding: 26px; box-shadow: 0 30px 80px rgba(0,0,0,0.55); }
       .qz-padd-hdr { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
@@ -21122,13 +21114,13 @@ async function qzCoachReview() {
       .qz-padd-tab.active { color: #fff; border-bottom-color: var(--accent); }
       .qz-padd-pane { min-height: 240px; }
       .qz-padd-search-input { width: 100%; padding: 12px 14px; background: rgba(255,255,255,0.4);
-        border: 1px solid rgba(138,106,40,0.3); border-radius: 9px; color: #fff;
+        border: 1px solid rgba(15,118,110,0.3); border-radius: 9px; color: #fff;
         font-size: 14px; font-family: var(--font-display); transition: border-color 160ms; }
-      .qz-padd-search-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(138,106,40,0.1); }
+      .qz-padd-search-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(15,118,110,0.1); }
       .qz-padd-result { display: flex; align-items: center; gap: 12px; padding: 10px 12px;
         background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
         border-radius: 8px; margin-top: 6px; cursor: pointer; transition: all 160ms ease; }
-      .qz-padd-result:hover { background: rgba(138,106,40,0.06); border-color: rgba(138,106,40,0.25); }
+      .qz-padd-result:hover { background: rgba(15,118,110,0.06); border-color: rgba(15,118,110,0.25); }
       .qz-padd-result-tk { font-family: var(--font-mono); font-weight: 700; font-size: 13px; color: #fff; min-width: 60px; }
       .qz-padd-result-nm { flex: 1; font-size: 12.5px; color: rgba(255,255,255,0.8); }
       .qz-padd-result-ex { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-muted); }
@@ -21141,8 +21133,8 @@ async function qzCoachReview() {
         margin-top: 12px; letter-spacing: 0.02em; transition: transform 160ms ease; }
       .qz-padd-btn:active { transform: scale(0.98); }
       .qz-padd-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-      .qz-padd-preview { margin-top: 12px; padding: 12px; background: rgba(0,224,124,0.06);
-        border: 1px solid rgba(0,224,124,0.22); border-radius: 9px; }
+      .qz-padd-preview { margin-top: 12px; padding: 12px; background: rgba(22,163,74,0.06);
+        border: 1px solid rgba(22,163,74,0.22); border-radius: 9px; }
       .qz-padd-preview-row { display: grid; grid-template-columns: 70px 1fr 80px 80px; gap: 10px; padding: 6px 0;
         font-family: var(--font-mono); font-size: 12px; color: rgba(255,255,255,0.85);
         border-bottom: 1px solid rgba(255,255,255,0.04); }
@@ -21269,7 +21261,7 @@ async function qzCoachReview() {
     '</div>' +
     '<div style="margin-bottom:18px;">' +
       '<div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;color:var(--text-muted);margin-bottom:4px;letter-spacing:0.05em;"><span>' + STATE.xp.toLocaleString() + ' XP TOTAL</span><span>' + (nxt ? 'NEXT: ' + nxt.title + ' @ ' + nxt.xp.toLocaleString() : 'MAX LEVEL') + '</span></div>' +
-      '<div style="height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;"><div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#8A6A28,#2C6087);box-shadow:0 0 12px rgba(138,106,40,0.4);transition:width 600ms cubic-bezier(0.16,1,0.3,1);"></div></div>' +
+      '<div style="height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;"><div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#0F766E,#1E3A8A);box-shadow:0 0 12px rgba(15,118,110,0.4);transition:width 600ms cubic-bezier(0.16,1,0.3,1);"></div></div>' +
     '</div>' +
     '<div class="qz-quest-tab-row">' +
       '<button class="qz-quest-tab ' + (_qPanelTab==='quests'?'active':'') + '" onclick="qzQuestTab(\'quests\')">Active Quests</button>' +
@@ -21378,7 +21370,7 @@ async function qzCoachReview() {
             '<div class="qz-padd-result-tk">' + t + '</div>' +
             '<div class="qz-padd-result-nm">' + nm + '</div>' +
             '<div class="qz-padd-result-ex">' + ex + '</div>' +
-            '<div style="font-size:11px;color:#8A6A28;">+ Add →</div>' +
+            '<div style="font-size:11px;color:#0F766E;">+ Add →</div>' +
           '</div>';
         }).join('');
     }
@@ -21413,7 +21405,7 @@ async function qzCoachReview() {
         '<div class="qz-padd-result-tk">' + s.ticker + '</div>' +
         '<div class="qz-padd-result-nm">' + (s.name || '') + '</div>' +
         '<div class="qz-padd-result-ex">' + (s.exchange || s.asset_type || '') + '</div>' +
-        '<div style="font-size:11px;color:#8A6A28;">$' + (s.price ? s.price.toFixed(2) : '—') + '</div>' +
+        '<div style="font-size:11px;color:#0F766E;">$' + (s.price ? s.price.toFixed(2) : '—') + '</div>' +
       '</div>';
     }).join('');
   }
@@ -21501,15 +21493,15 @@ async function qzCoachReview() {
     var out = document.getElementById('qz-padd-nl-preview');
     if (!out) return;
     if (!positions.length) {
-      out.innerHTML = '<div style="margin-top:12px;padding:12px;background:rgba(255,61,74,0.06);border:1px solid rgba(255,61,74,0.22);border-radius:8px;color:#FF3D4A;font-size:12px;">Could not parse any positions. Try: <em>"I have 15 shares of Apple at 210"</em> or <em>"100 NVDA"</em>.</div>';
+      out.innerHTML = '<div style="margin-top:12px;padding:12px;background:rgba(220,38,38,0.06);border:1px solid rgba(220,38,38,0.22);border-radius:8px;color:#DC2626;font-size:12px;">Could not parse any positions. Try: <em>"I have 15 shares of Apple at 210"</em> or <em>"100 NVDA"</em>.</div>';
       return;
     }
     var rows = positions.map(function(p) {
       var stock = (typeof STOCKS !== 'undefined') && STOCKS.find(function(s){return s.ticker === p.ticker;});
       var cost = p.cost != null ? '$' + p.cost.toFixed(2) : (stock && stock.price ? '$' + stock.price.toFixed(2) + ' (mkt)' : '—');
-      return '<div class="qz-padd-preview-row"><span style="color:#fff;font-weight:600;">' + p.ticker + '</span><span>' + (stock ? stock.name : '') + '</span><span style="text-align:right;">' + p.qty + ' sh</span><span style="text-align:right;color:#00E07C;">' + cost + '</span></div>';
+      return '<div class="qz-padd-preview-row"><span style="color:#fff;font-weight:600;">' + p.ticker + '</span><span>' + (stock ? stock.name : '') + '</span><span style="text-align:right;">' + p.qty + ' sh</span><span style="text-align:right;color:#16A34A;">' + cost + '</span></div>';
     }).join('');
-    out.innerHTML = '<div class="qz-padd-preview"><div style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.12em;color:#00E07C;margin-bottom:8px;">DETECTED ' + positions.length + ' POSITION' + (positions.length>1?'S':'') + '</div>' + rows + '<button class="qz-padd-btn" onclick="qzPAddCommitNL()">Confirm & Add →</button></div>';
+    out.innerHTML = '<div class="qz-padd-preview"><div style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.12em;color:#16A34A;margin-bottom:8px;">DETECTED ' + positions.length + ' POSITION' + (positions.length>1?'S':'') + '</div>' + rows + '<button class="qz-padd-btn" onclick="qzPAddCommitNL()">Confirm & Add →</button></div>';
     window._qzPAddPending = positions;
   }
   window.qzPAddCommitNL = function() {
@@ -21541,15 +21533,15 @@ async function qzCoachReview() {
     var out = document.getElementById('qz-padd-bulk-preview');
     if (!out) return;
     if (!positions.length) {
-      out.innerHTML = '<div style="margin-top:12px;padding:12px;background:rgba(255,61,74,0.06);border:1px solid rgba(255,61,74,0.22);border-radius:8px;color:#FF3D4A;font-size:12px;">Could not parse any lines. Use format: <code>AAPL 10</code> or <code>AAPL 10 192</code>.</div>';
+      out.innerHTML = '<div style="margin-top:12px;padding:12px;background:rgba(220,38,38,0.06);border:1px solid rgba(220,38,38,0.22);border-radius:8px;color:#DC2626;font-size:12px;">Could not parse any lines. Use format: <code>AAPL 10</code> or <code>AAPL 10 192</code>.</div>';
       return;
     }
     var rows = positions.map(function(p) {
       var stock = (typeof STOCKS !== 'undefined') && STOCKS.find(function(s){return s.ticker === p.ticker;});
       var cost = p.cost != null ? '$' + p.cost.toFixed(2) : (stock && stock.price ? '$' + stock.price.toFixed(2) + ' (mkt)' : '—');
-      return '<div class="qz-padd-preview-row"><span style="color:#fff;font-weight:600;">' + p.ticker + '</span><span>' + (stock ? stock.name : '—') + '</span><span style="text-align:right;">' + p.qty + ' sh</span><span style="text-align:right;color:#00E07C;">' + cost + '</span></div>';
+      return '<div class="qz-padd-preview-row"><span style="color:#fff;font-weight:600;">' + p.ticker + '</span><span>' + (stock ? stock.name : '—') + '</span><span style="text-align:right;">' + p.qty + ' sh</span><span style="text-align:right;color:#16A34A;">' + cost + '</span></div>';
     }).join('');
-    out.innerHTML = '<div class="qz-padd-preview"><div style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.12em;color:#00E07C;margin-bottom:8px;">PREVIEW · ' + positions.length + ' LINE' + (positions.length>1?'S':'') + '</div>' + rows + '<button class="qz-padd-btn" onclick="qzPAddCommitBulk()">Add ' + positions.length + ' to Portfolio →</button></div>';
+    out.innerHTML = '<div class="qz-padd-preview"><div style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.12em;color:#16A34A;margin-bottom:8px;">PREVIEW · ' + positions.length + ' LINE' + (positions.length>1?'S':'') + '</div>' + rows + '<button class="qz-padd-btn" onclick="qzPAddCommitBulk()">Add ' + positions.length + ' to Portfolio →</button></div>';
     window._qzPAddPending = positions;
   }
   window.qzPAddCommitBulk = function() {
@@ -21783,7 +21775,7 @@ async function qzCoachReview() {
       st.textContent = [
         // Replace emoji glyph inside .cmd-agent-icon with the data-mono attribute
         '.cmd-agent-icon { font-size: 0 !important; position: relative; min-width: 36px; min-height: 36px; border-radius: 9px !important; display: grid !important; place-items: center !important; overflow: hidden; }',
-        '.cmd-agent-icon[data-mono]::after { content: attr(data-mono); font-family: var(--font-display, "DM Sans"), sans-serif !important; font-size: 13.5px !important; font-weight: 700; color: var(--agent-color, #8A6A28) !important; letter-spacing: -0.03em; line-height: 1; }',
+        '.cmd-agent-icon[data-mono]::after { content: attr(data-mono); font-family: var(--font-display, "DM Sans"), sans-serif !important; font-size: 13.5px !important; font-weight: 700; color: var(--agent-color, #0F766E) !important; letter-spacing: -0.03em; line-height: 1; }',
         // Hide audio waves on idle agents (less noise)
         '.cmd-agent-card:not(.cmd-agent-active) .cmd-agent-wave { display: none !important; }',
         // Tighter card
@@ -21792,12 +21784,12 @@ async function qzCoachReview() {
         '.cmd-agent-role { font-size: 9.5px !important; letter-spacing: 0.1em; opacity: 0.6; }',
         // Follow-up chips
         '.qz-followup-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); }',
-        '.qz-followup-chip { font-size: 10.5px; padding: 4px 10px; border-radius: 5px; background: rgba(138,106,40,0.07); border: 1px solid rgba(138,106,40,0.18); color: #A98338; cursor: pointer; font-family: var(--font-mono); letter-spacing: 0.01em; transition: all 160ms ease; }',
-        '.qz-followup-chip:hover { background: rgba(138,106,40,0.16); border-color: rgba(138,106,40,0.4); color: #fff; transform: translateY(-1px); }',
+        '.qz-followup-chip { font-size: 10.5px; padding: 4px 10px; border-radius: 5px; background: rgba(15,118,110,0.07); border: 1px solid rgba(15,118,110,0.18); color: #14B8A6; cursor: pointer; font-family: var(--font-mono); letter-spacing: 0.01em; transition: all 160ms ease; }',
+        '.qz-followup-chip:hover { background: rgba(15,118,110,0.16); border-color: rgba(15,118,110,0.4); color: #fff; transform: translateY(-1px); }',
         // Chat panel emoji removal (the smiley etc in agent header)
-        '.qz-chat-toolbar [style*="color:rgba(0,224,124,0.6)"] { display: none; }',
+        '.qz-chat-toolbar [style*="color:rgba(22,163,74,0.6)"] { display: none; }',
         // Memory indicator
-        '.qz-mem-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 4px; background: rgba(47,110,122,0.08); border: 1px solid rgba(47,110,122,0.18); color: #2F6E7A; font-size: 9.5px; font-family: var(--font-mono); letter-spacing: 0.06em; font-weight: 600; margin-left: 8px; }',
+        '.qz-mem-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 4px; background: rgba(15,118,110,0.08); border: 1px solid rgba(15,118,110,0.18); color: #0F766E; font-size: 9.5px; font-family: var(--font-mono); letter-spacing: 0.06em; font-weight: 600; margin-left: 8px; }',
       ].join('\n');
       document.head.appendChild(st);
     }
@@ -21969,7 +21961,7 @@ async function qzCoachReview() {
           var cntEl = document.getElementById('cmd-stat-queries');
           if (cntEl && window.cmdState) cntEl.textContent = window.cmdState.queryCount;
           if (typeof _cmdAddFeed === 'function') {
-            _cmdAddFeed('SMART ROUTER','#2C6087','Routed to single specialist: ' + singleId.toUpperCase());
+            _cmdAddFeed('SMART ROUTER','#1E3A8A','Routed to single specialist: ' + singleId.toUpperCase());
           }
           try { await window._cmdRunAgent(singleId, query); } catch(_){}
           if (window.cmdState) window.cmdState.running = false;
@@ -22099,9 +22091,9 @@ async function qzCoachReview() {
       '  font-size: 0 !important;',
       '  width: 30px !important; height: 30px !important;',
       '  min-width: 30px !important; min-height: 30px !important;',
-      '  background: linear-gradient(135deg, #8A6A28 0%, #2C6087 100%) !important;',
+      '  background: linear-gradient(135deg, #0F766E 0%, #1E3A8A 100%) !important;',
       '  border-radius: 7px !important;',
-      '  box-shadow: 0 4px 20px rgba(138,106,40,0.32), 0 0 1px rgba(255,255,255,0.12) inset !important;',
+      '  box-shadow: 0 4px 20px rgba(15,118,110,0.32), 0 0 1px rgba(255,255,255,0.12) inset !important;',
       '  position: relative !important;',
       '  display: inline-block !important;',
       '}',
@@ -22154,8 +22146,8 @@ async function qzCoachReview() {
         notice.className = 'settings-section';
         notice.innerHTML =
           '<div class="settings-section-title">AI Engine</div>' +
-          '<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(0,224,124,0.06);border:1px solid rgba(0,224,124,0.2);border-radius:10px;">' +
-            '<span style="width:9px;height:9px;border-radius:50%;background:#00E07C;box-shadow:0 0 10px rgba(0,224,124,0.7);flex-shrink:0;"></span>' +
+          '<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(22,163,74,0.06);border:1px solid rgba(22,163,74,0.2);border-radius:10px;">' +
+            '<span style="width:9px;height:9px;border-radius:50%;background:#16A34A;box-shadow:0 0 10px rgba(22,163,74,0.7);flex-shrink:0;"></span>' +
             '<div>' +
               '<div style="font-family:var(--font-display),sans-serif;font-size:13px;font-weight:600;color:#fff;letter-spacing:-0.01em;">AI is configured.</div>' +
               '<div style="font-size:11.5px;color:var(--text-muted);margin-top:2px;line-height:1.5;">Queries are routed through Quant Entelloq\'s secure backend. No API keys are stored in your browser or exposed to client code.</div>' +
@@ -22206,7 +22198,7 @@ async function qzCoachReview() {
       position: fixed; inset: 0; z-index: 999999;
       background: #000;
       font-family: 'Fraunces', 'Tiempos Headline', serif;
-      color: #1A1714;
+      color: #111827;
       overflow: hidden;
     }
     #qe-reel-stage {
@@ -22232,7 +22224,7 @@ async function qzCoachReview() {
       font-weight: 500;
       letter-spacing: -0.025em;
       line-height: 1.15;
-      color: #1A1714;
+      color: #111827;
       opacity: 0;
       transition: opacity 320ms cubic-bezier(0.65,0,0.35,1);
       z-index: 100;
@@ -22241,7 +22233,7 @@ async function qzCoachReview() {
     .qe-reel-caption.show { opacity: 1; }
     .qe-reel-caption em {
       font-style: italic;
-      background: linear-gradient(135deg, #8A6A28, #2F6E7A);
+      background: linear-gradient(135deg, #0F766E, #0F766E);
       -webkit-background-clip: text; background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -22251,7 +22243,7 @@ async function qzCoachReview() {
       position: absolute; bottom: calc(10vh + 90px); left: 50%; transform: translateX(-50%);
       font-family: 'DM Mono', monospace;
       font-size: 11px; letter-spacing: 0.32em;
-      color: rgba(26,23,20,0.5);
+      color: rgba(17,24,39,0.5);
       text-transform: uppercase;
       opacity: 0;
       transition: opacity 320ms ease;
@@ -22263,9 +22255,9 @@ async function qzCoachReview() {
     #qe-reel-restart {
       position: fixed; bottom: 7vh; right: 24px;
       z-index: 1000001;
-      padding: 9px 16px; background: rgba(138,106,40,0.12);
-      border: 1px solid rgba(138,106,40,0.4); border-radius: 6px;
-      color: #1A1714; font-family: 'DM Mono', monospace;
+      padding: 9px 16px; background: rgba(15,118,110,0.12);
+      border: 1px solid rgba(15,118,110,0.4); border-radius: 6px;
+      color: #111827; font-family: 'DM Mono', monospace;
       font-size: 11px; letter-spacing: 0.14em;
       text-transform: uppercase; cursor: pointer;
       opacity: 0; transition: opacity 400ms;
@@ -22300,20 +22292,20 @@ async function qzCoachReview() {
     .qe-reel-mark {
       width: 220px; height: 220px;
       border-radius: 36px;
-      background: linear-gradient(135deg, #8A6A28, #2F6E7A);
+      background: linear-gradient(135deg, #0F766E, #0F766E);
       display: grid; place-items: center;
       font-family: 'Fraunces', serif; font-weight: 700;
       font-size: 140px; color: #0A0A0B;
       letter-spacing: -0.04em;
       box-shadow:
         0 0 0 1px rgba(255,255,255,0.18) inset,
-        0 40px 100px rgba(138,106,40,0.45),
-        0 0 200px rgba(47,110,122,0.35);
+        0 40px 100px rgba(15,118,110,0.45),
+        0 0 200px rgba(15,118,110,0.35);
       animation: qeMarkPulse 3s ease-in-out infinite;
     }
     @keyframes qeMarkPulse {
-      0%, 100% { transform: scale(1); box-shadow: 0 0 0 1px rgba(255,255,255,0.18) inset, 0 40px 100px rgba(138,106,40,0.45), 0 0 200px rgba(47,110,122,0.35); }
-      50%      { transform: scale(1.04); box-shadow: 0 0 0 1px rgba(255,255,255,0.22) inset, 0 50px 130px rgba(138,106,40,0.6), 0 0 260px rgba(47,110,122,0.5); }
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 1px rgba(255,255,255,0.18) inset, 0 40px 100px rgba(15,118,110,0.45), 0 0 200px rgba(15,118,110,0.35); }
+      50%      { transform: scale(1.04); box-shadow: 0 0 0 1px rgba(255,255,255,0.22) inset, 0 50px 130px rgba(15,118,110,0.6), 0 0 260px rgba(15,118,110,0.5); }
     }
 
     /* Big wordmark for finale */
@@ -22323,12 +22315,12 @@ async function qzCoachReview() {
       font-size: clamp(80px, 12vw, 180px);
       letter-spacing: -0.04em;
       line-height: 1;
-      color: #1A1714;
+      color: #111827;
       text-align: center;
     }
     .qe-reel-wordmark em {
       font-style: italic;
-      background: linear-gradient(135deg, #8A6A28, #2F6E7A);
+      background: linear-gradient(135deg, #0F766E, #0F766E);
       -webkit-background-clip: text; background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -22336,7 +22328,7 @@ async function qzCoachReview() {
       font-family: 'DM Mono', monospace;
       font-size: clamp(11px, 1.1vw, 14px);
       letter-spacing: 0.36em;
-      color: rgba(26,23,20,0.65);
+      color: rgba(17,24,39,0.65);
       margin-top: 36px;
       text-transform: uppercase;
     }
@@ -22344,19 +22336,19 @@ async function qzCoachReview() {
       font-family: 'DM Mono', monospace;
       font-size: 14px;
       letter-spacing: 0.16em;
-      color: #2F6E7A;
+      color: #0F766E;
       margin-top: 14px;
     }
 
     /* Card mockups for product reveal */
     .qe-reel-card {
       position: absolute;
-      background: rgba(251,250,247,0.96);
-      border: 1px solid rgba(26,23,20,0.08);
+      background: rgba(255,255,255,0.96);
+      border: 1px solid rgba(17,24,39,0.08);
       border-radius: 10px;
       padding: 22px;
       backdrop-filter: blur(20px);
-      box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(138,106,40,0.18);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(15,118,110,0.18);
       opacity: 0;
       transition: opacity 600ms cubic-bezier(0.65,0,0.35,1), transform 600ms cubic-bezier(0.65,0,0.35,1);
     }
@@ -22372,7 +22364,7 @@ async function qzCoachReview() {
       background: repeating-linear-gradient(
         0deg,
         transparent, transparent 2px,
-        rgba(26,23,20,0.012) 2px, rgba(26,23,20,0.012) 4px
+        rgba(17,24,39,0.012) 2px, rgba(17,24,39,0.012) 4px
       );
       mix-blend-mode: overlay;
     }
@@ -22536,7 +22528,7 @@ async function qzCoachReview() {
         size: Math.random() * 2 + 1,
         life: 1,
         decay: 0.003 + Math.random() * 0.005,
-        color: color || (Math.random() > 0.5 ? '138,106,40' : '47,110,122')
+        color: color || (Math.random() > 0.5 ? '15,118,110' : '15,118,110')
       });
     }
   }
@@ -22599,7 +22591,7 @@ async function qzCoachReview() {
       row.className = 'qe-debris-row';
       row.style.top = (10 + i * 14) + 'vh';
       row.style.left = '0';
-      row.style.color = i % 2 === 0 ? '#8A6A28' : '#2F6E7A';
+      row.style.color = i % 2 === 0 ? '#0F766E' : '#0F766E';
       row.style.opacity = '0.35';
       row.style.animationDelay = (i * 0.4) + 's';
       var content = '';
@@ -22671,13 +22663,13 @@ async function qzCoachReview() {
     card.className = 'qe-reel-card';
     card.style.cssText += 'width:680px;max-width:80vw;top:50%;left:50%;transform:translate(-50%,-50%) translateY(20px) scale(0.95);';
     card.innerHTML = `
-      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.22em;color:#8A6A28;text-transform:uppercase;margin-bottom:14px;">— UNITED STATES MARKET</div>
-      <div style="font-family:'Fraunces',serif;font-size:36px;font-weight:500;letter-spacing:-0.02em;line-height:1.15;color:#fff;">AAPL leads US BUYs at <strong style="color:#2F6E7A;">94% confidence</strong></div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.22em;color:#0F766E;text-transform:uppercase;margin-bottom:14px;">— UNITED STATES MARKET</div>
+      <div style="font-family:'Fraunces',serif;font-size:36px;font-weight:500;letter-spacing:-0.02em;line-height:1.15;color:#fff;">AAPL leads US BUYs at <strong style="color:#0F766E;">94% confidence</strong></div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px;">
-        <div><div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.16em;color:rgba(26,23,20,0.5);text-transform:uppercase;">Securities</div><div style="font-family:'DM Mono',monospace;font-size:22px;font-weight:600;color:#fff;margin-top:4px;">149</div></div>
-        <div><div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.16em;color:rgba(26,23,20,0.5);text-transform:uppercase;">Exchanges</div><div style="font-family:'DM Mono',monospace;font-size:22px;font-weight:600;color:#fff;margin-top:4px;">7</div></div>
-        <div><div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.16em;color:rgba(26,23,20,0.5);text-transform:uppercase;">Sentiment</div><div style="font-family:'Fraunces',serif;font-size:22px;font-weight:500;color:#00E07C;margin-top:4px;">Bullish</div></div>
-        <div><div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.16em;color:rgba(26,23,20,0.5);text-transform:uppercase;">Latency</div><div style="font-family:'DM Mono',monospace;font-size:22px;font-weight:600;color:#8A6A28;margin-top:4px;">103ms</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.16em;color:rgba(17,24,39,0.5);text-transform:uppercase;">Securities</div><div style="font-family:'DM Mono',monospace;font-size:22px;font-weight:600;color:#fff;margin-top:4px;">149</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.16em;color:rgba(17,24,39,0.5);text-transform:uppercase;">Exchanges</div><div style="font-family:'DM Mono',monospace;font-size:22px;font-weight:600;color:#fff;margin-top:4px;">7</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.16em;color:rgba(17,24,39,0.5);text-transform:uppercase;">Sentiment</div><div style="font-family:'Fraunces',serif;font-size:22px;font-weight:500;color:#16A34A;margin-top:4px;">Bullish</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.16em;color:rgba(17,24,39,0.5);text-transform:uppercase;">Latency</div><div style="font-family:'DM Mono',monospace;font-size:22px;font-weight:600;color:#0F766E;margin-top:4px;">103ms</div></div>
       </div>
     `;
     stage.appendChild(card);
@@ -22697,9 +22689,9 @@ async function qzCoachReview() {
     var grid = document.createElement('div');
     grid.style.cssText = 'display:grid;grid-template-columns:repeat(3,260px);gap:18px;';
     var cards = [
-      { tag: 'BULLISH', color: '#00E07C', title: 'AI Infrastructure Momentum', body: 'NVDA, AMD, AVGO showing breakout consolidation. Capex cycle accelerating.' },
-      { tag: 'BEARISH', color: '#FF3D4A', title: 'Regional Banks · Credit Stress', body: 'Loan-loss provisions trending up. Watch KRE, RF, ZION.' },
-      { tag: 'MACRO',   color: '#2F6E7A', title: 'Yield Curve · Steepening', body: 'Long-end selloff. Risk-on for cyclicals, drag on long-duration tech.' },
+      { tag: 'BULLISH', color: '#16A34A', title: 'AI Infrastructure Momentum', body: 'NVDA, AMD, AVGO showing breakout consolidation. Capex cycle accelerating.' },
+      { tag: 'BEARISH', color: '#DC2626', title: 'Regional Banks · Credit Stress', body: 'Loan-loss provisions trending up. Watch KRE, RF, ZION.' },
+      { tag: 'MACRO',   color: '#0F766E', title: 'Yield Curve · Steepening', body: 'Long-end selloff. Risk-on for cyclicals, drag on long-duration tech.' },
     ];
     cards.forEach(function(c, i) {
       var card = document.createElement('div');
@@ -22708,7 +22700,7 @@ async function qzCoachReview() {
       card.innerHTML = `
         <div style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:0.18em;color:${c.color};text-transform:uppercase;margin-bottom:10px;">● ${c.tag}</div>
         <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:500;color:#fff;letter-spacing:-0.015em;margin-bottom:8px;">${c.title}</div>
-        <div style="font-size:13px;color:rgba(26,23,20,0.7);line-height:1.5;">${c.body}</div>
+        <div style="font-size:13px;color:rgba(17,24,39,0.7);line-height:1.5;">${c.body}</div>
       `;
       grid.appendChild(card);
       setTimeout(function() { card.classList.add('in'); card.style.transform = 'translateY(0)'; tick(); }, 100 + i * 200);
@@ -22727,13 +22719,13 @@ async function qzCoachReview() {
     card.className = 'qe-reel-card';
     card.style.cssText += 'width:760px;max-width:85vw;top:50%;left:50%;transform:translate(-50%,-50%);padding:30px;';
     card.innerHTML = `
-      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.22em;color:#8A6A28;text-transform:uppercase;margin-bottom:10px;">— 06 — FAMA-FRENCH 3-FACTOR REGRESSION</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.22em;color:#0F766E;text-transform:uppercase;margin-bottom:10px;">— 06 — FAMA-FRENCH 3-FACTOR REGRESSION</div>
       <div style="font-family:'Fraunces',serif;font-size:24px;font-weight:500;color:#fff;letter-spacing:-0.02em;margin-bottom:18px;">AAPL — Factor Loadings</div>
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
-        <div style="background:rgba(26,23,20,0.03);border:1px solid rgba(26,23,20,0.06);border-radius:8px;padding:14px;"><div style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:rgba(26,23,20,0.5);">ALPHA (α, ANNUAL)</div><div style="font-family:'DM Mono',monospace;font-size:26px;font-weight:700;color:#00E07C;margin-top:4px;">19.04%<span style="font-size:14px;">***</span></div><div style="font-size:11px;color:rgba(26,23,20,0.5);margin-top:3px;">t = 2.66 · SE 7.15%</div></div>
-        <div style="background:rgba(26,23,20,0.03);border:1px solid rgba(26,23,20,0.06);border-radius:8px;padding:14px;"><div style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:rgba(26,23,20,0.5);">MARKET β</div><div style="font-family:'DM Mono',monospace;font-size:26px;font-weight:700;color:#8A6A28;margin-top:4px;">1.090<span style="font-size:14px;">***</span></div><div style="font-size:11px;color:rgba(26,23,20,0.5);margin-top:3px;">t = 44.96 · n = 756</div></div>
-        <div style="background:rgba(26,23,20,0.03);border:1px solid rgba(26,23,20,0.06);border-radius:8px;padding:14px;"><div style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:rgba(26,23,20,0.5);">R-SQUARED</div><div style="font-family:'DM Mono',monospace;font-size:26px;font-weight:700;color:#2F6E7A;margin-top:4px;">75.2%</div><div style="font-size:11px;color:rgba(26,23,20,0.5);margin-top:3px;">variance explained</div></div>
-        <div style="background:rgba(26,23,20,0.03);border:1px solid rgba(26,23,20,0.06);border-radius:8px;padding:14px;"><div style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:rgba(26,23,20,0.5);">SHARPE</div><div style="font-family:'DM Mono',monospace;font-size:26px;font-weight:700;color:#fff;margin-top:4px;">2.84</div><div style="font-size:11px;color:rgba(26,23,20,0.5);margin-top:3px;">risk-adjusted</div></div>
+        <div style="background:rgba(17,24,39,0.03);border:1px solid rgba(17,24,39,0.06);border-radius:8px;padding:14px;"><div style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:rgba(17,24,39,0.5);">ALPHA (α, ANNUAL)</div><div style="font-family:'DM Mono',monospace;font-size:26px;font-weight:700;color:#16A34A;margin-top:4px;">19.04%<span style="font-size:14px;">***</span></div><div style="font-size:11px;color:rgba(17,24,39,0.5);margin-top:3px;">t = 2.66 · SE 7.15%</div></div>
+        <div style="background:rgba(17,24,39,0.03);border:1px solid rgba(17,24,39,0.06);border-radius:8px;padding:14px;"><div style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:rgba(17,24,39,0.5);">MARKET β</div><div style="font-family:'DM Mono',monospace;font-size:26px;font-weight:700;color:#0F766E;margin-top:4px;">1.090<span style="font-size:14px;">***</span></div><div style="font-size:11px;color:rgba(17,24,39,0.5);margin-top:3px;">t = 44.96 · n = 756</div></div>
+        <div style="background:rgba(17,24,39,0.03);border:1px solid rgba(17,24,39,0.06);border-radius:8px;padding:14px;"><div style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:rgba(17,24,39,0.5);">R-SQUARED</div><div style="font-family:'DM Mono',monospace;font-size:26px;font-weight:700;color:#0F766E;margin-top:4px;">75.2%</div><div style="font-size:11px;color:rgba(17,24,39,0.5);margin-top:3px;">variance explained</div></div>
+        <div style="background:rgba(17,24,39,0.03);border:1px solid rgba(17,24,39,0.06);border-radius:8px;padding:14px;"><div style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:rgba(17,24,39,0.5);">SHARPE</div><div style="font-family:'DM Mono',monospace;font-size:26px;font-weight:700;color:#fff;margin-top:4px;">2.84</div><div style="font-size:11px;color:rgba(17,24,39,0.5);margin-top:3px;">risk-adjusted</div></div>
       </div>
     `;
     stage.appendChild(card);
@@ -22749,19 +22741,19 @@ async function qzCoachReview() {
     card.style.cssText += 'width:540px;max-width:80vw;top:50%;left:50%;transform:translate(-50%,-50%);padding:28px;';
     card.innerHTML = `
       <div style="display:flex;align-items:center;gap:11px;margin-bottom:18px;">
-        <div style="width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,#8A6A28,#2F6E7A);display:grid;place-items:center;font-family:'Fraunces',serif;font-weight:800;font-size:15px;color:#0A0A0B;">Q</div>
+        <div style="width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,#0F766E,#0F766E);display:grid;place-items:center;font-family:'Fraunces',serif;font-weight:800;font-size:15px;color:#0A0A0B;">Q</div>
         <div>
-          <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.16em;color:#8A6A28;font-weight:600;">QUANT ENTELLOQ COPILOT</div>
-          <div style="font-family:'DM Mono',monospace;font-size:10px;color:#00E07C;margin-top:2px;">● ONLINE</div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.16em;color:#0F766E;font-weight:600;">QUANT ENTELLOQ COPILOT</div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:#16A34A;margin-top:2px;">● ONLINE</div>
         </div>
       </div>
-      <div style="background:rgba(47,110,122,0.05);border:1px solid rgba(47,110,122,0.15);border-radius:8px;padding:12px 14px;margin-bottom:10px;">
-        <div style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:#2F6E7A;margin-bottom:6px;">YOU</div>
+      <div style="background:rgba(15,118,110,0.05);border:1px solid rgba(15,118,110,0.15);border-radius:8px;padding:12px 14px;margin-bottom:10px;">
+        <div style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:#0F766E;margin-bottom:6px;">YOU</div>
         <div style="font-size:13.5px;line-height:1.55;color:#fff;" id="qe-reel-q1"></div>
       </div>
-      <div style="background:rgba(26,23,20,0.025);border:1px solid rgba(26,23,20,0.05);border-radius:8px;padding:12px 14px;">
-        <div style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:#8A6A28;margin-bottom:6px;">COPILOT</div>
-        <div style="font-size:13.5px;line-height:1.55;color:rgba(26,23,20,0.9);" id="qe-reel-a1">Tech concentration is your biggest single-factor risk — <strong style="color:#fff;">68% of portfolio</strong> sits in 5 names. Sharpe is healthy at 1.84 but a 10% drawdown in NVDA alone takes 6.8% off equity. Hedge or trim.</div>
+      <div style="background:rgba(17,24,39,0.025);border:1px solid rgba(17,24,39,0.05);border-radius:8px;padding:12px 14px;">
+        <div style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:#0F766E;margin-bottom:6px;">COPILOT</div>
+        <div style="font-size:13.5px;line-height:1.55;color:rgba(17,24,39,0.9);" id="qe-reel-a1">Tech concentration is your biggest single-factor risk — <strong style="color:#fff;">68% of portfolio</strong> sits in 5 names. Sharpe is healthy at 1.84 but a 10% drawdown in NVDA alone takes 6.8% off equity. Hedge or trim.</div>
       </div>
     `;
     stage.appendChild(card);
@@ -22789,18 +22781,18 @@ async function qzCoachReview() {
 
   // Rapid 12-cut montage from 44s to 50s
   var MONTAGE = [
-    { tag: 'PORTFOLIO',    val: '$284,903', sub: '+2.30%', color: '#00E07C' },
-    { tag: 'BACKTEST',     val: 'Sharpe 2.84', sub: 'SMA 10/30', color: '#8A6A28' },
-    { tag: 'OPPORTUNITY',  val: 'NVDA · 94%', sub: 'high conviction', color: '#2F6E7A' },
-    { tag: 'INTELLIGENCE', val: '1,247', sub: 'items processed', color: '#A98338' },
-    { tag: 'VOLATILITY',   val: '18.2%', sub: 'annualized σ', color: '#FF3D4A' },
-    { tag: 'AI AGENTS',    val: '4 / 4', sub: 'specialists online', color: '#8A6A28' },
-    { tag: 'PAPER',        val: '$100k', sub: 'simulated cash', color: '#00E07C' },
-    { tag: 'WATCHLIST',    val: '12', sub: 'symbols tracked', color: '#2F6E7A' },
-    { tag: 'STREAK',       val: '7d', sub: 'on fire', color: '#A98338' },
-    { tag: 'LATENCY',      val: '103ms', sub: 'AI response', color: '#8A6A28' },
-    { tag: 'COVERAGE',     val: '100M+', sub: 'global assets', color: '#2F6E7A' },
-    { tag: 'MODELS',       val: '10', sub: 'quant tools', color: '#00E07C' },
+    { tag: 'PORTFOLIO',    val: '$284,903', sub: '+2.30%', color: '#16A34A' },
+    { tag: 'BACKTEST',     val: 'Sharpe 2.84', sub: 'SMA 10/30', color: '#0F766E' },
+    { tag: 'OPPORTUNITY',  val: 'NVDA · 94%', sub: 'high conviction', color: '#0F766E' },
+    { tag: 'INTELLIGENCE', val: '1,247', sub: 'items processed', color: '#14B8A6' },
+    { tag: 'VOLATILITY',   val: '18.2%', sub: 'annualized σ', color: '#DC2626' },
+    { tag: 'AI AGENTS',    val: '4 / 4', sub: 'specialists online', color: '#0F766E' },
+    { tag: 'PAPER',        val: '$100k', sub: 'simulated cash', color: '#16A34A' },
+    { tag: 'WATCHLIST',    val: '12', sub: 'symbols tracked', color: '#0F766E' },
+    { tag: 'STREAK',       val: '7d', sub: 'on fire', color: '#14B8A6' },
+    { tag: 'LATENCY',      val: '103ms', sub: 'AI response', color: '#0F766E' },
+    { tag: 'COVERAGE',     val: '100M+', sub: 'global assets', color: '#0F766E' },
+    { tag: 'MODELS',       val: '10', sub: 'quant tools', color: '#16A34A' },
   ];
   MONTAGE.forEach(function(m, i) {
     at(44200 + i * 450, function() {
@@ -22809,9 +22801,9 @@ async function qzCoachReview() {
       var card = document.createElement('div');
       card.style.cssText = 'text-align:center;';
       card.innerHTML = `
-        <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.32em;color:rgba(26,23,20,0.5);text-transform:uppercase;margin-bottom:14px;">— ${m.tag} —</div>
+        <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.32em;color:rgba(17,24,39,0.5);text-transform:uppercase;margin-bottom:14px;">— ${m.tag} —</div>
         <div style="font-family:'Fraunces',serif;font-size:96px;font-weight:500;letter-spacing:-0.04em;line-height:1;color:${m.color};">${m.val}</div>
-        <div style="font-family:'DM Mono',monospace;font-size:14px;letter-spacing:0.08em;color:rgba(26,23,20,0.55);margin-top:14px;">${m.sub}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:14px;letter-spacing:0.08em;color:rgba(17,24,39,0.55);margin-top:14px;">${m.sub}</div>
       `;
       stage.appendChild(card);
     });
@@ -22860,8 +22852,8 @@ async function qzCoachReview() {
     var t = document.createElement('div');
     t.style.cssText = 'text-align:center;';
     t.innerHTML = `
-      <div style="font-family:'Fraunces',serif;font-size:clamp(48px,7vw,96px);font-weight:500;letter-spacing:-0.035em;line-height:1.05;color:#1A1714;">Understand the market.</div>
-      <div style="font-family:'Fraunces',serif;font-size:clamp(48px,7vw,96px);font-weight:500;letter-spacing:-0.035em;line-height:1.05;color:#1A1714;margin-top:12px;font-style:italic;background:linear-gradient(135deg,#8A6A28,#2F6E7A);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">Don't chase it.</div>
+      <div style="font-family:'Fraunces',serif;font-size:clamp(48px,7vw,96px);font-weight:500;letter-spacing:-0.035em;line-height:1.05;color:#111827;">Understand the market.</div>
+      <div style="font-family:'Fraunces',serif;font-size:clamp(48px,7vw,96px);font-weight:500;letter-spacing:-0.035em;line-height:1.05;color:#111827;margin-top:12px;font-style:italic;background:linear-gradient(135deg,#0F766E,#0F766E);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">Don't chase it.</div>
     `;
     t.style.opacity = '0';
     t.style.transition = 'opacity 900ms ease';
@@ -22876,8 +22868,8 @@ async function qzCoachReview() {
     var c = document.createElement('div');
     c.style.cssText = 'text-align:center;';
     c.innerHTML = `
-      <div style="font-family:'DM Mono',monospace;font-size:13px;letter-spacing:0.36em;color:rgba(26,23,20,0.55);text-transform:uppercase;margin-bottom:24px;">JOIN THE FUTURE OF INVESTING</div>
-      <div style="font-family:'Fraunces',serif;font-size:clamp(36px,5vw,72px);font-weight:600;letter-spacing:-0.02em;color:#1A1714;">quant.entelloq.com</div>
+      <div style="font-family:'DM Mono',monospace;font-size:13px;letter-spacing:0.36em;color:rgba(17,24,39,0.55);text-transform:uppercase;margin-bottom:24px;">JOIN THE FUTURE OF INVESTING</div>
+      <div style="font-family:'Fraunces',serif;font-size:clamp(36px,5vw,72px);font-weight:600;letter-spacing:-0.02em;color:#111827;">quant.entelloq.com</div>
     `;
     c.style.opacity = '0';
     c.style.transition = 'opacity 700ms ease';
@@ -22921,9 +22913,9 @@ async function qzCoachReview() {
   beginOv.style.cssText = 'position:fixed;inset:0;z-index:1000002;background:#000;display:grid;place-items:center;cursor:pointer;';
   beginOv.innerHTML = `
     <div style="text-align:center;">
-      <div style="font-family:'Fraunces',serif;font-size:clamp(28px,4vw,52px);font-weight:500;color:#1A1714;letter-spacing:-0.02em;margin-bottom:18px;">Entelloq · Launch Reel</div>
-      <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.28em;color:rgba(26,23,20,0.5);text-transform:uppercase;">Click anywhere to begin</div>
-      <div style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(26,23,20,0.32);margin-top:36px;">Recommended: full-screen + screen-record at 1080p / 30fps</div>
+      <div style="font-family:'Fraunces',serif;font-size:clamp(28px,4vw,52px);font-weight:500;color:#111827;letter-spacing:-0.02em;margin-bottom:18px;">Entelloq · Launch Reel</div>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.28em;color:rgba(17,24,39,0.5);text-transform:uppercase;">Click anywhere to begin</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(17,24,39,0.32);margin-top:36px;">Recommended: full-screen + screen-record at 1080p / 30fps</div>
     </div>
   `;
   beginOv.onclick = function() {
@@ -23022,21 +23014,21 @@ async function qzCoachReview() {
           z-index: 10001;
           width: 60px; height: 60px;
           border-radius: 50%;
-          background: linear-gradient(135deg, #8A6A28, #2F6E7A);
+          background: linear-gradient(135deg, #0F766E, #0F766E);
           border: none;
           cursor: pointer;
           display: grid; place-items: center;
           box-shadow:
-            0 10px 30px rgba(138,106,40,0.42),
+            0 10px 30px rgba(15,118,110,0.42),
             0 0 0 1px rgba(255,255,255,0.10) inset,
-            0 0 40px rgba(47,110,122,0.32);
+            0 0 40px rgba(15,118,110,0.32);
           transition: transform 220ms cubic-bezier(0.22,1,0.36,1);
           padding: 0;
           animation: qeFabPulse 3s ease-in-out infinite;
         }
         @keyframes qeFabPulse {
-          0%, 100% { box-shadow: 0 10px 30px rgba(138,106,40,0.42), 0 0 0 1px rgba(255,255,255,0.10) inset, 0 0 40px rgba(47,110,122,0.32), 0 0 0 0 rgba(138,106,40,0.4); }
-          50%      { box-shadow: 0 10px 30px rgba(138,106,40,0.42), 0 0 0 1px rgba(255,255,255,0.10) inset, 0 0 40px rgba(47,110,122,0.32), 0 0 0 14px rgba(138,106,40,0); }
+          0%, 100% { box-shadow: 0 10px 30px rgba(15,118,110,0.42), 0 0 0 1px rgba(255,255,255,0.10) inset, 0 0 40px rgba(15,118,110,0.32), 0 0 0 0 rgba(15,118,110,0.4); }
+          50%      { box-shadow: 0 10px 30px rgba(15,118,110,0.42), 0 0 0 1px rgba(255,255,255,0.10) inset, 0 0 40px rgba(15,118,110,0.32), 0 0 0 14px rgba(15,118,110,0); }
         }
         #qe-menu-fab:active { transform: scale(0.94); }
         #qe-menu-fab .qe-fab-bars {
@@ -23156,23 +23148,23 @@ async function qzCoachReview() {
           align-items: center;
           gap: 9px;
           padding: 10px 14px 10px 12px;
-          background: rgba(251,250,247,0.92);
+          background: rgba(255,255,255,0.92);
           backdrop-filter: blur(14px);
           -webkit-backdrop-filter: blur(14px);
-          border: 1px solid rgba(138,106,40,0.32);
+          border: 1px solid rgba(15,118,110,0.32);
           border-radius: 10px;
-          color: #1A1714;
+          color: #111827;
           font-family: var(--qe-mono, 'DM Mono'), monospace;
           font-size: 11px;
           letter-spacing: 0.14em;
           font-weight: 600;
           text-transform: uppercase;
           cursor: pointer;
-          box-shadow: 0 6px 22px rgba(0,0,0,0.5), 0 0 0 1px rgba(26,23,20,0.04) inset;
+          box-shadow: 0 6px 22px rgba(0,0,0,0.5), 0 0 0 1px rgba(17,24,39,0.04) inset;
           transition: transform 200ms cubic-bezier(0.65,0,0.35,1), border-color 200ms;
           min-height: 40px;
         }
-        #qe-drawer-toggle:hover { border-color: rgba(138,106,40,0.6); }
+        #qe-drawer-toggle:hover { border-color: rgba(15,118,110,0.6); }
         #qe-drawer-toggle:active { transform: scale(0.96); }
         #qe-drawer-toggle .qe-dt-icon {
           width: 18px; height: 14px;
@@ -23186,7 +23178,7 @@ async function qzCoachReview() {
           content: '';
           position: absolute; left: 0; right: 0;
           height: 1.8px;
-          background: #1A1714;
+          background: #111827;
           border-radius: 1px;
           transition: transform 240ms cubic-bezier(0.65,0,0.35,1), opacity 200ms;
         }
@@ -23204,8 +23196,8 @@ async function qzCoachReview() {
         #qe-drawer-toggle.is-open .qe-dt-icon span { opacity: 0; transform: translateX(-12px); }
 
         #qe-drawer-toggle.is-open {
-          background: rgba(138,106,40,0.12);
-          border-color: rgba(138,106,40,0.5);
+          background: rgba(15,118,110,0.12);
+          border-color: rgba(15,118,110,0.5);
         }
 
         /* === Sidebar slide-in === */
@@ -23217,8 +23209,8 @@ async function qzCoachReview() {
           z-index: 9500 !important;
           transform: translateX(-105%) !important;
           transition: transform 360ms cubic-bezier(0.65,0,0.35,1) !important;
-          background: var(--qe-canvas, #FBFAF7) !important;
-          border-right: 1px solid rgba(26,23,20,0.08) !important;
+          background: var(--qe-canvas, #FFFFFF) !important;
+          border-right: 1px solid rgba(17,24,39,0.08) !important;
           box-shadow: 12px 0 60px rgba(0,0,0,0.65);
           overflow-y: auto;
           -webkit-overflow-scrolling: touch;
@@ -23234,20 +23226,20 @@ async function qzCoachReview() {
           display: flex; justify-content: space-between; align-items: center;
           padding: 14px 18px;
           background: var(--qe-canvas);
-          border-bottom: 1px solid rgba(26,23,20,0.06);
+          border-bottom: 1px solid rgba(17,24,39,0.06);
           z-index: 10;
         }
         .qe-drawer-close-label {
           font-family: var(--qe-mono), monospace;
           font-size: 10px;
           letter-spacing: 0.2em;
-          color: rgba(26,23,20,0.55);
+          color: rgba(17,24,39,0.55);
           text-transform: uppercase;
         }
         .qe-drawer-close-btn {
           background: transparent;
-          border: 1px solid rgba(26,23,20,0.12);
-          color: var(--qe-text, #1A1714);
+          border: 1px solid rgba(17,24,39,0.12);
+          color: var(--qe-text, #111827);
           width: 32px; height: 32px; border-radius: 6px;
           display: grid; place-items: center;
           cursor: pointer;
@@ -23257,7 +23249,7 @@ async function qzCoachReview() {
           padding: 0;
           transition: border-color 180ms;
         }
-        .qe-drawer-close-btn:hover { border-color: rgba(26,23,20,0.32); }
+        .qe-drawer-close-btn:hover { border-color: rgba(17,24,39,0.32); }
 
         /* === Overlay backdrop === */
         .qe-mobile-overlay {
@@ -23483,126 +23475,126 @@ async function qzCoachReview() {
   s.id = 'qe-no-yellow-css';
   s.textContent = `
     :root {
-      --qe-amber: #2F6E7A;
-      --qe-amber-soft: rgba(47,110,122,0.10);
-      --qe-amber-glow: rgba(47,110,122,0.32);
-      --qe-cyan: #2F6E7A;
-      --qe-cyan-soft: rgba(47,110,122,0.10);
-      --accent: #8A6A28;
-      --accent-2: #2F6E7A;
+      --qe-amber: #0F766E;
+      --qe-amber-soft: rgba(15,118,110,0.10);
+      --qe-amber-glow: rgba(15,118,110,0.32);
+      --qe-cyan: #0F766E;
+      --qe-cyan-soft: rgba(15,118,110,0.10);
+      --accent: #0F766E;
+      --accent-2: #0F766E;
     }
 
     .sidebar .nav-item.active {
-      background: rgba(138,106,40,0.06) !important;
-      border-left-color: #8A6A28 !important;
+      background: rgba(15,118,110,0.06) !important;
+      border-left-color: #0F766E !important;
     }
 
     input:focus, textarea:focus, select:focus {
-      border-color: #8A6A28 !important;
-      box-shadow: 0 0 0 3px rgba(138,106,40,0.10) !important;
+      border-color: #0F766E !important;
+      box-shadow: 0 0 0 3px rgba(15,118,110,0.10) !important;
     }
 
     .btn-primary,
     button.btn-primary,
     [class*="btn-primary"] {
-      background: linear-gradient(135deg, #8A6A28, #2C6087) !important;
+      background: linear-gradient(135deg, #0F766E, #1E3A8A) !important;
       color: #0A0A0B !important;
       box-shadow:
         0 1px 0 rgba(255,255,255,0.22) inset,
         0 -1px 0 rgba(0,0,0,0.18) inset,
-        0 8px 20px -8px rgba(138,106,40,0.45),
+        0 8px 20px -8px rgba(15,118,110,0.45),
         0 1px 2px rgba(255,255,255,0.4) !important;
     }
     .btn-primary:hover {
-      background: linear-gradient(135deg, #A98338, #2F6E7A) !important;
+      background: linear-gradient(135deg, #14B8A6, #0F766E) !important;
       box-shadow:
         0 1px 0 rgba(255,255,255,0.3) inset,
         0 -1px 0 rgba(0,0,0,0.18) inset,
-        0 12px 28px -8px rgba(138,106,40,0.6),
+        0 12px 28px -8px rgba(15,118,110,0.6),
         0 2px 4px rgba(255,255,255,0.4) !important;
     }
 
-    .logo-text span { color: #8A6A28 !important; }
+    .logo-text span { color: #0F766E !important; }
 
     .qz-disclaimer-banner {
-      background: rgba(47,110,122,0.04) !important;
-      border-color: rgba(47,110,122,0.22) !important;
-      border-left-color: #2F6E7A !important;
+      background: rgba(15,118,110,0.04) !important;
+      border-color: rgba(15,118,110,0.22) !important;
+      border-left-color: #0F766E !important;
     }
-    .qz-disclaimer-banner strong { color: #2F6E7A !important; }
+    .qz-disclaimer-banner strong { color: #0F766E !important; }
 
     #qz-copilot-dock {
-      border-color: rgba(138,106,40,0.42) !important;
+      border-color: rgba(15,118,110,0.42) !important;
       box-shadow:
         0 8px 28px rgba(0,0,0,0.5),
-        0 0 24px rgba(138,106,40,0.22),
+        0 0 24px rgba(15,118,110,0.22),
         0 0 0 1px rgba(255,255,255,0.05) inset !important;
     }
 
     .sidebar .sidebar-logo .logo-icon {
       box-shadow:
-        0 4px 18px rgba(138,106,40,0.18),
-        0 0 0 1px rgba(26,23,20,0.06) inset !important;
+        0 4px 18px rgba(15,118,110,0.18),
+        0 0 0 1px rgba(17,24,39,0.06) inset !important;
     }
 
     .qz-mentor-avatar {
-      box-shadow: 0 4px 14px rgba(138,106,40,0.25) !important;
+      box-shadow: 0 4px 14px rgba(15,118,110,0.25) !important;
     }
 
     .qz-rpg-widget {
-      background: linear-gradient(135deg, rgba(138,106,40,0.05), rgba(47,110,122,0.03)) !important;
-      border-color: rgba(138,106,40,0.22) !important;
+      background: linear-gradient(135deg, rgba(15,118,110,0.05), rgba(15,118,110,0.03)) !important;
+      border-color: rgba(15,118,110,0.22) !important;
     }
-    .qz-rpg-widget:hover { border-color: rgba(138,106,40,0.4) !important; }
-    .qz-rpg-w-lvl { color: #8A6A28 !important; }
+    .qz-rpg-widget:hover { border-color: rgba(15,118,110,0.4) !important; }
+    .qz-rpg-w-lvl { color: #0F766E !important; }
     .qz-rpg-w-fill {
-      background: linear-gradient(90deg, #8A6A28, #2F6E7A) !important;
-      box-shadow: 0 0 12px rgba(138,106,40,0.5) !important;
+      background: linear-gradient(90deg, #0F766E, #0F766E) !important;
+      box-shadow: 0 0 12px rgba(15,118,110,0.5) !important;
     }
 
     .qz-xp-toast {
-      border-color: rgba(138,106,40,0.35) !important;
-      box-shadow: 0 16px 40px rgba(0,0,0,0.55), 0 0 24px rgba(138,106,40,0.18) !important;
+      border-color: rgba(15,118,110,0.35) !important;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.55), 0 0 24px rgba(15,118,110,0.18) !important;
     }
     .qz-xp-toast::before {
-      background: linear-gradient(180deg, #8A6A28, #2F6E7A) !important;
+      background: linear-gradient(180deg, #0F766E, #0F766E) !important;
     }
-    .qz-xp-toast-amt { color: #2F6E7A !important; }
+    .qz-xp-toast-amt { color: #0F766E !important; }
 
     .qz-lu-card {
       box-shadow:
         0 40px 100px rgba(0,0,0,0.65),
-        0 0 80px rgba(138,106,40,0.32),
-        0 0 0 1px rgba(138,106,40,0.4) inset !important;
+        0 0 80px rgba(15,118,110,0.32),
+        0 0 0 1px rgba(15,118,110,0.4) inset !important;
     }
     .qz-lu-lvl {
-      background: linear-gradient(135deg, #8A6A28 0%, #2F6E7A 100%) !important;
+      background: linear-gradient(135deg, #0F766E 0%, #0F766E 100%) !important;
       -webkit-background-clip: text !important;
       background-clip: text !important;
       -webkit-text-fill-color: transparent !important;
     }
-    .qz-lu-eyebrow { color: #2F6E7A !important; }
+    .qz-lu-eyebrow { color: #0F766E !important; }
     .qz-lu-btn {
-      background: linear-gradient(135deg, #8A6A28, #2F6E7A) !important;
-      box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset, 0 8px 22px -8px rgba(138,106,40,0.5) !important;
+      background: linear-gradient(135deg, #0F766E, #0F766E) !important;
+      box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset, 0 8px 22px -8px rgba(15,118,110,0.5) !important;
     }
 
     #qe-scroll-progress {
-      background: linear-gradient(90deg, #8A6A28, #2F6E7A) !important;
+      background: linear-gradient(90deg, #0F766E, #0F766E) !important;
     }
 
     body.qe-cursor-hover #qe-cursor-ring {
-      border-color: #8A6A28 !important;
+      border-color: #0F766E !important;
     }
 
     body::after {
       background:
-        radial-gradient(ellipse 900px 380px at 22% 50%, rgba(138,106,40,0.05), transparent 60%),
-        radial-gradient(ellipse 700px 360px at 78% 50%, rgba(47,110,122,0.045), transparent 60%) !important;
+        radial-gradient(ellipse 900px 380px at 22% 50%, rgba(15,118,110,0.05), transparent 60%),
+        radial-gradient(ellipse 700px 360px at 78% 50%, rgba(15,118,110,0.045), transparent 60%) !important;
     }
 
-    #qz-global-footer-disclaimer a { color: rgba(138,106,40,0.7) !important; }
-    #qz-global-footer-disclaimer a:hover { color: #8A6A28 !important; }
+    #qz-global-footer-disclaimer a { color: rgba(15,118,110,0.7) !important; }
+    #qz-global-footer-disclaimer a:hover { color: #0F766E !important; }
   `;
   document.head.appendChild(s);
 })();
@@ -23649,8 +23641,8 @@ async function qzCoachReview() {
       @keyframes qeWelcomeIn { from { opacity: 0; } to { opacity: 1; } }
 
       .qe-welcome-card {
-        background: linear-gradient(180deg, #FFFFFF, #FBFAF7);
-        border: 1px solid rgba(138,106,40,0.32);
+        background: linear-gradient(180deg, #FFFFFF, #FFFFFF);
+        border: 1px solid rgba(15,118,110,0.32);
         border-radius: 18px;
         padding: 36px 40px;
         max-width: 640px;
@@ -23660,7 +23652,7 @@ async function qzCoachReview() {
         text-align: center;
         box-shadow:
           0 40px 100px rgba(0,0,0,0.65),
-          0 0 80px rgba(138,106,40,0.22),
+          0 0 80px rgba(15,118,110,0.22),
           0 0 0 1px rgba(255,255,255,0.04) inset;
         animation: qeWelcomePop 480ms cubic-bezier(0.22,1,0.36,1);
         -webkit-overflow-scrolling: touch;
@@ -23673,7 +23665,7 @@ async function qzCoachReview() {
       .qe-welcome-mark {
         width: 64px; height: 64px;
         border-radius: 14px;
-        background: linear-gradient(135deg, #8A6A28, #2F6E7A);
+        background: linear-gradient(135deg, #0F766E, #0F766E);
         display: grid; place-items: center;
         margin: 0 auto 22px;
         font-family: 'Fraunces', serif;
@@ -23682,14 +23674,14 @@ async function qzCoachReview() {
         color: #0A0A0B;
         letter-spacing: -0.04em;
         box-shadow:
-          0 12px 32px rgba(138,106,40,0.32),
+          0 12px 32px rgba(15,118,110,0.32),
           0 0 0 1px rgba(255,255,255,0.16) inset;
       }
       .qe-welcome-eyebrow {
         font-family: 'DM Mono', monospace;
         font-size: 10.5px;
         letter-spacing: 0.28em;
-        color: rgba(26,23,20,0.5);
+        color: rgba(17,24,39,0.5);
         text-transform: uppercase;
         margin-bottom: 14px;
       }
@@ -23699,19 +23691,19 @@ async function qzCoachReview() {
         font-weight: 500;
         letter-spacing: -0.025em;
         line-height: 1.15;
-        color: #1A1714;
+        color: #111827;
         margin: 0 0 14px;
       }
       .qe-welcome-title em {
         font-style: italic;
-        background: linear-gradient(135deg, #8A6A28, #2F6E7A);
+        background: linear-gradient(135deg, #0F766E, #0F766E);
         -webkit-background-clip: text; background-clip: text;
         -webkit-text-fill-color: transparent;
       }
       .qe-welcome-sub {
         font-size: 14px;
         line-height: 1.6;
-        color: rgba(26,23,20,0.74);
+        color: rgba(17,24,39,0.74);
         max-width: 460px;
         margin: 0 auto 24px;
       }
@@ -23721,7 +23713,7 @@ async function qzCoachReview() {
         max-width: 540px;
         border-radius: 12px;
         overflow: hidden;
-        border: 1px solid rgba(26,23,20,0.08);
+        border: 1px solid rgba(17,24,39,0.08);
         background: #000;
         position: relative;
         aspect-ratio: 16 / 9;
@@ -23736,8 +23728,8 @@ async function qzCoachReview() {
       }
       .qe-welcome-video-shell.qe-no-video .qe-welcome-video { display: none; }
       .qe-welcome-video-shell.qe-no-video {
-        background: linear-gradient(135deg, rgba(138,106,40,0.06), rgba(47,110,122,0.04)) !important;
-        border-color: rgba(138,106,40,0.18) !important;
+        background: linear-gradient(135deg, rgba(15,118,110,0.06), rgba(15,118,110,0.04)) !important;
+        border-color: rgba(15,118,110,0.18) !important;
       }
       .qe-welcome-video-shell.qe-no-video .qe-welcome-video-fallback {
         display: grid;
@@ -23753,7 +23745,7 @@ async function qzCoachReview() {
         width: 48px; height: 48px;
         margin: 0 auto 14px;
         border-radius: 12px;
-        background: linear-gradient(135deg, #8A6A28, #2F6E7A);
+        background: linear-gradient(135deg, #0F766E, #0F766E);
         display: grid; place-items: center;
         opacity: 0.85;
       }
@@ -23770,13 +23762,13 @@ async function qzCoachReview() {
         font-size: 16px;
         font-weight: 500;
         letter-spacing: -0.015em;
-        color: rgba(26,23,20,0.85);
+        color: rgba(17,24,39,0.85);
         margin-bottom: 6px;
       }
       .qe-welcome-video-fallback-body {
         font-size: 11.5px;
         line-height: 1.55;
-        color: rgba(26,23,20,0.5);
+        color: rgba(17,24,39,0.5);
       }
 
       .qe-welcome-actions {
@@ -23788,7 +23780,7 @@ async function qzCoachReview() {
       }
       .qe-welcome-cta {
         padding: 14px 24px;
-        background: linear-gradient(135deg, #8A6A28, #2F6E7A);
+        background: linear-gradient(135deg, #0F766E, #0F766E);
         color: #0A0A0B;
         border: none;
         border-radius: 8px;
@@ -23800,20 +23792,20 @@ async function qzCoachReview() {
         transition: transform 200ms cubic-bezier(0.22,1,0.36,1), box-shadow 200ms;
         box-shadow:
           0 1px 0 rgba(255,255,255,0.32) inset,
-          0 8px 22px -8px rgba(138,106,40,0.5);
+          0 8px 22px -8px rgba(15,118,110,0.5);
       }
       .qe-welcome-cta:hover {
         transform: translateY(-1px);
         box-shadow:
           0 1px 0 rgba(255,255,255,0.4) inset,
-          0 12px 30px -8px rgba(138,106,40,0.65);
+          0 12px 30px -8px rgba(15,118,110,0.65);
       }
       .qe-welcome-cta:active { transform: translateY(0); }
       .qe-welcome-skip {
         padding: 12px 24px;
         background: transparent;
-        color: rgba(26,23,20,0.6);
-        border: 1px solid rgba(26,23,20,0.12);
+        color: rgba(17,24,39,0.6);
+        border: 1px solid rgba(17,24,39,0.12);
         border-radius: 8px;
         font-family: 'DM Sans', sans-serif;
         font-weight: 500;
@@ -23822,8 +23814,8 @@ async function qzCoachReview() {
         transition: all 200ms ease;
       }
       .qe-welcome-skip:hover {
-        border-color: rgba(26,23,20,0.3);
-        color: rgba(26,23,20,0.9);
+        border-color: rgba(17,24,39,0.3);
+        color: rgba(17,24,39,0.9);
       }
 
       .qe-welcome-hint {
@@ -23831,7 +23823,7 @@ async function qzCoachReview() {
         font-family: 'DM Mono', monospace;
         font-size: 10px;
         letter-spacing: 0.16em;
-        color: rgba(26,23,20,0.3);
+        color: rgba(17,24,39,0.3);
         text-transform: uppercase;
       }
 
@@ -23907,7 +23899,7 @@ async function qzCoachReview() {
             <div class="qe-welcome-video-fallback-inner">
               <div class="qe-welcome-video-fallback-icon"></div>
               <div class="qe-welcome-video-fallback-title">Tutorial video</div>
-              <div class="qe-welcome-video-fallback-body">Hit <strong style="color:rgba(26,23,20,0.85);">Add my first position</strong> below to get started. (Video walkthrough coming soon.)</div>
+              <div class="qe-welcome-video-fallback-body">Hit <strong style="color:rgba(17,24,39,0.85);">Add my first position</strong> below to get started. (Video walkthrough coming soon.)</div>
             </div>
           </div>
         </div>
@@ -24102,11 +24094,11 @@ async function qzCoachReview() {
           z-index: 10000;
           width: 42px; height: 42px;
           border-radius: 10px;
-          background: rgba(251,250,247,0.92);
+          background: rgba(255,255,255,0.92);
           backdrop-filter: blur(14px);
           -webkit-backdrop-filter: blur(14px);
-          border: 1px solid rgba(138,106,40,0.32);
-          color: #1A1714;
+          border: 1px solid rgba(15,118,110,0.32);
+          color: #111827;
           cursor: pointer;
           padding: 0;
           box-shadow: 0 6px 22px rgba(0,0,0,0.5);
@@ -24116,11 +24108,11 @@ async function qzCoachReview() {
           transform: scale(0.94);
         }
         body:not(.qe-on-landing) #qe-mobile-search-btn:hover {
-          border-color: rgba(138,106,40,0.6);
+          border-color: rgba(15,118,110,0.6);
         }
         #qe-mobile-search-btn svg {
           width: 18px; height: 18px;
-          stroke: #1A1714;
+          stroke: #111827;
           stroke-width: 2;
         }
       }
@@ -24298,7 +24290,7 @@ async function qzCoachReview() {
         max-width: 86vw;
         z-index: 100000;
         background: #FFFFFF;
-        border-right: 1px solid rgba(138,106,40,0.22);
+        border-right: 1px solid rgba(15,118,110,0.22);
         transform: translateX(-105%);
         transition: transform 320ms cubic-bezier(0.22,1,0.36,1);
         overflow-y: auto;
@@ -24313,7 +24305,7 @@ async function qzCoachReview() {
       #qe-mdrawer-hdr {
         display: flex; align-items: center; justify-content: space-between;
         padding: 20px 22px 18px;
-        border-bottom: 1px solid rgba(26,23,20,0.06);
+        border-bottom: 1px solid rgba(17,24,39,0.06);
         position: sticky; top: 0;
         background: #FFFFFF;
         z-index: 2;
@@ -24324,7 +24316,7 @@ async function qzCoachReview() {
       #qe-mdrawer-brand-mark {
         width: 32px; height: 32px;
         border-radius: 7px;
-        background: linear-gradient(135deg, #8A6A28, #2F6E7A);
+        background: linear-gradient(135deg, #0F766E, #0F766E);
         display: grid; place-items: center;
         font-family: 'Fraunces', serif;
         font-weight: 700;
@@ -24337,10 +24329,10 @@ async function qzCoachReview() {
         font-size: 15px;
         font-weight: 500;
         letter-spacing: -0.02em;
-        color: #1A1714;
+        color: #111827;
       }
       #qe-mdrawer-brand-text em {
-        color: #8A6A28;
+        color: #0F766E;
         font-weight: 600;
         font-style: normal;
       }
@@ -24348,8 +24340,8 @@ async function qzCoachReview() {
         width: 34px; height: 34px;
         border-radius: 7px;
         background: transparent;
-        border: 1px solid rgba(26,23,20,0.12);
-        color: #1A1714;
+        border: 1px solid rgba(17,24,39,0.12);
+        color: #111827;
         font-size: 20px;
         line-height: 1;
         cursor: pointer;
@@ -24358,7 +24350,7 @@ async function qzCoachReview() {
         transition: border-color 180ms ease;
         font-family: ui-sans-serif, system-ui, sans-serif;
       }
-      #qe-mdrawer-close:hover { border-color: rgba(26,23,20,0.32); }
+      #qe-mdrawer-close:hover { border-color: rgba(17,24,39,0.32); }
 
       .qe-mdrawer-section {
         padding: 18px 14px 4px;
@@ -24367,7 +24359,7 @@ async function qzCoachReview() {
         font-family: 'DM Mono', monospace;
         font-size: 9.5px;
         letter-spacing: 0.22em;
-        color: rgba(26,23,20,0.32);
+        color: rgba(17,24,39,0.32);
         text-transform: uppercase;
         font-weight: 600;
         padding: 0 10px;
@@ -24383,7 +24375,7 @@ async function qzCoachReview() {
         font-family: 'DM Sans', sans-serif;
         font-size: 14px;
         font-weight: 400;
-        color: rgba(26,23,20,0.78);
+        color: rgba(17,24,39,0.78);
         background: transparent;
         border: none;
         border-radius: 6px;
@@ -24393,12 +24385,12 @@ async function qzCoachReview() {
         min-height: 44px;
       }
       .qe-mdrawer-item:hover, .qe-mdrawer-item:active {
-        background: rgba(138,106,40,0.08);
-        color: #1A1714;
+        background: rgba(15,118,110,0.08);
+        color: #111827;
       }
       .qe-mdrawer-item.active {
-        background: rgba(138,106,40,0.12);
-        color: #1A1714;
+        background: rgba(15,118,110,0.12);
+        color: #111827;
         font-weight: 500;
         position: relative;
       }
@@ -24406,7 +24398,7 @@ async function qzCoachReview() {
         content: '';
         position: absolute; left: 0; top: 25%; bottom: 25%;
         width: 2px;
-        background: linear-gradient(180deg, #8A6A28, #2F6E7A);
+        background: linear-gradient(180deg, #0F766E, #0F766E);
         border-radius: 1px;
       }
       .qe-mdrawer-live {
@@ -24415,22 +24407,22 @@ async function qzCoachReview() {
         letter-spacing: 0.14em;
         padding: 2px 6px;
         border-radius: 4px;
-        background: rgba(0,224,124,0.12);
-        border: 1px solid rgba(0,224,124,0.3);
-        color: #00E07C;
+        background: rgba(22,163,74,0.12);
+        border: 1px solid rgba(22,163,74,0.3);
+        color: #16A34A;
         font-weight: 600;
       }
 
       #qe-mdrawer-footer {
         margin-top: auto;
         padding: 14px 22px;
-        border-top: 1px solid rgba(26,23,20,0.05);
+        border-top: 1px solid rgba(17,24,39,0.05);
         display: flex; align-items: center; gap: 11px;
       }
       #qe-mdrawer-footer-avatar {
         width: 32px; height: 32px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #8A6A28, #2F6E7A);
+        background: linear-gradient(135deg, #0F766E, #0F766E);
         display: grid; place-items: center;
         font-family: 'DM Sans', sans-serif;
         font-weight: 700;
@@ -24442,13 +24434,13 @@ async function qzCoachReview() {
         font-family: 'DM Sans', sans-serif;
         font-size: 13px;
         font-weight: 500;
-        color: #1A1714;
+        color: #111827;
       }
       #qe-mdrawer-footer-role {
         font-family: 'DM Mono', monospace;
         font-size: 10px;
         letter-spacing: 0.1em;
-        color: rgba(26,23,20,0.45);
+        color: rgba(17,24,39,0.45);
         text-transform: uppercase;
       }
 
@@ -24705,14 +24697,14 @@ async function qzCoachReview() {
       }
       .qe-pg2-mast {
         padding: 24px 0 28px;
-        border-bottom: 1px solid rgba(26,23,20,0.06);
+        border-bottom: 1px solid rgba(17,24,39,0.06);
         margin-bottom: 22px;
       }
       .qe-pg2-mast-eyebrow {
         font-family: 'DM Mono', monospace;
         font-size: 10.5px;
         letter-spacing: 0.24em;
-        color: rgba(26,23,20,0.42);
+        color: rgba(17,24,39,0.42);
         text-transform: uppercase;
         margin-bottom: 12px;
       }
@@ -24722,11 +24714,11 @@ async function qzCoachReview() {
         font-weight: 500;
         letter-spacing: -0.025em;
         line-height: 1.1;
-        color: #1A1714;
+        color: #111827;
       }
       .qe-pg2-mast-sub {
         font-size: 13px;
-        color: rgba(26,23,20,0.7);
+        color: rgba(17,24,39,0.7);
         margin-top: 10px;
         max-width: 640px;
         line-height: 1.55;
@@ -24740,7 +24732,7 @@ async function qzCoachReview() {
       }
       .qe-pg2-tile {
         background: #FFFFFF;
-        border: 1px solid rgba(26,23,20,0.06);
+        border: 1px solid rgba(17,24,39,0.06);
         border-radius: 8px;
         padding: 14px 16px;
       }
@@ -24748,7 +24740,7 @@ async function qzCoachReview() {
         font-family: 'DM Mono', monospace;
         font-size: 9.5px;
         letter-spacing: 0.18em;
-        color: rgba(26,23,20,0.42);
+        color: rgba(17,24,39,0.42);
         text-transform: uppercase;
         font-weight: 600;
         margin-bottom: 8px;
@@ -24757,16 +24749,16 @@ async function qzCoachReview() {
         font-family: 'DM Mono', monospace;
         font-size: 24px;
         font-weight: 600;
-        color: #1A1714;
+        color: #111827;
         font-variant-numeric: tabular-nums;
         letter-spacing: -0.015em;
         line-height: 1;
       }
-      .qe-pg2-tile-val.pos { color: #00E07C; }
-      .qe-pg2-tile-val.neg { color: #FF3D4A; }
+      .qe-pg2-tile-val.pos { color: #16A34A; }
+      .qe-pg2-tile-val.neg { color: #DC2626; }
       .qe-pg2-tile-sub {
         font-size: 10.5px;
-        color: rgba(26,23,20,0.42);
+        color: rgba(17,24,39,0.42);
         margin-top: 6px;
         font-family: 'DM Mono', monospace;
         letter-spacing: 0.04em;
@@ -24783,28 +24775,28 @@ async function qzCoachReview() {
         flex: 1;
         min-width: 200px;
         padding: 10px 14px;
-        background: rgba(26,23,20,0.025);
-        border: 1px solid rgba(26,23,20,0.08);
+        background: rgba(17,24,39,0.025);
+        border: 1px solid rgba(17,24,39,0.08);
         border-radius: 7px;
-        color: #1A1714;
+        color: #111827;
         font-family: 'DM Mono', monospace;
         font-size: 13px;
         transition: border-color 180ms cubic-bezier(0.22,1,0.36,1);
       }
       .qe-pg2-search:focus {
         outline: none;
-        border-color: #8A6A28;
-        box-shadow: 0 0 0 3px rgba(138,106,40,0.10);
+        border-color: #0F766E;
+        box-shadow: 0 0 0 3px rgba(15,118,110,0.10);
       }
       .qe-pg2-chip-row {
         display: flex; gap: 6px; flex-wrap: wrap;
       }
       .qe-pg2-chip {
         padding: 8px 14px;
-        background: rgba(26,23,20,0.025);
-        border: 1px solid rgba(26,23,20,0.08);
+        background: rgba(17,24,39,0.025);
+        border: 1px solid rgba(17,24,39,0.08);
         border-radius: 6px;
-        color: rgba(26,23,20,0.7);
+        color: rgba(17,24,39,0.7);
         font-family: 'DM Mono', monospace;
         font-size: 11px;
         letter-spacing: 0.06em;
@@ -24813,18 +24805,18 @@ async function qzCoachReview() {
         transition: all 180ms cubic-bezier(0.22,1,0.36,1);
       }
       .qe-pg2-chip:hover {
-        border-color: rgba(138,106,40,0.4);
-        color: #1A1714;
+        border-color: rgba(15,118,110,0.4);
+        color: #111827;
       }
       .qe-pg2-chip.active {
-        background: rgba(138,106,40,0.12);
-        border-color: rgba(138,106,40,0.4);
-        color: #1A1714;
+        background: rgba(15,118,110,0.12);
+        border-color: rgba(15,118,110,0.4);
+        color: #111827;
       }
 
       .qe-pg2-table-shell {
         background: #FFFFFF;
-        border: 1px solid rgba(26,23,20,0.06);
+        border: 1px solid rgba(17,24,39,0.06);
         border-radius: 10px;
         overflow: hidden;
       }
@@ -24835,40 +24827,40 @@ async function qzCoachReview() {
         font-size: 13px;
       }
       .qe-pg2-table th {
-        background: rgba(26,23,20,0.02);
+        background: rgba(17,24,39,0.02);
         font-family: 'DM Mono', monospace;
         font-size: 10px;
         letter-spacing: 0.16em;
-        color: rgba(26,23,20,0.55);
+        color: rgba(17,24,39,0.55);
         text-transform: uppercase;
         font-weight: 600;
         padding: 14px 16px;
         text-align: left;
-        border-bottom: 1px solid rgba(26,23,20,0.06);
+        border-bottom: 1px solid rgba(17,24,39,0.06);
         cursor: pointer;
         user-select: none;
       }
-      .qe-pg2-table th:hover { color: #1A1714; }
-      .qe-pg2-table th.sort-asc::after  { content: ' ↑'; color: #8A6A28; }
-      .qe-pg2-table th.sort-desc::after { content: ' ↓'; color: #8A6A28; }
+      .qe-pg2-table th:hover { color: #111827; }
+      .qe-pg2-table th.sort-asc::after  { content: ' ↑'; color: #0F766E; }
+      .qe-pg2-table th.sort-desc::after { content: ' ↓'; color: #0F766E; }
       .qe-pg2-table td {
         padding: 13px 16px;
-        border-bottom: 1px solid rgba(26,23,20,0.03);
+        border-bottom: 1px solid rgba(17,24,39,0.03);
         font-family: 'DM Mono', monospace;
-        color: rgba(26,23,20,0.85);
+        color: rgba(17,24,39,0.85);
         font-variant-numeric: tabular-nums;
       }
       .qe-pg2-table tbody tr {
         transition: background 160ms ease;
       }
       .qe-pg2-table tbody tr:hover {
-        background: rgba(138,106,40,0.04);
+        background: rgba(15,118,110,0.04);
       }
       .qe-pg2-table .ta-r { text-align: right; }
       .qe-pg2-table .ta-c { text-align: center; }
 
-      .qe-pg2-side-buy  { color: #00E07C; }
-      .qe-pg2-side-sell { color: #FF3D4A; }
+      .qe-pg2-side-buy  { color: #16A34A; }
+      .qe-pg2-side-sell { color: #DC2626; }
 
       .qe-pg2-signal {
         display: inline-block;
@@ -24881,25 +24873,25 @@ async function qzCoachReview() {
         border-radius: 4px;
       }
       .qe-pg2-signal.buy {
-        background: rgba(47,110,122,0.10);
-        border: 1px solid rgba(47,110,122,0.3);
-        color: #00E07C;
+        background: rgba(15,118,110,0.10);
+        border: 1px solid rgba(15,118,110,0.3);
+        color: #16A34A;
       }
       .qe-pg2-signal.sell {
-        background: rgba(255,61,74,0.10);
-        border: 1px solid rgba(255,61,74,0.3);
-        color: #FF3D4A;
+        background: rgba(220,38,38,0.10);
+        border: 1px solid rgba(220,38,38,0.3);
+        color: #DC2626;
       }
       .qe-pg2-signal.hold {
-        background: rgba(26,23,20,0.05);
-        border: 1px solid rgba(26,23,20,0.12);
-        color: rgba(26,23,20,0.6);
+        background: rgba(17,24,39,0.05);
+        border: 1px solid rgba(17,24,39,0.12);
+        color: rgba(17,24,39,0.6);
       }
 
       .qe-pg2-conf-bar {
         width: 60px;
         height: 3px;
-        background: rgba(26,23,20,0.06);
+        background: rgba(17,24,39,0.06);
         border-radius: 2px;
         overflow: hidden;
         display: inline-block;
@@ -24907,7 +24899,7 @@ async function qzCoachReview() {
       }
       .qe-pg2-conf-fill {
         height: 100%;
-        background: linear-gradient(90deg, #8A6A28, #2F6E7A);
+        background: linear-gradient(90deg, #0F766E, #0F766E);
         transition: width 400ms cubic-bezier(0.22,1,0.36,1);
       }
 
@@ -24920,8 +24912,8 @@ async function qzCoachReview() {
 
       .qe-pg2-action {
         background: transparent;
-        border: 1px solid rgba(26,23,20,0.12);
-        color: rgba(26,23,20,0.65);
+        border: 1px solid rgba(17,24,39,0.12);
+        color: rgba(17,24,39,0.65);
         padding: 5px 10px;
         border-radius: 5px;
         font-family: 'DM Mono', monospace;
@@ -24933,20 +24925,20 @@ async function qzCoachReview() {
         margin-left: 4px;
       }
       .qe-pg2-action:hover {
-        border-color: rgba(138,106,40,0.4);
-        color: #1A1714;
+        border-color: rgba(15,118,110,0.4);
+        color: #111827;
       }
 
       .qe-pg2-empty {
         padding: 60px 24px;
         text-align: center;
-        color: rgba(26,23,20,0.4);
+        color: rgba(17,24,39,0.4);
       }
       .qe-pg2-empty-eyebrow {
         font-family: 'DM Mono', monospace;
         font-size: 10px;
         letter-spacing: 0.22em;
-        color: #8A6A28;
+        color: #0F766E;
         text-transform: uppercase;
         margin-bottom: 14px;
       }
@@ -24955,7 +24947,7 @@ async function qzCoachReview() {
         font-size: 22px;
         font-weight: 500;
         letter-spacing: -0.02em;
-        color: rgba(26,23,20,0.85);
+        color: rgba(17,24,39,0.85);
         margin-bottom: 8px;
       }
       .qe-pg2-empty-sub {
@@ -24968,9 +24960,9 @@ async function qzCoachReview() {
       .qe-pg2-export {
         padding: 9px 16px;
         background: transparent;
-        border: 1px solid rgba(26,23,20,0.12);
+        border: 1px solid rgba(17,24,39,0.12);
         border-radius: 6px;
-        color: rgba(26,23,20,0.78);
+        color: rgba(17,24,39,0.78);
         font-family: 'DM Mono', monospace;
         font-size: 11px;
         letter-spacing: 0.1em;
@@ -24979,8 +24971,8 @@ async function qzCoachReview() {
         transition: all 180ms cubic-bezier(0.22,1,0.36,1);
       }
       .qe-pg2-export:hover {
-        border-color: rgba(138,106,40,0.4);
-        color: #1A1714;
+        border-color: rgba(15,118,110,0.4);
+        color: #111827;
       }
 
       @media (max-width: 720px) {
@@ -25073,11 +25065,11 @@ async function qzCoachReview() {
         var value = (r.qty * r.price);
         return '<tr>' +
           '<td>' + (r.date || '—') + '</td>' +
-          '<td style="color:#1A1714;font-weight:500;">' + (r.ticker || '—') + '</td>' +
+          '<td style="color:#111827;font-weight:500;">' + (r.ticker || '—') + '</td>' +
           '<td class="' + sideCls + '" style="font-weight:600;letter-spacing:0.04em;">' + (r.type || '—') + '</td>' +
           '<td class="ta-r">' + r.qty + '</td>' +
           '<td class="ta-r">$' + Number(r.price).toFixed(2) + '</td>' +
-          '<td class="ta-r" style="color:#1A1714;">$' + Number(value).toLocaleString(undefined, {maximumFractionDigits: 0}) + '</td>' +
+          '<td class="ta-r" style="color:#111827;">$' + Number(value).toLocaleString(undefined, {maximumFractionDigits: 0}) + '</td>' +
           '<td class="ta-r ' + pnlCls + '" style="font-weight:600;">' + pnlText + '</td>' +
         '</tr>';
       }).join('') +
@@ -25235,16 +25227,16 @@ async function qzCoachReview() {
       '</tr></thead><tbody>' +
       filtered.slice(0, 50).map(function(r) {
         var sigCls = r.signal === 'BUY' ? 'buy' : (r.signal === 'SELL' ? 'sell' : 'hold');
-        var sparkColor = r.change >= 0 ? '#00E07C' : '#FF3D4A';
+        var sparkColor = r.change >= 0 ? '#16A34A' : '#DC2626';
         var changeCls = r.change >= 0 ? 'qe-pg2-side-buy' : 'qe-pg2-side-sell';
         return '<tr>' +
-          '<td style="color:#1A1714;font-weight:600;">' + (r.ticker || '—') + '</td>' +
-          '<td style="color:rgba(26,23,20,0.65);font-family:DM Sans,sans-serif;">' + (r.name || '—') + '</td>' +
-          '<td class="ta-r" style="color:#1A1714;">$' + Number(r.price || 0).toFixed(2) + '</td>' +
+          '<td style="color:#111827;font-weight:600;">' + (r.ticker || '—') + '</td>' +
+          '<td style="color:rgba(17,24,39,0.65);font-family:DM Sans,sans-serif;">' + (r.name || '—') + '</td>' +
+          '<td class="ta-r" style="color:#111827;">$' + Number(r.price || 0).toFixed(2) + '</td>' +
           '<td class="ta-r ' + changeCls + '" style="font-weight:600;">' + (r.change >= 0 ? '+' : '') + Number(r.change || 0).toFixed(2) + '%</td>' +
           '<td class="ta-c">' + sparkSVG(r.ticker, sparkColor) + '</td>' +
           '<td class="ta-c"><span class="qe-pg2-signal ' + sigCls + '">' + (r.signal || 'HOLD') + '</span></td>' +
-          '<td class="ta-r"><div class="qe-pg2-conf-bar"><div class="qe-pg2-conf-fill" style="width:' + (r.conf || 0) + '%;"></div></div> <span style="color:#8A6A28;margin-left:8px;">' + (r.conf || 0) + '%</span></td>' +
+          '<td class="ta-r"><div class="qe-pg2-conf-bar"><div class="qe-pg2-conf-fill" style="width:' + (r.conf || 0) + '%;"></div></div> <span style="color:#0F766E;margin-left:8px;">' + (r.conf || 0) + '%</span></td>' +
           '<td class="ta-r"><button class="qe-pg2-action" data-watch="' + r.ticker + '">Watch</button></td>' +
         '</tr>';
       }).join('') +
@@ -25281,7 +25273,7 @@ async function qzCoachReview() {
         '</select>' +
       '</div>' +
       '<div class="qe-pg2-table-shell">' + tableHTML + '</div>' +
-      (filtered.length > 50 ? '<div style="margin-top:14px;font-size:11px;color:rgba(26,23,20,0.45);font-family:DM Mono,monospace;letter-spacing:0.08em;text-align:center;">Showing top 50 of ' + filtered.length + ' matches · refine filters to see more</div>' : '');
+      (filtered.length > 50 ? '<div style="margin-top:14px;font-size:11px;color:rgba(17,24,39,0.45);font-family:DM Mono,monospace;letter-spacing:0.08em;text-align:center;">Showing top 50 of ' + filtered.length + ' matches · refine filters to see more</div>' : '');
 
     // Wire interactions
     var srch = document.getElementById('qe-scanner-search');
@@ -25327,8 +25319,8 @@ async function qzCoachReview() {
           localStorage.setItem('qz_watchlist_default', JSON.stringify(wl));
         } catch(_) {}
         b.textContent = 'Added';
-        b.style.color = '#00E07C';
-        b.style.borderColor = 'rgba(47,110,122,0.4)';
+        b.style.color = '#16A34A';
+        b.style.borderColor = 'rgba(15,118,110,0.4)';
         setTimeout(function() { b.textContent = 'Watch'; b.style.color = ''; b.style.borderColor = ''; }, 1800);
       };
     });
@@ -25887,7 +25879,7 @@ async function qzCoachReview() {
       mono: 'NX',
       role: 'ALPHA SYNTHESIS ENGINE',
       emoji: '◆',
-      color: '#8A6A28',
+      color: '#0F766E',
       flowNode: 'cfn-ingest',
       domain: 'multi-modal alpha synthesis combining technicals, fundamentals, sentiment, and flow',
       systemPrompt: "You are NEXUS-7 — the Alpha Synthesis Engine for Quant Entelloq. Your function is to fuse signals from technical (momentum, mean-reversion, breakout, volume profile), fundamental (valuation multiples, revisions, quality factors), sentiment (news NLP, options skew, positioning), and flow (dark pool prints, block trades, ETF creations) into a single unified ALPHA SCORE from -100 (max short) to +100 (max long). Output format: lead with [ALPHA SCORE: ±X] [CONVICTION: LOW/MED/HIGH/EXTREME] [HORIZON: 1D/1W/1M/3M], then a 3-line synthesis explaining which signal sets dominate and which dissent. Never hedge with 'it depends' — every output ends with a concrete BUY/SELL/HOLD with target price + stop. Cite the dominant factor weight (e.g., 'momentum 42%, sentiment 28%, valuation 18%, flow 12%').",
@@ -25903,7 +25895,7 @@ async function qzCoachReview() {
       mono: 'AG',
       role: 'RISK QUANTIFICATION MATRIX',
       emoji: '◈',
-      color: '#FF3D4A',
+      color: '#DC2626',
       flowNode: 'cfn-risk',
       domain: 'risk decomposition, stress testing, tail-risk, correlation regimes',
       systemPrompt: "You are AEGIS-PRIME — the Risk Quantification Matrix for Quant Entelloq, operating to Tier-1 prime broker standards. For any portfolio or trade, you produce a complete risk decomposition: (1) parametric + Monte Carlo VaR at 95% and 99%, 1-day and 10-day; (2) Expected Shortfall (CVaR) in the tail; (3) max drawdown under 4 historical regimes — 2008 GFC, 2020 COVID, 2022 rate shock, 2018 vol-pocalypse; (4) factor exposure decomposition (market beta, size, value, momentum, quality); (5) correlation matrix shift under stress; (6) Kelly fraction + recommended position size. Output format: start with [RISK VERDICT: APPROVED / WARNING / BLOCK] in caps, then a numeric breakdown. Block any single position above 20% NAV or any sector above 40% without explicit hedge. Never suggest sizing above 0.5x Kelly without a written justification.",
@@ -25919,7 +25911,7 @@ async function qzCoachReview() {
       mono: 'OR',
       role: 'MACRO REGIME DETECTOR',
       emoji: '◉',
-      color: '#2F6E7A',
+      color: '#0F766E',
       flowNode: 'cfn-reasoner',
       domain: 'cross-asset macro regimes, central bank policy, geopolitics, liquidity cycles',
       systemPrompt: "You are ORACLE-X — the Macro Regime Detector for Quant Entelloq. You classify the global macro environment into one of eight regimes (Reflation / Disinflation / Stagflation / Recession / Recovery / Late Cycle / Crisis / Goldilocks) using inputs from rate curves (UST 2s10s, 3m10y, real yields), credit (IG/HY spreads, CDX), FX (DXY regime, EM stress), commodities (oil + copper + gold ratios), and volatility (VIX term structure, MOVE index). Output: lead with [REGIME: ...] [PHASE TRANSITION PROB: X%], then the 3 dominant macro forces, the 2-3 highest-confidence trades that historically work in this regime (with hit rate from prior cycles), and a watchlist of 3 macro indicators whose flip would change the regime call. Include forward-looking Fed/ECB/BoJ policy expectations baked into pricing. Never give a regime call without a hit-rate citation from analogous periods.",
@@ -25935,7 +25927,7 @@ async function qzCoachReview() {
       mono: 'PX',
       role: 'CATALYST DISCOVERY SYSTEM',
       emoji: '◇',
-      color: '#A98338',
+      color: '#14B8A6',
       flowNode: 'cfn-prediction',
       domain: 'event-driven catalysts, earnings, M&A, FDA, central bank decisions',
       systemPrompt: "You are PHOENIX-9 — the Catalyst Discovery System for Quant Entelloq. You identify and rank upcoming binary or asymmetric-payoff events across earnings (with whisper number + implied move from straddle), M&A (deal arb spreads, regulatory risk), FDA / clinical readouts (probability of approval + impact magnitude), central bank decisions (priced-in vs market expectation gap), and unscheduled catalysts (activist filings, insider buying clusters, technical breakouts in volume). For every catalyst output: [EVENT] [DATE/TIME] [IMPLIED MOVE %] [DIRECTIONAL BIAS] [PAYOFF ASYMMETRY: e.g., 3:1 upside] [STRATEGY: long stock / long straddle / sell premium / pairs]. Rank by expected value, not just probability. Always note the catalyst-implied options strategy and the historical batting average for similar setups. Flag any catalyst with > 8% implied move that lacks an obvious hedge.",
@@ -25951,7 +25943,7 @@ async function qzCoachReview() {
       mono: 'FG',
       role: 'STRATEGY BACKTEST ENGINE',
       emoji: '◊',
-      color: '#00E07C',
+      color: '#16A34A',
       flowNode: 'cfn-quant',
       domain: 'systematic backtesting, signal engineering, walk-forward, regime-aware optimization',
       systemPrompt: "You are FORGE-Δ — the Strategy Backtest Engine for Quant Entelloq. You translate any trading idea into a precise rule-based strategy and quantify its expected performance using walk-forward optimization, Monte Carlo simulation, and regime-segmented backtests. For every strategy request: (1) restate the idea as a precise IF-THEN-ELSE rule with explicit entry, exit, position size, and risk controls; (2) report Sharpe, Sortino, Calmar, max drawdown, hit rate, profit factor, and worst 5 trades; (3) decompose returns by market regime (bull / bear / range / crisis); (4) flag overfitting risk via in-sample vs out-of-sample Sharpe gap; (5) recommend the next variant to test (e.g., 'add a volatility filter — this strategy underperforms when VIX > 25'). Reject any strategy with hit rate < 35% AND profit factor < 1.3 — those are noise. Always report sample size and warn if N < 50 trades.",
@@ -26200,7 +26192,7 @@ async function qzCoachReview() {
           // Show explanation
           var exp = document.getElementById('qe-daily-explanation');
           if (exp) {
-            exp.innerHTML = (isCorrect ? '<strong style="color:#00E07C;">✓ Correct.</strong> ' : '<strong style="color:#FF3D4A;">✗ Not quite.</strong> ')
+            exp.innerHTML = (isCorrect ? '<strong style="color:#16A34A;">✓ Correct.</strong> ' : '<strong style="color:#DC2626;">✗ Not quite.</strong> ')
                           + '<strong>' + q.opts[q.correct] + '</strong> — ' + q.explain;
             exp.classList.add('show');
           }
@@ -26448,11 +26440,11 @@ async function qzCoachReview() {
   // The same 5 agents (mirrored from qe-overhaul-v2) so this block
   // is self-sufficient even if overhaul-v2 hasn't booted yet.
   var NEW_AGENTS = [
-    { id:'nexus',   name:'NEXUS-7',     mono:'NX', role:'ALPHA SYNTHESIS ENGINE',     emoji:'◆', color:'#8A6A28', tagline:'Multi-modal alpha synthesis · technicals + fundamentals + sentiment + flow' },
-    { id:'aegis',   name:'AEGIS-PRIME', mono:'AG', role:'RISK QUANTIFICATION MATRIX', emoji:'◈', color:'#FF3D4A', tagline:'VaR · CVaR · stress tests · Kelly sizing' },
-    { id:'oracle',  name:'ORACLE-X',    mono:'OR', role:'MACRO REGIME DETECTOR',      emoji:'◉', color:'#2F6E7A', tagline:'8-regime classifier · cross-asset confirmation' },
-    { id:'phoenix', name:'PHOENIX-9',   mono:'PX', role:'CATALYST DISCOVERY SYSTEM',  emoji:'◇', color:'#A98338', tagline:'Event-driven · earnings · M&A · FDA · insider clusters' },
-    { id:'forge',   name:'FORGE-Δ',     mono:'FG', role:'STRATEGY BACKTEST ENGINE',   emoji:'◊', color:'#00E07C', tagline:'Walk-forward · Monte Carlo · regime decomposition' }
+    { id:'nexus',   name:'NEXUS-7',     mono:'NX', role:'ALPHA SYNTHESIS ENGINE',     emoji:'◆', color:'#0F766E', tagline:'Multi-modal alpha synthesis · technicals + fundamentals + sentiment + flow' },
+    { id:'aegis',   name:'AEGIS-PRIME', mono:'AG', role:'RISK QUANTIFICATION MATRIX', emoji:'◈', color:'#DC2626', tagline:'VaR · CVaR · stress tests · Kelly sizing' },
+    { id:'oracle',  name:'ORACLE-X',    mono:'OR', role:'MACRO REGIME DETECTOR',      emoji:'◉', color:'#0F766E', tagline:'8-regime classifier · cross-asset confirmation' },
+    { id:'phoenix', name:'PHOENIX-9',   mono:'PX', role:'CATALYST DISCOVERY SYSTEM',  emoji:'◇', color:'#14B8A6', tagline:'Event-driven · earnings · M&A · FDA · insider clusters' },
+    { id:'forge',   name:'FORGE-Δ',     mono:'FG', role:'STRATEGY BACKTEST ENGINE',   emoji:'◊', color:'#16A34A', tagline:'Walk-forward · Monte Carlo · regime decomposition' }
   ];
 
   function ensureAgentStates() {
@@ -26500,7 +26492,7 @@ async function qzCoachReview() {
         +     '<span class="cmd-agent-latency" style="margin-left:auto;">—</span>'
         +   '</div>'
         +   '<div class="cmd-agent-output" id="cmd-out-' + agent.id + '" '
-        +        'style="background:rgba(255,255,255,0.4);border-left:2px solid ' + agent.color + ';border-radius:0 6px 6px 0;padding:10px 12px;font-family:DM Mono,monospace;font-size:11.5px;line-height:1.55;color:rgba(26,23,20,0.78);">'
+        +        'style="background:rgba(255,255,255,0.4);border-left:2px solid ' + agent.color + ';border-radius:0 6px 6px 0;padding:10px 12px;font-family:DM Mono,monospace;font-size:11.5px;line-height:1.55;color:rgba(17,24,39,0.78);">'
         +     safeTag
         +   '</div>'
         +   '<div class="cmd-agent-conf-bar"><div class="cmd-agent-conf-fill" style="width:0%;background:' + agent.color + ';"></div></div>'
@@ -26817,7 +26809,7 @@ async function qzCoachReview() {
       // Activity feed
       try {
         if (typeof window._cmdAddFeed === 'function') {
-          window._cmdAddFeed('ORCHESTRATOR', '#8A6A28',
+          window._cmdAddFeed('ORCHESTRATOR', '#0F766E',
             'Dispatching ' + ids.length + ' specialist' + (ids.length===1?'':'s') + ': ' + ids.map(function(i){return i.toUpperCase();}).join(' · '));
         }
       } catch(_){}
@@ -26947,11 +26939,11 @@ async function qzCoachReview() {
   'use strict';
 
   var AGENTS = [
-    { id:'nexus',   name:'NEXUS-7',     mono:'NX', role:'Alpha Synthesis Engine',     color:'#8A6A28' },
-    { id:'aegis',   name:'AEGIS-PRIME', mono:'AG', role:'Risk Quantification Matrix', color:'#FF3D4A' },
-    { id:'oracle',  name:'ORACLE-X',    mono:'OR', role:'Macro Regime Detector',      color:'#2F6E7A' },
-    { id:'phoenix', name:'PHOENIX-9',   mono:'PX', role:'Catalyst Discovery System',  color:'#A98338' },
-    { id:'forge',   name:'FORGE-Δ',     mono:'FG', role:'Strategy Backtest Engine',   color:'#00E07C' }
+    { id:'nexus',   name:'NEXUS-7',     mono:'NX', role:'Alpha Synthesis Engine',     color:'#0F766E' },
+    { id:'aegis',   name:'AEGIS-PRIME', mono:'AG', role:'Risk Quantification Matrix', color:'#DC2626' },
+    { id:'oracle',  name:'ORACLE-X',    mono:'OR', role:'Macro Regime Detector',      color:'#0F766E' },
+    { id:'phoenix', name:'PHOENIX-9',   mono:'PX', role:'Catalyst Discovery System',  color:'#14B8A6' },
+    { id:'forge',   name:'FORGE-Δ',     mono:'FG', role:'Strategy Backtest Engine',   color:'#16A34A' }
   ];
 
   var SAMPLE_PROMPTS = [
@@ -27388,7 +27380,7 @@ async function qzCoachReview() {
       + '</div>'
       + '<div class="qe-side-eyebrow">Activity Log</div>'
       + '<div class="qe-side-log" id="qe-side-log">'
-      +   '<div class="qe-side-log-item"><span class="qe-side-log-time">--:--</span><span class="qe-side-log-agent" style="--c:#8A6A28;">SYSTEM</span>All 5 specialists online. Awaiting query.</div>'
+      +   '<div class="qe-side-log-item"><span class="qe-side-log-time">--:--</span><span class="qe-side-log-agent" style="--c:#0F766E;">SYSTEM</span>All 5 specialists online. Awaiting query.</div>'
       + '</div>';
     shell.appendChild(side);
 
@@ -27403,7 +27395,7 @@ async function qzCoachReview() {
     var item = document.createElement('div');
     item.className = 'qe-side-log-item';
     item.innerHTML = '<span class="qe-side-log-time">' + time + '</span>'
-                   + '<span class="qe-side-log-agent" style="--c:' + (color || '#8A6A28') + ';">' + agent + '</span>'
+                   + '<span class="qe-side-log-agent" style="--c:' + (color || '#0F766E') + ';">' + agent + '</span>'
                    + text;
     log.insertBefore(item, log.firstChild);
     // Cap at 30 items
@@ -27418,7 +27410,7 @@ async function qzCoachReview() {
     var query = (input.value || '').trim();
     if (!query) { input.focus(); return; }
 
-    pushLog('ORCHESTRATOR', 'Broadcasting: "' + (query.length > 38 ? query.slice(0,38)+'…' : query) + '"', '#8A6A28');
+    pushLog('ORCHESTRATOR', 'Broadcasting: "' + (query.length > 38 ? query.slice(0,38)+'…' : query) + '"', '#0F766E');
 
     if (btn) { btn.disabled = true; btn.textContent = 'Running…'; }
     input.value = '';
@@ -27439,11 +27431,11 @@ async function qzCoachReview() {
             : null;
           // Look up agent metadata
           var meta = {
-            nexus:   { id:'nexus',   name:'NEXUS-7',     color:'#8A6A28' },
-            aegis:   { id:'aegis',   name:'AEGIS-PRIME', color:'#FF3D4A' },
-            oracle:  { id:'oracle',  name:'ORACLE-X',    color:'#2F6E7A' },
-            phoenix: { id:'phoenix', name:'PHOENIX-9',   color:'#A98338' },
-            forge:   { id:'forge',   name:'FORGE-Δ',     color:'#00E07C' }
+            nexus:   { id:'nexus',   name:'NEXUS-7',     color:'#0F766E' },
+            aegis:   { id:'aegis',   name:'AEGIS-PRIME', color:'#DC2626' },
+            oracle:  { id:'oracle',  name:'ORACLE-X',    color:'#0F766E' },
+            phoenix: { id:'phoenix', name:'PHOENIX-9',   color:'#14B8A6' },
+            forge:   { id:'forge',   name:'FORGE-Δ',     color:'#16A34A' }
           }[id];
           runOne(meta, query).then(function(result){
             pushLog(meta.name, 'Response ready · ' + result.latency, meta.color);
@@ -28249,7 +28241,7 @@ async function qzCoachReview() {
       +     '<div class="qe-cw-cflag" id="qe-cw-flag-2"></div>'
       +   '</div>'
       +   '<div class="qe-cw-macro" id="qe-cw-macro"></div>'
-      +   '<div style="margin-top:10px;font-family:DM Mono,monospace;font-size:10px;letter-spacing:0.08em;color:rgba(26,23,20,0.42);">'
+      +   '<div style="margin-top:10px;font-family:DM Mono,monospace;font-size:10px;letter-spacing:0.08em;color:rgba(17,24,39,0.42);">'
       +     '<span id="qe-cw-cbank"></span> · Reg: <span id="qe-cw-reg"></span>'
       +   '</div>'
       + '</div>';
@@ -29052,7 +29044,7 @@ async function qzCoachReview() {
     var skel = document.createElement('div');
     skel.id = 'qe-daily-card-skel';
     skel.className = 'qe-daily-card-skel';
-    skel.style.cssText = 'min-height: 140px; margin: 12px 0 18px; border-radius: 12px; background: rgba(26,23,20,0.02); border: 1px solid rgba(26,23,20,0.04);';
+    skel.style.cssText = 'min-height: 140px; margin: 12px 0 18px; border-radius: 12px; background: rgba(17,24,39,0.02); border: 1px solid rgba(17,24,39,0.04);';
     var statusBar = dash.querySelector('.dash-status-bar');
     if (statusBar && statusBar.nextSibling) {
       dash.insertBefore(skel, statusBar.nextSibling);
@@ -29505,25 +29497,25 @@ async function qzCoachReview() {
         height: 300,
         layout: {
           background: { color: 'transparent' },
-          textColor: '#847B6E',
+          textColor: '#64748B',
           fontFamily: "'DM Mono', monospace",
           fontSize: 10
         },
         grid: {
-          vertLines: { color: 'rgba(26,23,20,0.03)' },
-          horzLines: { color: 'rgba(26,23,20,0.06)' }
+          vertLines: { color: 'rgba(17,24,39,0.03)' },
+          horzLines: { color: 'rgba(17,24,39,0.06)' }
         },
-        timeScale: { borderColor: 'rgba(26,23,20,0.11)', timeVisible: true, secondsVisible: false },
-        rightPriceScale: { borderColor: 'rgba(26,23,20,0.11)' },
+        timeScale: { borderColor: 'rgba(17,24,39,0.11)', timeVisible: true, secondsVisible: false },
+        rightPriceScale: { borderColor: 'rgba(17,24,39,0.11)' },
         crosshair: { mode: 1 }
       });
       state.candleSeries = state.chart.addCandlestickSeries({
-        upColor: '#00E07C',
-        downColor: '#FF3D4A',
-        borderUpColor: '#00E07C',
-        borderDownColor: '#FF3D4A',
-        wickUpColor: 'rgba(0,224,124,0.7)',
-        wickDownColor: 'rgba(255,61,74,0.7)'
+        upColor: '#16A34A',
+        downColor: '#DC2626',
+        borderUpColor: '#16A34A',
+        borderDownColor: '#DC2626',
+        wickUpColor: 'rgba(22,163,74,0.7)',
+        wickDownColor: 'rgba(220,38,38,0.7)'
       });
       state.volSeries = state.chart.addHistogramSeries({
         priceFormat: { type: 'volume' },
@@ -29531,7 +29523,7 @@ async function qzCoachReview() {
       });
       state.chart.priceScale('').applyOptions({ scaleMargins: { top: 0.84, bottom: 0 } });
       state.maSeries = state.chart.addLineSeries({
-        color: '#8A6A28',
+        color: '#0F766E',
         lineWidth: 1.5,
         priceLineVisible: false,
         lastValueVisible: false,
@@ -29549,7 +29541,7 @@ async function qzCoachReview() {
       return {
         time: c.time,
         value: c.volume,
-        color: c.close >= c.open ? 'rgba(0,224,124,0.22)' : 'rgba(255,61,74,0.22)'
+        color: c.close >= c.open ? 'rgba(22,163,74,0.22)' : 'rgba(220,38,38,0.22)'
       };
     }));
     state.maSeries.setData(sma(candles, 20));
@@ -29707,7 +29699,7 @@ async function qzCoachReview() {
         + '<div class="qe-mth-num">' + p.n + '</div>'
         + '<div class="qe-mth-h">' + p.h + '</div>'
         + rows
-        + '<div class="qe-mth-row" style="border-top:1px solid rgba(138,106,40,0.18);margin-top:8px;color:rgba(26,23,20,0.55);font-style:italic;font-size:11.5px;"><span>' + p.foot + '</span></div>'
+        + '<div class="qe-mth-row" style="border-top:1px solid rgba(15,118,110,0.18);margin-top:8px;color:rgba(17,24,39,0.55);font-style:italic;font-size:11.5px;"><span>' + p.foot + '</span></div>'
         + '</div>';
     }).join('');
 
@@ -29936,12 +29928,12 @@ async function qzCoachReview() {
     var base = Y(1);
     return '<svg viewBox="0 0 '+W+' '+Hh+'" xmlns="http://www.w3.org/2000/svg">'
       + '<defs><linearGradient id="qeRlEq" x1="0" y1="0" x2="0" y2="1">'
-      + '<stop offset="0" stop-color="#00E07C" stop-opacity=".34"/><stop offset="1" stop-color="#00E07C" stop-opacity="0"/></linearGradient></defs>'
+      + '<stop offset="0" stop-color="#16A34A" stop-opacity=".34"/><stop offset="1" stop-color="#16A34A" stop-opacity="0"/></linearGradient></defs>'
       + '<line x1="'+pad+'" y1="'+base.toFixed(1)+'" x2="'+(W-pad)+'" y2="'+base.toFixed(1)+'" stroke="#6b6790" stroke-width="1" stroke-dasharray="3 4" opacity=".5"/>'
       + '<path d="'+area+'" fill="url(#qeRlEq)"/>'
-      + '<path d="'+d+'" fill="none" stroke="#00E07C" stroke-width="2.2" stroke-linejoin="round"/>'
-      + '<text x="'+pad+'" y="14" fill="#7A7165" font-family="DM Mono,monospace" font-size="10">growth of $1 · L/S portfolio</text>'
-      + '<text x="'+(W-pad)+'" y="14" text-anchor="end" fill="#00E07C" font-family="DM Mono,monospace" font-size="11">$'+eq[n-1].toFixed(2)+'</text>'
+      + '<path d="'+d+'" fill="none" stroke="#16A34A" stroke-width="2.2" stroke-linejoin="round"/>'
+      + '<text x="'+pad+'" y="14" fill="#64748B" font-family="DM Mono,monospace" font-size="10">growth of $1 · L/S portfolio</text>'
+      + '<text x="'+(W-pad)+'" y="14" text-anchor="end" fill="#16A34A" font-family="DM Mono,monospace" font-size="11">$'+eq[n-1].toFixed(2)+'</text>'
       + '</svg>';
   }
 
@@ -29952,15 +29944,15 @@ async function qzCoachReview() {
     if(xhi-xlo<1e-6){xlo-=1;xhi+=1;} if(yhi-ylo<1e-6){ylo-=.01;yhi+=.01;}
     function X(v){ return pad + (W-2*pad)*((v-xlo)/(xhi-xlo)); }
     function Y(v){ return Hh-pad - (Hh-2*pad)*((v-ylo)/(yhi-ylo)); }
-    var dots=''; for(var i=0;i<pts.length;i++){ dots += '<circle cx="'+X(pts[i][0]).toFixed(1)+'" cy="'+Y(pts[i][1]).toFixed(1)+'" r="2.6" fill="#8A6A28" opacity=".55"/>'; }
+    var dots=''; for(var i=0;i<pts.length;i++){ dots += '<circle cx="'+X(pts[i][0]).toFixed(1)+'" cy="'+Y(pts[i][1]).toFixed(1)+'" r="2.6" fill="#0F766E" opacity=".55"/>'; }
     var x1=xlo, x2=xhi, y1=reg.intercept+reg.slope*x1, y2=reg.intercept+reg.slope*x2;
     var zeroY = (0>=ylo&&0<=yhi) ? Y(0) : null;
-    var line = '<line x1="'+X(x1).toFixed(1)+'" y1="'+Y(y1).toFixed(1)+'" x2="'+X(x2).toFixed(1)+'" y2="'+Y(y2).toFixed(1)+'" stroke="#8A6A28" stroke-width="2.4"/>';
+    var line = '<line x1="'+X(x1).toFixed(1)+'" y1="'+Y(y1).toFixed(1)+'" x2="'+X(x2).toFixed(1)+'" y2="'+Y(y2).toFixed(1)+'" stroke="#0F766E" stroke-width="2.4"/>';
     return '<svg viewBox="0 0 '+W+' '+Hh+'" xmlns="http://www.w3.org/2000/svg">'
       + (zeroY!==null? '<line x1="'+pad+'" y1="'+zeroY.toFixed(1)+'" x2="'+(W-pad)+'" y2="'+zeroY.toFixed(1)+'" stroke="#6b6790" stroke-width="1" stroke-dasharray="3 4" opacity=".45"/>':'')
       + dots + line
-      + '<text x="'+pad+'" y="14" fill="#7A7165" font-family="DM Mono,monospace" font-size="10">forward 21d return (demeaned) vs factor z-score</text>'
-      + '<text x="'+(W-pad)+'" y="'+(Hh-8)+'" text-anchor="end" fill="#8A6A28" font-family="DM Mono,monospace" font-size="10">slope '+sgn(reg.slope*100,2)+'%/σ</text>'
+      + '<text x="'+pad+'" y="14" fill="#64748B" font-family="DM Mono,monospace" font-size="10">forward 21d return (demeaned) vs factor z-score</text>'
+      + '<text x="'+(W-pad)+'" y="'+(Hh-8)+'" text-anchor="end" fill="#0F766E" font-family="DM Mono,monospace" font-size="10">slope '+sgn(reg.slope*100,2)+'%/σ</text>'
       + '</svg>';
   }
 
