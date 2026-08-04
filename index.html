@@ -297,7 +297,7 @@ window._qzBodyScrollLock = function(lock) {
   /* ============================================================
      TICKER STRIP — scrolling stock marquee
      ============================================================ */
-  .ticker-strip { position:relative; overflow:hidden; border-top:1px solid rgba(255,255,255,0.05); border-bottom:1px solid rgba(255,255,255,0.05); background:rgba(0,0,0,0.3); backdrop-filter:blur(8px); padding:10px 0; }
+  .ticker-strip { position:relative; overflow:hidden; border-top:1px solid rgba(255,255,255,0.05); border-bottom:1px solid rgba(255,255,255,0.05); background:rgba(255,255,255,0.3); backdrop-filter:blur(8px); padding:10px 0; }
   .ticker-strip-mask-l { position:absolute; left:0; top:0; bottom:0; width:100px; background:linear-gradient(to right,var(--black),transparent); z-index:2; pointer-events:none; }
   .ticker-strip-mask-r { position:absolute; right:0; top:0; bottom:0; width:100px; background:linear-gradient(to left,var(--black),transparent); z-index:2; pointer-events:none; }
   .ticker-scroll { display:flex; gap:32px; align-items:center; animation:ticker-scroll 50s linear infinite; white-space:nowrap; }
@@ -2138,7 +2138,7 @@ window._qzBodyScrollLock = function(lock) {
   .qzs-hint kbd{background:var(--surface3);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:8px;}
 
   /* ============== QZ ASSET DETAIL PANEL ============== */
-  #qzap-overlay-back{position:fixed;inset:0;background:rgba(0,0,0,0.28);z-index:9290;opacity:0;pointer-events:none;transition:opacity 0.26s;}
+  #qzap-overlay-back{position:fixed;inset:0;background:rgba(255,255,255,0.28);z-index:9290;opacity:0;pointer-events:none;transition:opacity 0.26s;}
   #qzap-overlay-back.open{opacity:1;pointer-events:all;}
   #qz-asset-panel{position:fixed;top:0;right:0;bottom:0;width:min(680px,100vw);background:var(--surface2);border-left:1px solid var(--border);z-index:9300;transform:translateX(100%);transition:transform 0.28s cubic-bezier(0.16,1,0.3,1);display:flex;flex-direction:column;overflow:hidden;box-shadow:-20px 0 72px rgba(0,0,0,0.55);}
   #qz-asset-panel.open{transform:none;}
@@ -2346,7 +2346,7 @@ window._qzBodyScrollLock = function(lock) {
   .live-pill .live-dot { box-shadow:0 0 8px rgba(138,106,40,0.7); }
 
   /* Toggle */
-  .toggle { background:linear-gradient(180deg, rgba(0,0,0,0.4), rgba(255,255,255,0.04)); box-shadow:inset 0 1px 2px rgba(0,0,0,0.4); transition:background 200ms var(--ease-out-strong); }
+  .toggle { background:linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0.04)); box-shadow:inset 0 1px 2px rgba(0,0,0,0.4); transition:background 200ms var(--ease-out-strong); }
   .toggle.on { background:var(--grad-green); }
   .toggle::after { box-shadow:0 1px 3px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,0,0,0.1); transition:transform 240ms var(--ease-spring); }
 
@@ -2531,11 +2531,11 @@ window._qzBodyScrollLock = function(lock) {
     display:flex; flex-direction:column;
   }
   .agent-drawer.open { transform:translateX(0); }
-  .agent-drawer-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(2px); z-index:199; opacity:0; pointer-events:none; transition:opacity 280ms var(--ease-out-strong); }
+  .agent-drawer-overlay { position:fixed; inset:0; background:rgba(255,255,255,0.5); backdrop-filter:blur(2px); z-index:199; opacity:0; pointer-events:none; transition:opacity 280ms var(--ease-out-strong); }
   .agent-drawer-overlay.open { opacity:1; pointer-events:auto; }
   .agent-drawer-header { padding:24px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:flex-start; gap:16px; }
   .agent-drawer-body { flex:1; overflow-y:auto; padding:20px 24px; }
-  .agent-drawer-input { padding:18px 24px; border-top:1px solid var(--border); display:flex; gap:8px; background:linear-gradient(180deg, transparent, rgba(0,0,0,0.3)); }
+  .agent-drawer-input { padding:18px 24px; border-top:1px solid var(--border); display:flex; gap:8px; background:linear-gradient(180deg, transparent, rgba(255,255,255,0.3)); }
   .agent-drawer-input input { flex:1; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:11px 14px; color:var(--text-primary); font-size:13px; font-family:var(--font-body); }
   .agent-drawer-input input:focus { outline:none; border-color:rgba(138,106,40,0.40); box-shadow:0 0 0 3px rgba(138,106,40,0.12); }
   .agent-message { margin-bottom:14px; animation:fadeInUp 240ms var(--ease-out-strong); }
@@ -2765,7 +2765,7 @@ window._qzBodyScrollLock = function(lock) {
   }
   .uv-search-shell { position:relative; flex:1; min-width:280px; max-width:420px; }
   .uv-search-icon { position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:14px; color:var(--text-muted); pointer-events:none; }
-  .uv-search-kbd { position:absolute; right:10px; top:50%; transform:translateY(-50%); padding:2px 7px; font-family:var(--font-mono); font-size:10px; color:var(--text-muted); border:1px solid var(--border); border-radius:5px; background:rgba(0,0,0,0.3); pointer-events:none; }
+  .uv-search-kbd { position:absolute; right:10px; top:50%; transform:translateY(-50%); padding:2px 7px; font-family:var(--font-mono); font-size:10px; color:var(--text-muted); border:1px solid var(--border); border-radius:5px; background:rgba(255,255,255,0.3); pointer-events:none; }
   .uv-search { width:100%; padding:11px 50px 11px 38px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; color:var(--text-primary); font-size:13px; transition:border-color 160ms var(--ease-out-strong), box-shadow 200ms var(--ease-out-strong); }
   .uv-search::placeholder { color:var(--text-muted); }
   .uv-search:focus { outline:none; border-color:rgba(138,106,40,0.4); box-shadow:0 0 0 3px rgba(138,106,40,0.10); background:var(--surface3); }
@@ -3143,7 +3143,7 @@ window._qzBodyScrollLock = function(lock) {
     box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 24px 56px -16px rgba(0,80,200,0.30);
   }
   .uv-intel-card-featured {
-    background: linear-gradient(180deg, rgba(0,40,30,0.45), rgba(255,255,255,0.85));
+    background: linear-gradient(180deg, rgba(255,255,255,0.45), rgba(255,255,255,0.85));
     border-color: rgba(138,106,40,0.30);
   }
   .uv-intel-card-featured::before {
@@ -5602,7 +5602,7 @@ button:focus-visible, .btn:focus-visible, .nav-item:focus-visible {
 .option-item::before { content:''; position:absolute; inset:0; border-radius:16px; background:linear-gradient(135deg,rgba(138,106,40,0.1) 0%,transparent 65%); opacity:0; transition:opacity 0.25s; pointer-events:none; }
 .option-item:hover { border-color:rgba(138,106,40,0.32) !important; transform:translateY(-3px) !important; box-shadow:0 12px 40px rgba(0,0,0,0.5),0 0 0 1px rgba(138,106,40,0.12),inset 0 1px 0 rgba(255,255,255,0.08) !important; }
 .option-item:hover::before,.option-item.selected::before { opacity:1; }
-.option-item.selected { border-color:rgba(138,106,40,0.55) !important; background:linear-gradient(145deg,rgba(109,40,217,0.2) 0%,rgba(138,106,40,0.08) 100%) !important; box-shadow:0 8px 36px rgba(0,0,0,0.5),0 0 0 1px rgba(138,106,40,0.25) inset,0 0 24px rgba(138,106,40,0.15) !important; }
+.option-item.selected { border-color:rgba(138,106,40,0.55) !important; background:linear-gradient(145deg,rgba(255,255,255,0.2) 0%,rgba(138,106,40,0.08) 100%) !important; box-shadow:0 8px 36px rgba(0,0,0,0.5),0 0 0 1px rgba(138,106,40,0.25) inset,0 0 24px rgba(138,106,40,0.15) !important; }
 .option-item-title { font-size:14.5px !important; font-weight:700 !important; font-family:var(--font-display) !important; letter-spacing:-0.01em !important; margin-bottom:5px !important; color:#fff !important; }
 .option-item-sub { font-size:12px !important; color:rgba(255,255,255,0.36) !important; line-height:1.4 !important; }
 input[type="range"] { -webkit-appearance:none; appearance:none; width:100%; height:3px; border-radius:99px; background:linear-gradient(90deg,#6E5420,#8A6A28); outline:none; }
@@ -9219,7 +9219,7 @@ function _lp3Enter(user) {
       0 0 0 1px rgba(138,101,18,0.18),
       0 1px 0 0 rgba(255,255,255,0.10) inset,
       0 -16px 32px -8px rgba(255,255,255,0.6) inset,
-      0 16px 40px -8px rgba(0,80,200,0.25),
+      0 16px 40px -8px rgba(255,255,255,0.25),
       0 0 56px 4px rgba(138,101,18,0.10) !important;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -9263,7 +9263,7 @@ function _lp3Enter(user) {
     100% { opacity: 0;   transform: scale(1.7); border-color: rgba(138,101,18,0); }
   }
 
-  #qe-orb-static:hover { transform: scale(1.06) translateY(-1px); box-shadow: 0 0 0 1px rgba(138,101,18,0.40), 0 -16px 32px -8px rgba(0,0,0,0.6) inset, 0 24px 56px -12px rgba(0,80,200,0.45), 0 0 80px 8px rgba(138,101,18,0.25) !important; }
+  #qe-orb-static:hover { transform: scale(1.06) translateY(-1px); box-shadow: 0 0 0 1px rgba(138,101,18,0.40), 0 -16px 32px -8px rgba(0,0,0,0.6) inset, 0 24px 56px -12px rgba(255,255,255,0.45), 0 0 80px 8px rgba(138,101,18,0.25) !important; }
   #qe-orb-static:active { transform: scale(0.94); }
   #qe-orb-static .qe-orb-glyph { display: none; }  /* the SVG replaces the Q glyph */
 
@@ -9335,7 +9335,7 @@ function _lp3Enter(user) {
       0 32px 80px -16px rgba(0,0,0,0.85),
       0 0 0 1px rgba(138,101,18,0.05),
       inset 0 1px 0 rgba(255,255,255,0.06),
-      inset 0 -32px 64px -16px rgba(0,40,100,0.20);
+      inset 0 -32px 64px -16px rgba(255,255,255,0.2);
     transform: translateY(20px) scale(0.96);
     opacity: 0;
     pointer-events: none;
@@ -9387,7 +9387,7 @@ function _lp3Enter(user) {
 
   .qe-pnl-msgs {
     min-height: 60px; max-height: 180px; overflow-y: auto;
-    padding: 12px 14px; background: rgba(0,0,0,0.30);
+    padding: 12px 14px; background: rgba(255,255,255,0.3);
     border: 1px solid rgba(255,255,255,0.06); border-radius: 10px;
     font-size: 12px; color: #b8b8b8; line-height: 1.6; margin-bottom: 14px;
   }
@@ -10250,13 +10250,13 @@ function _lp3Enter(user) {
         /* Warm typography */
         --qe-text:       #1A1714;
         --qe-text-soft:  rgba(255,255,255,0.74);
-        --qe-text-mute:  rgba(26,23,20,0.46);
-        --qe-text-dim:   rgba(26,23,20,0.24);
+        --qe-text-mute:  rgba(255,255,255,0.46);
+        --qe-text-dim:   rgba(255,255,255,0.24);
 
         /* Hairlines */
         --qe-hl:         rgba(26,23,20,0.06);
         --qe-hl-strong:  rgba(26,23,20,0.13);
-        --qe-hl-bold:    rgba(26,23,20,0.22);
+        --qe-hl-bold:    rgba(255,255,255,0.22);
 
         /* Single editorial accent + data accent */
         --qe-amber:      #A98338;
@@ -10423,7 +10423,7 @@ function _lp3Enter(user) {
           0 1px 0 rgba(255,255,255,0.32) inset,
           0 -1px 0 rgba(0,0,0,0.18) inset,
           0 8px 20px -8px rgba(138,106,40,0.45),
-          0 1px 2px rgba(0,0,0,0.4) !important;
+          0 1px 2px rgba(255,255,255,0.4) !important;
         transition: all 220ms var(--qe-ease) !important;
       }
       .btn-primary:hover {
@@ -10433,7 +10433,7 @@ function _lp3Enter(user) {
           0 1px 0 rgba(255,255,255,0.4) inset,
           0 -1px 0 rgba(0,0,0,0.18) inset,
           0 12px 28px -8px rgba(138,106,40,0.6),
-          0 2px 4px rgba(0,0,0,0.4) !important;
+          0 2px 4px rgba(255,255,255,0.4) !important;
       }
       .btn-primary:active { transform: translateY(0) !important; }
 
@@ -11501,7 +11501,7 @@ function _lp3Enter(user) {
   #ais-panel-agents .cmd-agent-icon {
     width: 44px !important; height: 44px !important;
     border-radius: 10px !important;
-    background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(255,255,255,0.6)) !important;
+    background: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(255,255,255,0.6)) !important;
     border: 1px solid var(--agent-color, #8A6A28) !important;
     box-shadow: 0 0 18px -4px var(--agent-color, #8A6A28);
   }
@@ -11529,7 +11529,7 @@ function _lp3Enter(user) {
   }
   /* Output area: tighter "terminal" feel */
   #ais-panel-agents .cmd-agent-output {
-    background: rgba(0,0,0,0.4) !important;
+    background: rgba(255,255,255,0.4) !important;
     border-left: 2px solid var(--agent-color, #8A6A28) !important;
     border-radius: 0 6px 6px 0 !important;
     padding: 10px 12px !important;
@@ -11659,7 +11659,7 @@ function _lp3Enter(user) {
   .qe-daily-explanation {
     margin-top: 14px;
     padding: 12px 14px;
-    background: rgba(0,0,0,0.32);
+    background: rgba(255,255,255,0.32);
     border: 1px solid rgba(26,23,20,0.08);
     border-left: 3px solid #8A6A28;
     border-radius: 0 8px 8px 0;
@@ -11902,7 +11902,7 @@ function _lp3Enter(user) {
     gap: 10px !important;
   }
   #ais-panel-agents .cmd-query-input {
-    background: rgba(0,0,0,0.3) !important;
+    background: rgba(255,255,255,0.3) !important;
     border: 1px solid rgba(26,23,20,0.10) !important;
     color: #1A1714 !important;
     border-radius: 8px !important;
@@ -12008,7 +12008,7 @@ function _lp3Enter(user) {
   }
   .qe-studio-query input {
     flex: 1;
-    background: rgba(0,0,0,0.32);
+    background: rgba(255,255,255,0.32);
     border: 1px solid rgba(26,23,20,0.10);
     color: #1A1714;
     border-radius: 9px;
@@ -12114,7 +12114,7 @@ function _lp3Enter(user) {
   .qe-agent-mono {
     width: 42px; height: 42px;
     border-radius: 9px;
-    background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(255,255,255,0.6));
+    background: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(255,255,255,0.6));
     border: 1px solid var(--c, #8A6A28);
     color: var(--c, #8A6A28);
     display: grid;
@@ -12157,9 +12157,9 @@ function _lp3Enter(user) {
     content: '';
     width: 7px; height: 7px;
     border-radius: 50%;
-    background: rgba(26,23,20,0.4);
+    background: rgba(255,255,255,0.4);
   }
-  .qe-agent.idle .qe-agent-status::before { background: rgba(26,23,20,0.3); }
+  .qe-agent.idle .qe-agent-status::before { background: rgba(255,255,255,0.3); }
   .qe-agent.thinking .qe-agent-status::before {
     background: var(--c);
     box-shadow: 0 0 8px var(--c);
@@ -12176,7 +12176,7 @@ function _lp3Enter(user) {
   }
   .qe-agent-body {
     flex: 1;
-    background: rgba(0,0,0,0.32);
+    background: rgba(255,255,255,0.32);
     border-left: 2px solid var(--c, #8A6A28);
     border-radius: 0 8px 8px 0;
     padding: 12px 14px;
@@ -12299,7 +12299,7 @@ function _lp3Enter(user) {
   .qe-side-log {
     flex: 1;
     overflow-y: auto;
-    background: rgba(0,0,0,0.32);
+    background: rgba(255,255,255,0.32);
     border: 1px solid rgba(26,23,20,0.06);
     border-radius: 8px;
     padding: 10px 12px;
@@ -14931,7 +14931,7 @@ body.qe-in-app .modal-overlay:not(#auth-modal) {
   --teal-glow:0 0 0 1px rgba(138,106,40,0.20);
   --purple:#8A6A28; --purple-10:rgba(138,106,40,0.09); --purple-glow:0 0 0 1px rgba(138,106,40,0.20);
   --qe-void:#FBFAF7; --qe-canvas:#FBFAF7; --qe-surface:#FFFFFF; --qe-elevated:#FFFFFF;
-  --qe-text:#1A1714; --qe-text-soft:rgba(255,255,255,0.78); --qe-text-mute:rgba(255,255,255,0.58); --qe-text-dim:rgba(26,23,20,0.34);
+  --qe-text:#1A1714; --qe-text-soft:rgba(255,255,255,0.78); --qe-text-mute:rgba(255,255,255,0.58); --qe-text-dim:rgba(255,255,255,0.34);
   --qe-hl:rgba(26,23,20,0.045); --qe-hl-strong:rgba(26,23,20,0.09); --qe-hl-bold:rgba(26,23,20,0.16);
   --qe-amber:#8A6A28; --qe-amber-soft:rgba(138,106,40,0.10); --qe-amber-glow:rgba(138,106,40,0.20);
   --qe-cyan:#6E5420; --qe-cyan-soft:rgba(110,84,32,0.09);
@@ -15213,7 +15213,7 @@ body.qe-in-app .modal-overlay:not(#auth-modal) {
 #app .universe-table tbody tr:hover td { background: rgba(242,239,233,0.025); }
 
 /* —— 14 · Overlays — cmd-K, asset drawer, authed modals ———— */
-#qz-search-overlay { background: rgba(26,23,20,0.40); }
+#qz-search-overlay { background: rgba(255,255,255,0.4); }
 #qz-search-modal {
   background: #FFFFFF;
   border: 1px solid rgba(26,23,20,0.12);
@@ -15230,7 +15230,7 @@ body.qe-in-app .modal-overlay:not(#auth-modal) {
 }
 /* gated on the real authed hook body.qe-in-app (app.js:19508);
    #auth-modal excluded so the logged-out flow can never repaint */
-body.qe-in-app .modal-overlay:not(#auth-modal) { background: rgba(26,23,20,0.38); }
+body.qe-in-app .modal-overlay:not(#auth-modal) { background: rgba(255,255,255,0.38); }
 body.qe-in-app .modal-overlay:not(#auth-modal) .modal {
   background: var(--surface);
   border: 1px solid var(--border-medium);
@@ -15272,8 +15272,8 @@ body.qe-in-app .modal-overlay:not(#auth-modal) .modal-close:hover {
   border: 3px solid transparent;
   background-clip: content-box;
 }
-#app ::-webkit-scrollbar-thumb:hover { background-color: rgba(26,23,20,0.24); }
-#app * { scrollbar-width: thin; scrollbar-color: rgba(26,23,20,0.18) transparent; }
+#app ::-webkit-scrollbar-thumb:hover { background-color: rgba(255,255,255,0.24); }
+#app * { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.18) transparent; }
 
 /* —— 17 · Body-level app surfaces: tour card, modals, onboarding ——
    These mount on document.body (outside #app) but only ever show to
@@ -15702,7 +15702,7 @@ body.qe-in-app .modal-overlay:not(#auth-modal) * {
 
 /* First-run legal consent + persistent disclaimer ribbon: body-level,
    previously full legacy dark-violet. */
-#qe-legal-overlay { background: rgba(26,23,20,0.45) !important; }
+#qe-legal-overlay { background: rgba(255,255,255,0.45) !important; }
 #qe-legal-overlay .qe-legal-card, .qe-legal-card {
   background: #FFFFFF !important;
   border: 1px solid rgba(26,23,20,0.14) !important;
@@ -15804,7 +15804,7 @@ body:not(.qe-in-app) #qz-search-overlay {
    opaque white, so the candles read only in the breathing room
    between them, exactly like the landing hero.
    ══════════════════════════════════════════════════════════════════ */
-body { --qz-candles: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1600 760%22%3E%3Cstyle%3E.u%7Bfill:rgb(23%2C179%2C105)%3Bfill-opacity:.16%7D.d%7Bfill:rgb(229%2C72%2C77)%3Bfill-opacity:.13%7D%3C/style%3E%3Crect class=%22d%22 x=%2222.8%22 y=%22376.8%22 width=%221.5%22 height=%2246.1%22/%3E%3Crect class=%22d%22 x=%2213.6%22 y=%22380.0%22 width=%2219.8%22 height=%2219.1%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%2269.8%22 y=%22374.1%22 width=%221.5%22 height=%2274.1%22/%3E%3Crect class=%22d%22 x=%2260.7%22 y=%22399.1%22 width=%2219.8%22 height=%2224.1%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%22116.9%22 y=%22411.4%22 width=%221.5%22 height=%2222.7%22/%3E%3Crect class=%22u%22 x=%22107.8%22 y=%22418.9%22 width=%2219.8%22 height=%224.2%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%22164.0%22 y=%22400.1%22 width=%221.5%22 height=%2229.5%22/%3E%3Crect class=%22u%22 x=%22154.8%22 y=%22400.7%22 width=%2219.8%22 height=%2218.3%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%22211.0%22 y=%22380.3%22 width=%221.5%22 height=%2232.6%22/%3E%3Crect class=%22u%22 x=%22201.9%22 y=%22400.7%22 width=%2219.8%22 height=%223.0%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%22258.1%22 y=%22395.5%22 width=%221.5%22 height=%2249.3%22/%3E%3Crect class=%22d%22 x=%22248.9%22 y=%22400.7%22 width=%2219.8%22 height=%2225.6%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%22305.1%22 y=%22400.5%22 width=%221.5%22 height=%2241.7%22/%3E%3Crect class=%22u%22 x=%22296.0%22 y=%22425.3%22 width=%2219.8%22 height=%223.0%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%22352.2%22 y=%22397.1%22 width=%221.5%22 height=%2237.4%22/%3E%3Crect class=%22u%22 x=%22343.1%22 y=%22405.3%22 width=%2219.8%22 height=%2220.0%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%22399.3%22 y=%22372.3%22 width=%221.5%22 height=%2251.0%22/%3E%3Crect class=%22u%22 x=%22390.1%22 y=%22384.4%22 width=%2219.8%22 height=%2220.9%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%22446.3%22 y=%22369.4%22 width=%221.5%22 height=%2239.9%22/%3E%3Crect class=%22d%22 x=%22437.2%22 y=%22384.4%22 width=%2219.8%22 height=%223.2%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%22493.4%22 y=%22387.2%22 width=%221.5%22 height=%2234.6%22/%3E%3Crect class=%22d%22 x=%22484.2%22 y=%22387.6%22 width=%2219.8%22 height=%2220.2%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%22540.4%22 y=%22384.0%22 width=%221.5%22 height=%2260.5%22/%3E%3Crect class=%22d%22 x=%22531.3%22 y=%22407.7%22 width=%2219.8%22 height=%2211.0%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%22587.5%22 y=%22397.8%22 width=%221.5%22 height=%2247.4%22/%3E%3Crect class=%22d%22 x=%22578.4%22 y=%22418.7%22 width=%2219.8%22 height=%2214.9%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%22634.5%22 y=%22412.7%22 width=%221.5%22 height=%2223.1%22/%3E%3Crect class=%22u%22 x=%22625.4%22 y=%22414.7%22 width=%2219.8%22 height=%2219.0%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%22681.6%22 y=%22411.5%22 width=%221.5%22 height=%2221.3%22/%3E%3Crect class=%22d%22 x=%22672.5%22 y=%22414.7%22 width=%2219.8%22 height=%223.0%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%22728.7%22 y=%22377.3%22 width=%221.5%22 height=%2242.6%22/%3E%3Crect class=%22u%22 x=%22719.5%22 y=%22394.8%22 width=%2219.8%22 height=%2220.8%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%22775.7%22 y=%22376.2%22 width=%221.5%22 height=%2235.6%22/%3E%3Crect class=%22d%22 x=%22766.6%22 y=%22394.8%22 width=%2219.8%22 height=%223.0%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%22822.8%22 y=%22354.1%22 width=%221.5%22 height=%2259.2%22/%3E%3Crect class=%22u%22 x=%22813.6%22 y=%22365.0%22 width=%2219.8%22 height=%2230.4%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%22869.8%22 y=%22357.3%22 width=%221.5%22 height=%2225.0%22/%3E%3Crect class=%22d%22 x=%22860.7%22 y=%22365.0%22 width=%2219.8%22 height=%223.0%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%22916.9%22 y=%22352.7%22 width=%221.5%22 height=%2256.6%22/%3E%3Crect class=%22d%22 x=%22907.8%22 y=%22367.6%22 width=%2219.8%22 height=%2226.7%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%22964.0%22 y=%22382.6%22 width=%221.5%22 height=%2221.8%22/%3E%3Crect class=%22d%22 x=%22954.8%22 y=%22394.2%22 width=%2219.8%22 height=%224.0%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%221011.0%22 y=%22374.4%22 width=%221.5%22 height=%2226.2%22/%3E%3Crect class=%22u%22 x=%221001.9%22 y=%22398.2%22 width=%2219.8%22 height=%223.0%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%221058.1%22 y=%22378.8%22 width=%221.5%22 height=%2268.6%22/%3E%3Crect class=%22d%22 x=%221048.9%22 y=%22398.2%22 width=%2219.8%22 height=%2224.6%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%221105.1%22 y=%22399.9%22 width=%221.5%22 height=%2230.8%22/%3E%3Crect class=%22u%22 x=%221096.0%22 y=%22420.4%22 width=%2219.8%22 height=%223.0%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%221152.2%22 y=%22398.4%22 width=%221.5%22 height=%2226.0%22/%3E%3Crect class=%22u%22 x=%221143.1%22 y=%22415.2%22 width=%2219.8%22 height=%225.2%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%221199.3%22 y=%22408.1%22 width=%221.5%22 height=%2223.6%22/%3E%3Crect class=%22d%22 x=%221190.1%22 y=%22415.2%22 width=%2219.8%22 height=%2215.3%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%221246.3%22 y=%22418.2%22 width=%221.5%22 height=%2256.3%22/%3E%3Crect class=%22d%22 x=%221237.2%22 y=%22430.4%22 width=%2219.8%22 height=%2218.5%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%221293.4%22 y=%22422.1%22 width=%221.5%22 height=%2248.1%22/%3E%3Crect class=%22u%22 x=%221284.2%22 y=%22436.0%22 width=%2219.8%22 height=%2212.9%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%221340.4%22 y=%22427.7%22 width=%221.5%22 height=%2235.2%22/%3E%3Crect class=%22d%22 x=%221331.3%22 y=%22436.0%22 width=%2219.8%22 height=%225.7%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%221387.5%22 y=%22432.6%22 width=%221.5%22 height=%2230.6%22/%3E%3Crect class=%22d%22 x=%221378.4%22 y=%22441.7%22 width=%2219.8%22 height=%2212.4%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%221434.5%22 y=%22441.6%22 width=%221.5%22 height=%2250.9%22/%3E%3Crect class=%22d%22 x=%221425.4%22 y=%22454.2%22 width=%2219.8%22 height=%2216.6%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%221481.6%22 y=%22463.5%22 width=%221.5%22 height=%2212.8%22/%3E%3Crect class=%22u%22 x=%221472.5%22 y=%22464.8%22 width=%2219.8%22 height=%226.0%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%221528.7%22 y=%22456.3%22 width=%221.5%22 height=%2242.4%22/%3E%3Crect class=%22d%22 x=%221519.5%22 y=%22464.8%22 width=%2219.8%22 height=%2227.2%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%221575.7%22 y=%22463.0%22 width=%221.5%22 height=%2229.7%22/%3E%3Crect class=%22u%22 x=%221566.6%22 y=%22469.9%22 width=%2219.8%22 height=%2222.2%22 rx=%221.5%22/%3E%3C/svg%3E"); }
+body { --qz-candles: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1600 760%22%3E%3Cstyle%3E.u%7Bfill:rgb(0%2C193%2C110)%3Bfill-opacity:.20%7D.d%7Bfill:rgb(245%2C64%2C75)%3Bfill-opacity:.16%7D%3C/style%3E%3Crect class=%22d%22 x=%2222.8%22 y=%22376.8%22 width=%221.5%22 height=%2246.1%22/%3E%3Crect class=%22d%22 x=%2213.6%22 y=%22380.0%22 width=%2219.8%22 height=%2219.1%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%2269.8%22 y=%22374.1%22 width=%221.5%22 height=%2274.1%22/%3E%3Crect class=%22d%22 x=%2260.7%22 y=%22399.1%22 width=%2219.8%22 height=%2224.1%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%22116.9%22 y=%22411.4%22 width=%221.5%22 height=%2222.7%22/%3E%3Crect class=%22u%22 x=%22107.8%22 y=%22418.9%22 width=%2219.8%22 height=%224.2%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%22164.0%22 y=%22400.1%22 width=%221.5%22 height=%2229.5%22/%3E%3Crect class=%22u%22 x=%22154.8%22 y=%22400.7%22 width=%2219.8%22 height=%2218.3%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%22211.0%22 y=%22380.3%22 width=%221.5%22 height=%2232.6%22/%3E%3Crect class=%22u%22 x=%22201.9%22 y=%22400.7%22 width=%2219.8%22 height=%223.0%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%22258.1%22 y=%22395.5%22 width=%221.5%22 height=%2249.3%22/%3E%3Crect class=%22d%22 x=%22248.9%22 y=%22400.7%22 width=%2219.8%22 height=%2225.6%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%22305.1%22 y=%22400.5%22 width=%221.5%22 height=%2241.7%22/%3E%3Crect class=%22u%22 x=%22296.0%22 y=%22425.3%22 width=%2219.8%22 height=%223.0%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%22352.2%22 y=%22397.1%22 width=%221.5%22 height=%2237.4%22/%3E%3Crect class=%22u%22 x=%22343.1%22 y=%22405.3%22 width=%2219.8%22 height=%2220.0%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%22399.3%22 y=%22372.3%22 width=%221.5%22 height=%2251.0%22/%3E%3Crect class=%22u%22 x=%22390.1%22 y=%22384.4%22 width=%2219.8%22 height=%2220.9%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%22446.3%22 y=%22369.4%22 width=%221.5%22 height=%2239.9%22/%3E%3Crect class=%22d%22 x=%22437.2%22 y=%22384.4%22 width=%2219.8%22 height=%223.2%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%22493.4%22 y=%22387.2%22 width=%221.5%22 height=%2234.6%22/%3E%3Crect class=%22d%22 x=%22484.2%22 y=%22387.6%22 width=%2219.8%22 height=%2220.2%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%22540.4%22 y=%22384.0%22 width=%221.5%22 height=%2260.5%22/%3E%3Crect class=%22d%22 x=%22531.3%22 y=%22407.7%22 width=%2219.8%22 height=%2211.0%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%22587.5%22 y=%22397.8%22 width=%221.5%22 height=%2247.4%22/%3E%3Crect class=%22d%22 x=%22578.4%22 y=%22418.7%22 width=%2219.8%22 height=%2214.9%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%22634.5%22 y=%22412.7%22 width=%221.5%22 height=%2223.1%22/%3E%3Crect class=%22u%22 x=%22625.4%22 y=%22414.7%22 width=%2219.8%22 height=%2219.0%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%22681.6%22 y=%22411.5%22 width=%221.5%22 height=%2221.3%22/%3E%3Crect class=%22d%22 x=%22672.5%22 y=%22414.7%22 width=%2219.8%22 height=%223.0%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%22728.7%22 y=%22377.3%22 width=%221.5%22 height=%2242.6%22/%3E%3Crect class=%22u%22 x=%22719.5%22 y=%22394.8%22 width=%2219.8%22 height=%2220.8%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%22775.7%22 y=%22376.2%22 width=%221.5%22 height=%2235.6%22/%3E%3Crect class=%22d%22 x=%22766.6%22 y=%22394.8%22 width=%2219.8%22 height=%223.0%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%22822.8%22 y=%22354.1%22 width=%221.5%22 height=%2259.2%22/%3E%3Crect class=%22u%22 x=%22813.6%22 y=%22365.0%22 width=%2219.8%22 height=%2230.4%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%22869.8%22 y=%22357.3%22 width=%221.5%22 height=%2225.0%22/%3E%3Crect class=%22d%22 x=%22860.7%22 y=%22365.0%22 width=%2219.8%22 height=%223.0%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%22916.9%22 y=%22352.7%22 width=%221.5%22 height=%2256.6%22/%3E%3Crect class=%22d%22 x=%22907.8%22 y=%22367.6%22 width=%2219.8%22 height=%2226.7%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%22964.0%22 y=%22382.6%22 width=%221.5%22 height=%2221.8%22/%3E%3Crect class=%22d%22 x=%22954.8%22 y=%22394.2%22 width=%2219.8%22 height=%224.0%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%221011.0%22 y=%22374.4%22 width=%221.5%22 height=%2226.2%22/%3E%3Crect class=%22u%22 x=%221001.9%22 y=%22398.2%22 width=%2219.8%22 height=%223.0%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%221058.1%22 y=%22378.8%22 width=%221.5%22 height=%2268.6%22/%3E%3Crect class=%22d%22 x=%221048.9%22 y=%22398.2%22 width=%2219.8%22 height=%2224.6%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%221105.1%22 y=%22399.9%22 width=%221.5%22 height=%2230.8%22/%3E%3Crect class=%22u%22 x=%221096.0%22 y=%22420.4%22 width=%2219.8%22 height=%223.0%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%221152.2%22 y=%22398.4%22 width=%221.5%22 height=%2226.0%22/%3E%3Crect class=%22u%22 x=%221143.1%22 y=%22415.2%22 width=%2219.8%22 height=%225.2%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%221199.3%22 y=%22408.1%22 width=%221.5%22 height=%2223.6%22/%3E%3Crect class=%22d%22 x=%221190.1%22 y=%22415.2%22 width=%2219.8%22 height=%2215.3%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%221246.3%22 y=%22418.2%22 width=%221.5%22 height=%2256.3%22/%3E%3Crect class=%22d%22 x=%221237.2%22 y=%22430.4%22 width=%2219.8%22 height=%2218.5%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%221293.4%22 y=%22422.1%22 width=%221.5%22 height=%2248.1%22/%3E%3Crect class=%22u%22 x=%221284.2%22 y=%22436.0%22 width=%2219.8%22 height=%2212.9%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%221340.4%22 y=%22427.7%22 width=%221.5%22 height=%2235.2%22/%3E%3Crect class=%22d%22 x=%221331.3%22 y=%22436.0%22 width=%2219.8%22 height=%225.7%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%221387.5%22 y=%22432.6%22 width=%221.5%22 height=%2230.6%22/%3E%3Crect class=%22d%22 x=%221378.4%22 y=%22441.7%22 width=%2219.8%22 height=%2212.4%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%221434.5%22 y=%22441.6%22 width=%221.5%22 height=%2250.9%22/%3E%3Crect class=%22d%22 x=%221425.4%22 y=%22454.2%22 width=%2219.8%22 height=%2216.6%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%221481.6%22 y=%22463.5%22 width=%221.5%22 height=%2212.8%22/%3E%3Crect class=%22u%22 x=%221472.5%22 y=%22464.8%22 width=%2219.8%22 height=%226.0%22 rx=%221.5%22/%3E%3Crect class=%22d%22 x=%221528.7%22 y=%22456.3%22 width=%221.5%22 height=%2242.4%22/%3E%3Crect class=%22d%22 x=%221519.5%22 y=%22464.8%22 width=%2219.8%22 height=%2227.2%22 rx=%221.5%22/%3E%3Crect class=%22u%22 x=%221575.7%22 y=%22463.0%22 width=%221.5%22 height=%2229.7%22/%3E%3Crect class=%22u%22 x=%221566.6%22 y=%22469.9%22 width=%2219.8%22 height=%2222.2%22 rx=%221.5%22/%3E%3C/svg%3E"); }
 
 /* The app's main scroll surface: paper + faint candlestick walk. */
 #app .main-content {
@@ -15843,7 +15843,7 @@ body { --qz-candles: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2
 :root {
   --acc-blue:#2E6FE0;   --tint-blue:#EAF1FE;
   --acc-teal:#0E9488;   --tint-teal:#E4F6F3;
-  --acc-green:#1B9E57;  --tint-green:#E7F6EC;
+  --acc-green:#1B9E57;  --tint-green:#DDF7E9;
   --acc-amber:#E8960C;  --tint-amber:#FDF3DE;
   --acc-coral:#E85D4A;  --tint-coral:#FDEDE9;
   --acc-violet:#7C5CD6; --tint-violet:#F1EDFB;
@@ -15986,9 +15986,9 @@ body.qe-in-app .modal-overlay:not(#auth-modal) {
 
 /* ── c) bright market colours, everywhere ── */
 :root {
-  --green: #17B369; --red: #E5484D;
-  --up: #17B369; --down: #E5484D;
-  --acc-red: #E5484D; --tint-red: #FDECEC;
+  --green: #00C16E; --red: #F5404B;
+  --up: #00C16E; --down: #F5404B;
+  --acc-red: #F5404B; --tint-red: #FEE4E6;
 }
 #app .qz-row-chg.up, #app .metric-change.up {
   background: var(--tint-green) !important; border-radius: 999px !important; padding: 2px 10px !important;
@@ -15996,12 +15996,12 @@ body.qe-in-app .modal-overlay:not(#auth-modal) {
 #app .qz-row-chg.down, #app .metric-change.down {
   background: var(--tint-red) !important; border-radius: 999px !important; padding: 2px 10px !important;
 }
-#app .pt-side-btn.buy-active { background: #17B369 !important; border-color: #17B369 !important; }
-#app .pt-side-btn.sell-active { background: #E5484D !important; border-color: #E5484D !important; }
-#app .btn-green { background: #17B369 !important; }
-#app .badge-green { background: var(--tint-green) !important; border: 1px solid #17B369 !important; }
-#app .badge-red { background: var(--tint-red) !important; border: 1px solid #E5484D !important; }
+#app .pt-side-btn.buy-active { background: #00C16E !important; border-color: #00C16E !important; }
+#app .pt-side-btn.sell-active { background: #F5404B !important; border-color: #F5404B !important; }
+#app .btn-green { background: #00C16E !important; }
+#app .badge-green { background: var(--tint-green) !important; border: 1px solid #00C16E !important; }
+#app .badge-red { background: var(--tint-red) !important; border: 1px solid #F5404B !important; }
 </style>
-<script defer src="js/app.min.js?v=20260714-22"></script>
+<script defer src="js/app.min.js?v=20260714-23"></script>
 </body>
 </html>
