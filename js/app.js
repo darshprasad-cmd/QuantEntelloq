@@ -1918,11 +1918,11 @@ function drawInlineSparkline(id, data, isUp) {
   const range = max - min || 1;
   const chartH = H - 6;
   const norm = v => chartH - ((v - min) / range) * (chartH - 4) - 2;
-  const color = isUp ? '#8A6A28' : '#F5404B';
+  const color = isUp ? '#00C16E' : '#F5404B';
   // Gradient fill
   const grad = ctx.createLinearGradient(0, 0, 0, chartH);
-  grad.addColorStop(0, isUp ? 'rgba(138,106,40,0.28)' : 'rgba(245,64,75,0.22)');
-  grad.addColorStop(0.7, isUp ? 'rgba(138,106,40,0.06)' : 'rgba(245,64,75,0.04)');
+  grad.addColorStop(0, isUp ? 'rgba(0,193,110,0.38)' : 'rgba(245,64,75,0.32)');
+  grad.addColorStop(0.7, isUp ? 'rgba(0,193,110,0.09)' : 'rgba(245,64,75,0.07)');
   grad.addColorStop(1, 'transparent');
   ctx.beginPath();
   data.forEach((v,i) => {
@@ -1937,10 +1937,12 @@ function drawInlineSparkline(id, data, isUp) {
     const x = (i / (data.length-1)) * W;
     i === 0 ? ctx.moveTo(x, norm(v)) : ctx.lineTo(x, norm(v));
   });
-  ctx.strokeStyle = color; ctx.lineWidth = 1.5; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.stroke();
-  // Terminal dot
-  const lx = W - 1; const ly = norm(data[data.length-1]);
-  ctx.beginPath(); ctx.arc(lx, ly, 2.5, 0, Math.PI*2);
+  ctx.strokeStyle = color; ctx.lineWidth = 2.5; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.stroke();
+  // Terminal dot with soft halo
+  const lx = W - 2; const ly = norm(data[data.length-1]);
+  ctx.beginPath(); ctx.arc(lx, ly, 6, 0, Math.PI*2);
+  ctx.fillStyle = isUp ? 'rgba(0,193,110,0.18)' : 'rgba(245,64,75,0.16)'; ctx.fill();
+  ctx.beginPath(); ctx.arc(lx, ly, 3, 0, Math.PI*2);
   ctx.fillStyle = color; ctx.fill();
 }
 
@@ -2049,8 +2051,8 @@ function _renderTVPortChart(container, period) {
       fontSize: 10,
     },
     grid: {
-      vertLines: { color: 'rgba(255,255,255,0.025)', style: 1 },
-      horzLines: { color: 'rgba(255,255,255,0.035)', style: 1 },
+      vertLines: { color: 'rgba(26,23,20,0.03)', style: 1 },
+      horzLines: { color: 'rgba(26,23,20,0.06)', style: 1 },
     },
     crosshair: {
       mode: 1,
@@ -2578,13 +2580,13 @@ function renderScenarioChart(portfolioData, benchData, containerId, height) {
   _tvScChart = LightweightCharts.createChart(container, {
     width: container.offsetWidth || 600, height: height || 200,
     layout: { background:{color:'transparent'}, textColor: '#847B6E', fontFamily:"'DM Mono',monospace", fontSize:10 },
-    grid: { vertLines:{color:'rgba(26,23,20,0.055)'}, horzLines:{color:'rgba(26,23,20,0.08)'} },
+    grid: { vertLines:{color:'rgba(26,23,20,0.03)'}, horzLines:{color:'rgba(26,23,20,0.06)'} },
     timeScale: { borderColor:'rgba(26,23,20,0.11)', fixLeftEdge:true, fixRightEdge:true },
     rightPriceScale: { borderColor:'rgba(26,23,20,0.11)', scaleMargins:{top:0.08,bottom:0.06} },
-    crosshair:{mode:1}, handleScale:{mouseWheel:false}, handleScroll:{mouseWheel:false},
+    crosshair:{mode:1,vertLine:{color:'rgba(138,106,40,0.4)',width:1,style:2,labelBackgroundColor:'#1A1714'},horzLine:{color:'rgba(138,106,40,0.4)',width:1,style:2,labelBackgroundColor:'#1A1714'}}, handleScale:{mouseWheel:false}, handleScroll:{mouseWheel:false},
   });
   const fmtV = v => '$'+(v>=1e6?(v/1e6).toFixed(1)+'M':(v/1000).toFixed(0)+'k');
-  const portS = _tvScChart.addAreaSeries({ lineColor:'#8A6A28', topColor:'rgba(138,106,40,0.2)', bottomColor:'rgba(138,106,40,0.01)', lineWidth:2, priceFormat:{type:'custom',formatter:fmtV,minMove:1}, priceLineVisible:false, lastValueVisible:true });
+  const portS = _tvScChart.addAreaSeries({ lineColor:'#8A6A28', topColor:'rgba(138,106,40,0.32)', bottomColor:'rgba(138,106,40,0.01)', lineWidth:2, priceFormat:{type:'custom',formatter:fmtV,minMove:1}, priceLineVisible:false, lastValueVisible:true });
   portS.setData(portfolioData);
   if (benchData) {
     const bmS = _tvScChart.addLineSeries({ color:'rgba(44,96,135,0.5)', lineWidth:1, lineStyle:2, priceFormat:{type:'custom',formatter:fmtV,minMove:1}, priceLineVisible:false, lastValueVisible:false });
@@ -2648,8 +2650,8 @@ function _qzscRunCrisis() {
   if (el && _tvCrisisChart) { try {_tvCrisisChart.remove();} catch(_){} _tvCrisisChart=null; }
   if (el && typeof LightweightCharts !== 'undefined') {
     el.innerHTML='';
-    _tvCrisisChart = LightweightCharts.createChart(el, { width:el.offsetWidth||600,height:210,layout:{background:{color:'transparent'},textColor: '#847B6E'},grid:{vertLines:{color:'rgba(26,23,20,0.055)'},horzLines:{color:'rgba(26,23,20,0.08)'}},timeScale:{borderColor:'rgba(26,23,20,0.11)'},rightPriceScale:{borderColor:'rgba(26,23,20,0.11)'},crosshair:{mode:1},handleScale:{mouseWheel:false},handleScroll:{mouseWheel:false} });
-    const s = _tvCrisisChart.addAreaSeries({ lineColor:c.color, topColor:c.color.replace(')',',0.18)').replace('rgb','rgba'), bottomColor:'rgba(0,0,0,0)', lineWidth:2, priceFormat:{type:'custom',formatter:v=>'$'+(v/1000).toFixed(0)+'k',minMove:1}, priceLineVisible:false });
+    _tvCrisisChart = LightweightCharts.createChart(el, { width:el.offsetWidth||600,height:210,layout:{background:{color:'transparent'},textColor: '#847B6E'},grid:{vertLines:{color:'rgba(26,23,20,0.03)'},horzLines:{color:'rgba(26,23,20,0.06)'}},timeScale:{borderColor:'rgba(26,23,20,0.11)'},rightPriceScale:{borderColor:'rgba(26,23,20,0.11)'},crosshair:{mode:1,vertLine:{color:'rgba(138,106,40,0.4)',width:1,style:2,labelBackgroundColor:'#1A1714'},horzLine:{color:'rgba(138,106,40,0.4)',width:1,style:2,labelBackgroundColor:'#1A1714'}},handleScale:{mouseWheel:false},handleScroll:{mouseWheel:false} });
+    const s = _tvCrisisChart.addAreaSeries({ lineColor:c.color, topColor:c.color.replace(')',',0.30)').replace('rgb','rgba'), bottomColor:'rgba(0,0,0,0)', lineWidth:2, priceFormat:{type:'custom',formatter:v=>'$'+(v/1000).toFixed(0)+'k',minMove:1}, priceLineVisible:false });
     s.setData(chartData);
     const b = _tvCrisisChart.addLineSeries({ color:'rgba(138,106,40,0.45)',lineWidth:1,lineStyle:2,priceFormat:{type:'custom',formatter:v=>'$'+(v/1000).toFixed(0)+'k',minMove:1},priceLineVisible:false,lastValueVisible:false });
     b.setData(baseline);
@@ -2707,7 +2709,7 @@ function _qzscRunMonteCarlo() {
   if (!el || typeof LightweightCharts==='undefined') return;
   el.innerHTML='';
   if (_tvMCChart) { try{_tvMCChart.remove();}catch(_){} _tvMCChart=null; }
-  _tvMCChart = LightweightCharts.createChart(el, { width:el.offsetWidth||600,height:240,layout:{background:{color:'transparent'},textColor: '#847B6E'},grid:{vertLines:{color:'rgba(26,23,20,0.055)'},horzLines:{color:'rgba(26,23,20,0.08)'}},timeScale:{borderColor:'rgba(26,23,20,0.11)'},rightPriceScale:{borderColor:'rgba(26,23,20,0.11)'},crosshair:{mode:1},handleScale:{mouseWheel:false},handleScroll:{mouseWheel:false} });
+  _tvMCChart = LightweightCharts.createChart(el, { width:el.offsetWidth||600,height:240,layout:{background:{color:'transparent'},textColor: '#847B6E'},grid:{vertLines:{color:'rgba(26,23,20,0.03)'},horzLines:{color:'rgba(26,23,20,0.06)'}},timeScale:{borderColor:'rgba(26,23,20,0.11)'},rightPriceScale:{borderColor:'rgba(26,23,20,0.11)'},crosshair:{mode:1,vertLine:{color:'rgba(138,106,40,0.4)',width:1,style:2,labelBackgroundColor:'#1A1714'},horzLine:{color:'rgba(138,106,40,0.4)',width:1,style:2,labelBackgroundColor:'#1A1714'}},handleScale:{mouseWheel:false},handleScroll:{mouseWheel:false} });
   const now = Math.floor(Date.now()/1000);
   const mkData = path => path.map((v,i) => ({ time:now - (months-i)*2592000, value:+v.toFixed(0) }));
   // Draw a sample of paths in faint color
@@ -3108,8 +3110,8 @@ function renderBacktestChart(equityCurve, benchCurve, capital, years) {
     _tvBtChart = LightweightCharts.createChart(container, {
       width: container.offsetWidth||600, height: 260,
       layout:{background:{color:'transparent'},textColor:'#5a5a5a',fontFamily:"'DM Mono',monospace",fontSize:10},
-      grid:{vertLines:{color:'rgba(255,255,255,0.025)'},horzLines:{color:'rgba(255,255,255,0.035)'}},
-      crosshair:{mode:1},
+      grid:{vertLines:{color:'rgba(26,23,20,0.03)'},horzLines:{color:'rgba(26,23,20,0.06)'}},
+      crosshair:{mode:1,vertLine:{color:'rgba(138,106,40,0.4)',width:1,style:2,labelBackgroundColor:'#1A1714'},horzLine:{color:'rgba(138,106,40,0.4)',width:1,style:2,labelBackgroundColor:'#1A1714'}},
       timeScale:{borderColor:'rgba(26,23,20,0.11)',fixLeftEdge:true,fixRightEdge:true},
       rightPriceScale:{borderColor:'rgba(26,23,20,0.11)',scaleMargins:{top:0.1,bottom:0.1}},
       handleScale:{mouseWheel:false},handleScroll:{mouseWheel:false},
@@ -3154,8 +3156,8 @@ function renderDrawdownChart(drawdownSeries) {
     _tvBtDDChart = LightweightCharts.createChart(container, {
       width:container.offsetWidth||600, height:90,
       layout:{background:{color:'transparent'},textColor:'#5a5a5a',fontFamily:"'DM Mono',monospace",fontSize:9},
-      grid:{vertLines:{visible:false},horzLines:{color:'rgba(255,255,255,0.025)'}},
-      crosshair:{mode:1},
+      grid:{vertLines:{visible:false},horzLines:{color:'rgba(26,23,20,0.06)'}},
+      crosshair:{mode:1,vertLine:{color:'rgba(138,106,40,0.4)',width:1,style:2,labelBackgroundColor:'#1A1714'},horzLine:{color:'rgba(138,106,40,0.4)',width:1,style:2,labelBackgroundColor:'#1A1714'}},
       timeScale:{borderColor:'rgba(26,23,20,0.11)',fixLeftEdge:true,fixRightEdge:true,visible:false},
       rightPriceScale:{borderColor:'rgba(26,23,20,0.11)',scaleMargins:{top:0.05,bottom:0}},
       handleScale:{mouseWheel:false},handleScroll:{mouseWheel:false},
@@ -4619,7 +4621,7 @@ function _qzapRenderChart(tf) {
   const chart = window.LightweightCharts.createChart(el, {
     width: el.offsetWidth, height: 240,
     layout: { background:{color:'transparent'}, textColor: '#847B6E' },
-    grid: { vertLines:{color:'rgba(26,23,20,0.07)'}, horzLines:{color:'rgba(26,23,20,0.07)'} },
+    grid: { vertLines:{color:'rgba(26,23,20,0.03)'}, horzLines:{color:'rgba(26,23,20,0.06)'} },
     crosshair: { mode:1 },
     rightPriceScale: { borderColor:'rgba(26,23,20,0.11)' },
     timeScale: { borderColor:'rgba(26,23,20,0.11)', timeVisible:true },
@@ -11133,7 +11135,7 @@ window.qeRL  = window.QESecurity.rateLimit;
       width: container.offsetWidth,
       height: 300,
       layout: {background: {type: 'solid', color: 'transparent'}, textColor: '#847B6E'},
-      grid: {vertLines: {color: 'rgba(26,23,20,0.08)'}, horzLines: {color: 'rgba(26,23,20,0.08)'}},
+      grid: {vertLines: {color: 'rgba(26,23,20,0.03)'}, horzLines: {color: 'rgba(26,23,20,0.06)'}},
       crosshair: {mode: LightweightCharts.CrosshairMode.Normal, vertLine: {color: 'rgba(138,106,40,0.3)', width: 1, style: 2}, horzLine: {color: 'rgba(138,106,40,0.3)', width: 1, style: 2}},
       timeScale: {borderColor: 'rgba(26,23,20,0.11)', timeVisible: true},
       rightPriceScale: {borderColor: 'rgba(26,23,20,0.11)'},
@@ -29508,8 +29510,8 @@ async function qzCoachReview() {
           fontSize: 10
         },
         grid: {
-          vertLines: { color: 'rgba(26,23,20,0.055)' },
-          horzLines: { color: 'rgba(26,23,20,0.08)' }
+          vertLines: { color: 'rgba(26,23,20,0.03)' },
+          horzLines: { color: 'rgba(26,23,20,0.06)' }
         },
         timeScale: { borderColor: 'rgba(26,23,20,0.11)', timeVisible: true, secondsVisible: false },
         rightPriceScale: { borderColor: 'rgba(26,23,20,0.11)' },
