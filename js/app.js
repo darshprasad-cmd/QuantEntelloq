@@ -100,18 +100,18 @@ const REDEEM_CODE = 'test8008';
 
 // ==================== MARKET DATA ====================
 const STOCKS = [
-  { ticker:'AAPL', name:'Apple Inc.', price:189.4, change:2.1, signal:'BUY', conf:94, reason:'Strong iPhone 16 demand + AI integration. Services revenue accelerating. Bullish sentiment on Reddit & news.', cat:'tech', risk:'low', momentum:85, sentiment:88 },
-  { ticker:'NVDA', name:'NVIDIA Corp.', price:878.3, change:4.8, signal:'BUY', conf:91, reason:'Dominant AI chip position. Blackwell GPU orders exceeding forecasts. Data center revenue up 200%+ YoY.', cat:'tech', risk:'medium', momentum:95, sentiment:92 },
-  { ticker:'MSFT', name:'Microsoft Corp.', price:413.2, change:1.4, signal:'BUY', conf:88, reason:'Azure cloud growth accelerating on AI workloads. Copilot monetization beginning to show in revenue.', cat:'tech', risk:'low', momentum:78, sentiment:85 },
-  { ticker:'TSLA', name:'Tesla Inc.', price:244.8, change:-1.2, signal:'HOLD', conf:72, reason:'Margin pressure from price cuts. Robotaxi timeline uncertain. Model 3 refresh driving near-term demand.', cat:'tech', risk:'high', momentum:45, sentiment:52 },
-  { ticker:'AMZN', name:'Amazon.com Inc.', price:187.6, change:2.7, signal:'BUY', conf:86, reason:'AWS reaccelerating. Advertising revenue strong. Prime membership growing internationally.', cat:'tech', risk:'low', momentum:80, sentiment:82 },
-  { ticker:'META', name:'Meta Platforms', price:498.2, change:3.1, signal:'BUY', conf:89, reason:'Ad revenue recovering strongly. Llama AI models driving developer adoption. Reality Labs losses stabilizing.', cat:'tech', risk:'medium', momentum:88, sentiment:87 },
-  { ticker:'GOOGL', name:'Alphabet Inc.', price:174.3, change:1.9, signal:'BUY', conf:83, reason:'Search AI integration ahead of schedule. YouTube ad recovery. Cloud segment beating estimates.', cat:'tech', risk:'low', momentum:75, sentiment:80 },
-  { ticker:'JPM', name:'JPMorgan Chase', price:196.4, change:0.8, signal:'HOLD', conf:68, reason:'Net interest income peaking as rates stabilize. Investment banking recovering. Credit quality solid.', cat:'finance', risk:'low', momentum:55, sentiment:62 },
-  { ticker:'XOM', name:'Exxon Mobil', price:113.8, change:-2.1, signal:'SELL', conf:71, reason:'Oil prices declining on demand concerns. Refining margins compressing. Renewable transition headwinds.', cat:'energy', risk:'medium', momentum:28, sentiment:32 },
-  { ticker:'JNJ', name:'Johnson & Johnson', price:158.7, change:0.4, signal:'HOLD', conf:65, reason:'Talc litigation resolved. MedTech segment performing. Pharmaceutical pipeline solid but crowded.', cat:'health', risk:'low', momentum:48, sentiment:55 },
-  { ticker:'BTC', name:'Bitcoin', price:67234, change:3.1, signal:'BUY', conf:79, reason:'Institutional ETF inflows continuing. Halving supply reduction in effect. Macro tailwinds from dollar weakness.', cat:'crypto', risk:'high', momentum:82, sentiment:76 },
-  { ticker:'GLD', name:'Gold ETF', price:186.2, change:0.6, signal:'HOLD', conf:62, reason:'Rate cut expectations supporting price. Geopolitical risk premium. Dollar weakness a tailwind.', cat:'etf', risk:'low', momentum:58, sentiment:65 },
+  { ticker:'AAPL', name:'Apple Inc.', price: 308.9, change: -0.1, signal:'BUY', conf:94, reason:'Strong iPhone 16 demand + AI integration. Services revenue accelerating. Bullish sentiment on Reddit & news.', cat:'tech', risk:'low', momentum:85, sentiment:88 },
+  { ticker:'NVDA', name:'NVIDIA Corp.', price: 220.7, change: 4.1, signal:'BUY', conf:91, reason:'Dominant AI chip position. Blackwell GPU orders exceeding forecasts. Data center revenue up 200%+ YoY.', cat:'tech', risk:'medium', momentum:95, sentiment:92 },
+  { ticker:'MSFT', name:'Microsoft Corp.', price: 489.2, change: -0.7, signal:'BUY', conf:88, reason:'Azure cloud growth accelerating on AI workloads. Copilot monetization beginning to show in revenue.', cat:'tech', risk:'low', momentum:78, sentiment:85 },
+  { ticker:'TSLA', name:'Tesla Inc.', price: 323.0, change: -1.3, signal:'HOLD', conf:72, reason:'Margin pressure from price cuts. Robotaxi timeline uncertain. Model 3 refresh driving near-term demand.', cat:'tech', risk:'high', momentum:45, sentiment:52 },
+  { ticker:'AMZN', name:'Amazon.com Inc.', price: 272.7, change: -1.7, signal:'BUY', conf:86, reason:'AWS reaccelerating. Advertising revenue strong. Prime membership growing internationally.', cat:'tech', risk:'low', momentum:80, sentiment:82 },
+  { ticker:'META', name:'Meta Platforms', price: 583.3, change: -0.8, signal:'BUY', conf:89, reason:'Ad revenue recovering strongly. Llama AI models driving developer adoption. Reality Labs losses stabilizing.', cat:'tech', risk:'medium', momentum:88, sentiment:87 },
+  { ticker:'GOOGL', name:'Alphabet Inc.', price: 361.8, change: -4.2, signal:'BUY', conf:83, reason:'Search AI integration ahead of schedule. YouTube ad recovery. Cloud segment beating estimates.', cat:'tech', risk:'low', momentum:75, sentiment:80 },
+  { ticker:'JPM', name:'JPMorgan Chase', price: 359.6, change: 0.6, signal:'HOLD', conf:68, reason:'Net interest income peaking as rates stabilize. Investment banking recovering. Credit quality solid.', cat:'finance', risk:'low', momentum:55, sentiment:62 },
+  { ticker:'XOM', name:'Exxon Mobil', price: 152.1, change: -1.2, signal:'SELL', conf:71, reason:'Oil prices declining on demand concerns. Refining margins compressing. Renewable transition headwinds.', cat:'energy', risk:'medium', momentum:28, sentiment:32 },
+  { ticker:'JNJ', name:'Johnson & Johnson', price: 258.3, change: 1.3, signal:'HOLD', conf:65, reason:'Talc litigation resolved. MedTech segment performing. Pharmaceutical pipeline solid but crowded.', cat:'health', risk:'low', momentum:48, sentiment:55 },
+  { ticker:'BTC', name:'Bitcoin', price: 64602, change: 0.9, signal:'BUY', conf:79, reason:'Institutional ETF inflows continuing. Halving supply reduction in effect. Macro tailwinds from dollar weakness.', cat:'crypto', risk:'high', momentum:82, sentiment:76 },
+  { ticker:'GLD', name:'Gold ETF', price: 388.9, change: 3.9, signal:'HOLD', conf:62, reason:'Rate cut expectations supporting price. Geopolitical risk premium. Dollar weakness a tailwind.', cat:'etf', risk:'low', momentum:58, sentiment:65 },
 ];
 
 const NEWS = [
@@ -652,6 +652,7 @@ async function qzRefreshMarketData() {
     // Re-render whatever is currently showing these numbers
     try { if (state.currentPage === 'dashboard') renderHome(); } catch (e) {}
     try { if (state.currentPage === 'signals' && typeof renderSignals === 'function') renderSignals(); } catch (e) {}
+    try { if (state.currentPage === 'scanner' && typeof renderScanner === 'function') renderScanner(); } catch (e) {}
     try { if (state.currentPage === 'portfolio' && typeof renderPortfolio === 'function') renderPortfolio(); } catch (e) {}
   } catch (e) {}
 }
@@ -5037,49 +5038,49 @@ function renderAgentSystem() {
 // ==================== COUNTRY & REGION DATA ====================
 const COUNTRIES = [
   { code:'US', name:'United States', flag:'🇺🇸', currency:'USD', symbol:'$', market:'NYSE/NASDAQ', tz:'America/New_York', utcOffset:-5, region:'Americas',
-    stocks:[{t:'AAPL',n:'Apple Inc.',p:189.4,c:+1.2,sig:'BUY',conf:94},{t:'NVDA',n:'NVIDIA Corp.',p:878.3,c:+2.8,sig:'BUY',conf:91},{t:'MSFT',n:'Microsoft',p:413.2,c:+0.9,sig:'BUY',conf:88},{t:'TSLA',n:'Tesla Inc.',p:244.8,c:-0.6,sig:'HOLD',conf:72},{t:'AMZN',n:'Amazon',p:187.6,c:+1.4,sig:'BUY',conf:85},{t:'GOOGL',n:'Alphabet',p:168.3,c:+0.7,sig:'BUY',conf:83},{t:'META',n:'Meta Platforms',p:488.0,c:+1.9,sig:'BUY',conf:87}] },
+    stocks:[{t:'AAPL',n:'Apple Inc.',p:308.9,c:-0.1,sig:'BUY',conf:94},{t:'NVDA',n:'NVIDIA Corp.',p:220.7,c:+4.1,sig:'BUY',conf:91},{t:'MSFT',n:'Microsoft',p:489.2,c:-0.7,sig:'BUY',conf:88},{t:'TSLA',n:'Tesla Inc.',p:323.0,c:-1.3,sig:'HOLD',conf:72},{t:'AMZN',n:'Amazon',p:272.7,c:-1.7,sig:'BUY',conf:85},{t:'GOOGL',n:'Alphabet',p:361.8,c:-4.2,sig:'BUY',conf:83},{t:'META',n:'Meta Platforms',p:583.3,c:-0.8,sig:'BUY',conf:87}] },
   { code:'IN', name:'India', flag:'🇮🇳', currency:'INR', symbol:'₹', market:'NSE/BSE', tz:'Asia/Kolkata', utcOffset:5.5, region:'Asia',
-    stocks:[{t:'RELIANCE',n:'Reliance Ind.',p:2841,c:+1.1,sig:'BUY',conf:89},{t:'TCS',n:'Tata Consultancy',p:3920,c:+0.8,sig:'BUY',conf:86},{t:'HDFCBANK',n:'HDFC Bank',p:1612,c:-0.3,sig:'HOLD',conf:74},{t:'INFY',n:'Infosys',p:1498,c:+1.4,sig:'BUY',conf:82},{t:'ITC',n:'ITC Ltd.',p:431,c:+0.5,sig:'BUY',conf:78},{t:'WIPRO',n:'Wipro Ltd.',p:462,c:-0.2,sig:'HOLD',conf:71},{t:'TATAMOTORS',n:'Tata Motors',p:945,c:+2.1,sig:'BUY',conf:84}] },
+    stocks:[{t:'RELIANCE',n:'Reliance Ind.',p:1280,c:-0.8,sig:'BUY',conf:89},{t:'TCS',n:'Tata Consultancy',p:2413,c:-1.9,sig:'BUY',conf:86},{t:'HDFCBANK',n:'HDFC Bank',p:735.0,c:-0.9,sig:'HOLD',conf:74},{t:'INFY',n:'Infosys',p:1174,c:+0.6,sig:'BUY',conf:82},{t:'ITC',n:'ITC Ltd.',p:286.9,c:-0.7,sig:'BUY',conf:78},{t:'WIPRO',n:'Wipro Ltd.',p:187.0,c:+0.4,sig:'HOLD',conf:71},{t:'ICICIBANK',n:'ICICI Bank',p:1450,c:-0.3,sig:'BUY',conf:84}] },
   { code:'GB', name:'United Kingdom', flag:'🇬🇧', currency:'GBP', symbol:'£', market:'LSE', tz:'Europe/London', utcOffset:0, region:'Europe',
-    stocks:[{t:'HSBA',n:'HSBC Holdings',p:748,c:+0.6,sig:'BUY',conf:81},{t:'BP',n:'BP plc',p:493,c:-0.4,sig:'HOLD',conf:70},{t:'GSK',n:'GSK plc',p:1642,c:+1.1,sig:'BUY',conf:83},{t:'SHEL',n:'Shell plc',p:2538,c:-0.2,sig:'HOLD',conf:73},{t:'AZN',n:'AstraZeneca',p:11240,c:+0.9,sig:'BUY',conf:85},{t:'BARC',n:'Barclays',p:228,c:+1.3,sig:'BUY',conf:79}] },
+    stocks:[{t:'HSBA',n:'HSBC Holdings',p:15.11,c:-4.7,sig:'BUY',conf:81},{t:'BP',n:'BP plc',p:5.15,c:-1.9,sig:'HOLD',conf:70},{t:'GSK',n:'GSK plc',p:19.16,c:+0.1,sig:'BUY',conf:83},{t:'SHEL',n:'Shell plc',p:32.80,c:-1.2,sig:'HOLD',conf:73},{t:'AZN',n:'AstraZeneca',p:120.4,c:+2.5,sig:'BUY',conf:85},{t:'BARC',n:'Barclays',p:5.28,c:+1.0,sig:'BUY',conf:79}] },
   { code:'JP', name:'Japan', flag:'🇯🇵', currency:'JPY', symbol:'¥', market:'TSE (Tokyo)', tz:'Asia/Tokyo', utcOffset:9, region:'Asia',
-    stocks:[{t:'7203',n:'Toyota Motor',p:2891,c:+0.7,sig:'BUY',conf:82},{t:'9984',n:'SoftBank Group',p:8430,c:+1.8,sig:'BUY',conf:79},{t:'6758',n:'Sony Group',p:13280,c:+1.2,sig:'BUY',conf:84},{t:'6861',n:'Keyence',p:67800,c:+0.4,sig:'HOLD',conf:75},{t:'4063',n:'Shin-Etsu Chem.',p:5621,c:-0.3,sig:'HOLD',conf:72},{t:'8306',n:'Mitsubishi UFJ',p:1621,c:+0.9,sig:'BUY',conf:80}] },
+    stocks:[{t:'7203',n:'Toyota Motor',p:2915,c:-0.1,sig:'BUY',conf:82},{t:'9984',n:'SoftBank Group',p:5958,c:+14.0,sig:'BUY',conf:79},{t:'6758',n:'Sony Group',p:3565,c:+0.7,sig:'BUY',conf:84},{t:'6861',n:'Keyence',p:87380,c:+5.4,sig:'HOLD',conf:75},{t:'4063',n:'Shin-Etsu Chem.',p:6163,c:+2.9,sig:'HOLD',conf:72},{t:'8306',n:'Mitsubishi UFJ',p:3541,c:+2.0,sig:'BUY',conf:80}] },
   { code:'DE', name:'Germany', flag:'🇩🇪', currency:'EUR', symbol:'€', market:'Frankfurt (XETRA)', tz:'Europe/Berlin', utcOffset:1, region:'Europe',
-    stocks:[{t:'SAP',n:'SAP SE',p:198.4,c:+1.3,sig:'BUY',conf:86},{t:'SIE',n:'Siemens AG',p:178.2,c:+0.8,sig:'BUY',conf:80},{t:'DTE',n:'Deutsche Telekom',p:29.8,c:+0.3,sig:'HOLD',conf:71},{t:'BAYN',n:'Bayer AG',p:28.4,c:-1.2,sig:'SELL',conf:76},{t:'BMW',n:'BMW AG',p:89.5,c:-0.5,sig:'HOLD',conf:68},{t:'DHER',n:'Delivery Hero',p:37.2,c:+2.1,sig:'BUY',conf:78}] },
+    stocks:[{t:'SAP',n:'SAP SE',p:169.3,c:+1.1,sig:'BUY',conf:86},{t:'SIE',n:'Siemens AG',p:285.9,c:-0.5,sig:'BUY',conf:80},{t:'DTE',n:'Deutsche Telekom',p:27.42,c:-1.5,sig:'HOLD',conf:71},{t:'BAYN',n:'Bayer AG',p:49.22,c:+2.0,sig:'SELL',conf:76},{t:'BMW',n:'BMW AG',p:59.10,c:-1.4,sig:'HOLD',conf:68},{t:'DHER',n:'Delivery Hero',p:37.30,c:+0.2,sig:'BUY',conf:78}] },
   { code:'CN', name:'China', flag:'🇨🇳', currency:'CNY', symbol:'¥', market:'SSE/SZSE', tz:'Asia/Shanghai', utcOffset:8, region:'Asia',
-    stocks:[{t:'BABA',n:'Alibaba Group',p:82.4,c:+2.3,sig:'BUY',conf:77},{t:'TCEHY',n:'Tencent Holdings',p:48.6,c:+1.7,sig:'BUY',conf:80},{t:'BIDU',n:'Baidu Inc.',p:102.3,c:+0.9,sig:'HOLD',conf:68},{t:'JD',n:'JD.com',p:38.9,c:+1.4,sig:'BUY',conf:74},{t:'PDD',n:'PDD Holdings',p:134.2,c:+2.8,sig:'BUY',conf:82},{t:'NIO',n:'NIO Inc.',p:4.82,c:-1.1,sig:'HOLD',conf:61}] },
+    stocks:[{t:'600519',n:'Kweichow Moutai',p:1306,c:-1.6,sig:'HOLD',conf:64},{t:'601398',n:'ICBC',p:7.52,c:-1.8,sig:'BUY',conf:78},{t:'601318',n:'Ping An Insurance',p:54.02,c:+0.2,sig:'BUY',conf:80},{t:'600036',n:'China Merchants Bk',p:38.94,c:-0.9,sig:'BUY',conf:75},{t:'600276',n:'Hengrui Medicine',p:53.54,c:+0.2,sig:'BUY',conf:82},{t:'000858',n:'Wuliangye',p:75.50,c:-1.8,sig:'HOLD',conf:62}] },
   { code:'AU', name:'Australia', flag:'🇦🇺', currency:'AUD', symbol:'A$', market:'ASX', tz:'Australia/Sydney', utcOffset:11, region:'Asia-Pacific',
-    stocks:[{t:'CBA',n:'Commonwealth Bank',p:124.8,c:+0.6,sig:'BUY',conf:81},{t:'BHP',n:'BHP Group',p:43.2,c:-0.4,sig:'HOLD',conf:72},{t:'CSL',n:'CSL Limited',p:282.3,c:+1.1,sig:'BUY',conf:83},{t:'WBC',n:'Westpac Banking',p:28.9,c:+0.3,sig:'HOLD',conf:70},{t:'ANZ',n:'ANZ Group',p:29.4,c:+0.5,sig:'BUY',conf:76},{t:'RIO',n:'Rio Tinto',p:121.6,c:-0.7,sig:'HOLD',conf:68}] },
+    stocks:[{t:'CBA',n:'Commonwealth Bank',p:178.2,c:-1.4,sig:'BUY',conf:81},{t:'BHP',n:'BHP Group',p:62.54,c:+3.3,sig:'HOLD',conf:72},{t:'CSL',n:'CSL Limited',p:130.7,c:+1.4,sig:'BUY',conf:83},{t:'WBC',n:'Westpac Banking',p:38.53,c:-0.7,sig:'HOLD',conf:70},{t:'ANZ',n:'ANZ Group',p:38.01,c:-0.4,sig:'BUY',conf:76},{t:'RIO',n:'Rio Tinto',p:176.3,c:+2.3,sig:'HOLD',conf:68}] },
   { code:'CA', name:'Canada', flag:'🇨🇦', currency:'CAD', symbol:'C$', market:'TSX', tz:'America/Toronto', utcOffset:-5, region:'Americas',
-    stocks:[{t:'SHOP',n:'Shopify Inc.',p:89.4,c:+2.1,sig:'BUY',conf:85},{t:'RY',n:'Royal Bank',p:138.2,c:+0.7,sig:'BUY',conf:80},{t:'TD',n:'TD Bank Group',p:82.6,c:-0.3,sig:'HOLD',conf:72},{t:'CNR',n:'CN Rail',p:168.3,c:+0.5,sig:'BUY',conf:79},{t:'ENB',n:'Enbridge Inc.',p:56.8,c:+0.2,sig:'HOLD',conf:70},{t:'BCE',n:'BCE Inc.',p:34.2,c:-0.4,sig:'HOLD',conf:65}] },
+    stocks:[{t:'SHOP',n:'Shopify Inc.',p:201.5,c:+16.2,sig:'BUY',conf:85},{t:'RY',n:'Royal Bank',p:295.9,c:+0.8,sig:'BUY',conf:80},{t:'TD',n:'TD Bank Group',p:169.9,c:+1.2,sig:'HOLD',conf:72},{t:'CNR',n:'CN Rail',p:178.4,c:-0.4,sig:'BUY',conf:79},{t:'ENB',n:'Enbridge Inc.',p:73.07,c:-2.7,sig:'HOLD',conf:70},{t:'BCE',n:'BCE Inc.',p:30.63,c:-1.0,sig:'HOLD',conf:65}] },
   { code:'SG', name:'Singapore', flag:'🇸🇬', currency:'SGD', symbol:'S$', market:'SGX', tz:'Asia/Singapore', utcOffset:8, region:'Asia',
-    stocks:[{t:'D05',n:'DBS Group',p:38.2,c:+0.8,sig:'BUY',conf:82},{t:'O39',n:'OCBC Bank',p:16.8,c:+0.4,sig:'BUY',conf:79},{t:'U11',n:'UOB',p:31.4,c:+0.3,sig:'HOLD',conf:74},{t:'Z74',n:'Singtel',p:2.98,c:-0.2,sig:'HOLD',conf:68},{t:'C6L',n:'Singapore Air',p:6.84,c:+1.2,sig:'BUY',conf:77}] },
+    stocks:[{t:'D05',n:'DBS Group',p:73.55,c:-1.3,sig:'BUY',conf:82},{t:'O39',n:'OCBC Bank',p:28.63,c:-0.3,sig:'BUY',conf:79},{t:'U11',n:'UOB',p:43.06,c:-0.4,sig:'HOLD',conf:74},{t:'Z74',n:'Singtel',p:4.35,c:-1.8,sig:'HOLD',conf:68},{t:'C6L',n:'Singapore Air',p:7.69,c:+1.6,sig:'BUY',conf:77}] },
   { code:'BR', name:'Brazil', flag:'🇧🇷', currency:'BRL', symbol:'R$', market:'B3 (São Paulo)', tz:'America/Sao_Paulo', utcOffset:-3, region:'Americas',
-    stocks:[{t:'PETR4',n:'Petrobras',p:38.2,c:+1.4,sig:'BUY',conf:78},{t:'VALE3',n:'Vale S.A.',p:62.8,c:-0.6,sig:'HOLD',conf:71},{t:'ITUB4',n:'Itaú Unibanco',p:34.9,c:+0.9,sig:'BUY',conf:80},{t:'BBDC4',n:'Bradesco',p:14.2,c:+0.3,sig:'HOLD',conf:68},{t:'MGLU3',n:'Magazine Luiza',p:8.4,c:+2.2,sig:'BUY',conf:74}] },
+    stocks:[{t:'PETR4',n:'Petrobras',p:42.31,c:-0.4,sig:'BUY',conf:78},{t:'VALE3',n:'Vale S.A.',p:76.28,c:-0.0,sig:'HOLD',conf:71},{t:'ITUB4',n:'Itaú Unibanco',p:43.03,c:+2.2,sig:'BUY',conf:80},{t:'BBDC4',n:'Bradesco',p:18.19,c:+0.0,sig:'HOLD',conf:68},{t:'MGLU3',n:'Magazine Luiza',p:4.86,c:-1.2,sig:'BUY',conf:74}] },
   { code:'ZA', name:'South Africa', flag:'🇿🇦', currency:'ZAR', symbol:'R', market:'JSE', tz:'Africa/Johannesburg', utcOffset:2, region:'Africa',
-    stocks:[{t:'NPN',n:'Naspers',p:3892,c:+1.2,sig:'BUY',conf:77},{t:'AGL',n:'Anglo American',p:468,c:-0.8,sig:'HOLD',conf:69},{t:'MTN',n:'MTN Group',p:142,c:+0.5,sig:'HOLD',conf:65},{t:'SBK',n:'Standard Bank',p:218,c:+0.9,sig:'BUY',conf:74},{t:'FSR',n:'Firstrand',p:82,c:+0.4,sig:'BUY',conf:72}] },
+    stocks:[{t:'NPN',n:'Naspers',p:897.0,c:-1.6,sig:'BUY',conf:77},{t:'AGL',n:'Anglo American',p:880.0,c:+2.1,sig:'HOLD',conf:69},{t:'MTN',n:'MTN Group',p:201.5,c:-1.4,sig:'HOLD',conf:65},{t:'SBK',n:'Standard Bank',p:330.8,c:-1.7,sig:'BUY',conf:74},{t:'FSR',n:'Firstrand',p:100.6,c:-0.9,sig:'BUY',conf:72}] },
   { code:'AE', name:'UAE', flag:'🇦🇪', currency:'AED', symbol:'د.إ', market:'DFM/ADX', tz:'Asia/Dubai', utcOffset:4, region:'Middle East',
-    stocks:[{t:'EMAAR',n:'Emaar Properties',p:8.4,c:+1.6,sig:'BUY',conf:80},{t:'FAB',n:'First Abu Dhabi',p:14.2,c:+0.4,sig:'BUY',conf:76},{t:'ADNOC',n:'ADNOC Drilling',p:4.8,c:+0.8,sig:'BUY',conf:78},{t:'DU',n:'du Telecom',p:6.2,c:-0.2,sig:'HOLD',conf:66}] },
+    stocks:[{t:'EMAAR',n:'Emaar Properties',p:11.96,c:+1.4,sig:'BUY',conf:80},{t:'FAB',n:'First Abu Dhabi',p:14.2,c:+0.4,sig:'BUY',conf:76},{t:'ADNOC',n:'ADNOC Drilling',p:4.8,c:+0.8,sig:'BUY',conf:78},{t:'DU',n:'du Telecom',p:12.10,c:-0.8,sig:'HOLD',conf:66}] },
 ];
 
 // Market opening/closing times (local exchange time, 24h format)
 const MARKETS_DATA = [
-  { code:'US', name:'NYSE / NASDAQ', country:'United States', flag:'🇺🇸', tz:'America/New_York', utcOffset:-5, open:'09:30', close:'16:00', preMarket:'04:00', afterMarket:'20:00', currency:'USD', symbol:'$', indices:[{n:'S&P 500',v:'5,847',c:'+1.2%'},{n:'NASDAQ',v:'18,432',c:'+1.8%'},{n:'DOW',v:'39,114',c:'+0.7%'}], region:'Americas' },
-  { code:'GB', name:'London Stock Exchange', country:'United Kingdom', flag:'🇬🇧', tz:'Europe/London', utcOffset:0, open:'08:00', close:'16:30', preMarket:null, afterMarket:null, currency:'GBP', symbol:'£', indices:[{n:'FTSE 100',v:'8,312',c:'+0.4%'},{n:'FTSE 250',v:'20,148',c:'+0.6%'}], region:'Europe' },
-  { code:'JP', name:'Tokyo Stock Exchange', country:'Japan', flag:'🇯🇵', tz:'Asia/Tokyo', utcOffset:9, open:'09:00', close:'15:30', preMarket:null, afterMarket:null, currency:'JPY', symbol:'¥', indices:[{n:'Nikkei 225',v:'38,647',c:'+0.8%'},{n:'TOPIX',v:'2,734',c:'+0.5%'}], region:'Asia' },
-  { code:'DE', name:'Frankfurt (XETRA)', country:'Germany', flag:'🇩🇪', tz:'Europe/Berlin', utcOffset:1, open:'09:00', close:'17:30', preMarket:null, afterMarket:null, currency:'EUR', symbol:'€', indices:[{n:'DAX 40',v:'18,421',c:'+0.9%'},{n:'MDAX',v:'25,318',c:'+0.5%'}], region:'Europe' },
-  { code:'IN', name:'NSE / BSE', country:'India', flag:'🇮🇳', tz:'Asia/Kolkata', utcOffset:5.5, open:'09:15', close:'15:30', preMarket:'09:00', afterMarket:'16:00', currency:'INR', symbol:'₹', indices:[{n:'NIFTY 50',v:'24,127',c:'+0.7%'},{n:'SENSEX',v:'79,408',c:'+0.6%'},{n:'BANK NIFTY',v:'52,318',c:'+0.4%'}], region:'Asia' },
-  { code:'CN', name:'Shanghai/Shenzhen', country:'China', flag:'🇨🇳', tz:'Asia/Shanghai', utcOffset:8, open:'09:30', close:'15:00', preMarket:null, afterMarket:null, currency:'CNY', symbol:'¥', indices:[{n:'SSE Comp.',v:'3,124',c:'-0.3%'},{n:'CSI 300',v:'3,548',c:'-0.2%'},{n:'HSI',v:'18,942',c:'+0.8%'}], region:'Asia' },
-  { code:'HK', name:'Hong Kong Stock Exchange', country:'Hong Kong', flag:'🇭🇰', tz:'Asia/Hong_Kong', utcOffset:8, open:'09:30', close:'16:00', preMarket:null, afterMarket:null, currency:'HKD', symbol:'HK$', indices:[{n:'Hang Seng',v:'18,942',c:'+0.8%'},{n:'H-Shares',v:'6,842',c:'+0.6%'}], region:'Asia' },
-  { code:'AU', name:'Australian Securities Exchange', country:'Australia', flag:'🇦🇺', tz:'Australia/Sydney', utcOffset:11, open:'10:00', close:'16:00', preMarket:null, afterMarket:null, currency:'AUD', symbol:'A$', indices:[{n:'ASX 200',v:'7,842',c:'+0.5%'},{n:'All Ords',v:'8,112',c:'+0.4%'}], region:'Asia-Pacific' },
-  { code:'CA', name:'Toronto Stock Exchange', country:'Canada', flag:'🇨🇦', tz:'America/Toronto', utcOffset:-5, open:'09:30', close:'16:00', preMarket:'07:00', afterMarket:'17:30', currency:'CAD', symbol:'C$', indices:[{n:'TSX Comp.',v:'23,841',c:'+0.6%'},{n:'TSX 60',v:'1,428',c:'+0.5%'}], region:'Americas' },
-  { code:'FR', name:'Euronext Paris', country:'France', flag:'🇫🇷', tz:'Europe/Paris', utcOffset:1, open:'09:00', close:'17:30', preMarket:null, afterMarket:null, currency:'EUR', symbol:'€', indices:[{n:'CAC 40',v:'7,948',c:'+0.7%'},{n:'SBF 120',v:'5,912',c:'+0.5%'}], region:'Europe' },
-  { code:'CH', name:'SIX Swiss Exchange', country:'Switzerland', flag:'🇨🇭', tz:'Europe/Zurich', utcOffset:1, open:'09:00', close:'17:30', preMarket:null, afterMarket:null, currency:'CHF', symbol:'₣', indices:[{n:'SMI',v:'11,892',c:'+0.3%'},{n:'SPI',v:'15,412',c:'+0.2%'}], region:'Europe' },
-  { code:'SG', name:'Singapore Exchange', country:'Singapore', flag:'🇸🇬', tz:'Asia/Singapore', utcOffset:8, open:'09:00', close:'17:00', preMarket:null, afterMarket:null, currency:'SGD', symbol:'S$', indices:[{n:'STI',v:'3,482',c:'+0.4%'}], region:'Asia' },
-  { code:'BR', name:'B3 — Brasil Bolsa Balcão', country:'Brazil', flag:'🇧🇷', tz:'America/Sao_Paulo', utcOffset:-3, open:'10:00', close:'17:55', preMarket:null, afterMarket:null, currency:'BRL', symbol:'R$', indices:[{n:'IBOVESPA',v:'127,842',c:'+1.1%'},{n:'IBrX 100',v:'57,318',c:'+0.9%'}], region:'Americas' },
-  { code:'ZA', name:'JSE Limited', country:'South Africa', flag:'🇿🇦', tz:'Africa/Johannesburg', utcOffset:2, open:'09:00', close:'17:00', preMarket:null, afterMarket:null, currency:'ZAR', symbol:'R', indices:[{n:'JSE Top 40',v:'74,812',c:'+0.5%'},{n:'All Share',v:'81,248',c:'+0.4%'}], region:'Africa' },
+  { code:'US', name:'NYSE / NASDAQ', country:'United States', flag:'🇺🇸', tz:'America/New_York', utcOffset:-5, open:'09:30', close:'16:00', preMarket:'04:00', afterMarket:'20:00', currency:'USD', symbol:'$', indices:[{n:'S&P 500',v:'7,739',c:'+0.0%'},{n:'NASDAQ',v:'26,489',c:'-0.4%'},{n:'DOW',v:'54,536',c:'+0.8%'}], region:'Americas' },
+  { code:'GB', name:'London Stock Exchange', country:'United Kingdom', flag:'🇬🇧', tz:'Europe/London', utcOffset:0, open:'08:00', close:'16:30', preMarket:null, afterMarket:null, currency:'GBP', symbol:'£', indices:[{n:'FTSE 100',v:'10,888',c:'+0.1%'},{n:'FTSE 250',v:'24,633',c:'+0.7%'}], region:'Europe' },
+  { code:'JP', name:'Tokyo Stock Exchange', country:'Japan', flag:'🇯🇵', tz:'Asia/Tokyo', utcOffset:9, open:'09:00', close:'15:30', preMarket:null, afterMarket:null, currency:'JPY', symbol:'¥', indices:[{n:'Nikkei 225',v:'66,300',c:'+3.7%'},{n:'TOPIX',v:'2,734',c:'+0.5%'}], region:'Asia' },
+  { code:'DE', name:'Frankfurt (XETRA)', country:'Germany', flag:'🇩🇪', tz:'Europe/Berlin', utcOffset:1, open:'09:00', close:'17:30', preMarket:null, afterMarket:null, currency:'EUR', symbol:'€', indices:[{n:'DAX 40',v:'26,126',c:'-0.3%'},{n:'MDAX',v:'32,426',c:'-0.4%'}], region:'Europe' },
+  { code:'IN', name:'NSE / BSE', country:'India', flag:'🇮🇳', tz:'Asia/Kolkata', utcOffset:5.5, open:'09:15', close:'15:30', preMarket:'09:00', afterMarket:'16:00', currency:'INR', symbol:'₹', indices:[{n:'NIFTY 50',v:'24,625',c:'+0.0%'},{n:'SENSEX',v:'78,581',c:'+0.2%'},{n:'BANK NIFTY',v:'57,740',c:'-0.3%'}], region:'Asia' },
+  { code:'CN', name:'Shanghai/Shenzhen', country:'China', flag:'🇨🇳', tz:'Asia/Shanghai', utcOffset:8, open:'09:30', close:'15:00', preMarket:null, afterMarket:null, currency:'CNY', symbol:'¥', indices:[{n:'SSE Comp.',v:'3,878',c:'+1.8%'},{n:'CSI 300',v:'4,658',c:'+1.2%'},{n:'HSI',v:'25,916',c:'+0.2%'}], region:'Asia' },
+  { code:'HK', name:'Hong Kong Stock Exchange', country:'Hong Kong', flag:'🇭🇰', tz:'Asia/Hong_Kong', utcOffset:8, open:'09:30', close:'16:00', preMarket:null, afterMarket:null, currency:'HKD', symbol:'HK$', indices:[{n:'Hang Seng',v:'25,916',c:'+0.2%'},{n:'H-Shares',v:'8,604',c:'+0.3%'}], region:'Asia' },
+  { code:'AU', name:'Australian Securities Exchange', country:'Australia', flag:'🇦🇺', tz:'Australia/Sydney', utcOffset:11, open:'10:00', close:'16:00', preMarket:null, afterMarket:null, currency:'AUD', symbol:'A$', indices:[{n:'ASX 200',v:'9,228',c:'+0.9%'},{n:'All Ords',v:'9,405',c:'+1.0%'}], region:'Asia-Pacific' },
+  { code:'CA', name:'Toronto Stock Exchange', country:'Canada', flag:'🇨🇦', tz:'America/Toronto', utcOffset:-5, open:'09:30', close:'16:00', preMarket:'07:00', afterMarket:'17:30', currency:'CAD', symbol:'C$', indices:[{n:'TSX Comp.',v:'36,184',c:'+1.1%'},{n:'TSX 60',v:'1,428',c:'+0.5%'}], region:'Americas' },
+  { code:'FR', name:'Euronext Paris', country:'France', flag:'🇫🇷', tz:'Europe/Paris', utcOffset:1, open:'09:00', close:'17:30', preMarket:null, afterMarket:null, currency:'EUR', symbol:'€', indices:[{n:'CAC 40',v:'8,669',c:'+0.0%'},{n:'SBF 120',v:'6,556',c:'+0.0%'}], region:'Europe' },
+  { code:'CH', name:'SIX Swiss Exchange', country:'Switzerland', flag:'🇨🇭', tz:'Europe/Zurich', utcOffset:1, open:'09:00', close:'17:30', preMarket:null, afterMarket:null, currency:'CHF', symbol:'₣', indices:[{n:'SMI',v:'14,552',c:'+0.6%'},{n:'SPI',v:'15,412',c:'+0.2%'}], region:'Europe' },
+  { code:'SG', name:'Singapore Exchange', country:'Singapore', flag:'🇸🇬', tz:'Asia/Singapore', utcOffset:8, open:'09:00', close:'17:00', preMarket:null, afterMarket:null, currency:'SGD', symbol:'S$', indices:[{n:'STI',v:'5,581',c:'-0.6%'}], region:'Asia' },
+  { code:'BR', name:'B3 — Brasil Bolsa Balcão', country:'Brazil', flag:'🇧🇷', tz:'America/Sao_Paulo', utcOffset:-3, open:'10:00', close:'17:55', preMarket:null, afterMarket:null, currency:'BRL', symbol:'R$', indices:[{n:'IBOVESPA',v:'178,441',c:'+0.3%'},{n:'IBrX 100',v:'57,318',c:'+0.9%'}], region:'Americas' },
+  { code:'ZA', name:'JSE Limited', country:'South Africa', flag:'🇿🇦', tz:'Africa/Johannesburg', utcOffset:2, open:'09:00', close:'17:00', preMarket:null, afterMarket:null, currency:'ZAR', symbol:'R', indices:[{n:'JSE Top 40',v:'107,377',c:'+1.1%'},{n:'All Share',v:'115,416',c:'+1.0%'}], region:'Africa' },
   { code:'AE', name:'Dubai / Abu Dhabi', country:'UAE', flag:'🇦🇪', tz:'Asia/Dubai', utcOffset:4, open:'10:00', close:'14:00', preMarket:null, afterMarket:null, currency:'AED', symbol:'د.إ', indices:[{n:'DFM Index',v:'4,218',c:'+0.8%'},{n:'ADX Index',v:'9,481',c:'+0.6%'}], region:'Middle East' },
-  { code:'KR', name:'Korea Exchange', country:'South Korea', flag:'🇰🇷', tz:'Asia/Seoul', utcOffset:9, open:'09:00', close:'15:30', preMarket:null, afterMarket:null, currency:'KRW', symbol:'₩', indices:[{n:'KOSPI',v:'2,641',c:'+0.6%'},{n:'KOSDAQ',v:'842',c:'+1.2%'}], region:'Asia' },
+  { code:'KR', name:'Korea Exchange', country:'South Korea', flag:'🇰🇷', tz:'Asia/Seoul', utcOffset:9, open:'09:00', close:'15:30', preMarket:null, afterMarket:null, currency:'KRW', symbol:'₩', indices:[{n:'KOSPI',v:'6,598',c:'+3.8%'},{n:'KOSDAQ',v:'800',c:'+8.4%'}], region:'Asia' },
 ];
 
 const WORLD_CLOCK_CITIES = [
@@ -5503,11 +5504,24 @@ function resolveRegionCountry(country) {
   return COUNTRIES.find(c => c.code === code) || COUNTRIES[0];
 }
 
+// Merge a fresh live quote (from the 60s market-data refresher) over a static
+// regional seed entry, so regional views show real prices once quotes land.
+function _qzRegionalLiveOverlay(s) {
+  try {
+    const q = window._qzQuotes && window._qzQuotes[s.t];
+    if (q && q.price > 0 && Date.now() - (q.ts || 0) < 10 * 60 * 1000) {
+      const p = q.price >= 1000 ? Math.round(q.price) : +q.price.toFixed(2);
+      return Object.assign({}, s, { p: p, c: +(+q.changePct || 0).toFixed(2) });
+    }
+  } catch (_) {}
+  return s;
+}
+
 function renderRegionalSignals(country) {
   country = resolveRegionCountry(country);
   const grid = document.getElementById('all-signals-grid');
   if(!grid) return;
-  const stocks = country.stocks;
+  const stocks = country.stocks.map(_qzRegionalLiveOverlay);
   grid.innerHTML = stocks.map(s => {
     const cls = s.sig === 'BUY' ? 'badge-green' : s.sig === 'SELL' ? 'badge-red' : 'badge-yellow';
     const confCls = s.conf > 85 ? '' : s.conf > 70 ? 'medium' : 'low';
@@ -5525,7 +5539,7 @@ function renderRegionalScanner(country) {
   country = resolveRegionCountry(country);
   const grid = document.getElementById('scanner-grid');
   if(!grid) return;
-  grid.innerHTML = country.stocks.map(s => {
+  grid.innerHTML = country.stocks.map(_qzRegionalLiveOverlay).map(s => {
     const cls = s.sig === 'BUY' ? 'badge-green' : s.sig === 'SELL' ? 'badge-red' : 'badge-yellow';
     const momentum = Math.round(s.conf * 0.9 + Math.random() * 10);
     const sentiment = Math.round(s.conf * 0.85 + Math.random() * 12);
@@ -5546,14 +5560,15 @@ function renderRegionalScanner(country) {
 
 function updateDashboardRegion(country) {
   country = resolveRegionCountry(country);
+  const stocks = country.stocks.map(_qzRegionalLiveOverlay);
   // Update top opportunity on dashboard
-  const topBuy = country.stocks.filter(s => s.sig === 'BUY').sort((a,b) => b.conf - a.conf)[0];
+  const topBuy = stocks.filter(s => s.sig === 'BUY').sort((a,b) => b.conf - a.conf)[0];
   const topOpp = document.querySelector('#page-dashboard .metric-card:last-child .metric-value');
   if(topOpp && topBuy) topOpp.textContent = topBuy.t;
   // Re-render dashboard signals
   const grid = document.getElementById('signals-grid');
   if(grid) {
-    const topSignals = country.stocks.filter(s => s.sig === 'BUY').slice(0, 3);
+    const topSignals = stocks.filter(s => s.sig === 'BUY').slice(0, 3);
     grid.innerHTML = topSignals.map(s => {
       const cls = 'badge-green';
       const confCls = s.conf > 85 ? '' : 'medium';
@@ -10443,19 +10458,31 @@ window.qeRL  = window.QESecurity.rateLimit;
     },
     yahoo: {
       quote: function(sym) {
-        return P.yahoo.multi([sym]).then(function(qs){ if (!qs.length) throw new Error('empty'); return qs[0]; });
+        // v7/finance/quote is crumb-gated (401) keyless — v8 chart meta is not
+        var url = 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(sym) + '?interval=1d&range=1d';
+        return proxied(url).then(function(d){
+          var r = d && d.chart && d.chart.result && d.chart.result[0];
+          var m = r && r.meta;
+          if (!m || !m.regularMarketPrice) throw new Error('empty chart meta');
+          var price = m.regularMarketPrice, prev = m.chartPreviousClose || m.previousClose || 0;
+          if (m.currency === 'GBp' || m.currency === 'ZAc') { price /= 100; prev /= 100; } // pence/cents → major unit
+          return { ticker: m.symbol || sym, price: price, prevClose: prev, change: prev ? price - prev : 0,
+                   changePct: prev ? (price - prev) / prev * 100 : 0,
+                   high: m.regularMarketDayHigh || 0, low: m.regularMarketDayLow || 0, open: 0,
+                   volume: m.regularMarketVolume || 0, ts: Date.now(), source: 'yahoo' };
+        });
       },
       multi: function(syms) {
-        var url = 'https://query1.finance.yahoo.com/v7/finance/quote?symbols=' + encodeURIComponent(syms.join(',')) + '&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent,regularMarketPreviousClose,regularMarketVolume,regularMarketDayHigh,regularMarketDayLow,regularMarketOpen,earningsTimestamp';
-        return proxied(url).then(function(d){
-          var rs = (d && d.quoteResponse && d.quoteResponse.result) || [];
-          if (!rs.length) throw new Error('empty batch');
-          return rs.map(function(r){
-            return { ticker: r.symbol, price: r.regularMarketPrice || 0, prevClose: r.regularMarketPreviousClose || 0,
-                     change: r.regularMarketChange || 0, changePct: r.regularMarketChangePercent || 0,
-                     high: r.regularMarketDayHigh || 0, low: r.regularMarketDayLow || 0, open: r.regularMarketOpen || 0,
-                     volume: r.regularMarketVolume || 0, earningsTs: r.earningsTimestamp || 0, ts: Date.now(), source: 'yahoo' };
-          }).filter(function(q){ return q.price > 0; });
+        // No keyless batch endpoint anymore — concurrency-limited per-symbol fan-out
+        var out = [], i = 0, CONC = Math.min(4, syms.length);
+        function worker() {
+          if (i >= syms.length) return Promise.resolve();
+          var s = syms[i++];
+          return P.yahoo.quote(s).then(function(q){ out.push(q); }, function(){}).then(worker);
+        }
+        return Promise.all(Array.from({ length: CONC }, worker)).then(function(){
+          if (!out.length) throw new Error('empty batch');
+          return out;
         });
       },
       candles: function(sym, days) {
@@ -27922,10 +27949,10 @@ async function qzCoachReview() {
       currency: 'USD', symbol: '$',
       exchanges: ['NYSE', 'NASDAQ'],
       indices: [
-        { tk: 'SPX',  name: 'S&P 500',     val: 5_876.12, chg: +0.42 },
-        { tk: 'IXIC', name: 'Nasdaq 100',  val: 19_218.46, chg: +0.71 },
-        { tk: 'DJI',  name: 'Dow Jones',   val: 42_894.10, chg: +0.18 },
-        { tk: 'RUT',  name: 'Russell 2000',val:  2_312.45, chg: -0.24 }
+        { tk: 'SPX',  name: 'S&P 500',     val: 7738.76, chg: +0.03 },
+        { tk: 'IXIC', name: 'Nasdaq Comp.',  val: 26488.65, chg: -0.36 },
+        { tk: 'DJI',  name: 'Dow Jones',   val: 54535.73, chg: +0.83 },
+        { tk: 'RUT',  name: 'Russell 2000',val: 3024.30, chg: -0.42 }
       ],
       benchmark: 'S&P 500',
       top_stocks: ['NVDA','MSFT','AAPL','GOOGL','AMZN','META','TSLA','JPM','XOM','UNH'],
@@ -27947,10 +27974,10 @@ async function qzCoachReview() {
       currency: 'INR', symbol: '₹',
       exchanges: ['NSE', 'BSE'],
       indices: [
-        { tk: 'NIFTY',   name: 'Nifty 50',    val: 24_312.40, chg: +0.38 },
-        { tk: 'SENSEX',  name: 'Sensex',      val: 80_148.80, chg: +0.42 },
-        { tk: 'BANKNIFTY',name: 'Bank Nifty', val: 52_438.20, chg: +0.18 },
-        { tk: 'MIDCAP',  name: 'Nifty Midcap',val: 56_812.60, chg: -0.32 }
+        { tk: 'NIFTY',   name: 'Nifty 50',    val: 24624.65, chg: +0.04 },
+        { tk: 'SENSEX',  name: 'Sensex',      val: 78581.00, chg: +0.19 },
+        { tk: 'BANKNIFTY',name: 'Bank Nifty', val: 57739.95, chg: -0.29 },
+        { tk: 'MIDCAP',  name: 'Nifty Midcap',val: 63605.25, chg: +0.18 }
       ],
       benchmark: 'Nifty 50',
       top_stocks: ['RELIANCE','TCS','HDFCBANK','INFY','ICICIBANK','ITC','LT','BHARTIARTL','SBIN','HINDUNILVR'],
@@ -27972,9 +27999,9 @@ async function qzCoachReview() {
       currency: 'GBP', symbol: '£',
       exchanges: ['LSE'],
       indices: [
-        { tk: 'FTSE',    name: 'FTSE 100',     val: 8_148.92, chg: +0.22 },
-        { tk: 'FTSE250', name: 'FTSE 250',     val: 20_482.36, chg: +0.34 },
-        { tk: 'AIM',     name: 'AIM All-Share',val:   724.18, chg: -0.18 }
+        { tk: 'FTSE',    name: 'FTSE 100',     val: 10888.30, chg: +0.08 },
+        { tk: 'FTSE250', name: 'FTSE 250',     val: 24632.63, chg: +0.71 },
+        { tk: 'AIM',     name: 'AIM All-Share',val: 781.78, chg: +0.96 }
       ],
       benchmark: 'FTSE 100',
       top_stocks: ['SHEL','AZN','HSBA','ULVR','BP','GSK','RIO','BARC','LSEG','VOD'],
@@ -27996,7 +28023,7 @@ async function qzCoachReview() {
       currency: 'JPY', symbol: '¥',
       exchanges: ['TSE'],
       indices: [
-        { tk: 'N225',   name: 'Nikkei 225',  val: 38_926.30, chg: +0.62 },
+        { tk: 'N225',   name: 'Nikkei 225',  val: 66300.44, chg: +3.66 },
         { tk: 'TOPIX',  name: 'TOPIX',       val:  2_715.40, chg: +0.41 },
         { tk: 'NKM',    name: 'Nikkei Mothers',val:   712.20, chg: -0.18 }
       ],
@@ -28020,9 +28047,9 @@ async function qzCoachReview() {
       currency: 'EUR', symbol: '€',
       exchanges: ['XETRA'],
       indices: [
-        { tk: 'DAX',  name: 'DAX 40',  val: 19_482.40, chg: +0.34 },
-        { tk: 'MDAX', name: 'MDAX',    val: 26_318.60, chg: +0.12 },
-        { tk: 'TDAX', name: 'TecDAX',  val:  3_412.80, chg: -0.22 }
+        { tk: 'DAX',  name: 'DAX 40',  val: 26126.30, chg: -0.29 },
+        { tk: 'MDAX', name: 'MDAX',    val: 32426.33, chg: -0.41 },
+        { tk: 'TDAX', name: 'TecDAX',  val: 3946.73, chg: -0.89 }
       ],
       benchmark: 'DAX 40',
       top_stocks: ['SAP','SIE','ALV','DTE','MBG','BAS','BMW','MUV2','DBK','BAYN'],
@@ -28044,9 +28071,9 @@ async function qzCoachReview() {
       currency: 'CNY', symbol: '¥',
       exchanges: ['SSE', 'SZSE'],
       indices: [
-        { tk: 'SHCOMP', name: 'Shanghai Composite', val: 3_312.40, chg: +0.46 },
-        { tk: 'SZCOMP', name: 'Shenzhen Composite', val: 1_948.20, chg: +0.62 },
-        { tk: 'CSI300', name: 'CSI 300',            val: 3_876.50, chg: +0.38 }
+        { tk: 'SHCOMP', name: 'Shanghai Composite', val: 3878.43, chg: +1.81 },
+        { tk: 'SZCOMP', name: 'Shenzhen Composite', val: 14144.20, chg: +5.17 },
+        { tk: 'CSI300', name: 'CSI 300',            val: 4658.15, chg: +1.24 }
       ],
       benchmark: 'CSI 300',
       top_stocks: ['600519','601398','600036','601318','600276','000858','601166','601988','601628','600030'],
@@ -28068,8 +28095,8 @@ async function qzCoachReview() {
       currency: 'HKD', symbol: 'HK$',
       exchanges: ['HKEX'],
       indices: [
-        { tk: 'HSI',     name: 'Hang Seng',          val: 19_482.40, chg: +0.92 },
-        { tk: 'HSCEI',   name: 'Hang Seng China Ent.',val:  6_948.20, chg: +1.18 },
+        { tk: 'HSI',     name: 'Hang Seng',          val: 25915.82, chg: +0.24 },
+        { tk: 'HSCEI',   name: 'Hang Seng China Ent.',val: 8603.73, chg: +0.34 },
         { tk: 'HSTECH',  name: 'Hang Seng Tech',     val:  4_312.50, chg: +1.42 }
       ],
       benchmark: 'Hang Seng',
@@ -28092,7 +28119,7 @@ async function qzCoachReview() {
       currency: 'SGD', symbol: 'S$',
       exchanges: ['SGX'],
       indices: [
-        { tk: 'STI',  name: 'Straits Times', val: 3_712.40, chg: +0.32 },
+        { tk: 'STI',  name: 'Straits Times', val: 5581.37, chg: -0.55 },
         { tk: 'FSSI', name: 'FTSE ST All',   val:   846.20, chg: +0.18 }
       ],
       benchmark: 'Straits Times',
@@ -28115,9 +28142,9 @@ async function qzCoachReview() {
       currency: 'AUD', symbol: 'A$',
       exchanges: ['ASX'],
       indices: [
-        { tk: 'XJO',  name: 'ASX 200',     val: 8_412.60, chg: +0.28 },
-        { tk: 'XAO',  name: 'All Ords',    val: 8_682.30, chg: +0.26 },
-        { tk: 'XSO',  name: 'Small Ords',  val: 3_412.10, chg: -0.18 }
+        { tk: 'XJO',  name: 'ASX 200',     val: 9227.80, chg: +0.90 },
+        { tk: 'XAO',  name: 'All Ords',    val: 9405.40, chg: +1.00 },
+        { tk: 'XSO',  name: 'Small Ords',  val: 3482.30, chg: +4.22 }
       ],
       benchmark: 'ASX 200',
       top_stocks: ['BHP','CBA','CSL','NAB','WBC','ANZ','MQG','WES','TLS','WOW'],
@@ -28139,7 +28166,7 @@ async function qzCoachReview() {
       currency: 'CAD', symbol: 'C$',
       exchanges: ['TSX'],
       indices: [
-        { tk: 'TSX',  name: 'S&P/TSX',     val: 24_812.40, chg: +0.34 },
+        { tk: 'TSX',  name: 'S&P/TSX',     val: 36183.72, chg: +1.07 },
         { tk: 'TSXV', name: 'TSX Venture', val:   612.30, chg: -0.42 }
       ],
       benchmark: 'S&P/TSX',
@@ -28178,12 +28205,15 @@ async function qzCoachReview() {
     return 'US';
   }
 
+  function _norm(code) { return code === 'GB' ? 'UK' : code; } // selector says GB, table says UK
+
   function get() {
-    var code = currentCode;
+    var code = _norm(currentCode);
     return COUNTRIES[code] || COUNTRIES.US;
   }
 
   function set(code) {
+    code = _norm(code);
     if (!COUNTRIES[code]) return;
     if (code === currentCode) return;
     currentCode = code;
@@ -28741,124 +28771,124 @@ async function qzCoachReview() {
   // ────────────────────────────────────────────────────────────────────
   var COUNTRY_STOCKS = {
     US: [
-      { ticker:'AAPL',  name:'Apple Inc.',         price: 189.4, change: 2.1, signal:'BUY',  conf:94, reason:'Strong iPhone 16 demand + AI integration. Services revenue accelerating.', cat:'tech',     sector:'Technology',  risk:'low',    momentum:85, sentiment:88 },
-      { ticker:'NVDA',  name:'NVIDIA Corp.',       price: 878.3, change: 4.8, signal:'BUY',  conf:91, reason:'Dominant AI chip position. Blackwell GPU orders exceeding forecasts.',     cat:'tech',     sector:'Technology',  risk:'medium', momentum:95, sentiment:92 },
-      { ticker:'MSFT',  name:'Microsoft Corp.',    price: 413.2, change: 1.4, signal:'BUY',  conf:88, reason:'Azure cloud growth accelerating on AI workloads. Copilot monetization scaling.', cat:'tech',  sector:'Technology',  risk:'low',    momentum:78, sentiment:85 },
-      { ticker:'AMZN',  name:'Amazon.com Inc.',    price: 187.6, change: 2.7, signal:'BUY',  conf:86, reason:'AWS reaccelerating. Advertising revenue strong. Prime growth international.', cat:'tech',  sector:'Consumer',    risk:'low',    momentum:80, sentiment:82 },
-      { ticker:'META',  name:'Meta Platforms',     price: 498.2, change: 3.1, signal:'BUY',  conf:89, reason:'Ad revenue recovering strongly. Llama AI driving adoption.',                  cat:'tech',     sector:'Communication',risk:'medium', momentum:88, sentiment:87 },
-      { ticker:'GOOGL', name:'Alphabet Inc.',      price: 174.3, change: 1.9, signal:'BUY',  conf:83, reason:'Search AI integration ahead of schedule. YouTube ad recovery.',               cat:'tech',     sector:'Communication',risk:'low',    momentum:75, sentiment:80 },
-      { ticker:'JPM',   name:'JPMorgan Chase',     price: 196.4, change: 0.8, signal:'HOLD', conf:68, reason:'Net interest income peaking. Investment banking recovering. Credit solid.',   cat:'finance',  sector:'Financials',  risk:'low',    momentum:55, sentiment:62 },
-      { ticker:'TSLA',  name:'Tesla Inc.',         price: 244.8, change:-1.2, signal:'HOLD', conf:72, reason:'Margin pressure from price cuts. Robotaxi timeline uncertain.',               cat:'tech',     sector:'Consumer',    risk:'high',   momentum:45, sentiment:52 },
-      { ticker:'XOM',   name:'Exxon Mobil',        price: 117.8, change: 0.3, signal:'HOLD', conf:64, reason:'Crude in $70-80 range. Permian production ramp. Capital returns disciplined.', cat:'energy',  sector:'Energy',      risk:'medium', momentum:50, sentiment:58 },
-      { ticker:'UNH',   name:'UnitedHealth',       price: 542.1, change:-0.6, signal:'SELL', conf:71, reason:'Medicare Advantage cost pressure. DoJ antitrust scrutiny intensifying.',      cat:'health',   sector:'Health Care', risk:'high',   momentum:32, sentiment:38 }
+      { ticker:'AAPL',  name:'Apple Inc.',         price: 308.9, change: -0.1, signal:'BUY',  conf:94, reason:'Strong iPhone 16 demand + AI integration. Services revenue accelerating.', cat:'tech',     sector:'Technology',  risk:'low',    momentum:85, sentiment:88 },
+      { ticker:'NVDA',  name:'NVIDIA Corp.',       price: 220.7, change: 4.1, signal:'BUY',  conf:91, reason:'Dominant AI chip position. Blackwell GPU orders exceeding forecasts.',     cat:'tech',     sector:'Technology',  risk:'medium', momentum:95, sentiment:92 },
+      { ticker:'MSFT',  name:'Microsoft Corp.',    price: 489.2, change: -0.7, signal:'BUY',  conf:88, reason:'Azure cloud growth accelerating on AI workloads. Copilot monetization scaling.', cat:'tech',  sector:'Technology',  risk:'low',    momentum:78, sentiment:85 },
+      { ticker:'AMZN',  name:'Amazon.com Inc.',    price: 272.7, change: -1.7, signal:'BUY',  conf:86, reason:'AWS reaccelerating. Advertising revenue strong. Prime growth international.', cat:'tech',  sector:'Consumer',    risk:'low',    momentum:80, sentiment:82 },
+      { ticker:'META',  name:'Meta Platforms',     price: 583.3, change: -0.8, signal:'BUY',  conf:89, reason:'Ad revenue recovering strongly. Llama AI driving adoption.',                  cat:'tech',     sector:'Communication',risk:'medium', momentum:88, sentiment:87 },
+      { ticker:'GOOGL', name:'Alphabet Inc.',      price: 361.8, change: -4.2, signal:'BUY',  conf:83, reason:'Search AI integration ahead of schedule. YouTube ad recovery.',               cat:'tech',     sector:'Communication',risk:'low',    momentum:75, sentiment:80 },
+      { ticker:'JPM',   name:'JPMorgan Chase',     price: 359.6, change: 0.6, signal:'HOLD', conf:68, reason:'Net interest income peaking. Investment banking recovering. Credit solid.',   cat:'finance',  sector:'Financials',  risk:'low',    momentum:55, sentiment:62 },
+      { ticker:'TSLA',  name:'Tesla Inc.',         price: 323.0, change: -1.3, signal:'HOLD', conf:72, reason:'Margin pressure from price cuts. Robotaxi timeline uncertain.',               cat:'tech',     sector:'Consumer',    risk:'high',   momentum:45, sentiment:52 },
+      { ticker:'XOM',   name:'Exxon Mobil',        price: 152.1, change: -1.2, signal:'HOLD', conf:64, reason:'Crude in $70-80 range. Permian production ramp. Capital returns disciplined.', cat:'energy',  sector:'Energy',      risk:'medium', momentum:50, sentiment:58 },
+      { ticker:'UNH',   name:'UnitedHealth',       price: 414.5, change: 1.7, signal:'SELL', conf:71, reason:'Medicare Advantage cost pressure. DoJ antitrust scrutiny intensifying.',      cat:'health',   sector:'Health Care', risk:'high',   momentum:32, sentiment:38 }
     ],
     IN: [
-      { ticker:'RELIANCE',  name:'Reliance Industries',  price: 2_948, change: 1.8, signal:'BUY',  conf:90, reason:'Jio 5G subscriber growth + Retail expansion. Refining margins firming.',    cat:'energy',  sector:'Energy',     risk:'low',    momentum:82, sentiment:84 },
-      { ticker:'TCS',       name:'Tata Consultancy',     price: 4_312, change: 0.9, signal:'BUY',  conf:85, reason:'Large deal TCV up 18% YoY. BFSI vertical re-accelerating in North America.', cat:'tech',    sector:'IT Services',risk:'low',    momentum:76, sentiment:80 },
-      { ticker:'HDFCBANK',  name:'HDFC Bank',            price: 1_762, change: 1.2, signal:'BUY',  conf:88, reason:'NIM expansion post-merger. CASA ratio improving. Best-in-class credit costs.', cat:'finance', sector:'Banks',     risk:'low',    momentum:78, sentiment:82 },
-      { ticker:'INFY',      name:'Infosys',              price: 1_896, change: 1.1, signal:'BUY',  conf:84, reason:'AI/cloud deal pipeline strongest in 8 quarters. Guidance raised twice.',     cat:'tech',    sector:'IT Services',risk:'low',    momentum:74, sentiment:79 },
-      { ticker:'ICICIBANK', name:'ICICI Bank',           price: 1_286, change: 1.6, signal:'BUY',  conf:86, reason:'Retail credit growing 22% YoY. NIMs holding. Digital franchise leading.',     cat:'finance', sector:'Banks',     risk:'low',    momentum:79, sentiment:81 },
-      { ticker:'BHARTIARTL',name:'Bharti Airtel',        price: 1_624, change: 2.4, signal:'BUY',  conf:87, reason:'ARPU climbing post-tariff hike. Africa business cash generating. 5G capex done.', cat:'comm', sector:'Telecom',    risk:'low',    momentum:84, sentiment:83 },
-      { ticker:'LT',        name:'Larsen & Toubro',      price: 3_618, change: 0.7, signal:'HOLD', conf:70, reason:'Strong order book but execution paced. Hydrocarbon vertical recovering.',   cat:'industrial',sector:'Capital Goods',risk:'medium',momentum:58, sentiment:64 },
-      { ticker:'ITC',       name:'ITC Ltd.',             price:   476, change:-0.4, signal:'HOLD', conf:65, reason:'Cigarette volume steady. FMCG margins expanding slowly. Hotels demerger drag.', cat:'consumer',sector:'FMCG',      risk:'low',    momentum:48, sentiment:54 },
-      { ticker:'SBIN',      name:'State Bank of India',  price:   832, change: 1.4, signal:'BUY',  conf:82, reason:'Largest PSU, credit growth at 14% YoY. Asset quality at decadal best.',     cat:'finance', sector:'Banks',     risk:'medium', momentum:72, sentiment:76 },
-      { ticker:'HINDUNILVR',name:'Hindustan Unilever',   price: 2_412, change:-1.1, signal:'SELL', conf:74, reason:'Rural slowdown persisting. Premiumization can\'t offset volume decline.',    cat:'consumer',sector:'FMCG',      risk:'medium', momentum:38, sentiment:42 }
+      { ticker:'RELIANCE',  name:'Reliance Industries',  price: 1280, change: -0.8, signal:'BUY',  conf:90, reason:'Jio 5G subscriber growth + Retail expansion. Refining margins firming.',    cat:'energy',  sector:'Energy',     risk:'low',    momentum:82, sentiment:84 },
+      { ticker:'TCS',       name:'Tata Consultancy',     price: 2413, change: -1.9, signal:'BUY',  conf:85, reason:'Large deal TCV up 18% YoY. BFSI vertical re-accelerating in North America.', cat:'tech',    sector:'IT Services',risk:'low',    momentum:76, sentiment:80 },
+      { ticker:'HDFCBANK',  name:'HDFC Bank',            price: 735.0, change: -0.9, signal:'BUY',  conf:88, reason:'NIM expansion post-merger. CASA ratio improving. Best-in-class credit costs.', cat:'finance', sector:'Banks',     risk:'low',    momentum:78, sentiment:82 },
+      { ticker:'INFY',      name:'Infosys',              price: 1174, change: 0.6, signal:'BUY',  conf:84, reason:'AI/cloud deal pipeline strongest in 8 quarters. Guidance raised twice.',     cat:'tech',    sector:'IT Services',risk:'low',    momentum:74, sentiment:79 },
+      { ticker:'ICICIBANK', name:'ICICI Bank',           price: 1450, change: -0.3, signal:'BUY',  conf:86, reason:'Retail credit growing 22% YoY. NIMs holding. Digital franchise leading.',     cat:'finance', sector:'Banks',     risk:'low',    momentum:79, sentiment:81 },
+      { ticker:'BHARTIARTL',name:'Bharti Airtel',        price: 1978, change: 0.4, signal:'BUY',  conf:87, reason:'ARPU climbing post-tariff hike. Africa business cash generating. 5G capex done.', cat:'comm', sector:'Telecom',    risk:'low',    momentum:84, sentiment:83 },
+      { ticker:'LT',        name:'Larsen & Toubro',      price: 4057, change: 1.7, signal:'HOLD', conf:70, reason:'Strong order book but execution paced. Hydrocarbon vertical recovering.',   cat:'industrial',sector:'Capital Goods',risk:'medium',momentum:58, sentiment:64 },
+      { ticker:'ITC',       name:'ITC Ltd.',             price: 286.9, change: -0.7, signal:'HOLD', conf:65, reason:'Cigarette volume steady. FMCG margins expanding slowly. Hotels demerger drag.', cat:'consumer',sector:'FMCG',      risk:'low',    momentum:48, sentiment:54 },
+      { ticker:'SBIN',      name:'State Bank of India',  price: 1055, change: 1.2, signal:'BUY',  conf:82, reason:'Largest PSU, credit growth at 14% YoY. Asset quality at decadal best.',     cat:'finance', sector:'Banks',     risk:'medium', momentum:72, sentiment:76 },
+      { ticker:'HINDUNILVR',name:'Hindustan Unilever',   price: 2085, change: -0.5, signal:'SELL', conf:74, reason:'Rural slowdown persisting. Premiumization can\'t offset volume decline.',    cat:'consumer',sector:'FMCG',      risk:'medium', momentum:38, sentiment:42 }
     ],
     UK: [
-      { ticker:'SHEL', name:'Shell plc',            price: 27.84, change: 0.6, signal:'HOLD', conf:68, reason:'LNG portfolio strong. Renewables capex restrained. Buybacks supportive.',          cat:'energy',   sector:'Energy',       risk:'medium', momentum:55, sentiment:62 },
-      { ticker:'AZN',  name:'AstraZeneca',          price: 102.18,change: 1.4, signal:'BUY',  conf:86, reason:'Oncology pipeline strongest in big pharma. Tagrisso reads positive.',              cat:'health',   sector:'Pharma',       risk:'low',    momentum:78, sentiment:82 },
-      { ticker:'HSBA', name:'HSBC Holdings',        price:  7.42, change: 0.9, signal:'BUY',  conf:82, reason:'Asia franchise NIM holding. Capital returns disciplined. Wealth segment scaling.', cat:'finance',  sector:'Banks',        risk:'low',    momentum:72, sentiment:76 },
-      { ticker:'ULVR', name:'Unilever',             price: 46.30, change: 0.4, signal:'HOLD', conf:64, reason:'Volume growth re-emerging. Pricing power flagging in EMs. Cost saves on track.',   cat:'consumer', sector:'Consumer',     risk:'low',    momentum:52, sentiment:58 },
-      { ticker:'BP',   name:'BP plc',               price:  4.18, change:-0.8, signal:'SELL', conf:69, reason:'Transition strategy reversal hurting credibility. Capex discipline questioned.',   cat:'energy',   sector:'Energy',       risk:'high',   momentum:35, sentiment:42 },
-      { ticker:'GSK',  name:'GlaxoSmithKline',      price: 14.42, change: 1.1, signal:'BUY',  conf:80, reason:'Vaccines + HIV franchise compounding. Pipeline reads de-risked in 2025.',          cat:'health',   sector:'Pharma',       risk:'low',    momentum:70, sentiment:75 },
-      { ticker:'RIO',  name:'Rio Tinto',            price: 50.84, change: 1.8, signal:'BUY',  conf:81, reason:'Iron ore restocking from China. Copper expansion ahead of schedule.',              cat:'materials',sector:'Mining',       risk:'medium', momentum:74, sentiment:78 },
-      { ticker:'BARC', name:'Barclays',             price:  2.84, change: 1.2, signal:'BUY',  conf:78, reason:'Investment banking trough behind. UK retail margin expansion. Buybacks ramping.', cat:'finance',  sector:'Banks',        risk:'medium', momentum:68, sentiment:72 },
-      { ticker:'LSEG', name:'London Stock Exchange',price: 110.20,change: 0.7, signal:'HOLD', conf:66, reason:'Data + analytics steady. Refinitiv synergies playing out. Trading volumes soft.', cat:'finance',  sector:'Financials',   risk:'low',    momentum:54, sentiment:60 },
-      { ticker:'VOD',  name:'Vodafone Group',       price:  0.71, change:-0.6, signal:'SELL', conf:72, reason:'Germany underperforming. EM divestitures slow. Dividend coverage tightening.',   cat:'comm',     sector:'Telecom',      risk:'high',   momentum:36, sentiment:40 }
+      { ticker:'SHEL', name:'Shell plc',            price: 32.80, change: -1.2, signal:'HOLD', conf:68, reason:'LNG portfolio strong. Renewables capex restrained. Buybacks supportive.',          cat:'energy',   sector:'Energy',       risk:'medium', momentum:55, sentiment:62 },
+      { ticker:'AZN',  name:'AstraZeneca',          price: 120.4,change: 2.5, signal:'BUY',  conf:86, reason:'Oncology pipeline strongest in big pharma. Tagrisso reads positive.',              cat:'health',   sector:'Pharma',       risk:'low',    momentum:78, sentiment:82 },
+      { ticker:'HSBA', name:'HSBC Holdings',        price: 15.11, change: -4.7, signal:'BUY',  conf:82, reason:'Asia franchise NIM holding. Capital returns disciplined. Wealth segment scaling.', cat:'finance',  sector:'Banks',        risk:'low',    momentum:72, sentiment:76 },
+      { ticker:'ULVR', name:'Unilever',             price: 47.74, change: 0.5, signal:'HOLD', conf:64, reason:'Volume growth re-emerging. Pricing power flagging in EMs. Cost saves on track.',   cat:'consumer', sector:'Consumer',     risk:'low',    momentum:52, sentiment:58 },
+      { ticker:'BP',   name:'BP plc',               price: 5.15, change: -1.9, signal:'SELL', conf:69, reason:'Transition strategy reversal hurting credibility. Capex discipline questioned.',   cat:'energy',   sector:'Energy',       risk:'high',   momentum:35, sentiment:42 },
+      { ticker:'GSK',  name:'GlaxoSmithKline',      price: 19.16, change: 0.1, signal:'BUY',  conf:80, reason:'Vaccines + HIV franchise compounding. Pipeline reads de-risked in 2025.',          cat:'health',   sector:'Pharma',       risk:'low',    momentum:70, sentiment:75 },
+      { ticker:'RIO',  name:'Rio Tinto',            price: 75.11, change: 2.7, signal:'BUY',  conf:81, reason:'Iron ore restocking from China. Copper expansion ahead of schedule.',              cat:'materials',sector:'Mining',       risk:'medium', momentum:74, sentiment:78 },
+      { ticker:'BARC', name:'Barclays',             price: 5.28, change: 1.0, signal:'BUY',  conf:78, reason:'Investment banking trough behind. UK retail margin expansion. Buybacks ramping.', cat:'finance',  sector:'Banks',        risk:'medium', momentum:68, sentiment:72 },
+      { ticker:'LSEG', name:'London Stock Exchange',price: 86.28,change: 1.5, signal:'HOLD', conf:66, reason:'Data + analytics steady. Refinitiv synergies playing out. Trading volumes soft.', cat:'finance',  sector:'Financials',   risk:'low',    momentum:54, sentiment:60 },
+      { ticker:'VOD',  name:'Vodafone Group',       price: 1.14, change: -2.1, signal:'SELL', conf:72, reason:'Germany underperforming. EM divestitures slow. Dividend coverage tightening.',   cat:'comm',     sector:'Telecom',      risk:'high',   momentum:36, sentiment:40 }
     ],
     JP: [
-      { ticker:'7203', name:'Toyota Motor',          price: 2_842, change: 0.8, signal:'BUY',  conf:84, reason:'Hybrid demand surging globally. EV strategy pragmatic, not panicked.',           cat:'auto',     sector:'Auto',         risk:'low',    momentum:76, sentiment:80 },
-      { ticker:'6758', name:'Sony Group',            price: 2_948, change: 1.6, signal:'BUY',  conf:81, reason:'Image sensors leading. Games + music compounding. Movies recovering.',           cat:'tech',     sector:'Electronics',  risk:'medium', momentum:74, sentiment:78 },
-      { ticker:'9984', name:'SoftBank Group',        price: 8_812, change: 2.4, signal:'BUY',  conf:79, reason:'Vision Fund mark-ups returning. Arm stake highly valuable. Strategy clearer.',  cat:'tech',     sector:'Technology',   risk:'high',   momentum:82, sentiment:75 },
-      { ticker:'8306', name:'Mitsubishi UFJ',        price: 1_842, change: 1.2, signal:'BUY',  conf:83, reason:'BoJ normalization driving NIM. Capital returns elevated. Loan growth firm.',     cat:'finance',  sector:'Banks',        risk:'low',    momentum:78, sentiment:80 },
-      { ticker:'9432', name:'NTT',                   price:   148, change: 0.4, signal:'HOLD', conf:62, reason:'IOWN initiative long-dated. Mobile pricing stable. Dividend yield supportive.', cat:'comm',     sector:'Telecom',      risk:'low',    momentum:50, sentiment:55 },
-      { ticker:'4063', name:'Shin-Etsu Chemical',    price: 5_842, change: 1.1, signal:'BUY',  conf:80, reason:'Silicon wafer pricing power. PVC margins recovering. Best-in-class returns.',   cat:'materials',sector:'Chemicals',    risk:'low',    momentum:72, sentiment:76 },
-      { ticker:'8035', name:'Tokyo Electron',        price: 26_320,change: 2.8, signal:'BUY',  conf:88, reason:'Semicap upcycle accelerating. China derisking complete. Order backlog strong.', cat:'tech',     sector:'Equipment',    risk:'medium', momentum:90, sentiment:87 },
-      { ticker:'6861', name:'Keyence',               price: 65_120,change: 0.6, signal:'HOLD', conf:68, reason:'Industrial automation steady. Margins industry-leading. Valuation rich.',       cat:'industrial',sector:'Machinery',    risk:'low',    momentum:58, sentiment:64 },
-      { ticker:'7974', name:'Nintendo',              price: 8_412, change:-0.8, signal:'HOLD', conf:65, reason:'Switch successor approaching. Software pipeline strong. Hardware transition risk.', cat:'consumer',sector:'Consumer',    risk:'medium', momentum:48, sentiment:54 },
-      { ticker:'6098', name:'Recruit Holdings',      price: 9_482, change: 1.4, signal:'BUY',  conf:78, reason:'Indeed/Glassdoor margin expansion. Matching tech improving. Job market firm.',  cat:'tech',     sector:'Services',     risk:'medium', momentum:72, sentiment:74 }
+      { ticker:'7203', name:'Toyota Motor',          price: 2915, change: -0.1, signal:'BUY',  conf:84, reason:'Hybrid demand surging globally. EV strategy pragmatic, not panicked.',           cat:'auto',     sector:'Auto',         risk:'low',    momentum:76, sentiment:80 },
+      { ticker:'6758', name:'Sony Group',            price: 3565, change: 0.7, signal:'BUY',  conf:81, reason:'Image sensors leading. Games + music compounding. Movies recovering.',           cat:'tech',     sector:'Electronics',  risk:'medium', momentum:74, sentiment:78 },
+      { ticker:'9984', name:'SoftBank Group',        price: 5958, change: 14.0, signal:'BUY',  conf:79, reason:'Vision Fund mark-ups returning. Arm stake highly valuable. Strategy clearer.',  cat:'tech',     sector:'Technology',   risk:'high',   momentum:82, sentiment:75 },
+      { ticker:'8306', name:'Mitsubishi UFJ',        price: 3541, change: 2.0, signal:'BUY',  conf:83, reason:'BoJ normalization driving NIM. Capital returns elevated. Loan growth firm.',     cat:'finance',  sector:'Banks',        risk:'low',    momentum:78, sentiment:80 },
+      { ticker:'9432', name:'NTT',                   price: 151.0, change: 0.4, signal:'HOLD', conf:62, reason:'IOWN initiative long-dated. Mobile pricing stable. Dividend yield supportive.', cat:'comm',     sector:'Telecom',      risk:'low',    momentum:50, sentiment:55 },
+      { ticker:'4063', name:'Shin-Etsu Chemical',    price: 6163, change: 2.9, signal:'BUY',  conf:80, reason:'Silicon wafer pricing power. PVC margins recovering. Best-in-class returns.',   cat:'materials',sector:'Chemicals',    risk:'low',    momentum:72, sentiment:76 },
+      { ticker:'8035', name:'Tokyo Electron',        price: 58550,change: 3.3, signal:'BUY',  conf:88, reason:'Semicap upcycle accelerating. China derisking complete. Order backlog strong.', cat:'tech',     sector:'Equipment',    risk:'medium', momentum:90, sentiment:87 },
+      { ticker:'6861', name:'Keyence',               price: 87380,change: 5.4, signal:'HOLD', conf:68, reason:'Industrial automation steady. Margins industry-leading. Valuation rich.',       cat:'industrial',sector:'Machinery',    risk:'low',    momentum:58, sentiment:64 },
+      { ticker:'7974', name:'Nintendo',              price: 7428, change: -1.7, signal:'HOLD', conf:65, reason:'Switch successor approaching. Software pipeline strong. Hardware transition risk.', cat:'consumer',sector:'Consumer',    risk:'medium', momentum:48, sentiment:54 },
+      { ticker:'6098', name:'Recruit Holdings',      price: 12720, change: 2.5, signal:'BUY',  conf:78, reason:'Indeed/Glassdoor margin expansion. Matching tech improving. Job market firm.',  cat:'tech',     sector:'Services',     risk:'medium', momentum:72, sentiment:74 }
     ],
     DE: [
-      { ticker:'SAP',  name:'SAP SE',                  price: 218.40,change: 1.2, signal:'BUY',  conf:84, reason:'Cloud ACV growing 28% YoY. RISE migrations accelerating. AI monetization starting.', cat:'tech',     sector:'Technology', risk:'low',    momentum:78, sentiment:82 },
-      { ticker:'SIE',  name:'Siemens AG',              price: 184.20,change: 0.8, signal:'BUY',  conf:81, reason:'Digital industries software flywheel. Mobility orders strong. Energy spin-off paying off.', cat:'industrial',sector:'Industrials',risk:'low',momentum:74, sentiment:78 },
-      { ticker:'ALV',  name:'Allianz SE',              price: 304.80,change: 0.4, signal:'HOLD', conf:66, reason:'P&C combined ratio strong. Asset management steady. Capital flexible.',          cat:'finance',  sector:'Insurance',  risk:'low',    momentum:56, sentiment:62 },
-      { ticker:'DTE',  name:'Deutsche Telekom',        price:  27.84,change: 0.6, signal:'BUY',  conf:78, reason:'T-Mobile US driving group cash flow. German wireless firm. Buybacks accelerating.', cat:'comm',    sector:'Telecom',    risk:'low',    momentum:70, sentiment:74 },
-      { ticker:'MBG',  name:'Mercedes-Benz Group',     price:  54.20,change:-1.4, signal:'SELL', conf:74, reason:'China premium demand soft. EV transition expensive. Margins compressing.',         cat:'auto',    sector:'Auto',       risk:'high',   momentum:35, sentiment:40 },
-      { ticker:'BAS',  name:'BASF',                    price:  44.80,change:-0.6, signal:'SELL', conf:72, reason:'European chemicals capacity expensive vs. US/China. Dividend coverage tight.',     cat:'materials',sector:'Chemicals',  risk:'high',   momentum:38, sentiment:42 },
-      { ticker:'BMW',  name:'BMW AG',                  price:  76.20,change:-0.8, signal:'HOLD', conf:64, reason:'EV portfolio competitive. China JV pressure. Margin guidance lowered.',           cat:'auto',     sector:'Auto',       risk:'medium', momentum:42, sentiment:48 },
-      { ticker:'MUV2', name:'Munich Re',               price: 482.40,change: 0.7, signal:'BUY',  conf:80, reason:'Reinsurance pricing power. Natural catastrophe cycle favorable. Buybacks resumed.', cat:'finance',  sector:'Insurance',  risk:'low',    momentum:72, sentiment:76 },
-      { ticker:'DBK',  name:'Deutsche Bank',           price:  16.80,change: 1.4, signal:'HOLD', conf:68, reason:'Investment banking recovery. Cost discipline maintained. Capital returns nominal.', cat:'finance', sector:'Banks',      risk:'medium', momentum:60, sentiment:64 },
-      { ticker:'BAYN', name:'Bayer AG',                price:  21.40,change:-2.1, signal:'SELL', conf:78, reason:'Glyphosate litigation overhang. Pharma pipeline thin. Crop science earnings volatile.',cat:'health', sector:'Health Care',risk:'high',  momentum:25, sentiment:32 }
+      { ticker:'SAP',  name:'SAP SE',                  price: 169.3,change: 1.1, signal:'BUY',  conf:84, reason:'Cloud ACV growing 28% YoY. RISE migrations accelerating. AI monetization starting.', cat:'tech',     sector:'Technology', risk:'low',    momentum:78, sentiment:82 },
+      { ticker:'SIE',  name:'Siemens AG',              price: 285.9,change: -0.5, signal:'BUY',  conf:81, reason:'Digital industries software flywheel. Mobility orders strong. Energy spin-off paying off.', cat:'industrial',sector:'Industrials',risk:'low',momentum:74, sentiment:78 },
+      { ticker:'ALV',  name:'Allianz SE',              price: 436.6,change: 0.4, signal:'HOLD', conf:66, reason:'P&C combined ratio strong. Asset management steady. Capital flexible.',          cat:'finance',  sector:'Insurance',  risk:'low',    momentum:56, sentiment:62 },
+      { ticker:'DTE',  name:'Deutsche Telekom',        price: 27.42,change: -1.5, signal:'BUY',  conf:78, reason:'T-Mobile US driving group cash flow. German wireless firm. Buybacks accelerating.', cat:'comm',    sector:'Telecom',    risk:'low',    momentum:70, sentiment:74 },
+      { ticker:'MBG',  name:'Mercedes-Benz Group',     price: 47.26,change: -2.0, signal:'SELL', conf:74, reason:'China premium demand soft. EV transition expensive. Margins compressing.',         cat:'auto',    sector:'Auto',       risk:'high',   momentum:35, sentiment:40 },
+      { ticker:'BAS',  name:'BASF',                    price: 50.70,change: 0.5, signal:'SELL', conf:72, reason:'European chemicals capacity expensive vs. US/China. Dividend coverage tight.',     cat:'materials',sector:'Chemicals',  risk:'high',   momentum:38, sentiment:42 },
+      { ticker:'BMW',  name:'BMW AG',                  price: 59.10,change: -1.4, signal:'HOLD', conf:64, reason:'EV portfolio competitive. China JV pressure. Margin guidance lowered.',           cat:'auto',     sector:'Auto',       risk:'medium', momentum:42, sentiment:48 },
+      { ticker:'MUV2', name:'Munich Re',               price: 515.0,change: 0.0, signal:'BUY',  conf:80, reason:'Reinsurance pricing power. Natural catastrophe cycle favorable. Buybacks resumed.', cat:'finance',  sector:'Insurance',  risk:'low',    momentum:72, sentiment:76 },
+      { ticker:'DBK',  name:'Deutsche Bank',           price: 32.83,change: 0.4, signal:'HOLD', conf:68, reason:'Investment banking recovery. Cost discipline maintained. Capital returns nominal.', cat:'finance', sector:'Banks',      risk:'medium', momentum:60, sentiment:64 },
+      { ticker:'BAYN', name:'Bayer AG',                price: 49.22,change: 2.0, signal:'SELL', conf:78, reason:'Glyphosate litigation overhang. Pharma pipeline thin. Crop science earnings volatile.',cat:'health', sector:'Health Care',risk:'high',  momentum:25, sentiment:32 }
     ],
     CN: [
-      { ticker:'600519', name:'Kweichow Moutai',        price: 1_512, change: 0.4, signal:'HOLD', conf:64, reason:'Premium baijiu pricing power. Inventory destocking complete. Margins steady.', cat:'consumer',sector:'Consumer',  risk:'low',    momentum:56, sentiment:60 },
-      { ticker:'601398', name:'ICBC',                   price:  6.12, change: 0.8, signal:'BUY',  conf:78, reason:'NIM trough behind. Asset quality stable. Dividend yield 6.5%+.',             cat:'finance', sector:'Banks',     risk:'low',    momentum:68, sentiment:72 },
-      { ticker:'601318', name:'Ping An Insurance',      price: 56.80, change: 1.2, signal:'BUY',  conf:80, reason:'Life new business value recovering. P&C strong. Property exposure manageable.', cat:'finance',sector:'Insurance', risk:'medium', momentum:72, sentiment:76 },
-      { ticker:'600036', name:'China Merchants Bank',   price: 38.40, change: 0.6, signal:'BUY',  conf:75, reason:'Best-in-class retail franchise. Wealth fees recovering. Credit costs stable.', cat:'finance',sector:'Banks',     risk:'low',    momentum:66, sentiment:70 },
-      { ticker:'600276', name:'Jiangsu Hengrui Medicine',price:42.20, change: 1.4, signal:'BUY',  conf:82, reason:'Innovative drug portfolio expanding. International licensing deals accelerating.',cat:'health', sector:'Health Care',risk:'medium', momentum:74, sentiment:78 },
-      { ticker:'000858', name:'Wuliangye',              price: 138.60,change:-0.4, signal:'HOLD', conf:62, reason:'Mid-premium baijiu volume soft. Pricing discipline holding. Dividend yield 4%+.', cat:'consumer',sector:'Consumer', risk:'medium', momentum:52, sentiment:58 },
-      { ticker:'601166', name:'Industrial Bank',        price: 18.60, change: 0.9, signal:'BUY',  conf:74, reason:'Smaller-bank consolidation beneficiary. NIM stable. Treasury operations strong.',cat:'finance',sector:'Banks',     risk:'medium', momentum:65, sentiment:68 },
-      { ticker:'601988', name:'Bank of China',          price:  4.84, change: 0.4, signal:'HOLD', conf:66, reason:'Cross-border franchise unique. Dividend yield 7%+. NIM compression bottoming.', cat:'finance', sector:'Banks',     risk:'low',    momentum:58, sentiment:62 },
-      { ticker:'601628', name:'China Life Insurance',   price: 38.40, change: 0.7, signal:'HOLD', conf:64, reason:'NBV recovering off low base. Investment yield headwind. Capital flexible.',     cat:'finance', sector:'Insurance', risk:'medium', momentum:54, sentiment:60 },
-      { ticker:'600030', name:'CITIC Securities',       price: 24.80, change: 1.8, signal:'BUY',  conf:76, reason:'Largest broker, fee income recovering. Margin financing trending up.',         cat:'finance', sector:'Financials',risk:'medium', momentum:70, sentiment:73 }
+      { ticker:'600519', name:'Kweichow Moutai',        price: 1306, change: -1.6, signal:'HOLD', conf:64, reason:'Premium baijiu pricing power. Inventory destocking complete. Margins steady.', cat:'consumer',sector:'Consumer',  risk:'low',    momentum:56, sentiment:60 },
+      { ticker:'601398', name:'ICBC',                   price: 7.52, change: -1.8, signal:'BUY',  conf:78, reason:'NIM trough behind. Asset quality stable. Dividend yield 6.5%+.',             cat:'finance', sector:'Banks',     risk:'low',    momentum:68, sentiment:72 },
+      { ticker:'601318', name:'Ping An Insurance',      price: 54.02, change: 0.2, signal:'BUY',  conf:80, reason:'Life new business value recovering. P&C strong. Property exposure manageable.', cat:'finance',sector:'Insurance', risk:'medium', momentum:72, sentiment:76 },
+      { ticker:'600036', name:'China Merchants Bank',   price: 38.94, change: -0.9, signal:'BUY',  conf:75, reason:'Best-in-class retail franchise. Wealth fees recovering. Credit costs stable.', cat:'finance',sector:'Banks',     risk:'low',    momentum:66, sentiment:70 },
+      { ticker:'600276', name:'Jiangsu Hengrui Medicine',price: 53.54, change: 0.2, signal:'BUY',  conf:82, reason:'Innovative drug portfolio expanding. International licensing deals accelerating.',cat:'health', sector:'Health Care',risk:'medium', momentum:74, sentiment:78 },
+      { ticker:'000858', name:'Wuliangye',              price: 75.50,change: -1.8, signal:'HOLD', conf:62, reason:'Mid-premium baijiu volume soft. Pricing discipline holding. Dividend yield 4%+.', cat:'consumer',sector:'Consumer', risk:'medium', momentum:52, sentiment:58 },
+      { ticker:'601166', name:'Industrial Bank',        price: 18.36, change: -1.1, signal:'BUY',  conf:74, reason:'Smaller-bank consolidation beneficiary. NIM stable. Treasury operations strong.',cat:'finance',sector:'Banks',     risk:'medium', momentum:65, sentiment:68 },
+      { ticker:'601988', name:'Bank of China',          price: 5.73, change: -1.5, signal:'HOLD', conf:66, reason:'Cross-border franchise unique. Dividend yield 7%+. NIM compression bottoming.', cat:'finance', sector:'Banks',     risk:'low',    momentum:58, sentiment:62 },
+      { ticker:'601628', name:'China Life Insurance',   price: 38.05, change: 1.0, signal:'HOLD', conf:64, reason:'NBV recovering off low base. Investment yield headwind. Capital flexible.',     cat:'finance', sector:'Insurance', risk:'medium', momentum:54, sentiment:60 },
+      { ticker:'600030', name:'CITIC Securities',       price: 28.18, change: 0.6, signal:'BUY',  conf:76, reason:'Largest broker, fee income recovering. Margin financing trending up.',         cat:'finance', sector:'Financials',risk:'medium', momentum:70, sentiment:73 }
     ],
     HK: [
-      { ticker:'00700', name:'Tencent Holdings',     price: 412.40, change: 2.4, signal:'BUY',  conf:88, reason:'Games revenue re-accelerating. Ad business recovering. AI capex disciplined.', cat:'tech',    sector:'Tech',         risk:'medium', momentum:84, sentiment:86 },
-      { ticker:'00941', name:'China Mobile',         price:  78.20, change: 0.4, signal:'HOLD', conf:66, reason:'5G monetization gradual. Dividend yield 7%+. Capex moderating.',              cat:'comm',    sector:'Telecom',      risk:'low',    momentum:58, sentiment:62 },
-      { ticker:'01299', name:'AIA Group',            price:  74.20, change: 1.6, signal:'BUY',  conf:82, reason:'Pan-Asian life franchise. New business value compounding. Capital strong.',     cat:'finance', sector:'Insurance',    risk:'low',    momentum:74, sentiment:78 },
-      { ticker:'03690', name:'Meituan',              price: 184.40, change: 3.2, signal:'BUY',  conf:84, reason:'Local services dominance. Instashopping scaling. Margins recovering.',         cat:'consumer',sector:'Consumer',     risk:'medium', momentum:86, sentiment:82 },
-      { ticker:'00939', name:'CCB',                  price:   6.80, change: 0.6, signal:'BUY',  conf:78, reason:'Stable NIM. Asset quality controlled. Dividend yield 7%+.',                    cat:'finance', sector:'Banks',        risk:'low',    momentum:68, sentiment:72 },
-      { ticker:'01024', name:'Kuaishou Technology',  price:  48.40, change: 2.1, signal:'BUY',  conf:80, reason:'Live commerce scaling. International expansion steady. Margins inflecting.',   cat:'tech',    sector:'Tech',         risk:'high',   momentum:80, sentiment:76 },
-      { ticker:'02318', name:'Ping An (HK)',         price:  42.40, change: 1.2, signal:'BUY',  conf:78, reason:'Same franchise as A-share. Capital flexibility. Property exposure manageable.', cat:'finance',sector:'Insurance',    risk:'medium', momentum:72, sentiment:74 },
-      { ticker:'00388', name:'HKEX',                 price: 248.40, change: 0.8, signal:'HOLD', conf:64, reason:'Trading volumes off lows. New listings pipeline rebuilding. China access franchise.',cat:'finance',sector:'Financials',risk:'medium', momentum:60, sentiment:64 },
-      { ticker:'00005', name:'HSBC (HK)',            price:  66.20, change: 0.9, signal:'BUY',  conf:80, reason:'Same group as London. Asia wealth scaling. Buybacks announced.',                cat:'finance', sector:'Banks',        risk:'low',    momentum:72, sentiment:76 },
-      { ticker:'00388', name:'BYD Company',          price: 234.40, change:-1.2, signal:'HOLD', conf:68, reason:'EV pricing pressure. Export momentum strong. Vertical integration advantage.',  cat:'auto',    sector:'Auto',         risk:'high',   momentum:50, sentiment:54 }
+      { ticker:'00700', name:'Tencent Holdings',     price: 492.2, change: 0.9, signal:'BUY',  conf:88, reason:'Games revenue re-accelerating. Ad business recovering. AI capex disciplined.', cat:'tech',    sector:'Tech',         risk:'medium', momentum:84, sentiment:86 },
+      { ticker:'00941', name:'China Mobile',         price: 82.70, change: 0.2, signal:'HOLD', conf:66, reason:'5G monetization gradual. Dividend yield 7%+. Capex moderating.',              cat:'comm',    sector:'Telecom',      risk:'low',    momentum:58, sentiment:62 },
+      { ticker:'01299', name:'AIA Group',            price: 77.75, change: -0.4, signal:'BUY',  conf:82, reason:'Pan-Asian life franchise. New business value compounding. Capital strong.',     cat:'finance', sector:'Insurance',    risk:'low',    momentum:74, sentiment:78 },
+      { ticker:'03690', name:'Meituan',              price: 93.05, change: 0.4, signal:'BUY',  conf:84, reason:'Local services dominance. Instashopping scaling. Margins recovering.',         cat:'consumer',sector:'Consumer',     risk:'medium', momentum:86, sentiment:82 },
+      { ticker:'00939', name:'CCB',                  price: 8.80, change: -1.0, signal:'BUY',  conf:78, reason:'Stable NIM. Asset quality controlled. Dividend yield 7%+.',                    cat:'finance', sector:'Banks',        risk:'low',    momentum:68, sentiment:72 },
+      { ticker:'01024', name:'Kuaishou Technology',  price: 45.48, change: -0.1, signal:'BUY',  conf:80, reason:'Live commerce scaling. International expansion steady. Margins inflecting.',   cat:'tech',    sector:'Tech',         risk:'high',   momentum:80, sentiment:76 },
+      { ticker:'02318', name:'Ping An (HK)',         price: 58.00, change: 0.3, signal:'BUY',  conf:78, reason:'Same franchise as A-share. Capital flexibility. Property exposure manageable.', cat:'finance',sector:'Insurance',    risk:'medium', momentum:72, sentiment:74 },
+      { ticker:'00388', name:'HKEX',                 price: 414.6, change: 1.6, signal:'HOLD', conf:64, reason:'Trading volumes off lows. New listings pipeline rebuilding. China access franchise.',cat:'finance',sector:'Financials',risk:'medium', momentum:60, sentiment:64 },
+      { ticker:'00005', name:'HSBC (HK)',            price: 162.1, change: -2.6, signal:'BUY',  conf:80, reason:'Same group as London. Asia wealth scaling. Buybacks announced.',                cat:'finance', sector:'Banks',        risk:'low',    momentum:72, sentiment:76 },
+      { ticker:'01211', name:'BYD Company',          price: 93.80, change: 0.4, signal:'HOLD', conf:68, reason:'EV pricing pressure. Export momentum strong. Vertical integration advantage.',  cat:'auto',    sector:'Auto',         risk:'high',   momentum:50, sentiment:54 }
     ],
     SG: [
-      { ticker:'D05', name:'DBS Group',             price: 42.80, change: 0.6, signal:'BUY',  conf:82, reason:'Wealth management compounding. NIM holding. Best-in-class ROE in ASEAN.',          cat:'finance', sector:'Banks',    risk:'low',    momentum:74, sentiment:78 },
-      { ticker:'O39', name:'OCBC',                  price: 14.84, change: 0.4, signal:'BUY',  conf:80, reason:'Greater Bay franchise unique. Insurance + wealth diversification.',             cat:'finance', sector:'Banks',    risk:'low',    momentum:70, sentiment:74 },
-      { ticker:'U11', name:'United Overseas Bank',  price: 31.40, change: 0.3, signal:'HOLD', conf:68, reason:'Steady ASEAN franchise. Cost-income improving. Buybacks selective.',             cat:'finance', sector:'Banks',    risk:'low',    momentum:62, sentiment:66 },
-      { ticker:'Z74', name:'Singtel',               price:  3.18, change: 0.7, signal:'BUY',  conf:76, reason:'NCS turnaround scaling. Regional associates contributing. Tower monetization.',  cat:'comm',    sector:'Telecom',  risk:'low',    momentum:68, sentiment:72 },
-      { ticker:'C09', name:'City Developments',     price:  5.20, change:-0.4, signal:'HOLD', conf:62, reason:'Hospitality recovering. Residential launches measured. Discount to NAV wide.',  cat:'realty',  sector:'Real Estate',risk:'medium',momentum:54, sentiment:58 },
-      { ticker:'BS6', name:'YZJ Shipbuilding',      price:  2.84, change: 2.1, signal:'BUY',  conf:84, reason:'Order book strongest in 12 years. New build prices firming. Margins expanding.', cat:'industrial',sector:'Industrials',risk:'medium',momentum:84, sentiment:80 },
-      { ticker:'C6L', name:'Singapore Airlines',    price:  6.84, change: 0.4, signal:'HOLD', conf:64, reason:'Cargo softening. Pax yields normalizing. Capacity discipline maintained.',     cat:'transport',sector:'Transport',risk:'medium', momentum:58, sentiment:62 },
-      { ticker:'S58', name:'SATS Ltd',              price:  2.84, change: 1.1, signal:'BUY',  conf:74, reason:'Ground handling demand strong. WFS integration on track. Cost saves accreting.',cat:'transport',sector:'Industrials',risk:'medium',momentum:70, sentiment:72 },
-      { ticker:'Y92', name:'Thai Beverage',         price:  0.54, change:-0.6, signal:'SELL', conf:70, reason:'Thai consumer subdued. Tourism recovery slow. Capital structure fine.',         cat:'consumer',sector:'Consumer', risk:'medium', momentum:42, sentiment:46 },
-      { ticker:'S68', name:'SGX',                   price: 10.84, change: 0.3, signal:'HOLD', conf:66, reason:'Derivatives volumes resilient. Securities trading soft. New product launches steady.',cat:'finance',sector:'Financials',risk:'low', momentum:58, sentiment:62 }
+      { ticker:'D05', name:'DBS Group',             price: 73.55, change: -1.3, signal:'BUY',  conf:82, reason:'Wealth management compounding. NIM holding. Best-in-class ROE in ASEAN.',          cat:'finance', sector:'Banks',    risk:'low',    momentum:74, sentiment:78 },
+      { ticker:'O39', name:'OCBC',                  price: 28.63, change: -0.3, signal:'BUY',  conf:80, reason:'Greater Bay franchise unique. Insurance + wealth diversification.',             cat:'finance', sector:'Banks',    risk:'low',    momentum:70, sentiment:74 },
+      { ticker:'U11', name:'United Overseas Bank',  price: 43.06, change: -0.4, signal:'HOLD', conf:68, reason:'Steady ASEAN franchise. Cost-income improving. Buybacks selective.',             cat:'finance', sector:'Banks',    risk:'low',    momentum:62, sentiment:66 },
+      { ticker:'Z74', name:'Singtel',               price: 4.35, change: -1.8, signal:'BUY',  conf:76, reason:'NCS turnaround scaling. Regional associates contributing. Tower monetization.',  cat:'comm',    sector:'Telecom',  risk:'low',    momentum:68, sentiment:72 },
+      { ticker:'C09', name:'City Developments',     price: 7.85, change: -0.4, signal:'HOLD', conf:62, reason:'Hospitality recovering. Residential launches measured. Discount to NAV wide.',  cat:'realty',  sector:'Real Estate',risk:'medium',momentum:54, sentiment:58 },
+      { ticker:'BS6', name:'YZJ Shipbuilding',      price: 3.96, change: 0.0, signal:'BUY',  conf:84, reason:'Order book strongest in 12 years. New build prices firming. Margins expanding.', cat:'industrial',sector:'Industrials',risk:'medium',momentum:84, sentiment:80 },
+      { ticker:'C6L', name:'Singapore Airlines',    price: 7.69, change: 1.6, signal:'HOLD', conf:64, reason:'Cargo softening. Pax yields normalizing. Capacity discipline maintained.',     cat:'transport',sector:'Transport',risk:'medium', momentum:58, sentiment:62 },
+      { ticker:'S58', name:'SATS Ltd',              price: 4.83, change: 2.8, signal:'BUY',  conf:74, reason:'Ground handling demand strong. WFS integration on track. Cost saves accreting.',cat:'transport',sector:'Industrials',risk:'medium',momentum:70, sentiment:72 },
+      { ticker:'Y92', name:'Thai Beverage',         price: 0.46, change: 0.0, signal:'SELL', conf:70, reason:'Thai consumer subdued. Tourism recovery slow. Capital structure fine.',         cat:'consumer',sector:'Consumer', risk:'medium', momentum:42, sentiment:46 },
+      { ticker:'S68', name:'SGX',                   price: 24.01, change: -0.5, signal:'HOLD', conf:66, reason:'Derivatives volumes resilient. Securities trading soft. New product launches steady.',cat:'finance',sector:'Financials',risk:'low', momentum:58, sentiment:62 }
     ],
     AU: [
-      { ticker:'BHP', name:'BHP Group',                price: 41.20, change: 1.4, signal:'BUY',  conf:82, reason:'Iron ore restocking from China. Copper expansion on track. Capital returns disciplined.', cat:'materials',sector:'Materials',risk:'medium',momentum:78, sentiment:80 },
-      { ticker:'CBA', name:'Commonwealth Bank',        price: 156.40,change: 0.6, signal:'BUY',  conf:78, reason:'NIM peak in but margins resilient. Mortgage growth solid. Cost discipline tight.',     cat:'finance', sector:'Banks',    risk:'low',    momentum:70, sentiment:74 },
-      { ticker:'CSL', name:'CSL Limited',              price: 286.40,change: 1.2, signal:'BUY',  conf:84, reason:'Plasma collections accelerating. Behring + Vifor synergies playing out.',              cat:'health',  sector:'Health Care',risk:'low', momentum:76, sentiment:80 },
-      { ticker:'NAB', name:'National Australia Bank',  price: 38.40, change: 0.4, signal:'HOLD', conf:68, reason:'Business banking franchise strong. Credit costs at cycle lows. Capital flexible.',     cat:'finance', sector:'Banks',    risk:'low',    momentum:62, sentiment:66 },
-      { ticker:'WBC', name:'Westpac',                  price: 32.20, change: 0.3, signal:'HOLD', conf:64, reason:'Regulatory remediation behind. Cost-income tracking 50%. Buybacks resuming.',         cat:'finance', sector:'Banks',    risk:'medium', momentum:58, sentiment:62 },
-      { ticker:'ANZ', name:'ANZ Banking',              price: 31.40, change: 0.5, signal:'HOLD', conf:66, reason:'Suncorp acquisition integrating. NIM trough behind. ASEAN franchise rebuilding.',     cat:'finance', sector:'Banks',    risk:'medium', momentum:60, sentiment:64 },
-      { ticker:'MQG', name:'Macquarie Group',          price: 232.40,change: 1.6, signal:'BUY',  conf:80, reason:'Asset management AUM compounding. CGM cycle improving. Capital optionality high.',   cat:'finance', sector:'Financials',risk:'medium', momentum:74, sentiment:78 },
-      { ticker:'WES', name:'Wesfarmers',               price: 78.20, change: 0.8, signal:'BUY',  conf:76, reason:'Bunnings dominance. Kmart on share gains. Capital allocation disciplined.',          cat:'consumer',sector:'Consumer', risk:'low',    momentum:70, sentiment:74 },
-      { ticker:'TLS', name:'Telstra',                  price:  3.92, change: 0.2, signal:'HOLD', conf:62, reason:'Mobile ARPU rising. Infrastructure separation playing out. Dividend covered.',       cat:'comm',    sector:'Telecom',  risk:'low',    momentum:54, sentiment:60 },
-      { ticker:'WOW', name:'Woolworths',               price: 32.40, change:-0.4, signal:'HOLD', conf:64, reason:'Volume share holding. Online margins improving. Inflation pass-through tighter.',    cat:'consumer',sector:'Consumer', risk:'low',    momentum:52, sentiment:58 }
+      { ticker:'BHP', name:'BHP Group',                price: 62.54, change: 3.3, signal:'BUY',  conf:82, reason:'Iron ore restocking from China. Copper expansion on track. Capital returns disciplined.', cat:'materials',sector:'Materials',risk:'medium',momentum:78, sentiment:80 },
+      { ticker:'CBA', name:'Commonwealth Bank',        price: 178.2,change: -1.4, signal:'BUY',  conf:78, reason:'NIM peak in but margins resilient. Mortgage growth solid. Cost discipline tight.',     cat:'finance', sector:'Banks',    risk:'low',    momentum:70, sentiment:74 },
+      { ticker:'CSL', name:'CSL Limited',              price: 130.7,change: 1.4, signal:'BUY',  conf:84, reason:'Plasma collections accelerating. Behring + Vifor synergies playing out.',              cat:'health',  sector:'Health Care',risk:'low', momentum:76, sentiment:80 },
+      { ticker:'NAB', name:'National Australia Bank',  price: 42.53, change: -0.7, signal:'HOLD', conf:68, reason:'Business banking franchise strong. Credit costs at cycle lows. Capital flexible.',     cat:'finance', sector:'Banks',    risk:'low',    momentum:62, sentiment:66 },
+      { ticker:'WBC', name:'Westpac',                  price: 38.53, change: -0.7, signal:'HOLD', conf:64, reason:'Regulatory remediation behind. Cost-income tracking 50%. Buybacks resuming.',         cat:'finance', sector:'Banks',    risk:'medium', momentum:58, sentiment:62 },
+      { ticker:'ANZ', name:'ANZ Banking',              price: 38.01, change: -0.4, signal:'HOLD', conf:66, reason:'Suncorp acquisition integrating. NIM trough behind. ASEAN franchise rebuilding.',     cat:'finance', sector:'Banks',    risk:'medium', momentum:60, sentiment:64 },
+      { ticker:'MQG', name:'Macquarie Group',          price: 267.1,change: 1.5, signal:'BUY',  conf:80, reason:'Asset management AUM compounding. CGM cycle improving. Capital optionality high.',   cat:'finance', sector:'Financials',risk:'medium', momentum:74, sentiment:78 },
+      { ticker:'WES', name:'Wesfarmers',               price: 91.28, change: 0.3, signal:'BUY',  conf:76, reason:'Bunnings dominance. Kmart on share gains. Capital allocation disciplined.',          cat:'consumer',sector:'Consumer', risk:'low',    momentum:70, sentiment:74 },
+      { ticker:'TLS', name:'Telstra',                  price: 5.00, change: -1.6, signal:'HOLD', conf:62, reason:'Mobile ARPU rising. Infrastructure separation playing out. Dividend covered.',       cat:'comm',    sector:'Telecom',  risk:'low',    momentum:54, sentiment:60 },
+      { ticker:'WOW', name:'Woolworths',               price: 40.22, change: 0.0, signal:'HOLD', conf:64, reason:'Volume share holding. Online margins improving. Inflation pass-through tighter.',    cat:'consumer',sector:'Consumer', risk:'low',    momentum:52, sentiment:58 }
     ],
     CA: [
-      { ticker:'RY',   name:'Royal Bank of Canada',      price: 168.40,change: 0.8, signal:'BUY',  conf:82, reason:'Wealth management compounding. NIM holding. Best-in-class capital ratios.',          cat:'finance', sector:'Banks',    risk:'low',    momentum:74, sentiment:78 },
-      { ticker:'TD',   name:'Toronto-Dominion Bank',     price:  82.40,change:-0.4, signal:'HOLD', conf:66, reason:'AML overhang in US easing. PCL elevated. Dividend safe.',                            cat:'finance', sector:'Banks',    risk:'medium', momentum:58, sentiment:62 },
-      { ticker:'ENB',  name:'Enbridge',                  price:  54.20,change: 0.6, signal:'BUY',  conf:78, reason:'US gas utility acquisitions accreting. Mainline contracts secured. Yield 7.5%.',     cat:'energy',  sector:'Energy',   risk:'low',    momentum:70, sentiment:74 },
-      { ticker:'CNR',  name:'Canadian National Railway', price: 168.40,change: 0.4, signal:'HOLD', conf:64, reason:'Volume growth soft. Pricing power intact. Operating ratio improving.',              cat:'industrial',sector:'Industrials',risk:'low',momentum:58, sentiment:62 },
-      { ticker:'BNS',  name:'Bank of Nova Scotia',       price:  76.40,change: 0.5, signal:'HOLD', conf:66, reason:'Restructuring narrative in. Pacific Alliance exposure mixed. Capital adequate.',    cat:'finance', sector:'Banks',    risk:'medium', momentum:60, sentiment:62 },
-      { ticker:'CP',   name:'Canadian Pacific Kansas City',price: 110.40,change: 0.7, signal:'BUY',  conf:78, reason:'KCS integration ahead of plan. Mexico-US rail unique. Pricing strong.',           cat:'industrial',sector:'Industrials',risk:'medium',momentum:74, sentiment:76 },
-      { ticker:'SHOP', name:'Shopify',                   price: 142.40,change: 2.1, signal:'BUY',  conf:84, reason:'GMV reacceleration. Merchant Solutions monetization. Operating leverage expanding.',cat:'tech',    sector:'Technology',risk:'medium',momentum:86, sentiment:82 },
-      { ticker:'BAM',  name:'Brookfield Asset Mgmt',     price:  72.40,change: 1.2, signal:'BUY',  conf:80, reason:'Fee-related earnings compounding. Insurance scaling. Capital return policy strong.', cat:'finance',sector:'Financials',risk:'low', momentum:74, sentiment:78 },
-      { ticker:'BCE',  name:'BCE Inc',                   price:  42.40,change:-0.6, signal:'SELL', conf:68, reason:'Dividend coverage thin. Wireless competition intense. Fiber capex elevated.',       cat:'comm',    sector:'Telecom',  risk:'medium', momentum:38, sentiment:44 },
-      { ticker:'TRP',  name:'TC Energy',                 price:  60.40,change: 0.3, signal:'HOLD', conf:62, reason:'Coastal GasLink behind. Liquids spin reduces leverage. Yield 7%+.',                  cat:'energy',  sector:'Energy',   risk:'medium', momentum:56, sentiment:60 }
+      { ticker:'RY',   name:'Royal Bank of Canada',      price: 295.9,change: 0.8, signal:'BUY',  conf:82, reason:'Wealth management compounding. NIM holding. Best-in-class capital ratios.',          cat:'finance', sector:'Banks',    risk:'low',    momentum:74, sentiment:78 },
+      { ticker:'TD',   name:'Toronto-Dominion Bank',     price: 169.9,change: 1.2, signal:'HOLD', conf:66, reason:'AML overhang in US easing. PCL elevated. Dividend safe.',                            cat:'finance', sector:'Banks',    risk:'medium', momentum:58, sentiment:62 },
+      { ticker:'ENB',  name:'Enbridge',                  price: 73.07,change: -2.7, signal:'BUY',  conf:78, reason:'US gas utility acquisitions accreting. Mainline contracts secured. Yield 7.5%.',     cat:'energy',  sector:'Energy',   risk:'low',    momentum:70, sentiment:74 },
+      { ticker:'CNR',  name:'Canadian National Railway', price: 178.4,change: -0.4, signal:'HOLD', conf:64, reason:'Volume growth soft. Pricing power intact. Operating ratio improving.',              cat:'industrial',sector:'Industrials',risk:'low',momentum:58, sentiment:62 },
+      { ticker:'BNS',  name:'Bank of Nova Scotia',       price: 123.8,change: 0.9, signal:'HOLD', conf:66, reason:'Restructuring narrative in. Pacific Alliance exposure mixed. Capital adequate.',    cat:'finance', sector:'Banks',    risk:'medium', momentum:60, sentiment:62 },
+      { ticker:'CP',   name:'Canadian Pacific Kansas City',price: 128.3,change: 0.7, signal:'BUY',  conf:78, reason:'KCS integration ahead of plan. Mexico-US rail unique. Pricing strong.',           cat:'industrial',sector:'Industrials',risk:'medium',momentum:74, sentiment:76 },
+      { ticker:'SHOP', name:'Shopify',                   price: 201.5,change: 16.2, signal:'BUY',  conf:84, reason:'GMV reacceleration. Merchant Solutions monetization. Operating leverage expanding.',cat:'tech',    sector:'Technology',risk:'medium',momentum:86, sentiment:82 },
+      { ticker:'BAM',  name:'Brookfield Asset Mgmt',     price: 72.94,change: -0.3, signal:'BUY',  conf:80, reason:'Fee-related earnings compounding. Insurance scaling. Capital return policy strong.', cat:'finance',sector:'Financials',risk:'low', momentum:74, sentiment:78 },
+      { ticker:'BCE',  name:'BCE Inc',                   price: 30.63,change: -1.0, signal:'SELL', conf:68, reason:'Dividend coverage thin. Wireless competition intense. Fiber capex elevated.',       cat:'comm',    sector:'Telecom',  risk:'medium', momentum:38, sentiment:44 },
+      { ticker:'TRP',  name:'TC Energy',                 price: 90.03,change: -2.1, signal:'HOLD', conf:62, reason:'Coastal GasLink behind. Liquids spin reduces leverage. Yield 7%+.',                  cat:'energy',  sector:'Energy',   risk:'medium', momentum:56, sentiment:60 }
     ]
   };
 
@@ -28867,10 +28897,36 @@ async function qzCoachReview() {
   // const STOCKS is bound, but the array contents are mutable)
   // ────────────────────────────────────────────────────────────────────
   function getStocksFor(code) {
+    if (code === 'GB') code = 'UK'; // country selector uses GB; this table keys Britain as UK
     return COUNTRY_STOCKS[code] || COUNTRY_STOCKS.US;
   }
 
+  // ────────────────────────────────────────────────────────────────────
+  // Yahoo exchange suffixes — lets the 60s live-quote refresher resolve
+  // regional display tickers (RELIANCE → RELIANCE.NS) to real symbols
+  // ────────────────────────────────────────────────────────────────────
+  var YSUFFIX = { US:'', IN:'.NS', UK:'.L', GB:'.L', JP:'.T', DE:'.DE', AU:'.AX', CA:'.TO', SG:'.SI', BR:'.SA', ZA:'.JO' };
+  function providerSym(code, t) {
+    if (code === 'CN') return /^6/.test(t) ? t + '.SS' : t + '.SZ';
+    if (code === 'HK') return ('000' + t.replace(/^0+/, '')).slice(-4) + '.HK';
+    var suf = YSUFFIX[code];
+    return suf == null ? null : (suf ? t + suf : t);
+  }
+  function installTickerMap(code, list) {
+    var map = window._QZ_TICKER_MAP, unmap = window._QZ_TICKER_UNMAP;
+    if (!map || !unmap) return;
+    list.forEach(function(item){
+      var ps = providerSym(code, item.ticker);
+      // clear any stale reverse entry from a previously selected country
+      Object.keys(unmap).forEach(function(k){ if (unmap[k] === item.ticker) delete unmap[k]; });
+      if (!ps || ps === item.ticker) { delete map[item.ticker]; return; }
+      map[item.ticker] = ps;
+      unmap[ps] = item.ticker;
+    });
+  }
+
   function swapStocks(code) {
+    if (code === 'GB') code = 'UK';
     var list = getStocksFor(code);
     if (!list || !list.length) return;
     // Mutate the existing array
@@ -28881,6 +28937,7 @@ async function qzCoachReview() {
     list.forEach(function(item){ s.push(Object.assign({}, item)); });
     // Also keep window.STOCKS pointing to the same array (already does)
     window.STOCKS = s;
+    installTickerMap(code, list);
   }
 
   // ────────────────────────────────────────────────────────────────────
@@ -28955,6 +29012,9 @@ async function qzCoachReview() {
     swapStocks(code);
     refreshAllModules();
     paintMarketTag();
+    // Kick the live-quote refresher so the swapped tickers get real prices now,
+    // not at the next 60s tick (it re-renders the visible page when quotes land)
+    try { if (typeof window.qzRefreshMarketData === 'function') window.qzRefreshMarketData(); } catch(_){}
   }
 
   function boot() {
