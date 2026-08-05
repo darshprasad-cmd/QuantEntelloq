@@ -5100,6 +5100,8 @@ const regionState = {
   selectedCountry: COUNTRIES[0], // default US
   marketFilter: 'all'
 };
+// Top-level const doesn't attach to window — QEv13 modules read window.regionState
+window.regionState = regionState;
 
 function getLocalTimeForOffset(utcOffset) {
   const now = new Date();
@@ -5488,7 +5490,21 @@ function showRegionToast(country) {
   setTimeout(() => { toast.style.opacity = '0'; }, 3000);
 }
 
+// QEv13 callers may pass no country, or a code-only context (QECountryContext
+// entries have top_stocks but no stocks array) — resolve to a full COUNTRIES
+// entry, defaulting to US when the code has no entry.
+function resolveRegionCountry(country) {
+  if (country && Array.isArray(country.stocks)) return country;
+  let code = country && country.code;
+  if (!code && window.QECountryContext && window.QECountryContext.get) {
+    try { code = window.QECountryContext.get().code; } catch(_) {}
+  }
+  if (!code && regionState.selectedCountry) code = regionState.selectedCountry.code;
+  return COUNTRIES.find(c => c.code === code) || COUNTRIES[0];
+}
+
 function renderRegionalSignals(country) {
+  country = resolveRegionCountry(country);
   const grid = document.getElementById('all-signals-grid');
   if(!grid) return;
   const stocks = country.stocks;
@@ -5506,6 +5522,7 @@ function renderRegionalSignals(country) {
 }
 
 function renderRegionalScanner(country) {
+  country = resolveRegionCountry(country);
   const grid = document.getElementById('scanner-grid');
   if(!grid) return;
   grid.innerHTML = country.stocks.map(s => {
@@ -5528,6 +5545,7 @@ function renderRegionalScanner(country) {
 }
 
 function updateDashboardRegion(country) {
+  country = resolveRegionCountry(country);
   // Update top opportunity on dashboard
   const topBuy = country.stocks.filter(s => s.sig === 'BUY').sort((a,b) => b.conf - a.conf)[0];
   const topOpp = document.querySelector('#page-dashboard .metric-card:last-child .metric-value');
