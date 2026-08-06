@@ -16177,6 +16177,45 @@ html, body { background: #FFFFFF !important; }
   #landing .qzl-hero-mark { height: 84px; }
   #landing .qzl-cta-mark { height: 84px; }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   32 · GUEST CHROME QUARANTINE — the marketing landing shows ONLY the
+   landing. App chrome (market clock, copilot dock, HUD toggle,
+   shortcuts, orb dismiss, ticker tape) and legacy decorative canvas
+   layers must never paint for logged-out visitors: the market clock
+   was overlapping the auth card, and the old holographic trading
+   canvases were scattering ghost glyphs over the light hero.
+   ══════════════════════════════════════════════════════════════════ */
+body:not(.qe-in-app) #qz-market-clock,
+body:not(.qe-in-app) #qz-copilot-dock,
+body:not(.qe-in-app) #hud-toggle-btn,
+body:not(.qe-in-app) #qe-shortcuts,
+body:not(.qe-in-app) #qe-orb-dismiss,
+body:not(.qe-in-app) #qe-watermark,
+body:not(.qe-in-app) #qe-tape-track,
+body:not(.qe-in-app) #qe-trading-bg {
+  display: none !important;
+}
+/* Legacy dark-theme landing canvas overlay — retired outright. */
+#qe-on-landing { display: none !important; }
+
+/* ══════════════════════════════════════════════════════════════════
+   33 · OVERLAY DISMISSAL FIX — section 22 pins `opacity:1 !important`
+   on the tour + search overlays for text legibility, but BOTH hide by
+   fading out via class removal — so a finished tour stayed painted on
+   screen forever and the search overlay could never visually close.
+   These higher-specificity rules restore the hidden state.
+   ══════════════════════════════════════════════════════════════════ */
+#qe-tour-overlay:not(.show) {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  display: none !important;
+}
+#qz-search-overlay:not(.open) {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  display: none !important;
+}
 </style>
 <script defer src="js/app.min.js?v=20260805-28"></script>
 </body>
