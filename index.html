@@ -6698,6 +6698,9 @@ window._QZ_GOOGLE_CLIENT_ID = '939725315910-2ght687f6733pt42nepbktfqd8ah6egk.app
       <a href="#lp3-method">How we operate</a>
       <a href="#lp3-about">About</a>
       <a href="https://entelloq.com">Entelloq Networks</a>
+      <a href="https://www.linkedin.com/in/entelloq-networks" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://x.com/Entelloqnetwork" target="_blank" rel="noopener">X</a>
+      <a href="https://www.instagram.com/entelloq/" target="_blank" rel="noopener">Instagram</a>
     </div>
   </div>
 </footer>
@@ -16412,5 +16415,160 @@ body:not(.qe-in-app) #qe-trading-bg {
 }
 </style>
 <script defer src="js/app.min.js?v=20260805-28"></script>
+<!-- ENTELLOQ-ECOSYSTEM-SWITCHER:START -->
+<!-- ============================================================
+     ENTELLOQ ECOSYSTEM SWITCHER  ·  shared across every Entelloq app
+     Self-contained: namespaced `eqx-`, its own resets, no host CSS or JS
+     dependencies. Set data-eqx-current on the launcher to mark this app.
+     ============================================================ -->
+<style>
+.eqx-fab,.eqx-panel,.eqx-panel *{box-sizing:border-box}
+.eqx-fab{
+  position:fixed;left:18px;bottom:18px;z-index:2400;
+  display:flex;align-items:center;gap:9px;
+  margin:0;padding:9px 15px 9px 11px;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  font-size:13px;font-weight:600;line-height:1;letter-spacing:.01em;
+  color:#EEF0F4;background:rgba(14,16,21,.88);
+  border:1px solid rgba(255,255,255,.14);border-radius:999px;
+  box-shadow:0 2px 6px rgba(0,0,0,.28),0 14px 34px -14px rgba(0,0,0,.6);
+  cursor:pointer;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  transition:transform .22s cubic-bezier(.22,.9,.24,1),opacity .2s,visibility 0s;
+}
+.eqx-fab:hover{transform:translateY(-2px)}
+.eqx-fab:focus-visible{outline:2px solid #EEF0F4;outline-offset:2px}
+.eqx-fab.eqx-hide{opacity:0;visibility:hidden;pointer-events:none;transform:translateY(8px) scale(.95);transition:transform .22s,opacity .2s,visibility 0s .22s}
+.eqx-fab svg{width:16px;height:16px;display:block;flex:none}
+.eqx-panel{
+  position:fixed;left:18px;bottom:18px;z-index:2401;
+  width:320px;max-width:calc(100vw - 28px);
+  margin:0;padding:8px;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  color:#EEF0F4;background:rgba(12,14,19,.97);
+  border:1px solid rgba(255,255,255,.14);border-radius:16px;
+  box-shadow:0 3px 10px rgba(0,0,0,.34),0 26px 60px -22px rgba(0,0,0,.8);
+  -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transform:translateY(10px) scale(.98);transform-origin:bottom left;
+  transition:opacity .2s,transform .26s cubic-bezier(.22,.9,.24,1),visibility 0s .26s;
+}
+.eqx-panel.eqx-open{opacity:1;visibility:visible;pointer-events:auto;transform:none;transition:opacity .2s,transform .26s cubic-bezier(.22,.9,.24,1)}
+.eqx-head{display:flex;align-items:center;justify-content:space-between;padding:9px 10px 10px}
+.eqx-head b{font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#98A0AE}
+.eqx-x{width:26px;height:26px;padding:0;display:grid;place-items:center;background:none;border:0;border-radius:7px;color:#98A0AE;cursor:pointer}
+.eqx-x:hover{color:#EEF0F4;background:rgba(255,255,255,.08)}
+.eqx-x:focus-visible{outline:2px solid #EEF0F4;outline-offset:1px}
+.eqx-x svg{width:14px;height:14px;display:block}
+.eqx-item{
+  display:flex;align-items:center;gap:12px;width:100%;
+  margin:0;padding:10px;text-align:left;
+  background:none;border:1px solid transparent;border-radius:11px;
+  color:#EEF0F4;text-decoration:none;cursor:pointer;font:inherit;
+  transition:background .18s,border-color .18s,transform .18s
+}
+.eqx-item:hover{background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.1);transform:translateX(2px)}
+.eqx-item:focus-visible{outline:2px solid #EEF0F4;outline-offset:-2px}
+.eqx-ic{width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:10px;border:1px solid currentColor;background:rgba(255,255,255,.04)}
+.eqx-ic svg{width:17px;height:17px;display:block}
+.eqx-tx{flex:1;min-width:0}
+.eqx-tx b{display:block;font-size:13px;font-weight:600;line-height:1.3;color:#EEF0F4}
+.eqx-tx span{display:block;font-size:11px;line-height:1.45;color:#98A0AE;margin-top:1px}
+.eqx-here{flex:none;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#98A0AE;border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:3px 7px}
+.eqx-item[aria-current="page"]{background:rgba(255,255,255,.045)}
+.eqx-foot{padding:9px 11px 6px;border-top:1px solid rgba(255,255,255,.09);margin-top:6px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.eqx-foot a{font-size:11px;color:#98A0AE;text-decoration:none}
+.eqx-foot a:hover{color:#EEF0F4;text-decoration:underline}
+.eqx-soc{display:flex;gap:4px}
+.eqx-soc a{width:26px;height:26px;display:grid;place-items:center;border-radius:7px;color:#98A0AE}
+.eqx-soc a:hover{color:#EEF0F4;background:rgba(255,255,255,.08)}
+.eqx-soc svg{width:14px;height:14px;display:block}
+@media (max-width:560px){
+  .eqx-fab{left:12px;bottom:12px;padding:8px 13px 8px 10px;font-size:12px}
+  .eqx-panel{left:10px;right:10px;bottom:12px;width:auto}
+}
+@media print{.eqx-fab,.eqx-panel{display:none!important}}
+@media (prefers-reduced-motion:reduce){.eqx-fab,.eqx-panel,.eqx-item{transition-duration:.01ms!important}}
+</style>
+
+<button class="eqx-fab" id="eqx-fab" type="button" aria-expanded="false" aria-controls="eqx-panel" aria-label="Switch Entelloq app">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+    <circle cx="12" cy="12" r="9" opacity=".5"/><circle cx="12" cy="12" r="3.2" fill="currentColor" stroke="none"/>
+    <circle cx="12" cy="3" r="1.5" fill="currentColor" stroke="none"/><circle cx="20" cy="17" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="17" r="1.5" fill="currentColor" stroke="none"/>
+  </svg>Entelloq
+</button>
+
+<div class="eqx-panel" id="eqx-panel" role="dialog" aria-label="Entelloq ecosystem" tabindex="-1">
+  <div class="eqx-head">
+    <b>Entelloq Networks</b>
+    <button class="eqx-x" id="eqx-close" type="button" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div id="eqx-list"></div>
+  <div class="eqx-foot">
+    <a href="https://entelloq.com" target="_top">entelloq.com</a>
+    <span class="eqx-soc">
+      <a href="https://www.linkedin.com/in/entelloq-networks" target="_blank" rel="noopener" aria-label="Entelloq Networks on LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.4c0-1.29-.02-2.95-1.8-2.95-1.8 0-2.07 1.4-2.07 2.85V21H9z"/></svg></a>
+      <a href="https://x.com/Entelloqnetwork" target="_blank" rel="noopener" aria-label="Entelloq Networks on X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 3h3.2l-7 8 8.2 10h-6.4l-5-6.1-5.8 6.1H1.5l7.5-8.6L1.2 3h6.6l4.5 5.6zm-1.1 16h1.8L7.7 4.8H5.8z"/></svg></a>
+      <a href="https://www.instagram.com/entelloq/" target="_blank" rel="noopener" aria-label="Entelloq Networks on Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="3.8"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg></a>
+    </span>
+  </div>
+</div>
+
+<script>
+(function(){
+  var CUR = 'quant';
+  var G = {
+    network:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8.5" opacity=".55"/><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/><circle cx="12" cy="3.5" r="1.4" fill="currentColor" stroke="none"/><circle cx="19.5" cy="16.5" r="1.4" fill="currentColor" stroke="none"/><circle cx="4.5" cy="16.5" r="1.4" fill="currentColor" stroke="none"/></svg>',
+    quant:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 20.5h17"/><path d="M4.5 15.5 9 10l3.5 3 4-5.5 3 3.5"/></svg>',
+    physics:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="1.7" fill="currentColor" stroke="none"/><ellipse cx="12" cy="12" rx="9" ry="3.8"/><ellipse cx="12" cy="12" rx="9" ry="3.8" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.8" transform="rotate(120 12 12)"/></svg>',
+    biology:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8.5 3c0 4.5 7 4.5 7 9s-7 4.5-7 9"/><path d="M15.5 3c0 4.5-7 4.5-7 9s7 4.5 7 9"/><path d="M9 6.5h6M9 17.5h6M9.8 12h4.4"/></svg>'
+  };
+  var APPS = [
+    { id:'network', n:'Entelloq Networks', d:'The company and every product', u:'https://entelloq.com', c:'#93A3BC' },
+    { id:'quant',   n:'Quant Entelloq',    d:'Markets, trading and quantitative finance', u:'https://quant.entelloq.com', c:'#2DD4BF' },
+    { id:'physics', n:'Physics Entelloq',  d:'Simulations and physical intuition', u:'https://physics.entelloq.com', c:'#34D399' },
+    { id:'biology', n:'Biology Entelloq',  d:'The living world, made interactive', u:'https://biology.entelloq.com', c:'#A3E635' }
+  ];
+  var fab = document.getElementById('eqx-fab'),
+      panel = document.getElementById('eqx-panel'),
+      list = document.getElementById('eqx-list'),
+      closeBtn = document.getElementById('eqx-close');
+  if (!fab || !panel || !list) return;
+
+  list.innerHTML = APPS.map(function(a){
+    var here = a.id === CUR;
+    return '<a class="eqx-item" href="' + a.u + '" target="_top"' + (here ? ' aria-current="page"' : '') + '>' +
+             '<span class="eqx-ic" style="color:' + a.c + '">' + G[a.id] + '</span>' +
+             '<span class="eqx-tx"><b>' + a.n + '</b><span>' + a.d + '</span></span>' +
+             (here ? '<span class="eqx-here">You are here</span>' : '') +
+           '</a>';
+  }).join('');
+
+  function open(){
+    panel.classList.add('eqx-open');
+    fab.classList.add('eqx-hide');
+    fab.setAttribute('aria-expanded','true');
+    setTimeout(function(){ if (panel.classList.contains('eqx-open')) (panel.querySelector('.eqx-item') || panel).focus(); }, 60);
+  }
+  function close(){
+    panel.classList.remove('eqx-open');
+    fab.classList.remove('eqx-hide');
+    fab.setAttribute('aria-expanded','false');
+    fab.focus();
+  }
+  fab.addEventListener('click', open);
+  if (closeBtn) closeBtn.addEventListener('click', close);
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && panel.classList.contains('eqx-open')) close();
+  }, true);
+  document.addEventListener('click', function(e){
+    if (!panel.classList.contains('eqx-open')) return;
+    if (!panel.contains(e.target) && e.target !== fab && !fab.contains(e.target)) close();
+  });
+})();
+</script>
+
+<!-- ENTELLOQ-ECOSYSTEM-SWITCHER:END -->
 </body>
 </html>
