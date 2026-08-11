@@ -23937,6 +23937,7 @@ async function qzCoachReview() {
             preload="metadata"
             playsinline
             muted
+            poster="assets/onboarding_poster.jpg"
           >
             <source src="${VIDEO_PATH}" type="video/mp4">
           </video>
