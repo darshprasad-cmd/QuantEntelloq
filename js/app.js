@@ -27885,6 +27885,12 @@ async function qzCoachReview() {
       if (localStorage.getItem(TOUR_KEY) === '1') return;
     } catch(_){}
     if (_tourAutoShown) return;
+    // Day-one users get BOTH onboarding surfaces, and neither knew about
+    // the other: the welcome video modal (z99996) would mount on top of a
+    // live tour (z99990), leaving the tour spotlighting controls nobody
+    // could see. Let the video go first — this returns without setting
+    // _tourAutoShown, so a later tick picks the tour up once it is closed.
+    if (document.getElementById('qe-welcome-overlay')) return;
     // Wait until the app shell is rendered + user is past auth/landing
     var app = document.getElementById('app') || document.body;
     if (!app) return;
@@ -27906,10 +27912,37 @@ async function qzCoachReview() {
     if (document.getElementById('qe-tour-replay')) return;
     var btn = document.createElement('button');
     btn.id = 'qe-tour-replay';
-    btn.title = 'Replay feature tour';
-    btn.setAttribute('aria-label', 'Replay feature tour');
+    btn.title = 'Help — tutorial video or guided tour';
+    btn.setAttribute('aria-label', 'Help — tutorial video or guided tour');
     btn.textContent = '?';
-    btn.onclick = startTour;
+    // Two onboarding surfaces are kept deliberately: a 28s video that
+    // shows the loop, and the tour that points at the real controls.
+    // One affordance offers both, so neither is buried.
+    btn.onclick = function(e) {
+      e.stopPropagation();
+      var old = document.getElementById('qe-help-menu');
+      if (old) { old.remove(); return; }
+      var m = document.createElement('div');
+      m.id = 'qe-help-menu';
+      m.innerHTML =
+        '<button type="button" data-act="video"><span>▶</span>Watch the tutorial<em>28s walkthrough</em></button>' +
+        '<button type="button" data-act="tour"><span>◎</span>Take the guided tour<em>6 steps, in the app</em></button>';
+      document.body.appendChild(m);
+      m.addEventListener('click', function(ev) {
+        var b = ev.target.closest('button'); if (!b) return;
+        m.remove();
+        if (b.dataset.act === 'video') { try { window.qzShowWelcome(); } catch(_) {} }
+        else { try { startTour(); } catch(_) {} }
+      });
+      setTimeout(function() {
+        document.addEventListener('click', function once(ev2) {
+          if (!ev2.target.closest('#qe-help-menu') && ev2.target.id !== 'qe-tour-replay') {
+            var mm = document.getElementById('qe-help-menu'); if (mm) mm.remove();
+            document.removeEventListener('click', once);
+          }
+        });
+      }, 0);
+    };
     document.body.appendChild(btn);
   }
 

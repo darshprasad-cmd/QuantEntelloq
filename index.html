@@ -16458,8 +16458,33 @@ body:not(.qe-in-app) #qe-trading-bg {
    qe-shortcuts is a Market Hours button, hud-toggle is a telemetry
    readout, tour-replay is a rare action — all reachable elsewhere and
    none worth a permanent thumb-sized target on a phone. */
+/* Help menu offering BOTH onboarding surfaces (video + guided tour). */
+#qe-help-menu {
+  position: fixed; z-index: 99992;
+  left: 16px; bottom: calc(var(--qz-dockb) + 104px);
+  background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 14px;
+  box-shadow: 0 18px 44px -20px rgba(17,24,39,.34);
+  padding: 6px; display: flex; flex-direction: column; gap: 2px; min-width: 236px;
+}
+#qe-help-menu button {
+  display: grid; grid-template-columns: 22px 1fr; align-items: center;
+  gap: 4px 10px; text-align: left; background: transparent; border: 0;
+  border-radius: 10px; padding: 9px 10px; cursor: pointer;
+  font-family: 'DM Sans', system-ui, sans-serif; font-size: 14px; font-weight: 700; color: #111827;
+}
+#qe-help-menu button:hover { background: #F0FDFA; }
+#qe-help-menu button span { grid-row: 1 / span 2; font-size: 15px; color: #0F766E; }
+#qe-help-menu button em {
+  grid-column: 2; font-style: normal; font-size: 11.5px; font-weight: 500; color: #64748B;
+}
+
 @media (max-width: 900px) {
-  #hud-toggle-btn, #qe-shortcuts, #qe-tour-replay { display: none !important; }
+  #hud-toggle-btn, #qe-shortcuts { display: none !important; }
+  /* the help "?" STAYS on phones — it is the only route back to the
+     tutorial video and the guided tour; give it its own slot above the
+     app switcher instead of hiding it under one */
+  #qe-tour-replay { display: grid !important; bottom: calc(var(--qz-dockb) + 52px) !important; left: 14px !important; }
+  #qe-help-menu { bottom: calc(var(--qz-dockb) + 100px); left: 14px; min-width: 0; width: calc(100vw - 28px); max-width: 300px; }
   /* offsets ride --qz-dockb so they clear the disclaimer bar whatever
      height it wraps to (it was swallowing the low-z app switcher) */
   #qe-menu-fab     { bottom: var(--qz-dockb) !important; right: 14px !important; }
@@ -16474,7 +16499,9 @@ body:not(.qe-in-app) #qe-trading-bg {
    the stacked chrome would otherwise eat (measured 111px of 390). ── */
 @media (max-height: 500px) and (pointer: coarse),
        (max-height: 430px) {
-  #hud-toggle-btn, #qe-shortcuts, #qe-tour-replay { display: none !important; }
+  #hud-toggle-btn, #qe-shortcuts { display: none !important; }
+  #qe-tour-replay { display: grid !important; bottom: calc(var(--qz-dockb) + 46px) !important; left: 12px !important; }
+  #qe-help-menu { bottom: calc(var(--qz-dockb) + 92px); left: 12px; max-height: 60vh; overflow-y: auto; }
   /* landscape has width to spare and no height — so lay the dock out as
      one ROW above the disclaimer bar instead of stacking it upward */
   #qe-menu-fab     { bottom: var(--qz-dockb) !important; right: 12px !important; transform: scale(.86); transform-origin: bottom right; }
@@ -16672,7 +16699,7 @@ body:not(.qe-in-app) #qe-trading-bg {
   [400, 1200, 2500, 5000].forEach(function(t){ setTimeout(sync, t); });
 })();
 </script>
-<script defer src="js/app.min.js?v=20260811-29"></script>
+<script defer src="js/app.min.js?v=20260811-30"></script>
 <!-- ENTELLOQ-ECOSYSTEM-SWITCHER:START -->
 <!-- ============================================================
      ENTELLOQ ECOSYSTEM SWITCHER  ·  shared across every Entelloq app
