@@ -16563,6 +16563,81 @@ body:not(.qe-in-app) #qe-trading-bg {
 #qz-copilot-panel .qz-cop-msg, #qz-copilot-panel .qz-cop-msg * { color: #111827 !important; }
 #qz-copilot-panel .qz-cop-msg-user { background: #F0FDFA !important; border: 1px solid #CCFBF1 !important; }
 #qz-copilot-panel .qz-cop-msg-ai { background: #F8FAFC !important; border: 1px solid #E5E7EB !important; }
+
+/* ══════════════════════════════════════════════════════════════════
+   36 · SHORT-VIEWPORT OVERLAYS — the landscape dead ends
+   Measured at 844x390: the subscription gate renders a 677px card and
+   the auth modal a 508px card, both inside `position:fixed; inset:0;
+   align-items:center` parents whose overflow is left at `visible`.
+   Nothing scrolls, so the flexbox centres an oversized child and
+   clips it at BOTH ends — on the gate that puts "Subscribe Now", the
+   redeem-code field and the close affordance out of reach, with no
+   Escape handler and #app set to overflow:hidden. A trial-expired
+   user who rotates to landscape can neither pay nor dismiss.
+   Section 34's overlay rule did not cover either case: it was scoped
+   `body.qe-in-app .modal-overlay:not(#auth-modal)` — and #auth-modal
+   is shown from the logged-OUT landing, where qe-in-app is absent.
+   ══════════════════════════════════════════════════════════════════ */
+@media (max-height: 540px) and (pointer: coarse),
+       (max-height: 460px) {
+  /* make the OVERLAY the scroller and top-align, so overflow can only
+     ever run downward into scrollable space */
+  #subscription-gate,
+  .modal-overlay,
+  #qz-lesson-modal,
+  #stock-detail-modal,
+  #qe-legal-overlay {
+    align-items: flex-start !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    padding: 14px 14px calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  #subscription-gate .gate-card,
+  .modal-overlay .modal,
+  #qe-legal-overlay .qe-legal-card {
+    margin: auto !important;
+    max-height: none !important;
+    padding: 20px 22px !important;
+  }
+  /* trim the tallest ornamental bits so less scrolling is needed */
+  #subscription-gate .gate-icon { display: none !important; }
+  #subscription-gate .gate-title, .modal-overlay .modal-title { font-size: 19px !important; margin-bottom: 6px !important; }
+  #subscription-gate .gate-sub, .modal-overlay .modal-sub { font-size: 13px !important; margin-bottom: 12px !important; }
+  #subscription-gate .gate-price { font-size: 28px !important; }
+  .modal-overlay .form-group { margin-bottom: 10px !important; }
+  .modal-overlay .divider { margin: 12px 0 !important; }
+  /* the close control must never be pinned above the scroll origin */
+  .modal-overlay .modal-close, #subscription-gate .gate-close {
+    position: sticky !important; top: 0 !important; float: right !important;
+    margin: -4px -4px 0 0 !important; z-index: 2 !important;
+  }
+
+  /* AI Studio: a 380px min-height inside a ~286px container clipped
+     the composer, so the user could read but never reply */
+  .ais-chat-fill { min-height: 0 !important; height: calc(100dvh - 150px) !important; }
+
+  /* the mentor card was pinned bottom:90px and ate 61% of the screen */
+  .qz-mentor-card { max-height: 62vh !important; overflow-y: auto !important; bottom: 12px !important; }
+}
+
+/* Landing hero: `max-width:940px` collapses to one column on an 844px
+   LANDSCAPE phone that has plenty of width and none to spare
+   vertically — which pushed the signup CTA far below the fold. Keep
+   two columns whenever the screen is wide but short. */
+@media (max-width: 940px) and (max-height: 540px) {
+  #landing .lp3-hero {
+    grid-template-columns: minmax(0,1fr) minmax(300px,380px) !important;
+    flex-direction: row !important;
+    min-height: 0 !important;
+    gap: 22px !important;
+    padding-top: 20px !important;
+    padding-bottom: 22px !important;
+  }
+  #landing #lp3-auth-inline, #landing .lp3-card { margin: 0 !important; max-width: 380px !important; }
+  #landing .qzl-hero-mark { height: 60px !important; margin-bottom: 12px !important; }
+  #landing .qzl-h1 { font-size: clamp(24px, 3.4vw, 34px) !important; margin: 12px 0 12px !important; }
+  #landing .qzl-readout { display: none !important; }
+}
 </style>
 <script>
 /* Keep --qz-dockb equal to the fixed disclaimer bar's real height, so the
