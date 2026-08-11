@@ -16413,7 +16413,190 @@ body:not(.qe-in-app) #qe-trading-bg {
   pointer-events: none !important;
   display: none !important;
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   34 · FLOATING WIDGET DOCK + PHONE ORIENTATION
+   Seven independently-authored fixed widgets were each choosing their
+   own corner, so they stacked on top of each other — measured on a
+   844x390 landscape phone: hud-toggle 100% buried under the menu FAB,
+   tour-replay 100% under the ecosystem switcher, the region toast
+   sitting on the whole cluster. Several were literally unclickable.
+   This assigns ONE deterministic slot per widget, and on phones keeps
+   only the ones that make sense without a keyboard.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* --qz-dockb = the safe bottom inset, measured at runtime from the
+   fixed disclaimer bar. That bar WRAPS: 62px in landscape but 132px on
+   a narrow portrait phone, so no hardcoded offset can clear it. */
+:root { --qz-dockb: 16px; }
+
+/* ── bottom-right column, stacked bottom-up, never overlapping ── */
+#qe-menu-fab      { bottom: var(--qz-dockb) !important; right: 16px !important; }
+#qz-copilot-dock  { bottom: calc(var(--qz-dockb) + 72px) !important; right: 22px !important; }
+#hud-toggle-btn   { bottom: calc(var(--qz-dockb) + 132px) !important; right: 24px !important; top: auto !important; }
+#qe-shortcuts     { bottom: calc(var(--qz-dockb) + 186px) !important; right: 24px !important; top: auto !important; left: auto !important; }
+
+/* the dismiss ✕ rides the copilot dock's top-right corner — it has to
+   follow the dock to every slot below, or it lands on the orb face */
+#qe-orb-dismiss   {
+  bottom: calc(var(--qz-dockb) + 112px) !important; right: 12px !important; top: auto !important; left: auto !important;
+  z-index: 99991 !important;   /* the dock is z99990 — without this the ✕ is buried under its own orb */
+}
+
+/* ── bottom-left column ── */
+#eqx-fab          { bottom: var(--qz-dockb) !important; left: 16px !important; }
+#qe-tour-replay   { bottom: calc(var(--qz-dockb) + 52px) !important; left: 18px !important; top: auto !important; right: auto !important; }
+
+/* ── toasts must never land on the FAB stack ── */
+#region-toast {
+  bottom: auto !important; top: 76px !important;
+  right: 14px !important; left: auto !important;
+  max-width: min(340px, calc(100vw - 92px)) !important;
+}
+
+/* ── phones: drop keyboard/diagnostic-only affordances ──
+   qe-shortcuts is a Market Hours button, hud-toggle is a telemetry
+   readout, tour-replay is a rare action — all reachable elsewhere and
+   none worth a permanent thumb-sized target on a phone. */
+@media (max-width: 900px) {
+  #hud-toggle-btn, #qe-shortcuts, #qe-tour-replay { display: none !important; }
+  /* offsets ride --qz-dockb so they clear the disclaimer bar whatever
+     height it wraps to (it was swallowing the low-z app switcher) */
+  #qe-menu-fab     { bottom: var(--qz-dockb) !important; right: 14px !important; }
+  #qz-copilot-dock { bottom: calc(var(--qz-dockb) + 70px) !important; right: 18px !important; }
+  #qe-orb-dismiss  { bottom: calc(var(--qz-dockb) + 108px) !important; right: 10px !important; }
+  #eqx-fab         { bottom: var(--qz-dockb) !important; left: 14px !important; }
+}
+
+/* ── landscape phone: very wide, very SHORT (≈844x390).
+   Width-only breakpoints treat this like a desktop, so target height
+   directly: hide the same extras, and claw back vertical space that
+   the stacked chrome would otherwise eat (measured 111px of 390). ── */
+@media (max-height: 500px) and (pointer: coarse),
+       (max-height: 430px) {
+  #hud-toggle-btn, #qe-shortcuts, #qe-tour-replay { display: none !important; }
+  /* landscape has width to spare and no height — so lay the dock out as
+     one ROW above the disclaimer bar instead of stacking it upward */
+  #qe-menu-fab     { bottom: var(--qz-dockb) !important; right: 12px !important; transform: scale(.86); transform-origin: bottom right; }
+  #qz-copilot-dock { bottom: var(--qz-dockb) !important; right: 74px !important; transform: scale(.86); transform-origin: bottom right; }
+  #qe-orb-dismiss  { bottom: calc(var(--qz-dockb) + 38px) !important; right: 68px !important; }
+  #eqx-fab         { bottom: var(--qz-dockb) !important; left: 12px !important; transform: scale(.86); transform-origin: bottom left; }
+  #region-toast    { top: 60px !important; }
+
+  /* claw back vertical space: the disclaimer bar is the one piece of
+     chrome that can shrink without touching a tap target */
+  #qe-disclaimer-bar { padding: 6px 12px !important; font-size: 10.5px !important; line-height: 1.35 !important; }
+
+  /* overlays must stay scrollable when they're taller than the screen */
+  #qz-search-overlay, body.qe-in-app .modal-overlay:not(#auth-modal),
+  #qz-lesson-modal, #stock-detail-modal {
+    overflow-y: auto !important; -webkit-overflow-scrolling: touch;
+  }
+  #qz-lesson-modal > *, #stock-detail-modal > * { max-height: 92vh !important; overflow-y: auto !important; }
+}
+
+/* ── touch targets: 28 controls measured under 44px on a 390px phone.
+   Applied in PORTRAIT only — in landscape the vertical budget is the
+   scarcer resource, and these all still clear the 24px WCAG minimum. ── */
+@media (max-width: 900px) and (min-height: 500px) {
+  #app .btn, #app .qz-home-card-act, #app .qe-daily-opt,
+  #app .qz-levelbtn, #app .qz-subtab, #app .qz-disc-head,
+  #app #qe-share-btn, #app #qe-tn-more-btn {
+    min-height: 44px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+  }
+  #app .qz-home-card-act, #app .qe-daily-opt { justify-content: flex-start !important; }
+  #app .qe-tn-pill { min-height: 38px !important; display: inline-flex !important; align-items: center !important; }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   35 · COPILOT PANEL — light-theme text
+   The panel background was flipped to white but its type kept the
+   dark-theme ink, so 11 elements rendered white-on-white (heading,
+   capability chips, quick actions, context strip). The send button
+   had the inverse fault: black text on the teal gradient.
+   #qz-copilot-panel sits outside the section-22 legibility scope, so
+   it needs its own pass.
+   ══════════════════════════════════════════════════════════════════ */
+#qz-copilot-panel { background: #FFFFFF !important; border: 1px solid #E5E7EB !important; }
+#qz-copilot-panel, #qz-copilot-panel * { -webkit-text-fill-color: currentColor; }
+
+#qz-copilot-panel .qz-cop-welcome-h1,
+#qz-copilot-panel .qz-cop-hdr-title,
+#qz-copilot-panel .qz-cop-action { color: #111827 !important; font-weight: 700 !important; }
+
+#qz-copilot-panel .qz-cop-welcome-sub,
+#qz-copilot-panel .qz-cop-cap,
+#qz-copilot-panel .qz-cop-hdr-sub,
+#qz-copilot-panel .qz-cop-ctx-strip,
+#qz-copilot-panel .qz-cop-ctx-strip-pg { color: #4B5563 !important; }
+
+#qz-copilot-panel .qz-cop-welcome-eyebrow,
+#qz-copilot-panel .qz-cop-section-label { color: #0F766E !important; }
+
+#qz-copilot-panel .qz-cop-cap {
+  background: #F8FAFC !important;
+  border: 1px solid #E5E7EB !important;
+}
+#qz-copilot-panel .qz-cop-action {
+  background: #F0FDFA !important;
+  border: 1px solid #CCFBF1 !important;
+}
+#qz-copilot-panel .qz-cop-action:hover { background: #CCFBF1 !important; }
+#qz-copilot-panel .qz-cop-action-arrow { color: #0F766E !important; }
+
+#qz-copilot-panel .qz-cop-hdr { border-bottom: 1px solid #E5E7EB !important; }
+#qz-copilot-panel .qz-cop-hdr-btn { color: #64748B !important; }
+#qz-copilot-panel .qz-cop-hdr-btn:hover { color: #111827 !important; }
+
+#qz-copilot-panel .qz-cop-input {
+  color: #111827 !important; background: #FFFFFF !important; border: 1px solid #E5E7EB !important;
+}
+#qz-copilot-panel .qz-cop-input::placeholder { color: #94A3B8 !important; }
+
+/* inverse fault: this one IS on a solid teal gradient, so it must be white */
+#qz-copilot-panel .qz-cop-send,
+#qz-copilot-panel .qz-cop-send * { color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; }
+
+/* chat transcript rows */
+#qz-copilot-panel .qz-cop-msg, #qz-copilot-panel .qz-cop-msg * { color: #111827 !important; }
+#qz-copilot-panel .qz-cop-msg-user { background: #F0FDFA !important; border: 1px solid #CCFBF1 !important; }
+#qz-copilot-panel .qz-cop-msg-ai { background: #F8FAFC !important; border: 1px solid #E5E7EB !important; }
 </style>
+<script>
+/* Keep --qz-dockb equal to the fixed disclaimer bar's real height, so the
+   floating dock always clears it. The bar WRAPS (62px landscape / 132px
+   narrow portrait) and can be dismissed, so this must be measured, not
+   assumed — and re-measured on rotation. Cheap: event-driven, no polling. */
+(function(){
+  var last = -1;
+  function sync(){
+    try{
+      var bar = document.getElementById('qe-disclaimer-bar');
+      var h = 0;
+      if (bar) {
+        var cs = getComputedStyle(bar);
+        if (cs.display !== 'none' && cs.visibility !== 'hidden' && +cs.opacity !== 0) {
+          var r = bar.getBoundingClientRect();
+          /* only count it if it actually sits on screen at the bottom */
+          if (r.height > 0 && r.bottom > window.innerHeight - 4) h = r.height;
+        }
+      }
+      var v = Math.round(h) + 14;
+      if (v !== last) { last = v; document.documentElement.style.setProperty('--qz-dockb', v + 'px'); }
+    }catch(e){}
+  }
+  sync();
+  ['resize','orientationchange','load'].forEach(function(ev){ window.addEventListener(ev, function(){ sync(); setTimeout(sync,250); }); });
+  document.addEventListener('DOMContentLoaded', sync);
+  /* the bar is injected by the app after boot — catch it appearing/leaving */
+  try{
+    new MutationObserver(sync).observe(document.body, { childList:true, subtree:false, attributes:true, attributeFilter:['class','style'] });
+  }catch(e){}
+  [400, 1200, 2500, 5000].forEach(function(t){ setTimeout(sync, t); });
+})();
+</script>
 <script defer src="js/app.min.js?v=20260805-28"></script>
 <!-- ENTELLOQ-ECOSYSTEM-SWITCHER:START -->
 <!-- ============================================================
