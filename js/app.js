@@ -14122,7 +14122,7 @@ function ptRenderPositions() {
     const pnlStr = (p.unrealized_pnl >= 0 ? '+' : '') + ptFmt(p.unrealized_pnl);
     const pctStr = ptFmtPct(p.unrealized_pct);
     return `<tr>
-      <td><strong>${p.ticker}</strong><br><span style="color:var(--text-muted);font-size:10px;">${(p.asset_name||'').slice(0,20)}</span></td>
+      <td style="cursor:pointer;" title="View chart" onclick="ptChartLoad('${p.ticker}')"><strong>${p.ticker}</strong><br><span style="color:var(--text-muted);font-size:10px;">${(p.asset_name||'').slice(0,20)}</span></td>
       <td>${Number(p.qty).toLocaleString()}</td>
       <td class="pt-quick-price" id="pt-price-${p.ticker}">${ptFmt(p.current_price)}</td>
       <td>${ptFmt(p.avg_cost)}</td>
@@ -14136,6 +14136,8 @@ function ptRenderPositions() {
     <tbody>${rows}</tbody>
   </table>`;
   ptRenderQuickClose();
+  // First visit with holdings: put the largest position on the chart unasked.
+  if (!ptChart.ticker && ptState.positions.length) ptChartLoad(ptState.positions[0].ticker);
 }
 
 function ptRenderQuickClose() {
@@ -14235,8 +14237,10 @@ async function ptFetchPrice() {
     el.classList.add('pt-price-flash');
     setTimeout(() => el.classList.remove('pt-price-flash'), 500);
     ptUpdatePreview();
+    ptChartLoad(ticker);          // the chart follows the order ticket
   } catch(e) {
     document.getElementById('pt-price-display').textContent = 'Could not fetch price';
+    ptChartLoad(ticker);          // real market chart may exist even when the sim price doesn't
   }
 }
 
@@ -14342,6 +14346,261 @@ async function ptCancelOrder(orderId) {
 function ptStatus(msg, color) {
   const el = document.getElementById('pt-order-status');
   if (el) { el.textContent = msg; el.style.color = color; }
+}
+
+// ─── Live chart — TradingView Lightweight Charts™ (vendored) ───────
+// The candlestick panel the order ticket always implied: per-ticker
+// candles + volume + 20-period MA on real Yahoo Finance data, plus a
+// draggable risk overlay (entry / stop / target) that computes R:R and
+// a 1%-rule position size against the live account. The library ships
+// from js/lightweight-charts.min.js — same-origin, no CDN.
+const ptChart = {
+  chart: null, candles: null, volume: null, ma: null, ro: null,
+  ticker: null, tf: '1M', lastBar: null, loading: false,
+  risk: { on: false, entry: 0, stop: 0, target: 0, lines: {}, drag: null },
+};
+
+const PT_TF = {
+  '1D': { interval: '5m',  range: '1d'  },
+  '5D': { interval: '30m', range: '5d'  },
+  '1M': { interval: '1d',  range: '1mo' },
+  '6M': { interval: '1d',  range: '6mo' },
+  '1Y': { interval: '1d',  range: '1y'  },
+};
+
+function ptChartEnsure() {
+  if (ptChart.chart) return true;
+  if (typeof LightweightCharts === 'undefined') return false;
+  const host = document.getElementById('pt-chart-host');
+  if (!host) return false;
+  const chart = LightweightCharts.createChart(host, {
+    height: 340,
+    layout: { background: { type: 'solid', color: 'transparent' }, textColor: 'rgba(17,24,39,.55)', fontFamily: "'DM Mono', ui-monospace, monospace", fontSize: 10 },
+    grid: { vertLines: { color: 'rgba(17,24,39,.045)' }, horzLines: { color: 'rgba(17,24,39,.06)' } },
+    rightPriceScale: { borderColor: 'rgba(17,24,39,.10)' },
+    timeScale: { borderColor: 'rgba(17,24,39,.10)', timeVisible: true, secondsVisible: false },
+    crosshair: { mode: LightweightCharts.CrosshairMode.Magnet },
+  });
+  ptChart.candles = chart.addCandlestickSeries({
+    upColor: '#16A34A', downColor: '#DC2626', borderVisible: false,
+    wickUpColor: 'rgba(22,163,74,.7)', wickDownColor: 'rgba(220,38,38,.7)',
+  });
+  // Volume rides its own overlay scale squeezed into the bottom fifth.
+  ptChart.volume = chart.addHistogramSeries({
+    priceScaleId: 'vol', priceFormat: { type: 'volume' },
+    lastValueVisible: false, priceLineVisible: false,
+  });
+  chart.priceScale('vol').applyOptions({ scaleMargins: { top: 0.82, bottom: 0 } });
+  ptChart.ma = chart.addLineSeries({ color: '#0F766E', lineWidth: 1, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false });
+  ptChart.chart = chart;
+  ptChart.ro = new ResizeObserver(() => { if (host.clientWidth) chart.applyOptions({ width: host.clientWidth }); });
+  ptChart.ro.observe(host);
+  ptRiskWireDrag(host);
+  return true;
+}
+
+async function ptChartFetch(ticker, tf) {
+  const cfg = PT_TF[tf] || PT_TF['1M'];
+  const yq = s => `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(s)}?interval=${cfg.interval}&range=${cfg.range}`;
+  const tryOne = async (sym) => {
+    let data = null;
+    try {
+      const r = await fetch(yq(sym), { cache: 'no-store', signal: AbortSignal.timeout ? AbortSignal.timeout(8000) : undefined });
+      if (r.ok) data = await r.json();
+    } catch (_) {}
+    if (!data) data = await _searchProxiedFetch(yq(sym));   // CORS fallback chain
+    const res = data && data.chart && data.chart.result && data.chart.result[0];
+    return res && res.timestamp ? res : null;
+  };
+  let res = await tryOne(ticker);
+  // Bare crypto symbols live on Yahoo as XXX-USD.
+  if (!res && /^[A-Z]{2,6}$/.test(ticker)) res = await tryOne(ticker + '-USD');
+  if (!res) return null;
+  const q = (res.indicators && res.indicators.quote && res.indicators.quote[0]) || {};
+  const bars = [], vols = [];
+  for (let i = 0; i < res.timestamp.length; i++) {
+    const o = q.open && q.open[i], h = q.high && q.high[i], l = q.low && q.low[i], c = q.close && q.close[i];
+    if (o == null || h == null || l == null || c == null) continue;
+    bars.push({ time: res.timestamp[i], open: o, high: h, low: l, close: c });
+    vols.push({ time: res.timestamp[i], value: (q.volume && q.volume[i]) || 0, color: c >= o ? 'rgba(22,163,74,.30)' : 'rgba(220,38,38,.26)' });
+  }
+  return { bars, vols, meta: res.meta || {} };
+}
+
+async function ptChartLoad(ticker, tf) {
+  ticker = (ticker || '').trim().toUpperCase();
+  if (!ticker || ptChart.loading) return;
+  if (tf) ptChart.tf = tf;
+  if (!ptChartEnsure()) return;
+  ptChart.loading = true;
+  const tickEl  = document.getElementById('pt-chart-ticker');
+  const quoteEl = document.getElementById('pt-chart-quote');
+  if (tickEl) tickEl.textContent = ticker;
+  if (quoteEl) { quoteEl.textContent = 'loading…'; quoteEl.style.color = 'var(--text-muted)'; }
+  const data = await ptChartFetch(ticker, ptChart.tf);
+  ptChart.loading = false;
+  if (!data || !data.bars.length) {
+    if (quoteEl) quoteEl.textContent = 'no chart data';
+    return;
+  }
+  ptChart.ticker = ticker;
+  ptChart.candles.setData(data.bars);
+  ptChart.volume.setData(data.vols);
+  // 20-period simple moving average
+  const closes = data.bars.map(b => b.close), maPts = [];
+  let run = 0;
+  for (let i = 0; i < closes.length; i++) {
+    run += closes[i]; if (i >= 20) run -= closes[i - 20];
+    if (i >= 19) maPts.push({ time: data.bars[i].time, value: run / 20 });
+  }
+  ptChart.ma.setData(maPts);
+  ptChart.chart.timeScale().fitContent();
+  const last = data.bars[data.bars.length - 1], first = data.bars[0];
+  ptChart.lastBar = last;
+  const pct = first.close ? ((last.close - first.close) / first.close) * 100 : 0;
+  if (quoteEl) {
+    quoteEl.textContent = ptFmt(last.close) + '  ' + (pct >= 0 ? '+' : '') + pct.toFixed(2) + '% ' + ptChart.tf;
+    quoteEl.style.color = pct >= 0 ? 'var(--green)' : 'var(--red)';
+  }
+  const emptyEl = document.getElementById('pt-chart-empty');
+  if (emptyEl) emptyEl.style.display = 'none';
+  if (ptChart.risk.on) ptRiskSeed();   // re-anchor the overlay to the new price zone
+}
+
+function ptChartSetTf(tf, btn) {
+  ptChart.tf = tf;
+  document.querySelectorAll('#pt-tf-chips .pt-tf-chip').forEach(b => b.classList.toggle('active', b.dataset.tf === tf));
+  if (ptChart.ticker) { const t = ptChart.ticker; ptChart.ticker = null; ptChartLoad(t); }
+}
+
+// ── Risk overlay ──
+const PT_RISK_STYLE = {
+  entry:  { color: '#0F766E', title: 'ENTRY'  },
+  stop:   { color: '#DC2626', title: 'STOP'   },
+  target: { color: '#16A34A', title: 'TARGET' },
+};
+
+function ptRiskCalc() {
+  const r = ptChart.risk;
+  const long = r.target >= r.entry;
+  const riskPS = Math.abs(r.entry - r.stop), rewardPS = Math.abs(r.target - r.entry);
+  const rr = riskPS > 0 ? rewardPS / riskPS : 0;
+  const acct = ptState.currentAccount;
+  const equity = acct ? (Number(acct.equity) || Number(acct.cash) || 0) : 0;
+  const size = riskPS > 0 ? Math.floor((equity * 0.01) / riskPS) : 0;
+  return { long, riskPS, rewardPS, rr, equity, size };
+}
+
+function ptRiskLines() {
+  const r = ptChart.risk;
+  Object.keys(r.lines).forEach(k => { try { ptChart.candles.removePriceLine(r.lines[k]); } catch (_) {} });
+  r.lines = {};
+  if (!r.on) return;
+  ['entry', 'stop', 'target'].forEach(k => {
+    r.lines[k] = ptChart.candles.createPriceLine({
+      price: r[k], color: PT_RISK_STYLE[k].color, lineWidth: 2,
+      lineStyle: LightweightCharts.LineStyle.Dashed,
+      axisLabelVisible: true, title: PT_RISK_STYLE[k].title,
+    });
+  });
+}
+
+function ptRiskSeed() {
+  const r = ptChart.risk, px = ptChart.lastBar && ptChart.lastBar.close;
+  if (!px) return;
+  r.entry = px; r.stop = px * 0.98; r.target = px * 1.04;
+  ptRiskLines(); ptRiskReadout();
+}
+
+function ptRiskToggle() {
+  const r = ptChart.risk;
+  if (!ptChart.chart || !ptChart.lastBar) { ptStatus('Load a chart first — type a ticker and press “Get Price”', 'var(--yellow)'); return; }
+  r.on = !r.on;
+  const btn = document.getElementById('pt-risk-btn');
+  if (btn) btn.classList.toggle('active', r.on);
+  const strip = document.getElementById('pt-risk-strip');
+  if (strip) strip.style.display = r.on ? '' : 'none';
+  if (r.on) ptRiskSeed(); else ptRiskLines();
+}
+
+function ptRiskReadout() {
+  const el = document.getElementById('pt-risk-strip');
+  const r = ptChart.risk;
+  if (!el || !r.on) return;
+  const c = ptRiskCalc();
+  const rrColor = c.rr >= 2 ? 'var(--green)' : c.rr >= 1 ? 'var(--yellow)' : 'var(--red)';
+  el.innerHTML = `
+    <div class="pt-risk-cell"><span>${c.long ? 'LONG' : 'SHORT'} SETUP</span><strong>${ptChart.ticker}</strong></div>
+    <div class="pt-risk-cell"><span>ENTRY</span><strong style="color:#0F766E;">${ptFmt(r.entry)}</strong></div>
+    <div class="pt-risk-cell"><span>STOP</span><strong style="color:var(--red);">${ptFmt(r.stop)}</strong></div>
+    <div class="pt-risk-cell"><span>TARGET</span><strong style="color:var(--green);">${ptFmt(r.target)}</strong></div>
+    <div class="pt-risk-cell"><span>R : R</span><strong style="color:${rrColor};">1 : ${c.rr.toFixed(2)}</strong></div>
+    <div class="pt-risk-cell"><span>RISK / SHARE</span><strong>${ptFmt(c.riskPS)}</strong></div>
+    <div class="pt-risk-cell"><span>1% RULE SIZE</span><strong>${c.size ? c.size.toLocaleString() + ' sh' : '—'}</strong></div>
+    <div class="pt-risk-cell pt-risk-apply"><button onclick="ptRiskApply()">Apply to ticket →</button></div>`;
+}
+
+function ptRiskApply() {
+  const r = ptChart.risk, c = ptRiskCalc();
+  const tIn = document.getElementById('pt-ticker-input');
+  if (tIn && ptChart.ticker) tIn.value = ptChart.ticker;
+  ptSetSide(c.long ? 'buy' : 'sell');
+  ptSetType('limit');
+  const li = document.getElementById('pt-limit-input');
+  if (li) li.value = r.entry.toFixed(2);
+  const qi = document.getElementById('pt-qty-input');
+  if (qi && c.size) qi.value = c.size;
+  ptUpdatePreview();
+  ptStatus(`Risk plan loaded — ${c.size ? c.size.toLocaleString() : '—'} sh @ ${ptFmt(r.entry)}, stop ${ptFmt(r.stop)}`, 'var(--violet)');
+}
+
+function ptRiskWireDrag(host) {
+  // priceToCoordinate speaks pane coordinates, whose origin is the host's
+  // top-left. offsetY is TARGET-relative — over the time-axis canvas it
+  // would lie — so derive pane-y from clientY against the host box instead.
+  const relY = e => e.clientY - host.getBoundingClientRect().top;
+  const hit = y => {
+    const r = ptChart.risk;
+    if (!r.on) return null;
+    let best = null, bestD = 9;
+    ['entry', 'stop', 'target'].forEach(k => {
+      const c = ptChart.candles.priceToCoordinate(r[k]);
+      if (c == null) return;
+      const d = Math.abs(c - y);
+      if (d < bestD) { best = k; bestD = d; }
+    });
+    return best;
+  };
+  // Capture phase: get there before the library's own pan handler.
+  host.addEventListener('pointerdown', e => {
+    const k = hit(relY(e));
+    if (!k) return;
+    ptChart.risk.drag = k;
+    ptChart.chart.applyOptions({ handleScroll: false, handleScale: false });
+    try { host.setPointerCapture(e.pointerId); } catch (_) {}
+    e.preventDefault();
+  }, { capture: true });
+  host.addEventListener('pointermove', e => {
+    const r = ptChart.risk;
+    if (r.drag) {
+      const px = ptChart.candles.coordinateToPrice(relY(e));
+      if (px != null && px > 0) {
+        r[r.drag] = px;
+        if (r.lines[r.drag]) r.lines[r.drag].applyOptions({ price: px });
+        ptRiskReadout();
+      }
+    } else {
+      host.style.cursor = hit(relY(e)) ? 'ns-resize' : '';
+    }
+  });
+  const drop = e => {
+    if (!ptChart.risk.drag) return;
+    ptChart.risk.drag = null;
+    ptChart.chart.applyOptions({ handleScroll: true, handleScale: true });
+    try { host.releasePointerCapture(e.pointerId); } catch (_) {}
+  };
+  host.addEventListener('pointerup', drop);
+  host.addEventListener('pointercancel', drop);
 }
 
 // ─── Tabs ──────────────────────────────────────────────────────────

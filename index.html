@@ -12,7 +12,7 @@
      ============================================================================ -->
 <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
-  script-src 'self' 'unsafe-inline' https://unpkg.com https://accounts.google.com https://apis.google.com https://www.clarity.ms https://*.clarity.ms https://us-assets.i.posthog.com https://us.i.posthog.com;
+  script-src 'self' 'unsafe-inline' https://accounts.google.com https://apis.google.com https://www.clarity.ms https://*.clarity.ms https://us-assets.i.posthog.com https://us.i.posthog.com;
   style-src  'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com;
   font-src   'self' https://fonts.gstatic.com data:;
   img-src    'self' data: blob: https:;
@@ -5757,8 +5757,10 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:20px;
 </style>
 
 
-<!-- TradingView Lightweight Charts v4 — institutional-grade financial charts -->
-<script defer src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+<!-- TradingView Lightweight Charts™ v4.1.3 — vendored locally (Apache-2.0,
+     © TradingView, Inc.) so the terminal keeps zero third-party runtime
+     dependencies: no CDN outage, no unpkg latency, works offline. -->
+<script defer src="js/lightweight-charts.min.js?v=4.1.3"></script>
 </head>
 <body>
 
@@ -8784,6 +8786,55 @@ function _lp3Enter(user) {
           <div class="pt-grid" id="pt-main-grid" style="display:none;">
             <!-- Left column: tabs + positions/orders/leaderboard -->
             <div>
+              <!-- Live chart — candles + volume + MA20 on real market data,
+                   with a draggable entry/stop/target risk overlay (live R:R
+                   + 1%-rule position sizing). Powered by TradingView
+                   Lightweight Charts™, vendored at js/lightweight-charts.min.js. -->
+              <style id="pt-chart-css">
+                .pt-chart-card { padding:14px 14px 10px; margin-bottom:16px; }
+                .pt-chart-head { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
+                #pt-chart-ticker { font-family:var(--font-mono); font-weight:700; font-size:15px; letter-spacing:.04em; color:var(--text-primary,#111827); }
+                #pt-chart-quote { font-family:var(--font-mono); font-size:12px; margin-left:8px; }
+                .pt-chart-tools { display:flex; align-items:center; gap:8px; }
+                #pt-tf-chips { display:flex; gap:4px; }
+                .pt-tf-chip { font-family:var(--font-mono); font-size:10px; letter-spacing:.06em; padding:4px 9px; border-radius:999px; border:1px solid rgba(17,24,39,.12); background:transparent; color:rgba(17,24,39,.55); cursor:pointer; }
+                .pt-tf-chip.active { background:#0F766E; border-color:#0F766E; color:#fff; }
+                .pt-risk-btn { font-family:var(--font-mono); font-size:10px; letter-spacing:.06em; padding:4px 11px; border-radius:999px; border:1px solid rgba(15,118,110,.35); background:rgba(15,118,110,.07); color:#0F766E; cursor:pointer; }
+                .pt-risk-btn.active { background:#0F766E; color:#fff; }
+                .pt-chart-wrap { position:relative; }
+                #pt-chart-host { height:340px; }
+                .pt-chart-empty { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:0 24px; font-size:12px; color:var(--text-muted,rgba(17,24,39,.45)); pointer-events:none; }
+                .pt-risk-strip { display:grid; grid-template-columns:repeat(auto-fit,minmax(96px,1fr)); gap:8px; padding:10px 2px 4px; border-top:1px solid rgba(17,24,39,.06); margin-top:6px; }
+                .pt-risk-cell { display:flex; flex-direction:column; gap:2px; }
+                .pt-risk-cell span { font-family:var(--font-mono); font-size:9px; letter-spacing:.1em; color:rgba(17,24,39,.4); }
+                .pt-risk-cell strong { font-family:var(--font-mono); font-size:12px; color:var(--text-primary,#111827); }
+                .pt-risk-apply button { font-family:var(--font-mono); font-size:10px; padding:6px 10px; border-radius:8px; border:1px solid rgba(15,118,110,.35); background:rgba(15,118,110,.08); color:#0F766E; cursor:pointer; white-space:nowrap; }
+                .pt-chart-credit { font-size:9px; font-family:var(--font-mono); letter-spacing:.05em; color:rgba(17,24,39,.3); margin-top:6px; }
+                .pt-chart-credit a { color:inherit; text-decoration:underline; }
+              </style>
+              <div class="pt-card pt-chart-card" id="pt-chart-card">
+                <div class="pt-chart-head">
+                  <div class="pt-chart-id">
+                    <span id="pt-chart-ticker">—</span><span id="pt-chart-quote"></span>
+                  </div>
+                  <div class="pt-chart-tools">
+                    <div id="pt-tf-chips">
+                      <button class="pt-tf-chip" data-tf="1D" onclick="ptChartSetTf('1D',this)">1D</button>
+                      <button class="pt-tf-chip" data-tf="5D" onclick="ptChartSetTf('5D',this)">5D</button>
+                      <button class="pt-tf-chip active" data-tf="1M" onclick="ptChartSetTf('1M',this)">1M</button>
+                      <button class="pt-tf-chip" data-tf="6M" onclick="ptChartSetTf('6M',this)">6M</button>
+                      <button class="pt-tf-chip" data-tf="1Y" onclick="ptChartSetTf('1Y',this)">1Y</button>
+                    </div>
+                    <button class="pt-risk-btn" id="pt-risk-btn" onclick="ptRiskToggle()" title="Draggable entry / stop / target with live R:R and 1%-rule sizing">⚖ Risk</button>
+                  </div>
+                </div>
+                <div class="pt-chart-wrap">
+                  <div id="pt-chart-host"></div>
+                  <div class="pt-chart-empty" id="pt-chart-empty">Type a ticker in the order ticket and press “Get Price” — the chart follows.<br>Click any open position to load its chart.</div>
+                </div>
+                <div class="pt-risk-strip" id="pt-risk-strip" style="display:none;"></div>
+                <div class="pt-chart-credit">Charts · <a href="https://www.tradingview.com/lightweight-charts/" target="_blank" rel="noopener">TradingView Lightweight Charts™</a></div>
+              </div>
               <div class="pt-tabs">
                 <button class="pt-tab active" onclick="ptSetTab('positions',this)">Positions</button>
                 <button class="pt-tab" onclick="ptSetTab('orders',this)">Orders</button>
@@ -14022,7 +14073,7 @@ function _lp3Enter(user) {
      VISUALS v1 — candlestick charts in Paper Trading + editorial polish
      across all subsections.
      · Paper Trading gets a live candlestick panel (TradingView
-       Lightweight Charts, already loaded at line 5604): per-ticker
+       Lightweight Charts™, vendored at js/lightweight-charts.min.js): per-ticker
        candles + volume histogram + 20-period MA + timeframe chips.
        Follows the order-ticket ticker; click any position row to load
        that ticker's chart.
@@ -16699,7 +16750,7 @@ body:not(.qe-in-app) #qe-trading-bg {
   [400, 1200, 2500, 5000].forEach(function(t){ setTimeout(sync, t); });
 })();
 </script>
-<script defer src="js/app.min.js?v=20260811-30"></script>
+<script defer src="js/app.min.js?v=20260812-31"></script>
 <!-- ENTELLOQ-ECOSYSTEM-SWITCHER:START -->
 <!-- ============================================================
      ENTELLOQ ECOSYSTEM SWITCHER  ·  shared across every Entelloq app
