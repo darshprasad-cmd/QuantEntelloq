@@ -38,3 +38,9 @@ Commit + push the files, and the platform updates automatically — no code chan
 ## Fallback behavior
 
 If the image files are missing or fail to load, the platform continues to show the gradient "Q" monogram as before. The replacement is graceful and reversible.
+
+## Quant launch landscapes
+
+The September 2026 launch uses `quant-horizon.png` and `quant-perspective.png` (1672 × 941 each), generated with the built-in imagegen tool. These are decorative backgrounds; all text, navigation, charts, and controls remain HTML, CSS, and SVG.
+
+Prompt set: a cinematic near-black teal alpine landscape with a blue Earth horizon and dark left headline space; a second alpine city-valley scene at dusk with a small seated explorer at left, amber lights, and dark center/right copy space. Both prompts specified backgrounds only, without text, logos, charts, or UI.

@@ -1,0 +1,211 @@
+/* The original launch explanation, restored in the charcoal/emerald language. */
+#landing.qlaunch .qlaunch-story-section {
+  max-width: 1440px;
+  margin-inline: auto;
+  padding: clamp(44px, 5.4vw, 76px) clamp(24px, 3.6vw, 56px) !important;
+  border-top: 1px solid var(--launch-line);
+  color: var(--launch-text) !important;
+  scroll-margin-top: 28px;
+}
+#landing.qlaunch .qlaunch-story-grid {
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  gap: clamp(32px, 6vw, 88px);
+  align-items: start;
+}
+#landing.qlaunch .qlaunch-story-kicker {
+  display: block;
+  margin-bottom: 15px;
+  color: var(--launch-green) !important;
+  font: 500 10px/1.5 'DM Mono', ui-monospace, monospace !important;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+#landing.qlaunch .qlaunch-story-section h2 {
+  font-size: clamp(26px, 3vw, 39px) !important;
+  line-height: 1.15 !important;
+  letter-spacing: -.035em;
+  font-weight: 500 !important;
+  color: var(--launch-text) !important;
+}
+#landing.qlaunch .qlaunch-story-section h3 {
+  color: var(--launch-text) !important;
+  font-size: 16px;
+  line-height: 1.4;
+  letter-spacing: -.015em;
+  font-weight: 500 !important;
+}
+#landing.qlaunch .qlaunch-story-section p {
+  color: var(--launch-muted) !important;
+  font-size: 14px;
+  line-height: 1.75;
+  font-weight: 400 !important;
+  max-width: 62ch;
+}
+#landing.qlaunch .qlaunch-story-section :is(strong, b) {
+  color: var(--launch-text) !important;
+  font-weight: 500 !important;
+}
+#landing.qlaunch .qlaunch-story-heading > p { margin-top: 18px; }
+#landing.qlaunch .qlaunch-story-copy { padding-top: 4px; }
+#landing.qlaunch .qlaunch-story-copy h3 { margin-bottom: 10px; }
+#landing.qlaunch .qlaunch-story-copy p + h3 { margin-top: 27px; }
+#landing.qlaunch .qlaunch-story-practice {
+  margin-top: 38px;
+  padding-top: 28px;
+  border-top: 1px solid var(--launch-line);
+}
+#landing.qlaunch .qlaunch-story-practice-intro {
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+  justify-content: space-between;
+  margin-bottom: 26px;
+}
+#landing.qlaunch .qlaunch-story-practice-intro h3 { flex: 0 1 300px; font-size: 18px; }
+#landing.qlaunch .qlaunch-story-practice-intro p { flex: 0 1 620px; font-size: 13px; }
+#landing.qlaunch .qlaunch-story-steps {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 24px;
+  padding: 0;
+  margin: 0;
+  counter-reset: practice-step;
+}
+#landing.qlaunch .qlaunch-story-steps li { counter-increment: practice-step; min-width: 0; }
+#landing.qlaunch .qlaunch-story-steps li::before {
+  content: '0' counter(practice-step);
+  display: block;
+  color: var(--launch-green);
+  font: 400 11px/1.5 'DM Mono', ui-monospace, monospace;
+  letter-spacing: .12em;
+  margin-bottom: 10px;
+}
+#landing.qlaunch .qlaunch-story-steps h4 {
+  color: var(--launch-text) !important;
+  font-size: 15px;
+  font-weight: 500 !important;
+  margin: 0 0 7px;
+}
+#landing.qlaunch .qlaunch-story-steps p { font-size: 12.5px; line-height: 1.6; }
+#landing.qlaunch .qlaunch-story-rules {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: principle;
+}
+#landing.qlaunch .qlaunch-story-rules li {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 16px;
+  counter-increment: principle;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--launch-line);
+}
+#landing.qlaunch .qlaunch-story-rules li:first-child { padding-top: 0; }
+#landing.qlaunch .qlaunch-story-rules li:last-child { border-bottom: 0; padding-bottom: 0; }
+#landing.qlaunch .qlaunch-story-rules li::before {
+  content: '0' counter(principle);
+  color: var(--launch-green);
+  font: 400 10px/2 'DM Mono', ui-monospace, monospace;
+  letter-spacing: .08em;
+  padding-top: 2px;
+}
+#landing.qlaunch .qlaunch-story-rules p { font-size: 13px; line-height: 1.7; }
+#landing.qlaunch .qlaunch-story-data {
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  gap: clamp(32px, 6vw, 88px);
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid var(--launch-line);
+}
+#landing.qlaunch .qlaunch-story-data h3 { font-size: 23px; line-height: 1.3; }
+#landing.qlaunch .qlaunch-story-data p { font-size: 13px; }
+#landing.qlaunch .qlaunch-story-data p + p { margin-top: 13px; }
+#landing.qlaunch .qlaunch-story-textlink {
+  display: inline;
+  border: 0;
+  border-bottom: 1px solid #2be3a055;
+  padding: 0;
+  background: transparent;
+  color: var(--launch-green) !important;
+  font: inherit;
+  cursor: pointer;
+}
+#landing.qlaunch .qlaunch-story-free h2 em {
+  color: var(--launch-green) !important;
+  font-style: normal;
+}
+#landing.qlaunch .qlaunch-story-free > p { margin-top: 18px; }
+#landing.qlaunch .qlaunch-story-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 44px;
+  margin-top: 25px;
+  padding: 12px 22px;
+  background: var(--launch-green);
+  color: #03231b !important;
+  border: 1px solid var(--launch-green);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500 !important;
+  line-height: 1.3;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+#landing.qlaunch .qlaunch-story-button:hover { background: #61eeb9; border-color: #61eeb9; }
+#landing.qlaunch .qlaunch-story-button span { color: inherit !important; }
+#landing.qlaunch .qlaunch-story-free .qlaunch-story-small {
+  margin-top: 14px;
+  font-size: 11px;
+  color: #8fa5a7 !important;
+}
+#landing.qlaunch .qlaunch-story-faq h3 { font-size: 18px; margin-bottom: 22px; }
+#landing.qlaunch .qlaunch-story-faq details { border-top: 1px solid var(--launch-line); }
+#landing.qlaunch .qlaunch-story-faq details:last-child { border-bottom: 1px solid var(--launch-line); }
+#landing.qlaunch .qlaunch-story-faq summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 22px;
+  list-style: none;
+  cursor: pointer;
+  padding: 18px 0;
+  min-height: 56px;
+  color: var(--launch-text) !important;
+  font-size: 14px;
+  line-height: 1.45;
+  font-weight: 500 !important;
+}
+#landing.qlaunch .qlaunch-story-faq summary::-webkit-details-marker { display: none; }
+#landing.qlaunch .qlaunch-story-faq summary::after {
+  content: '+';
+  color: var(--launch-green);
+  font-size: 20px;
+  font-weight: 400;
+  flex: none;
+}
+#landing.qlaunch .qlaunch-story-faq details[open] summary::after { content: '−'; }
+#landing.qlaunch .qlaunch-story-faq details p { margin: 0 28px 20px 0; font-size: 13px; }
+@media (max-width: 760px) {
+  #landing.qlaunch .qlaunch-story-grid,
+  #landing.qlaunch .qlaunch-story-data { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  #landing.qlaunch .qlaunch-story-practice-intro { display: block; }
+  #landing.qlaunch .qlaunch-story-practice-intro h3 { margin-bottom: 10px; }
+  #landing.qlaunch .qlaunch-story-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 26px; }
+  #landing.qlaunch .qlaunch-story-faq { margin-top: 8px; }
+}
+@media (max-width: 420px) {
+  #landing.qlaunch .qlaunch-story-steps { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  #landing.qlaunch .qlaunch-story-steps li { display: grid; grid-template-columns: 25px minmax(0, 1fr); gap: 2px 14px; }
+  #landing.qlaunch .qlaunch-story-steps li::before { grid-row: span 2; margin: 0; padding-top: 3px; }
+  #landing.qlaunch .qlaunch-story-steps h4 { margin-bottom: 3px; }
+  #landing.qlaunch .qlaunch-story-steps p { grid-column: 2; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #landing.qlaunch .qlaunch-story-button { transition: none; }
+}
