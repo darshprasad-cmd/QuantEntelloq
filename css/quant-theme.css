@@ -1,0 +1,594 @@
+/* Quant Entelloq — the emerald launch palette, shared by the working app.
+ * Loaded after the legacy theme. The explicit scopes and !important declarations
+ * replace its white-surface/black-text overrides without touching route visibility,
+ * app layout, chart series, or the Entelloq ecosystem switcher. The repeated
+ * #app ID gives this theme precedence over legacy page-specific ID selectors;
+ * it matches the same element and introduces no dependency on the DOM layout.
+ */
+html:root,
+html :is(#app#app, #page-agents, #page-markets, #stock-detail-modal,
+  #qz-lesson-modal, #qe-tour-overlay, #onboarding, #qz-search-overlay,
+  #qz-asset-panel, #qz-market-clock, #qe-watermark, #qe-mdrawer,
+  #qe-mdrawer-back, #qz-copilot-panel, #auth-modal, #qz-auth-overlay,
+  #qe-legal-overlay, #subscription-gate, .modal-overlay) {
+  color-scheme: dark;
+  --bg: #030c0e;
+  --black: #030c0e;
+  --white: #f1f6f3;
+  --surface: #071315;
+  --surface2: #0a191b;
+  --surface3: #102326;
+  --surface4: #183135;
+  --card: #071315;
+  --band: #0a191b;
+  --sink: #061012;
+  --border: #203b3f;
+  --border-light: #162e32;
+  --border-medium: #315257;
+  --text-primary: #f1f6f3;
+  --text-secondary: #b0c2c2;
+  --text-muted: #8da6a8;
+  --text-accent: #2be3a0;
+  --accent: #2be3a0;
+  --accent-2: #69edbd;
+  --accent-soft: rgba(43, 227, 160, .09);
+  --accent-glow: rgba(43, 227, 160, .18);
+  --violet: #2be3a0;
+  --violet-deep: #1ab87e;
+  --violet-soft: rgba(43, 227, 160, .09);
+  --green: #40df9c;
+  --green-soft: rgba(64, 223, 156, .11);
+  --red: #ff7c83;
+  --red-soft: rgba(255, 124, 131, .11);
+  --yellow: #ecc276;
+  --yellow-soft: rgba(236, 194, 118, .11);
+  --amber: #ecc276;
+  --blue: #82b9ef;
+  --blue-soft: rgba(130, 185, 239, .11);
+  --cyan: #6adacb;
+  --cyan-soft: rgba(106, 218, 203, .10);
+  --cyan-10: rgba(106, 218, 203, .10);
+  --up: #40df9c;
+  --down: #ff7c83;
+  --gray-900: #071315;
+  --gray-800: #102326;
+  --gray-700: #183135;
+  --q0: #030c0e;
+  --q1: #071315;
+  --q2: #0a191b;
+  --q3: #102326;
+  --q4: #183135;
+  --teal: #2be3a0;
+  --teal-dim: #79c6ad;
+  --teal-10: rgba(43, 227, 160, .10);
+  --teal-20: rgba(43, 227, 160, .18);
+  --purple: #82b9ef;
+  --purple-10: rgba(130, 185, 239, .10);
+  --qe-void: #030c0e;
+  --qe-canvas: #030c0e;
+  --qe-surface: #071315;
+  --qe-elevated: #102326;
+  --qe-text: #f1f6f3;
+  --qe-text-soft: #b0c2c2;
+  --qe-text-mute: #8da6a8;
+  --qe-text-dim: #8da6a8;
+  --qe-hl: rgba(176, 215, 207, .045);
+  --qe-hl-strong: rgba(176, 215, 207, .09);
+  --qe-hl-bold: rgba(176, 215, 207, .16);
+  --qe-amber: #2be3a0;
+  --qe-amber-soft: rgba(43, 227, 160, .09);
+  --qe-amber-glow: rgba(43, 227, 160, .18);
+  --qe-cyan: #6adacb;
+  --qe-cyan-soft: rgba(106, 218, 203, .10);
+  --qe-pos: #40df9c;
+  --qe-neg: #ff7c83;
+  --acc-blue: #82b9ef;
+  --tint-blue: rgba(130, 185, 239, .10);
+  --acc-teal: #6adacb;
+  --tint-teal: rgba(106, 218, 203, .10);
+  --acc-green: #40df9c;
+  --tint-green: rgba(64, 223, 156, .11);
+  --acc-red: #ff7c83;
+  --tint-red: rgba(255, 124, 131, .11);
+  --acc-coral: #ff7c83;
+  --tint-coral: rgba(255, 124, 131, .11);
+  --acc-amber: #ecc276;
+  --tint-amber: rgba(236, 194, 118, .11);
+  --acc-violet: #82b9ef;
+  --tint-violet: rgba(130, 185, 239, .10);
+  --acc-pink: #6adacb;
+  --tint-pink: rgba(106, 218, 203, .10);
+  --acc-brass: #2be3a0;
+  --tint-brass: rgba(43, 227, 160, .09);
+  --font-display: 'DM Sans', system-ui, sans-serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --qe-display: 'DM Sans', system-ui, sans-serif;
+  --qe-sans: 'DM Sans', system-ui, sans-serif;
+  --qe-mono: 'DM Mono', ui-monospace, monospace;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, .18);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, .24);
+  --shadow-lg: 0 24px 70px rgba(0, 0, 0, .5);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, .14);
+  --shadow-card-lg: 0 12px 32px rgba(0, 0, 0, .28);
+  --shadow-accent: 0 0 24px rgba(43, 227, 160, .10);
+  --grad-green: linear-gradient(135deg, #2be3a0, #1ab87e);
+  --grad-blue: linear-gradient(135deg, #82b9ef, #5693cf);
+  --grad-purple: linear-gradient(135deg, #6adacb, #2be3a0);
+  --grad-warm: linear-gradient(135deg, #ecc276, #ce9e4c);
+  --glow-green: 0 0 0 1px rgba(43, 227, 160, .18);
+  --glow-blue: 0 0 0 1px rgba(130, 185, 239, .18);
+}
+
+html,
+html body { background: var(--bg) !important; }
+
+/* Canvas and app chrome. Keep the content clear of decorative backdrops. */
+html body #app#app,
+html body #app#app .main-content,
+html body #app#app .page-content,
+html body :is(#page-agents, #page-markets, #onboarding) {
+  background: var(--bg) !important;
+  color: var(--text-primary) !important;
+}
+html body #app#app .main-content::before,
+html body #app#app .main-content::after { background-image: none !important; }
+html body :is(#qe-topnav, #qe-tn-more-panel, #qe-mdrawer, #qz-market-clock,
+  #qe-watermark, #qe-disclaimer-bar, #qe-cookie-banner),
+html body #app#app :is(.sidebar, .sidebar-user, .top-bar, .section-subtabs,
+  .pt-stat-strip, .pt-tabs, .ais-topbar, .ais-sidebar, .uv-header) {
+  background: var(--surface) !important;
+  border-color: var(--border) !important;
+  box-shadow: none !important;
+}
+html body #app#app .live-ticker-bar { background: var(--surface) !important; }
+
+/* Undo the legacy blanket black text/fill rule, then rebuild a readable hierarchy.
+ * currentColor lets positive/negative labels and their icons inherit together. */
+html body :is(#app, #page-agents, #page-markets, #stock-detail-modal,
+  #qz-lesson-modal, #qe-tour-overlay, #onboarding, #qz-search-overlay,
+  #qz-asset-panel, #qz-copilot-panel, #auth-modal, #qz-auth-overlay,
+  #qe-legal-overlay, #subscription-gate, #qe-topnav, #qe-mdrawer,
+  #qz-market-clock, #qe-watermark, #qe-disclaimer-bar, #qe-cookie-banner,
+  #qz-global-footer-disclaimer, .qz-mentor-card, .modal-overlay) {
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: currentColor !important;
+  font-weight: 400 !important;
+}
+html body :is(#app, #page-agents, #page-markets, #stock-detail-modal,
+  #qz-lesson-modal, #qe-tour-overlay, #onboarding, #qz-search-overlay,
+  #qz-asset-panel, #qz-copilot-panel, #auth-modal, #qz-auth-overlay,
+  #qe-legal-overlay, #subscription-gate, #qe-topnav, #qe-mdrawer,
+  #qz-market-clock, #qe-watermark, #qe-disclaimer-bar, #qe-cookie-banner,
+  #qz-global-footer-disclaimer, .qz-mentor-card, .modal-overlay) :is(*, [class], [style]) {
+  -webkit-text-fill-color: currentColor !important;
+  text-shadow: none !important;
+}
+html body :is(#app, #page-agents, #page-markets, #stock-detail-modal,
+  #qz-lesson-modal, #qe-tour-overlay, #onboarding, #qz-search-overlay,
+  #qz-asset-panel, #qz-copilot-panel, #auth-modal, #qz-auth-overlay,
+  #qe-legal-overlay, #subscription-gate, #qe-topnav, #qe-mdrawer,
+  #qz-market-clock, #qe-watermark, #qe-disclaimer-bar, #qe-cookie-banner,
+  #qz-global-footer-disclaimer, .qz-mentor-card, .modal-overlay) * {
+  color: inherit !important;
+  font-weight: inherit !important;
+}
+html body #app#app { font-weight: 400 !important; }
+html body #app#app * {
+  color: inherit !important;
+  -webkit-text-fill-color: currentColor !important;
+  font-weight: inherit !important;
+}
+html body #app#app :is(h1, h2, h3, h4, h5, .top-bar-title, .qz-home-card-title,
+  .ent-card-title, .ent-sig-ticker, .metric-value, .qz-row-sym,
+  .settings-section-title, .settings-row-label, .qe-daily-title),
+html body :is(#onboarding, #qz-lesson-modal, #qe-tour-overlay, #auth-modal,
+  #qz-auth-overlay, #qe-legal-overlay, .modal-overlay) :is(h1, h2, h3, h4,
+  .modal-title, .qe-tour-title, .gate-title) {
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: currentColor !important;
+  font-weight: 600 !important;
+}
+html body #app#app :is(button, .btn, strong, b, .badge, .nav-item,
+  .qz-subtab, .qz-levelbtn, .qz-row-sym, .qe-tn-pill) {
+  font-weight: 600 !important;
+}
+html body #app#app :is(p, .qz-brief, .qz-coach-note, .qz-coach-sub,
+  .qz-learn-b, .settings-row-sub, .ent-sig-reason, .qz-home-empty,
+  .card-sub, .qz-row-nm, .ent-card-sub, .ent-sig-sub, .ent-sig-metric-val,
+  .ent-sig-metric-lbl, .pt-sub, .pt-card-title, .pt-stat-lbl,
+  .pt-acct-detail, .qe-mth-sub, .qe-rl-sub, .qe-daily-opt,
+  .qz-home-card-act, .qz-coach-check) {
+  color: var(--text-secondary) !important;
+  -webkit-text-fill-color: currentColor !important;
+  font-weight: 400 !important;
+}
+html body #app#app :is([class$="-label"], [class$="-lbl"], [class$="-muted"],
+  [class$="-eyebrow"], .qe-daily-eyebrow, .text-muted) {
+  color: var(--text-muted) !important;
+}
+html body #app#app :is([style*="color:#111827" i], [style*="color: #111827" i],
+  [style*="color:#000" i], [style*="color: #000" i]) {
+  color: var(--text-primary) !important;
+}
+html body #app#app :is([style*="color:#4b5563" i], [style*="color: #4b5563" i],
+  [style*="color:#64748b" i], [style*="color: #64748b" i]) {
+  color: var(--text-secondary) !important;
+}
+
+/* All app card families, including dynamically generated learning and lab tools. */
+html body #app#app :is(.card, .metric-card, .signal-card, .market-card, .ent-card,
+  .ql-card, .qz-card, .qz-home-card, .qz-learn-card, .ent-sig-card, .news-item,
+  .pt-card, .pt-stat, .pt-acct-card, .pt-order-preview, .pt-positions,
+  .heatmap-section, .ent-pf-metric, .ent-pf-table-wrap, .qzbt-config,
+  .settings-section, .settings-row, .glass, .glass-strong,
+  [class*="-card"], [class*="-panel"], [class*="-tile"],
+  [class*="-item"]:not([class*="nav"])),
+html body :is(#page-agents, #page-markets) :is(.card, .agent-card, .market-card, .metric-card) {
+  background: var(--surface) !important;
+  border-color: var(--border) !important;
+  box-shadow: var(--shadow-card) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html body #app#app :is(.qz-home-grid, .qz-learn-rowscroll) > :is(.qz-home-card, .qz-learn-card),
+html body #app#app :is(.ent-sig-card, .news-item):nth-child(n) {
+  border: 1px solid var(--border) !important;
+}
+html body #app#app .qz-home-grid > .qz-home-card:nth-child(n) .qz-home-card-title::before {
+  background: var(--accent) !important;
+}
+html body #app#app :is(.qz-home-card, .qz-learn-card, .ent-sig-card, .card,
+  .metric-card, .market-card, .agent-card, .news-item):hover {
+  border-color: var(--border-medium) !important;
+  box-shadow: var(--shadow-card-lg) !important;
+}
+html body #app#app :is(.chart-container, .chart-container[style], [id$="-chart"],
+  [id*="chart-wrap"], [class*="chart-box"], [class*="-chart-wrap"],
+  .qe-ptc-wrap, .qe-rl-chart, .ql-code-editor, .ql-editor, .code-editor) {
+  background: var(--sink) !important;
+  border-color: var(--border) !important;
+  box-shadow: none !important;
+}
+html body #app#app :is([style*="background:#fff" i], [style*="background: #fff" i],
+  [style*="background:#f8fafc" i], [style*="background: #f8fafc" i],
+  [style*="background:#f1f5f9" i], [style*="background: #f1f5f9" i],
+  [style*="background:rgba(255,255,255" i], [style*="background: rgba(255,255,255" i]) {
+  background: var(--surface2) !important;
+  border-color: var(--border) !important;
+}
+html body #app#app :is([style*="background:linear-gradient" i],
+  [style*="background: linear-gradient" i])[style*="#fff" i] {
+  background: var(--surface) !important;
+  border-color: var(--border) !important;
+}
+html body #app#app .qe-daily-explanation {
+  background: var(--accent-soft) !important;
+  border-color: rgba(43, 227, 160, .25) !important;
+}
+html body #app#app .qe-daily-explanation:not(.show) {
+  opacity: 0 !important;
+  padding-block: 0;
+  margin-top: 0;
+  border-width: 0;
+}
+html body #app#app .qe-daily-title { font-family: var(--font-display) !important; }
+html body #app#app .btn:not(.btn-primary):not(.btn-green):not(.btn-ghost):not(.btn-secondary) {
+  background: var(--surface3) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-medium) !important;
+}
+html body #app#app :is([class*="-empty"], [class*="empty-"], .qz-home-empty) {
+  background: transparent !important;
+  color: var(--text-secondary) !important;
+}
+
+/* Emerald interaction states; active controls share the launch page accent. */
+html body #app#app :is(.nav-item, .qz-subtab, .qz-levelbtn, .tab,
+  .pt-tab, .pt-side-btn, .pt-type-btn, .qe-ptc-tf, .qz-coach-step) {
+  color: var(--text-secondary) !important;
+  background: transparent !important;
+  border-color: var(--border) !important;
+}
+html body #app#app :is(.nav-item, .qz-subtab, .qz-levelbtn, .tab,
+  .pt-tab, .pt-type-btn, .qe-ptc-tf, .qz-coach-step).active,
+html body #app#app .nav-item[onclick].active,
+html body #app#app .qe-ptc-tf[data-active="1"],
+html body #qe-topnav .qe-tn-pill.active {
+  background: var(--accent-soft) !important;
+  color: var(--accent) !important;
+  border-color: rgba(43, 227, 160, .35) !important;
+  box-shadow: none !important;
+}
+html body #app#app :is(.nav-item, .qz-subtab, .qz-levelbtn, .tab, .qe-daily-opt):hover:not(.active),
+html body #qe-topnav .qe-tn-pill:hover {
+  background: var(--qe-hl-strong) !important;
+  color: var(--text-primary) !important;
+}
+html body #app#app :is(.btn-primary, [class*="btn-primary"], .btn-green,
+  .pt-submit-btn.buy),
+html body :is(#onboarding, #auth-modal, #qz-auth-overlay, #qe-legal-overlay,
+  #subscription-gate, #qz-lesson-modal, #stock-detail-modal, .modal-overlay)
+  :is(.btn-primary, [class*="btn-primary"], .lp3-submit),
+html body #qe-tour-overlay .qe-tour-btn-primary,
+html body .qz-mentor-card .qz-mentor-btn-primary,
+html body #qz-copilot-panel .qz-cop-send {
+  background: var(--accent) !important;
+  background-image: none !important;
+  color: #032017 !important;
+  -webkit-text-fill-color: currentColor !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 4px 20px rgba(43, 227, 160, .12) !important;
+  font-weight: 600 !important;
+}
+html body #app#app :is(.btn-primary, [class*="btn-primary"], .btn-green) *,
+html body #qz-copilot-panel .qz-cop-send * {
+  color: inherit !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html body #app#app :is(.btn-primary, [class*="btn-primary"], .btn-green):hover,
+html body :is(#onboarding, #auth-modal, .modal-overlay) .btn-primary:hover,
+html body #qe-tour-overlay .qe-tour-btn-primary:hover {
+  background: var(--accent-2) !important;
+  color: #032017 !important;
+}
+html body #app#app :is(.btn-secondary, .btn-ghost, .pt-new-acct-btn),
+html body #qe-topnav :is(.qe-tn-user, .qe-tn-pill),
+html body #qe-cookie-banner button[onclick*="qeRejectCookies"] {
+  background: var(--surface2) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--border) !important;
+  box-shadow: none !important;
+}
+html body #app#app :is(.btn-violet, .qz-explain, .cmd-agent-query-btn),
+html body #qe-topnav :is(.qe-tn-mark, .qe-tn-ava),
+html body #qe-tour-overlay :is(.qe-tour-orb, .qe-tour-pill),
+html body #app#app .user-avatar {
+  background: var(--accent-soft) !important;
+  color: var(--accent) !important;
+  border-color: rgba(43, 227, 160, .3) !important;
+  -webkit-text-fill-color: currentColor !important;
+  box-shadow: none !important;
+}
+html body #app#app :is(input, textarea, select, option, .input, .pt-acct-select, .search-bar),
+html body :is(#auth-modal, #qz-auth-overlay, #onboarding, #qz-search-overlay,
+  #qz-copilot-panel, .modal-overlay) :is(input, textarea, select, option, .input) {
+  background: var(--sink) !important;
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: currentColor !important;
+  border-color: var(--border) !important;
+  font-weight: 400 !important;
+}
+html body #app#app :is(input, textarea)::placeholder,
+html body :is(#auth-modal, #qz-auth-overlay, #onboarding, #qz-search-overlay,
+  #qz-copilot-panel) :is(input, textarea)::placeholder {
+  color: var(--text-muted) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html body #app#app :is(input, textarea, select):focus,
+html body #app#app :is(button, a):focus-visible,
+html body :is(#auth-modal, #qz-auth-overlay, #onboarding, #qz-copilot-panel) :focus-visible {
+  outline-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px var(--accent-soft) !important;
+}
+
+/* Market semantics stay distinct from neutral text and action controls. */
+html body #app#app :is(.up, .positive, .pos, .tk-pos, .uv-up, .uv3-sig-buy, [class*="-positive"],
+  .qz-row-chg.up, .metric-change.up, .badge-green, .ent-sig-change.up,
+  .pt-side-btn.buy-active, [style*="color:var(--green)"],
+  [style*="color: var(--green)"], [style*="color:#16794a" i],
+  [style*="color:#16a34a" i], [style*="color: #16a34a" i]) {
+  color: var(--green) !important;
+  -webkit-text-fill-color: currentColor !important;
+  font-weight: 600 !important;
+}
+html body #app#app :is(.down, .dn, .negative, .neg, .tk-neg, .uv-down, .uv3-sig-sell, [class*="-negative"],
+  .qz-row-chg.down, .metric-change.down, .badge-red, .ent-sig-change.dn,
+  .pt-side-btn.sell-active, [style*="color:var(--red)"],
+  [style*="color: var(--red)"], [style*="color:#b3453d" i],
+  [style*="color:#dc2626" i], [style*="color: #dc2626" i]) {
+  color: var(--red) !important;
+  -webkit-text-fill-color: currentColor !important;
+  font-weight: 600 !important;
+}
+html body #app#app :is(.badge-yellow, .ent-sig-badge.sig-hold, .uv3-sig-hold, [class*="impact-neutral"],
+  [style*="color:var(--yellow)"], [style*="color: var(--yellow)"]) {
+  color: var(--yellow) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html body #app#app :is(.badge-blue, [style*="color:var(--blue)"], [style*="color: var(--blue)"]) {
+  color: var(--blue) !important;
+}
+html body #app#app :is(.badge-green, .pt-side-btn.buy-active, .ent-sig-badge.sig-buy,
+  .qz-row-chg.up, .metric-change.up, .qe-daily-opt.correct) {
+  background: var(--green-soft) !important;
+  color: var(--green) !important;
+  border-color: rgba(64, 223, 156, .32) !important;
+  box-shadow: none !important;
+}
+html body #app#app :is(.badge-red, .pt-side-btn.sell-active, .ent-sig-badge.sig-sell,
+  .qz-row-chg.down, .metric-change.down, .qe-daily-opt.wrong) {
+  background: var(--red-soft) !important;
+  color: var(--red) !important;
+  border-color: rgba(255, 124, 131, .32) !important;
+  box-shadow: none !important;
+}
+html body #app#app .ent-sig-badge.sig-hold {
+  background: var(--yellow-soft) !important;
+  color: var(--yellow) !important;
+  border-color: rgba(236, 194, 118, .32) !important;
+}
+html body #app#app .pt-submit-btn.sell {
+  background: var(--red) !important;
+  color: #280c10 !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html body #app#app :is(.ent-sig-conf-track, .ent-sig-metric-track) { background: var(--surface4) !important; }
+html body #app#app .ent-sig-conf-fill.conf-hi { background: var(--green) !important; }
+html body #app#app .ent-sig-conf-fill.conf-mid { background: var(--yellow) !important; }
+html body #app#app .ent-sig-conf-fill.conf-lo { background: var(--red) !important; }
+html body #app#app .ent-sig-metric-fill { background: var(--cyan) !important; }
+html body #app#app .toggle { background: var(--surface4) !important; }
+html body #app#app .toggle.on { background: var(--accent) !important; }
+
+/* Tables and learning/trading coach panels. */
+html body #app#app :is(th, thead th, .universe-table thead th) {
+  background: var(--surface2) !important;
+  color: var(--text-muted) !important;
+  -webkit-text-fill-color: currentColor !important;
+  border-color: var(--border) !important;
+}
+html body #app#app :is(td, .universe-table td) { border-color: var(--border-light) !important; }
+html body #app#app tbody tr:nth-child(even) td { background: rgba(176, 215, 207, .025) !important; }
+html body #app#app tbody tr:hover td { background: var(--qe-hl-strong) !important; }
+html body #app#app #qz-coach-panel,
+html body #app#app .qz-coach-ticket {
+  background: linear-gradient(135deg, rgba(43, 227, 160, .055), transparent 75%), var(--surface) !important;
+  border-color: rgba(43, 227, 160, .25) !important;
+}
+html body #app#app .qz-coach-steps .qz-coach-step:nth-of-type(n) { border-top: 1px solid var(--border) !important; }
+html body #app#app .qz-learn-rowscroll .qz-learn-card:nth-child(n) .qz-learn-ic {
+  background: var(--accent-soft) !important;
+  color: var(--accent) !important;
+  border-color: rgba(43, 227, 160, .25) !important;
+}
+html body #app#app :is(.qz-disclaimer-banner, .qe-rl-honesty) {
+  background: var(--accent-soft) !important;
+  border-color: rgba(43, 227, 160, .25) !important;
+}
+html body #app#app .qz-disclaimer-banner strong { color: var(--accent) !important; }
+
+/* Body-mounted dialogs, search, legal consent, and assistant surfaces. */
+html body :is(#qz-search-overlay, #qe-legal-overlay, #qzap-overlay-back,
+  #auth-modal, .agent-drawer-overlay, .qe-policy-modal),
+html body.qe-in-app .modal-overlay:not(#auth-modal),
+html body #app#app :is(#add-position-modal, #pt-new-acct-modal, #cmd-agent-modal) {
+  background: rgba(1, 7, 9, .76) !important;
+}
+html body :is(#qz-search-modal, #qz-asset-panel, #qz-copilot-panel,
+  #qe-tour-card, #qz-auth-overlay .qz-auth-card,
+  #qe-legal-overlay .qe-legal-card, .qe-legal-card, .qz-mentor-card,
+  .modal-overlay .modal, .gate-card, .qe-policy-body,
+  #app #add-position-modal > div, #app #pt-new-acct-modal > div,
+  #app #cmd-agent-modal > div) {
+  background: var(--surface) !important;
+  border-color: var(--border-medium) !important;
+  color: var(--text-primary) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+html body #qe-tour-overlay #qe-tour-card,
+html body.qe-in-app .modal-overlay:not(#auth-modal) .modal {
+  background: var(--surface) !important;
+  border-color: var(--border-medium) !important;
+}
+html body #qz-copilot-panel :is(.qz-cop-action, .qz-cop-ctx-strip, .qz-cop-msg-ai) {
+  background: var(--surface2) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+html body #qz-copilot-panel :is(.qz-cop-msg-user, .qz-cop-action:hover) {
+  background: var(--accent-soft) !important;
+  color: var(--text-primary) !important;
+  border-color: rgba(43, 227, 160, .25) !important;
+}
+html body #qz-copilot-panel :is(.qz-cop-hdr, .qz-cop-msg, .qz-cop-msg *) {
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+html body #qz-asset-panel :is(.qzap-back, .qzap-btn, .qzap-tf),
+html body #qz-auth-overlay :is(.qz-auth-tab, .btn-google) {
+  background: var(--surface2) !important;
+  color: var(--text-secondary) !important;
+  -webkit-text-fill-color: currentColor !important;
+  border-color: var(--border) !important;
+}
+html body #qz-asset-panel :is(.qzap-tf.active, .qzap-btn.watch.active, .qzap-btn.trade),
+html body #qz-auth-overlay .qz-auth-tab.active {
+  background: var(--accent-soft) !important;
+  color: var(--accent) !important;
+  border-color: rgba(43, 227, 160, .3) !important;
+}
+html body :is(#qe-legal-overlay, #qe-disclaimer-bar, #qz-global-footer-disclaimer) a,
+html body #qz-copilot-panel :is(.qz-cop-section-label, .qz-cop-action-arrow),
+html body .qz-mentor-card .qz-mentor-xp { color: var(--accent) !important; }
+html body :is(#qz-market-clock .qz-mc-tz, #qz-market-clock .qz-mc-bottom,
+  #qz-market-clock .qz-mc-cd, #qe-disclaimer-bar, #qz-global-footer-disclaimer),
+html body #qz-copilot-panel :is(.qz-cop-ctx-strip-pg, .qz-cop-hdr-btn) {
+  color: var(--text-secondary) !important;
+}
+html body #onboarding .onboarding-header { background: var(--surface) !important; border-color: var(--border) !important; }
+html body #onboarding .onboarding-step-title {
+  background: none !important;
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html body #onboarding :is(.option-item.selected, .onboarding-step-num) {
+  background: var(--accent-soft) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+html body #onboarding .onboarding-progress-fill,
+html body #qe-tour-overlay .qe-tour-progress-fill { background: var(--accent) !important; }
+
+/* Notifications and progress dialogs are injected after the app starts. */
+html body :is(#qz-global-footer-disclaimer, #hud-toggle-btn, #qe-mobile-search-btn,
+  #qe-shortcuts .qe-shortcut, #qe-orb-dismiss, #qz-xp-toast-stack .qz-xp-toast,
+  #qz-xp-toast-stack .qz-ach-toast, #qz-levelup-overlay .qz-lu-card,
+  #qz-quest-modal, #qz-padd-modal) {
+  background: var(--surface2) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-medium) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+html body :is(#qz-levelup-overlay, #qz-quest-modal-back, #qz-padd-modal-back) {
+  background: rgba(1, 7, 9, .8) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+html body :is(#qz-levelup-overlay, #qz-quest-modal, #qz-padd-modal,
+  #qz-xp-toast-stack, #qz-global-footer-disclaimer) :is(*, [class], [style]),
+html body #qz-market-clock .qz-mc-time {
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html body #qz-levelup-overlay :is(.qz-lu-eyebrow, .qz-lu-lvl),
+html body #qz-xp-toast-stack :is(.qz-xp-toast-amt, .qz-ach-eyebrow),
+html body #qz-global-footer-disclaimer a {
+  color: var(--accent) !important;
+  background-image: none !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html body #qz-levelup-overlay :is(.qz-lu-sub),
+html body #qz-xp-toast-stack :is(.qz-xp-toast-lbl, .qz-ach-desc),
+html body #qz-global-footer-disclaimer {
+  color: var(--text-secondary) !important;
+}
+html body #qz-levelup-overlay .qz-lu-btn,
+html body #qe-menu-fab {
+  background: var(--accent) !important;
+  color: #032017 !important;
+  -webkit-text-fill-color: currentColor !important;
+  border-color: var(--accent) !important;
+}
+html body #app#app button[style*="linear-gradient"][style*="var(--accent)"] {
+  background: var(--accent) !important;
+  color: #032017 !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html body #qe-mobile-search-btn svg { stroke: var(--text-primary) !important; }
+html body #qz-levelup-overlay .qz-lu-card {
+  min-width: 0;
+  width: min(440px, calc(100vw - 32px));
+  box-sizing: border-box;
+}
+html body #qz-xp-toast-stack { max-width: calc(100vw - 36px); }
+html body #qz-xp-toast-stack :is(.qz-xp-toast, .qz-ach-toast) {
+  min-width: 0;
+  max-width: 100%;
+}
+
+html body #app#app ::selection { background: rgba(43, 227, 160, .25); color: var(--text-primary); }
+html body #app#app ::-webkit-scrollbar-thumb,
+html body::-webkit-scrollbar-thumb { background: #315257; border-color: var(--bg); }
+html body #app#app * { scrollbar-color: #315257 transparent; }
