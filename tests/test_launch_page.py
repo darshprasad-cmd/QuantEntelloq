@@ -46,6 +46,23 @@ class LaunchPageContract(unittest.TestCase):
         for value in assets:
             self.assertTrue((ROOT / value).is_file(), value)
 
+    def test_founder_and_method_are_public_sections(self):
+        sections = {attrs.get("id") for tag, attrs in self.markup.elements if tag == "section"}
+        for section in ("lp3-about", "lp3-method", "lp3-faq", "qlaunch-network"):
+            self.assertIn(section, sections)
+        portraits = [attrs for tag, attrs in self.markup.elements if tag == "img" and "Darsh Prasad" in attrs.get("alt", "")]
+        self.assertTrue(portraits)
+
+    def test_sibling_apps_have_direct_links_and_shared_switcher(self):
+        destinations = {attrs.get("href") for tag, attrs in self.markup.elements if tag == "a"}
+        for destination in ("https://entelloq.com", "https://physics.entelloq.com", "https://biology.entelloq.com", "mailto:entelloqnetworks@gmail.com"):
+            self.assertIn(destination, destinations)
+        launchers = [attrs for _, attrs in self.markup.elements if attrs.get("id") == "eqx-fab"]
+        self.assertEqual(len(launchers), 1)
+        for _, attrs in self.markup.elements:
+            if "data-qlaunch-switch" in attrs:
+                self.assertEqual(attrs.get("aria-controls"), "eqx-panel")
+
 
 if __name__ == "__main__":
     unittest.main()

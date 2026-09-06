@@ -22,6 +22,15 @@
     });
   });
   root.addEventListener('click', function (event) {
+    var appSwitch = event.target.closest('[data-qlaunch-switch]');
+    if (appSwitch) {
+      event.preventDefault();
+      event.stopPropagation();
+      closeMenu();
+      var launcher = document.getElementById('eqx-fab');
+      if (launcher) launcher.click();
+      return;
+    }
     var close = event.target.closest('[data-qlaunch-close]');
     if (close) { close.closest('dialog').close(); return; }
     var open = event.target.closest('[data-qlaunch-dialog]');
@@ -38,6 +47,14 @@
   });
   var menu = document.getElementById('qlaunch-menu');
   var navigation = document.getElementById('qlaunch-navigation');
+  var appLauncher = document.getElementById('eqx-fab');
+  if (appLauncher) {
+    new MutationObserver(function () {
+      root.querySelectorAll('[data-qlaunch-switch]').forEach(function (trigger) {
+        trigger.setAttribute('aria-expanded', appLauncher.getAttribute('aria-expanded') || 'false');
+      });
+    }).observe(appLauncher, { attributes: true, attributeFilter: ['aria-expanded'] });
+  }
   function closeMenu() { navigation.removeAttribute('data-open'); menu.setAttribute('aria-expanded', 'false'); }
   menu.addEventListener('click', function () {
     var open = menu.getAttribute('aria-expanded') !== 'true';
