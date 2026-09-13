@@ -1,0 +1,125 @@
+/* App navigation and small-screen controls. Native dialog supplies focus
+ * containment and keeps the menu above every older floating app widget. */
+html body #qe-app-menu {
+  box-sizing: border-box;
+  width: min(520px, calc(100vw - 24px));
+  max-width: none;
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 0 20px 20px;
+  border: 1px solid #2b514b;
+  border-radius: 20px;
+  background: #081b1d;
+  color: #effbf5;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  box-shadow: 0 24px 80px #0009;
+}
+html body #qe-app-menu::backdrop { background: #010708bf; backdrop-filter: blur(8px); }
+html body #qe-app-menu * { box-sizing: border-box; -webkit-text-fill-color: currentColor; }
+html body #qe-app-menu .qe-app-menu-header {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  position: sticky; top: 0; padding: 20px 0 16px;
+  background: #081b1d; border-bottom: 1px solid #2b514b; z-index: 1;
+}
+html body #qe-app-menu small { display: block; color: #65e7b0; font-size: 10px; letter-spacing: .16em; margin-bottom: 6px; }
+html body #qe-app-menu h2 { margin: 0; color: #effbf5; font-size: 20px; font-weight: 600; line-height: 1.25; }
+html body #qe-app-menu h3 { margin: 22px 0 8px; color: #a9c5bf; font-size: 12px; font-weight: 600; }
+html body #qe-app-menu .qe-app-menu-close {
+  flex-shrink: 0; width: 44px; height: 44px; border: 1px solid #345952;
+  border-radius: 12px; color: #effbf5; background: #102b2b; font-size: 24px; cursor: pointer;
+}
+html body #qe-app-menu .qe-app-menu-group > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+html body #qe-app-menu [data-app-page] {
+  min-width: 0; min-height: 48px; padding: 11px 12px;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  border: 1px solid #294944; border-radius: 10px; background: #102628;
+  color: #effbf5; font: inherit; font-size: 13px; text-align: left; cursor: pointer;
+}
+html body #qe-app-menu [data-app-page] span { color: #86a9a0; }
+html body #qe-app-menu [data-app-page]:hover,
+html body #qe-app-menu [aria-current="page"] { background: #123b32; border-color: #3de6a0; color: #7af2be; }
+html body #qe-app-menu :focus-visible,
+html body #app :is(.qe-tn-mitem, .qzsc-crisis-card, #qe-tn-logo, #qe-tn-user, [onclick^="qzLearnOpen("]):focus-visible {
+  outline: 2px solid #64f3b8 !important; outline-offset: 3px;
+}
+html body #qe-app-menu-toggle { display: none; }
+html body.qe-in-app :is(#qz-lesson-modal, #qe-markets-overlay, #qe-share-overlay,
+  #qz-search-overlay, #stock-detail-modal, .modal-overlay) { z-index: 100010 !important; }
+html body.qe-in-app #qz-lesson-modal button[aria-label="Close lesson"] {
+  min-width: 44px !important; min-height: 44px !important; flex-shrink: 0;
+  border: 1px solid #345952 !important; border-radius: 10px !important;
+}
+html body #app .page-content { padding-bottom: calc(var(--qz-dockb, 16px) + 110px) !important; }
+
+@media (max-width: 900px) {
+  html { scroll-padding-bottom: calc(var(--qz-dockb, 16px) + 80px); }
+  html body.qe-in-app::after {
+    content: ""; position: fixed; inset: auto 0 0; height: calc(var(--qz-dockb, 16px) + 64px);
+    z-index: 2300; pointer-events: none;
+    background: linear-gradient(180deg, transparent, rgba(3, 12, 14, .96) 28%);
+  }
+  /* Full destinations live in the menu, so the header never crops half a pill. */
+  html body #app #qe-topnav .qe-tn-inner {
+    min-height: 64px !important; height: auto !important;
+    padding: 8px 14px !important; gap: 12px !important;
+    justify-content: space-between !important;
+  }
+  html body #app #qe-topnav .qe-tn-pills { display: none !important; }
+  html body #app #qe-topnav .qe-tn-logo { min-height: 44px; gap: 8px; }
+  html body #app #qe-topnav .qe-tn-mark { width: 30px; height: 30px; }
+  html body #app #qe-topnav .qe-tn-word { display: block !important; font-size: 15px !important; }
+  html body #app #qe-topnav .qe-tn-right { gap: 8px !important; margin-left: auto; }
+  html body #app #qe-topnav .qe-tn-user { display: none !important; }
+  html body #app #qe-app-menu-toggle {
+    display: inline-flex !important; align-items: center; justify-content: center; gap: 8px;
+    min-height: 44px; padding: 0 12px; border: 1px solid #345952;
+    border-radius: 12px; background: #102628; color: #effbf5;
+    font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  html body #app #qe-mobile-search-btn {
+    position: static !important; display: flex !important; flex-shrink: 0;
+    width: 44px !important; height: 44px !important; min-height: 44px;
+    margin: 0 !important; transform: none !important;
+    border: 1px solid #345952 !important; border-radius: 12px !important;
+    background: #102628 !important; color: #effbf5 !important;
+  }
+  html body.qe-in-app #qe-menu-fab { display: none !important; }
+  html body #app .top-bar {
+    display: flex !important; align-items: center !important; justify-content: space-between !important;
+    flex-wrap: nowrap !important; min-height: 66px !important; height: auto !important;
+    padding: 10px 18px !important; gap: 12px !important;
+  }
+  html body #app #page-title { display: block !important; min-width: 0; flex: 1; font-size: 18px !important; line-height: 1.25 !important; }
+  html body #app #page-title small { display: block !important; font-size: 11px !important; margin-top: 4px; white-space: normal; }
+  html body #app #qe-share-btn {
+    min-width: 44px !important; width: 44px !important; height: 44px !important;
+    padding: 0 !important; justify-content: center !important; margin: 0 !important;
+  }
+  html body #app .top-bar > div:last-child { flex: 0 0 auto !important; }
+  html body.qe-in-app #qz-copilot-dock {
+    width: 48px !important; height: 48px !important; right: 16px !important;
+    bottom: var(--qz-dockb, 16px) !important; transform: none !important;
+  }
+  html body.qe-in-app #qe-orb-dismiss {
+    bottom: calc(var(--qz-dockb, 16px) + 44px) !important;
+    right: 12px !important; width: 28px !important; height: 28px !important;
+  }
+  html body.qe-in-app #qe-tour-replay {
+    width: 44px !important; height: 44px !important; min-height: 44px;
+    left: 144px !important; bottom: var(--qz-dockb, 16px) !important;
+  }
+  html body.qe-in-app #eqx-fab { min-height: 44px; left: 14px !important; transform: none !important; }
+  html body.qe-in-app #qe-help-menu { bottom: calc(var(--qz-dockb, 16px) + 60px) !important; }
+}
+@media (max-width: 360px) {
+  html body #app #qe-topnav .qe-tn-word { font-size: 13px !important; }
+  html body #app #qe-topnav .qe-tn-inner { padding-inline: 10px !important; gap: 8px !important; }
+  html body #app #qe-topnav .qe-tn-right { gap: 6px !important; }
+  html body #app #qe-app-menu-toggle { padding-inline: 9px; }
+  html body #qe-app-menu { padding-inline: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #qe-app-menu, html body #qe-app-menu * { scroll-behavior: auto; transition: none; }
+}
