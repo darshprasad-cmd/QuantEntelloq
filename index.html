@@ -16385,16 +16385,27 @@ body:not(.qe-in-app) #qe-trading-bg {
    assumed — and re-measured on rotation. Cheap: event-driven, no polling. */
 (function(){
   var last = -1;
+  var measuredBar = null, barObserver = null;
   function sync(){
     try{
       var bar = document.getElementById('qe-disclaimer-bar');
+      if (bar && bar !== measuredBar) {
+        if (barObserver) barObserver.disconnect();
+        if (measuredBar) measuredBar.removeEventListener('transitionend', sync);
+        measuredBar = bar;
+        barObserver = new MutationObserver(sync);
+        barObserver.observe(bar, { attributes:true, attributeFilter:['class','style'] });
+        bar.addEventListener('transitionend', sync);
+      }
       var h = 0;
       if (bar) {
         var cs = getComputedStyle(bar);
         if (cs.display !== 'none' && cs.visibility !== 'hidden' && +cs.opacity !== 0) {
           var r = bar.getBoundingClientRect();
           /* only count it if it actually sits on screen at the bottom */
-          if (r.height > 0 && r.bottom > window.innerHeight - 4) h = r.height;
+          if (r.height > 0 && r.top < window.innerHeight && r.bottom > window.innerHeight - 4) {
+            h = Math.min(r.height, window.innerHeight - Math.max(0, r.top));
+          }
         }
       }
       var v = Math.round(h) + 14;
@@ -16411,11 +16422,14 @@ body:not(.qe-in-app) #qe-trading-bg {
   [400, 1200, 2500, 5000].forEach(function(t){ setTimeout(sync, t); });
 })();
 </script>
-<link rel="stylesheet" href="css/quant-theme.css?v=20260906-1">
+<link rel="stylesheet" href="css/quant-theme.css?v=20260914-1">
+<link rel="stylesheet" href="css/quant-app-scene.css?v=20260914-1">
+<link rel="stylesheet" href="css/quant-app-ui.css?v=20260914-1">
 <link rel="stylesheet" href="css/quant-launch.css?v=20260906-2">
 <link rel="stylesheet" href="css/quant-story.css?v=20260906-2">
 <script defer src="js/quant-launch.js?v=20260906-2"></script>
-<script defer src="js/app.min.js?v=20260906-1"></script>
+<script defer src="js/app.min.js?v=20260914-1"></script>
+<script defer src="js/quant-app-ui.js?v=20260914-1"></script>
 <!-- ENTELLOQ-ECOSYSTEM-SWITCHER:START -->
 <!-- ============================================================
      ENTELLOQ ECOSYSTEM SWITCHER  ·  shared across every Entelloq app

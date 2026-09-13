@@ -1,0 +1,44 @@
+/* Continue the launch landscape behind the working app. #app already creates
+ * a stacking context; its fixed, non-interactive backdrop stays behind content
+ * without changing the position of menus, dialogs or the scrolling workspace. */
+html body #app#app {
+  background: transparent !important;
+}
+
+html body #app#app::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: #030c0e;
+  background-image:
+    linear-gradient(180deg, rgba(3, 12, 14, .26), rgba(3, 12, 14, .62) 65%, #030c0e),
+    url("../assets/quant-horizon.png");
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
+html body #app#app :is(.main-content, .page-content, #page-agents, #page-markets) {
+  background: transparent !important;
+}
+
+/* Dense information keeps the solid, high-contrast surfaces from quant-theme.
+ * The landscape is visible in the space around them, including on small screens. */
+html body.qe-in-app :is(#qe-trading-bg, #qe-math-layer, #qe-trade-tape) {
+  visibility: hidden !important;
+}
+
+@media (max-width: 600px) {
+  html body #app#app::before {
+    background-position: 58% top;
+  }
+}
+
+@media (forced-colors: active) {
+  html body #app#app::before {
+    background-image: none;
+    background-color: Canvas;
+  }
+}

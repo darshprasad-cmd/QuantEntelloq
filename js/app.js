@@ -831,7 +831,7 @@ function showPage(page, navEl) {
   if(page === 'dashboard') setTimeout(renderHome, 20);
   if(page === 'paper')     setTimeout(function(){ try { qzCoachEnsure(); } catch(e){} }, 30);
   if(page === 'reports')   setTimeout(renderReports, 50);
-  if(page === 'scenario')  setTimeout(renderScenarioChart, 350);
+  if(page === 'scenario')  setTimeout(calcScenario, 350);
   if(page === 'backtest')  document.getElementById('bt-results').classList.add('hidden');
   if(page === 'settings') { const lvlSel = document.getElementById('ai-level-setting'); if(lvlSel && window.state && state.profile && state.profile.level) lvlSel.value = state.profile.level; }
   if(page === 'agents')    setTimeout(renderAgentSystem, 50);
@@ -2599,12 +2599,12 @@ function renderScenarioChart(portfolioData, benchData, containerId, height) {
 
 // --- Crisis scenarios ---
 const _CRISES = {
-  gfc:    { name:'2008 GFC', equityDD:-0.568, bondGain:0.18, duration:18, recovery:48, color:'#DC2626' },
-  covid:  { name:'COVID-19', equityDD:-0.339, bondGain:0.08, duration:2,  recovery:5,  color:'#B45309' },
-  dotcom: { name:'Dot-com',  equityDD:-0.491, bondGain:0.22, duration:30, recovery:84, color:'#14B8A6' },
-  '1987': { name:'Black Monday', equityDD:-0.226, bondGain:0.06, duration:1, recovery:24, color:'#0F766E' },
-  '2022': { name:'Rate Hike 2022', equityDD:-0.254, bondGain:-0.18, duration:9, recovery:15, color:'#1E3A8A' },
-  '1973': { name:'Oil Crisis 1973', equityDD:-0.482, bondGain:0.05, duration:22, recovery:96, color:'#16A34A' },
+  gfc:    { name:'2008 GFC', equityDD:-0.568, bondGain:0.18, duration:18, recovery:48, color:'#ff7c83' },
+  covid:  { name:'COVID-19', equityDD:-0.339, bondGain:0.08, duration:2,  recovery:5,  color:'#ecc276' },
+  dotcom: { name:'Dot-com',  equityDD:-0.491, bondGain:0.22, duration:30, recovery:84, color:'#6adacb' },
+  '1987': { name:'Black Monday', equityDD:-0.226, bondGain:0.06, duration:1, recovery:24, color:'#2be3a0' },
+  '2022': { name:'Rate Hike 2022', equityDD:-0.254, bondGain:-0.18, duration:9, recovery:15, color:'#82b9ef' },
+  '1973': { name:'Oil Crisis 1973', equityDD:-0.482, bondGain:0.05, duration:22, recovery:96, color:'#40df9c' },
 };
 let _tvCrisisChart = null;
 function _qzscRunCrisis() {
@@ -8197,7 +8197,7 @@ window.addEventListener('resize', () => {
     if (_tvPortChart) _tvPortChart.applyOptions({ width: document.getElementById('main-chart')?.offsetWidth || 600 });
     renderSentimentChart();
   }
-  if(state.currentPage === 'scenario') renderScenarioChart();
+  if(state.currentPage === 'scenario') calcScenario();
 });
 
 // ==================== LANDING PAGE CHARTS ====================
@@ -30299,12 +30299,12 @@ async function qzCoachReview() {
     var base = Y(1);
     return '<svg viewBox="0 0 '+W+' '+Hh+'" xmlns="http://www.w3.org/2000/svg">'
       + '<defs><linearGradient id="qeRlEq" x1="0" y1="0" x2="0" y2="1">'
-      + '<stop offset="0" stop-color="#16A34A" stop-opacity=".34"/><stop offset="1" stop-color="#16A34A" stop-opacity="0"/></linearGradient></defs>'
-      + '<line x1="'+pad+'" y1="'+base.toFixed(1)+'" x2="'+(W-pad)+'" y2="'+base.toFixed(1)+'" stroke="#6b6790" stroke-width="1" stroke-dasharray="3 4" opacity=".5"/>'
+      + '<stop offset="0" stop-color="#40df9c" stop-opacity=".34"/><stop offset="1" stop-color="#40df9c" stop-opacity="0"/></linearGradient></defs>'
+      + '<line x1="'+pad+'" y1="'+base.toFixed(1)+'" x2="'+(W-pad)+'" y2="'+base.toFixed(1)+'" stroke="#8da6a8" stroke-width="1" stroke-dasharray="3 4" opacity=".5"/>'
       + '<path d="'+area+'" fill="url(#qeRlEq)"/>'
-      + '<path d="'+d+'" fill="none" stroke="#16A34A" stroke-width="2.2" stroke-linejoin="round"/>'
-      + '<text x="'+pad+'" y="14" fill="#64748B" font-family="DM Mono,monospace" font-size="10">growth of $1 · L/S portfolio</text>'
-      + '<text x="'+(W-pad)+'" y="14" text-anchor="end" fill="#16A34A" font-family="DM Mono,monospace" font-size="11">$'+eq[n-1].toFixed(2)+'</text>'
+      + '<path d="'+d+'" fill="none" stroke="#40df9c" stroke-width="2.2" stroke-linejoin="round"/>'
+      + '<text x="'+pad+'" y="14" fill="#a5b6b8" font-family="DM Mono,monospace" font-size="10">growth of $1 · L/S portfolio</text>'
+      + '<text x="'+(W-pad)+'" y="14" text-anchor="end" fill="#40df9c" font-family="DM Mono,monospace" font-size="11">$'+eq[n-1].toFixed(2)+'</text>'
       + '</svg>';
   }
 
@@ -30315,15 +30315,15 @@ async function qzCoachReview() {
     if(xhi-xlo<1e-6){xlo-=1;xhi+=1;} if(yhi-ylo<1e-6){ylo-=.01;yhi+=.01;}
     function X(v){ return pad + (W-2*pad)*((v-xlo)/(xhi-xlo)); }
     function Y(v){ return Hh-pad - (Hh-2*pad)*((v-ylo)/(yhi-ylo)); }
-    var dots=''; for(var i=0;i<pts.length;i++){ dots += '<circle cx="'+X(pts[i][0]).toFixed(1)+'" cy="'+Y(pts[i][1]).toFixed(1)+'" r="2.6" fill="#0F766E" opacity=".55"/>'; }
+    var dots=''; for(var i=0;i<pts.length;i++){ dots += '<circle cx="'+X(pts[i][0]).toFixed(1)+'" cy="'+Y(pts[i][1]).toFixed(1)+'" r="2.6" fill="#6adacb" opacity=".55"/>'; }
     var x1=xlo, x2=xhi, y1=reg.intercept+reg.slope*x1, y2=reg.intercept+reg.slope*x2;
     var zeroY = (0>=ylo&&0<=yhi) ? Y(0) : null;
-    var line = '<line x1="'+X(x1).toFixed(1)+'" y1="'+Y(y1).toFixed(1)+'" x2="'+X(x2).toFixed(1)+'" y2="'+Y(y2).toFixed(1)+'" stroke="#0F766E" stroke-width="2.4"/>';
+    var line = '<line x1="'+X(x1).toFixed(1)+'" y1="'+Y(y1).toFixed(1)+'" x2="'+X(x2).toFixed(1)+'" y2="'+Y(y2).toFixed(1)+'" stroke="#6adacb" stroke-width="2.4"/>';
     return '<svg viewBox="0 0 '+W+' '+Hh+'" xmlns="http://www.w3.org/2000/svg">'
-      + (zeroY!==null? '<line x1="'+pad+'" y1="'+zeroY.toFixed(1)+'" x2="'+(W-pad)+'" y2="'+zeroY.toFixed(1)+'" stroke="#6b6790" stroke-width="1" stroke-dasharray="3 4" opacity=".45"/>':'')
+      + (zeroY!==null? '<line x1="'+pad+'" y1="'+zeroY.toFixed(1)+'" x2="'+(W-pad)+'" y2="'+zeroY.toFixed(1)+'" stroke="#8da6a8" stroke-width="1" stroke-dasharray="3 4" opacity=".45"/>':'')
       + dots + line
-      + '<text x="'+pad+'" y="14" fill="#64748B" font-family="DM Mono,monospace" font-size="10">forward 21d return (demeaned) vs factor z-score</text>'
-      + '<text x="'+(W-pad)+'" y="'+(Hh-8)+'" text-anchor="end" fill="#0F766E" font-family="DM Mono,monospace" font-size="10">slope '+sgn(reg.slope*100,2)+'%/σ</text>'
+      + '<text x="'+pad+'" y="14" fill="#a5b6b8" font-family="DM Mono,monospace" font-size="10">forward 21d return (demeaned) vs factor z-score</text>'
+      + '<text x="'+(W-pad)+'" y="'+(Hh-8)+'" text-anchor="end" fill="#6adacb" font-family="DM Mono,monospace" font-size="10">slope '+sgn(reg.slope*100,2)+'%/σ</text>'
       + '</svg>';
   }
 

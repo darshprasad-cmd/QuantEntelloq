@@ -535,18 +535,18 @@ html body #qe-tour-overlay .qe-tour-progress-fill { background: var(--accent) !i
 html body :is(#qz-global-footer-disclaimer, #hud-toggle-btn, #qe-mobile-search-btn,
   #qe-shortcuts .qe-shortcut, #qe-orb-dismiss, #qz-xp-toast-stack .qz-xp-toast,
   #qz-xp-toast-stack .qz-ach-toast, #qz-levelup-overlay .qz-lu-card,
-  #qz-quest-modal, #qz-padd-modal) {
+  #qz-quest-modal-body, #qz-padd-body) {
   background: var(--surface2) !important;
   color: var(--text-primary) !important;
   border-color: var(--border-medium) !important;
   box-shadow: var(--shadow-md) !important;
 }
-html body :is(#qz-levelup-overlay, #qz-quest-modal-back, #qz-padd-modal-back) {
+html body :is(#qz-levelup-overlay, #qz-quest-modal-back, #qz-padd-back) {
   background: rgba(1, 7, 9, .8) !important;
   backdrop-filter: blur(8px) !important;
   -webkit-backdrop-filter: blur(8px) !important;
 }
-html body :is(#qz-levelup-overlay, #qz-quest-modal, #qz-padd-modal,
+html body :is(#qz-levelup-overlay,
   #qz-xp-toast-stack, #qz-global-footer-disclaimer) :is(*, [class], [style]),
 html body #qz-market-clock .qz-mc-time {
   color: var(--text-primary) !important;
@@ -592,3 +592,210 @@ html body #app#app ::selection { background: rgba(43, 227, 160, .25); color: var
 html body #app#app ::-webkit-scrollbar-thumb,
 html body::-webkit-scrollbar-thumb { background: #315257; border-color: var(--bg); }
 html body #app#app * { scrollbar-color: #315257 transparent; }
+
+/* A few older tools mount outside the app or build their own white surfaces.
+ * Keep those surfaces in the same dark palette, including their empty states. */
+html body #app#app :is(.qe-pg2-table-shell, .qe-pg2-table,
+  .qe-pg2-table tbody, .qe-pg2-table tbody tr, #qe-daily-card),
+html body :is(#page-agents, #page-markets) :is(.universe-stat, .world-clock-item) {
+  background: var(--surface) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+html body #app#app .qe-daily-opt:not(.correct):not(.wrong) {
+  background: var(--surface2) !important;
+  color: var(--text-secondary) !important;
+}
+html body #app#app .qe-daily-opt:not(.correct):not(.wrong):hover {
+  background: var(--surface3) !important;
+  color: var(--text-primary) !important;
+}
+html body #app#app :is(.qe-agent-mono, .cmd-agent-output, .qe-side-stat, #qe-studio-side),
+html body :is(#page-agents, #page-markets) .qe-hud-stat {
+  background: var(--surface2) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+html body #app#app :is(.qe-pg2-action, .qe-pg2-chip) {
+  background: var(--surface2) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--border-medium) !important;
+}
+html body #app#app :is(.qe-pg2-action:hover, .qe-pg2-chip.active) {
+  background: var(--accent-soft) !important;
+  color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+html body #app#app :is(.qe-pg2-side-buy, .qe-pg2-signal.buy),
+html body :is(#page-agents, #page-markets) :is(.wc-status.open, [style*="color:var(--green)"]) {
+  color: var(--green) !important;
+}
+html body #app#app :is(.qe-pg2-side-sell, .qe-pg2-signal.sell),
+html body #page-markets .wc-status.closed { color: var(--red) !important; }
+html body #app#app .qe-pg2-signal.buy { background: var(--green-soft) !important; }
+html body #app#app .qe-pg2-signal.sell { background: var(--red-soft) !important; }
+html body #app#app .qe-pg2-signal.hold {
+  background: var(--yellow-soft) !important;
+  color: var(--yellow) !important;
+}
+html body :is(#page-agents, #page-markets) :is(.universe-stat-label,
+  .universe-stat-sub, .wc-city) { color: var(--text-secondary) !important; }
+html body :is(#page-agents, #page-markets) .universe-stat-val {
+  background: none !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* Policy sheets and Market Hours used a white gradient behind white text. */
+html body :is(.qe-policy-sheet, #qe-markets-overlay .qe-overlay-panel,
+  #agent-drawer, #qz-quest-modal-body, #qz-padd-body) {
+  background: var(--surface) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-medium) !important;
+  color-scheme: dark;
+}
+html body :is(.qe-policy-sheet, #qe-markets-overlay, #agent-drawer,
+  #qz-quest-modal-body, #qz-padd-body) * {
+  -webkit-text-fill-color: currentColor !important;
+  text-shadow: none !important;
+}
+html body .qe-policy-sheet :is(h2, h3, strong) { color: var(--text-primary) !important; }
+html body .qe-policy-sheet :is(p, li, code),
+html body .qe-policy-sheet > div:first-child > div > div:last-child,
+html body .qe-policy-header > div > div { color: var(--text-secondary) !important; }
+html body .qe-policy-sheet :is(a, [style*="color:#0F766E" i]) {
+  color: var(--accent) !important;
+}
+html body .qe-policy-sheet :is(.qe-policy-warn, [style*="color:#B3453D" i]) {
+  color: var(--red) !important;
+}
+html body #qe-markets-overlay .qe-overlay-backdrop {
+  background: rgba(1, 7, 9, .76) !important;
+}
+html body #qz-lesson-modal { background: rgba(1, 7, 9, .76) !important; }
+html body #qz-lesson-modal .btn:not(.btn-primary) {
+  background: var(--surface3) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-medium) !important;
+}
+html body #qe-markets-overlay .qe-overlay-market {
+  background: var(--surface2) !important;
+  border-color: var(--border) !important;
+}
+html body #qe-markets-overlay :is(.qe-hud-title, .qe-overlay-market-name) {
+  background: none !important;
+  color: var(--text-primary) !important;
+}
+html body #qe-markets-overlay :is(.qe-overlay-market-meta, #qe-overlay-clock) {
+  color: var(--text-secondary) !important;
+}
+
+/* The injected portfolio and quest dialogs use their current DOM identifiers. */
+html body :is(#qz-padd-body, #agent-drawer) :is(input, textarea, select) {
+  background: var(--sink) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-medium) !important;
+}
+html body :is(#qz-padd-body, #agent-drawer) :is(input, textarea)::placeholder {
+  color: var(--text-muted) !important;
+  opacity: 1;
+}
+html body :is(#qz-padd-body, #qz-quest-modal-body) :is(button, input, textarea):focus-visible,
+html body :is(.qe-policy-sheet, #qe-markets-overlay, #agent-drawer) :is(button, a, input, textarea):focus-visible {
+  outline: 2px solid var(--accent) !important;
+  outline-offset: 3px;
+}
+html body :is(#qz-padd-body, #qz-quest-modal-body) :is(.qz-padd-result,
+  .qz-quest-item, .qz-ach-card) {
+  background: var(--surface2) !important;
+  border-color: var(--border) !important;
+}
+html body #qz-padd-body .qz-padd-btn,
+html body #agent-drawer .btn-primary {
+  background: var(--accent) !important;
+  color: #032017 !important;
+  border-color: var(--accent) !important;
+}
+html body #qz-quest-modal-body :is(.qz-quest-mono, .qz-quest-xp) {
+  background: var(--accent-soft) !important;
+  color: var(--accent) !important;
+}
+html body #qz-quest-modal-body .qz-quest-mono { font-size: 14px !important; }
+html body #qz-quest-modal-body [style*="background:linear-gradient(90deg"] {
+  background: var(--accent) !important;
+}
+html body #qz-quest-modal-body .qz-quest-item.done,
+html body #qz-quest-modal-body .qz-ach-card.locked { opacity: 1; }
+html body #qz-quest-modal-body .qz-quest-item.done .qz-quest-check {
+  background: var(--green) !important;
+  color: #032017 !important;
+}
+html body #qz-quest-modal-body .qz-ach-badge {
+  background: var(--accent-soft) !important;
+  color: var(--accent) !important;
+}
+html body #qz-quest-modal-body .qz-ach-card.locked .qz-ach-badge {
+  opacity: 1;
+  background: var(--sink) !important;
+  color: var(--text-secondary) !important;
+  border: 1px dashed var(--border-medium);
+}
+html body :is(#qz-padd-body, #qz-quest-modal-body) :is(.qz-padd-tab, .qz-quest-tab).active {
+  color: var(--accent) !important;
+  border-bottom-color: var(--accent) !important;
+}
+
+/* Research results are created only after running an experiment. */
+html body #app#app .qe-rl-stat {
+  background: var(--surface) !important;
+  border-color: var(--border) !important;
+}
+html body #app#app .qe-rl-run {
+  background: var(--accent) !important;
+  color: #032017 !important;
+}
+html body #app#app .qe-rl-run:hover { background: var(--accent-2) !important; }
+html body #app#app .qe-rl-hypo {
+  background: var(--surface2) !important;
+  border-color: var(--border-medium) !important;
+}
+html body #app#app .qe-rl-hypo.sel {
+  background: var(--accent-soft) !important;
+  border-color: var(--accent) !important;
+}
+html body #app#app :is(.qe-rl-note, .qe-rl-hypo .ds, .qe-rl-stat .k,
+  .qe-rl-stat .t, .qe-rl-spec .row span:first-child) { color: var(--text-secondary) !important; }
+html body #app#app :is(.qe-rl-step.done, .qe-rl-note b) { color: var(--accent) !important; }
+html body #app#app .qe-rl-step.done b,
+html body #app#app .qe-rl-verdict.go .badge {
+  background: var(--green) !important;
+  color: #032017 !important;
+}
+html body #app#app .qe-rl-verdict.no .badge {
+  background: var(--red) !important;
+  color: #280c10 !important;
+}
+html body #app#app .qe-rl-tag.l { color: var(--green) !important; background: var(--green-soft) !important; }
+html body #app#app .qe-rl-tag.s { color: var(--red) !important; background: var(--red-soft) !important; }
+html body #app#app .qzsc-crisis-card.active {
+  background: var(--accent-soft) !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 1px var(--accent) !important;
+}
+
+/* Keyboard focus needs a complete outline: legacy controls set outline:none. */
+html body #app#app :is(button, a, input, textarea, select, [role="button"]):focus-visible,
+html body :is(#qz-search-overlay, #qz-copilot-panel, #qz-lesson-modal,
+  #stock-detail-modal, #auth-modal, #qe-legal-overlay) :is(button, a, input, textarea, select):focus-visible {
+  outline: 2px solid var(--accent) !important;
+  outline-offset: 3px;
+}
+html body #app#app :is(input, textarea, select),
+html body :is(#qz-padd-body, #agent-drawer, #qz-search-overlay,
+  #qz-copilot-panel, #auth-modal) :is(input, textarea, select) {
+  border-color: #4b6d72 !important;
+}
+html body #app#app :is(input, textarea, select):focus,
+html body :is(#qz-padd-body, #agent-drawer, #qz-search-overlay,
+  #qz-copilot-panel, #auth-modal) :is(input, textarea, select):focus {
+  border-color: var(--accent) !important;
+}
