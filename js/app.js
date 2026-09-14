@@ -12093,159 +12093,63 @@ window.qeRL  = window.QESecurity.rateLimit;
 })();
 
 
-// ── CLAUDE API KEY MANAGEMENT ────────────────────────────────
-function getClaudeKey() {
-  return localStorage.getItem('qe_claude_key') || '';
-}
-
-// ─── Groq key management ─────────────────────────────────────────
-// SECURITY: No built-in API keys. Server mode uses backend proxy. File mode requires user-supplied key.
-var _QZ_BUILT_IN_GROQ = '';
-function getGroqKey() {
-  return localStorage.getItem('qe_groq_key') || '';
-}
-
-function saveGroqKey() {
-  const input = document.getElementById('groq-api-key-input');
-  const status = document.getElementById('groq-key-status');
-  const key = input ? input.value.trim() : '';
-  if (!key) {
-    if (status) { status.style.color = 'var(--red)'; status.textContent = 'Please enter your Groq API key.'; }
-    return;
-  }
-  if (!key.startsWith('gsk_')) {
-    if (status) { status.style.color = 'var(--red)'; status.textContent = 'Invalid key — Groq keys start with gsk_'; }
-    return;
-  }
-  localStorage.setItem('qe_groq_key', key);
-  const banner = document.getElementById('ai-key-banner');
-  if (banner) banner.style.display = 'none';
-  if (status) { status.style.color = '#16A34A'; status.textContent = '⚡ Groq connected — ultra-fast AI active!'; }
-  if (input) input.value = '';
-  // Update saved indicator
-  const row = document.getElementById('groq-key-saved-row');
-  const prev = document.getElementById('groq-key-preview');
-  if (row) row.style.display = 'flex';
-  if (prev) prev.textContent = key.substring(0,8) + '••••' + key.slice(-4);
-}
-
-window.saveGroqKey = saveGroqKey;
-
-function saveClaudeKey() {
-  const input = document.getElementById('claude-api-key-input');
-  const status = document.getElementById('ai-key-status');
-  const key = input ? input.value.trim() : '';
-  if (!key) {
-    if (status) { status.style.color = 'var(--red)'; status.textContent = 'Please enter an API key.'; }
-    return;
-  }
-  if (!key.startsWith('sk-ant-')) {
-    if (status) { status.style.color = 'var(--red)'; status.textContent = 'Invalid key — must start with sk-ant-'; }
-    return;
-  }
-  localStorage.setItem('qe_claude_key', key);
-  // Only hide banner if no groq key either
-  if (!getGroqKey()) {
-    const banner = document.getElementById('ai-key-banner');
-    if (banner) banner.style.display = 'none';
-  }
-  if (status) { status.style.color = 'var(--green)'; status.textContent = '✓ Claude key saved — AI active.'; }
-  if (input) input.value = '';
-}
-
-function clearClaudeKey() {
-  localStorage.removeItem('qe_claude_key');
-  const banner = document.getElementById('ai-key-banner');
-  if (banner && !getGroqKey()) banner.style.display = '';
-}
-
-// ─── Settings page AI key management ─────────────────────────────
-function _qzkMask(k) {
-  if (!k || k.length < 12) return '••••••••';
-  return k.substring(0, 8) + '••••' + k.slice(-4);
-}
+// ── MANAGED AI SETTINGS ─────────────────────────────────────
+// AI credentials belong to the backend. Legacy hidden key controls remain
+// callable for old markup, but they no longer save or select browser keys.
 function _qzkStatus(id, msg, ok) {
   const el = document.getElementById(id);
   if (!el) return;
   el.textContent = msg;
   el.style.color = ok ? '#16A34A' : '#DC2626';
-  setTimeout(() => { if (el.textContent === msg) el.textContent = ''; }, 4000);
 }
+function saveGroqKey() {
+  _qzkStatus('groq-key-status', 'Entelloq manages AI access securely. No personal key is needed.', true);
+}
+function saveClaudeKey() {
+  _qzkStatus('ai-key-status', 'Entelloq manages AI access securely. No personal key is needed.', true);
+}
+window.saveGroqKey = saveGroqKey;
+function clearClaudeKey() { localStorage.removeItem('qe_claude_key'); }
 function _qzkSaveGroq() {
-  const inp = document.getElementById('settings-groq-key');
-  const key = inp ? inp.value.trim() : '';
-  if (!key) { _qzkStatus('settings-groq-status', 'Enter your Groq API key.', false); return; }
-  if (!key.startsWith('gsk_')) { _qzkStatus('settings-groq-status', 'Invalid — Groq keys start with gsk_', false); return; }
-  localStorage.setItem('qe_groq_key', key);
-  if (inp) inp.value = '';
-  const row = document.getElementById('settings-groq-saved-row');
-  const prev = document.getElementById('settings-groq-preview');
-  if (row) row.style.display = 'flex';
-  if (prev) prev.textContent = _qzkMask(key);
-  _qzkStatus('settings-groq-status', 'Groq connected — ultra-fast AI active!', true);
-}
-function _qzkForgetGroq() {
-  localStorage.removeItem('qe_groq_key');
-  const row = document.getElementById('settings-groq-saved-row');
-  if (row) row.style.display = 'none';
-  _qzkStatus('settings-groq-status', 'Groq key removed.', true);
+  _qzkStatus('settings-groq-status', 'Entelloq manages AI access securely. No personal key is needed.', true);
 }
 function _qzkSaveClaude() {
-  const inp = document.getElementById('settings-claude-key');
-  const key = inp ? inp.value.trim() : '';
-  if (!key) { _qzkStatus('settings-claude-status', 'Enter your Anthropic API key.', false); return; }
-  if (!key.startsWith('sk-ant-')) { _qzkStatus('settings-claude-status', 'Invalid — Anthropic keys start with sk-ant-', false); return; }
-  localStorage.setItem('qe_claude_key', key);
-  if (inp) inp.value = '';
-  const row = document.getElementById('settings-claude-saved-row');
-  const prev = document.getElementById('settings-claude-preview');
-  if (row) row.style.display = 'flex';
-  if (prev) prev.textContent = _qzkMask(key);
-  _qzkStatus('settings-claude-status', 'Claude connected!', true);
+  _qzkStatus('settings-claude-status', 'Entelloq manages AI access securely. No personal key is needed.', true);
 }
-function _qzkForgetClaude() {
-  localStorage.removeItem('qe_claude_key');
-  const row = document.getElementById('settings-claude-saved-row');
-  if (row) row.style.display = 'none';
-  _qzkStatus('settings-claude-status', 'Claude key removed.', true);
-}
+function _qzkForgetGroq() { localStorage.removeItem('qe_groq_key'); }
+function _qzkForgetClaude() { localStorage.removeItem('qe_claude_key'); }
 function _qzkInit() {
   const serverNotice = document.getElementById('qzk-server-notice');
   const fileMode = document.getElementById('qzk-file-mode');
-  if (window._QZ_SERVER_MODE) {
-    if (serverNotice) serverNotice.style.display = 'block';
-    if (fileMode) fileMode.style.display = 'none';
-    return;
-  }
-  if (serverNotice) serverNotice.style.display = 'none';
-  if (fileMode) fileMode.style.display = 'block';
-  const gKey = localStorage.getItem('qe_groq_key');
-  if (gKey) {
-    const row = document.getElementById('settings-groq-saved-row');
-    const prev = document.getElementById('settings-groq-preview');
-    if (row) row.style.display = 'flex';
-    if (prev) prev.textContent = _qzkMask(gKey);
-  }
-  const cKey = localStorage.getItem('qe_claude_key');
-  if (cKey) {
-    const row = document.getElementById('settings-claude-saved-row');
-    const prev = document.getElementById('settings-claude-preview');
-    if (row) row.style.display = 'flex';
-    if (prev) prev.textContent = _qzkMask(cKey);
-  }
+  if (serverNotice) serverNotice.style.display = 'block';
+  if (fileMode) fileMode.style.display = 'none';
 }
 
 // ─── Unified provider selector ────────────────────────────────────
-// Returns { key, provider: 'server' | 'groq' | 'claude' | null }
+// Static hosting uses the shared Worker; server mode keeps authenticated routes.
+// Provider selection never reads localStorage or sends a provider credential.
 function qzGetProvider() {
-  // In server mode all AI goes through the secure backend — no key exposed
-  if (window._QZ_SERVER_MODE) return { key: 'server', provider: 'server' };
-  // File mode: use obfuscated built-in key or user-supplied key
-  const groq = getGroqKey();
-  if (groq) return { key: groq, provider: 'groq' };
-  const claude = getClaudeKey();
-  if (claude) return { key: claude, provider: 'claude' };
-  return { key: '', provider: null };
+  if (window._QZ_SERVER_MODE) return { provider: 'server' };
+  return { provider: 'proxy', endpoint: 'https://groq-proxy.physicsedge.workers.dev/openai/v1/chat/completions' };
+}
+
+function qzGroqOptions(model, maxTokens) {
+  return {
+    model,
+    max_completion_tokens: Math.min(4096, Math.max(2048, Number(maxTokens) || 2048)),
+    include_reasoning: false,
+    reasoning_effort: 'low'
+  };
+}
+
+function qzAIErrorMessage(data, fallback) {
+  return (typeof data?.error === 'string' ? data.error : data?.error?.message) || data?.message || fallback;
+}
+
+function qzAIStreamFailure(message) {
+  const error = new Error(message);
+  error.code = 'AI_STREAM_ERROR';
+  return error;
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -12371,16 +12275,12 @@ const _qzRL = (() => {
 // Returns an async iterator of text chunks. Usage:
 //   for await (const chunk of qzAIStream(sys, msgs, maxTok)) { ... }
 async function* qzAIStream(systemPrompt, messages, maxTokens) {
-  // ── Rate limit + cooldown gate ──────────────────────────────
   if (_qzRL.isOverloaded()) {
-    yield '⚠ Too many requests queued — please wait a moment before sending another.'; return;
+    throw qzAIStreamFailure('Too many requests queued — please wait a moment before sending another.');
   }
-
-  // Check response cache for identical prompts
   const _cacheKey = _qzRL.hash(systemPrompt, messages);
   const _cached = _qzRL.cacheGet(_cacheKey);
   if (_cached && messages.length > 0 && (messages[messages.length-1]?.role !== 'user' || messages.length < 3)) {
-    // Only serve cached for short/deterministic queries, not interactive chat
     for (const char of _cached) yield char;
     return;
   }
@@ -12393,103 +12293,84 @@ async function* qzAIStream(systemPrompt, messages, maxTokens) {
     _qzRL.queueDown();
   }
 
-  const { key, provider } = qzGetProvider();
-  if (!provider) { yield '⚠ Add a Groq or Claude API key in AI Assistant settings.'; return; }
-
-  maxTokens = maxTokens || 512;
+  const { provider, endpoint } = qzGetProvider();
+  const _abort = _qzRL.createAbort();
+  const msgs = [{ role: 'system', content: systemPrompt }, ...messages];
+  let reader;
+  let _collectedText = '';
+  let completed = false;
   _qzRL.startReq();
 
-  const _abort = _qzRL.createAbort();
-  let response;
-  let _collectedText = '';
-
   try {
-
-  if (provider === 'server') {
-    // ── Server mode: secure backend proxy ──────────────────────
-    response = await fetch('/api/ai/stream', {
+    const response = await fetch(provider === 'server' ? '/api/ai/stream' : endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      credentials: 'same-origin',
+      credentials: provider === 'server' ? 'same-origin' : 'omit',
       signal: _abort.signal,
-      body: JSON.stringify({ systemPrompt, messages, maxTokens })
+      body: JSON.stringify(provider === 'server'
+        ? { messages: msgs, maxTokens: Math.min(4096, maxTokens || 2048) }
+        : { ...qzGroqOptions('openai/gpt-oss-120b', maxTokens), stream: true, temperature: 0.65, top_p: 0.9, messages: msgs })
     });
     if (!response.ok) {
       const errData = await response.json().catch(() => ({}));
-      const msg = response.status === 401 ? 'Session expired — please log in again' :
-                  response.status === 402 ? (errData.error || 'Daily query limit reached — upgrade to Pro') :
+      const msg = response.status === 401 && provider === 'server' ? 'Session expired — please log in again' :
                   response.status === 429 ? 'Too many requests — please wait' :
-                  (errData.error || 'AI service error ' + response.status);
-      yield '⚠ ' + msg; return;
+                  response.status === 503 ? 'AI is temporarily unavailable — please try again later' :
+                  qzAIErrorMessage(errData, 'AI service error ' + response.status);
+      throw new Error(msg);
     }
-  } else if (provider === 'groq') {
-    // ── File mode: direct Groq call ─────────────────────────────
-    const msgs = [{ role: 'system', content: systemPrompt }, ...messages];
-    response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: maxTokens, stream: true, temperature: 0.65, top_p: 0.9, messages: msgs })
-    });
-    if (!response.ok) {
-      const errText = await response.text().catch(() => response.status + '');
-      const msg = response.status === 401 ? 'Invalid API key' :
-                  response.status === 429 ? 'Rate limit hit — wait a moment' : 'API error ' + response.status;
-      yield '⚠ ' + msg; return;
-    }
-  } else {
-    // ── File mode: Claude direct call ───────────────────────────
-    response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'x-api-key': key, 'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-client-side-allow-cors': 'true', 'content-type': 'application/json'
-      },
-      body: JSON.stringify({ model: 'claude-sonnet-4-6-20250514', max_tokens: maxTokens, stream: true, system: systemPrompt, messages })
-    });
-    if (!response.ok) {
-      yield '⚠ Claude API error ' + response.status; return;
-    }
-  }
+    if (!response.body) throw new Error('AI response stream is unavailable.');
 
-  // ── SSE stream parser (same format for server proxy + direct Groq) ──
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder();
-  let buf = '';
-
-  while (true) {
-    let readResult;
-    try { readResult = await reader.read(); } catch(e) {
-      if (e.name === 'AbortError') break;
-      throw e;
+    // Both the Worker (OpenAI choices) and backend ({delta}, event:done/error)
+    // use SSE. Buffer complete events, including split UTF-8 and final frames.
+    reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = '';
+    let eventName = '';
+    let dataLines = [];
+    while (!completed) {
+      const { done, value } = await reader.read();
+      buf += done ? decoder.decode() + '\n\n' : decoder.decode(value, { stream: true });
+      let lineEnd;
+      while (!completed && (lineEnd = buf.indexOf('\n')) >= 0) {
+        const line = buf.slice(0, lineEnd).replace(/\r$/, '');
+        buf = buf.slice(lineEnd + 1);
+        if (line.startsWith('event:')) eventName = line.slice(6).trim();
+        else if (line.startsWith('data:')) dataLines.push(line.slice(5).trimStart());
+        else if (!line && dataLines.length) {
+          const raw = dataLines.join('\n');
+          dataLines = [];
+          const type = eventName;
+          eventName = '';
+          if (raw.trim() === '[DONE]') { completed = true; break; }
+          let parsed;
+          try { parsed = JSON.parse(raw); } catch (_) { continue; }
+          if (type === 'error' || parsed.error) throw new Error(qzAIErrorMessage(parsed, 'AI stream failed.'));
+          if (parsed.choices?.[0]?.finish_reason === 'length') throw new Error('AI response reached its length limit — please try a shorter question.');
+          if (type === 'done') { completed = true; break; }
+          const chunk = parsed.choices?.[0]?.delta?.content ?? (typeof parsed.delta === 'string' ? parsed.delta : null);
+          if (typeof chunk === 'string') { _collectedText += chunk; yield chunk; }
+        } else if (!line) eventName = '';
+      }
+      if (done) {
+        if (!completed) throw new Error('AI response ended early — please try again.');
+        break;
+      }
     }
-    const { done, value } = readResult;
-    if (done) break;
-    buf += decoder.decode(value, { stream: true });
-    const lines = buf.split('\n');
-    buf = lines.pop();
-    for (const line of lines) {
-      if (!line.startsWith('data: ')) continue;
-      const raw = line.slice(6).trim();
-      if (raw === '[DONE]') { _qzRL.cacheSet(_cacheKey, _collectedText); return; }
-      try {
-        const parsed = JSON.parse(raw);
-        const oaiChunk = parsed.choices?.[0]?.delta?.content;
-        if (oaiChunk != null) { _collectedText += oaiChunk; yield oaiChunk; continue; }
-        if (parsed.type === 'content_block_delta' && parsed.delta?.type === 'text_delta') {
-          _collectedText += parsed.delta.text; yield parsed.delta.text;
-        }
-      } catch(_) {}
-    }
-  }
-  if (_collectedText) _qzRL.cacheSet(_cacheKey, _collectedText);
-
+    if (_abort.signal.aborted) throw new Error('AI response was interrupted before it finished — please try again.');
+    if (!_collectedText.trim()) throw new Error('AI returned an empty response — please try again.');
+    _qzRL.cacheSet(_cacheKey, _collectedText);
   } catch(e) {
     if (e.name === 'AbortError') {
-      yield _collectedText ? '' : '⚠ Request timed out — please try again.';
-    } else {
-      yield '⚠ AI error: ' + (e.message || 'unknown error');
+      throw qzAIStreamFailure('AI response was interrupted before it finished — please try again.');
     }
+    throw qzAIStreamFailure(e.message || 'AI request failed — please try again.');
   } finally {
+    if (reader) {
+      try { await reader.cancel(); } catch (_) {}
+      reader.releaseLock();
+    }
+    _abort.abort(); // clear the timeout even after normal completion
     _qzRL.endReq();
   }
 }
@@ -12497,67 +12378,31 @@ async function* qzAIStream(systemPrompt, messages, maxTokens) {
 // ─── Unified AI non-streaming call (for agents) ───────────────────
 async function qzAICall(systemPrompt, userMessage, maxTokens) {
   if (_qzRL.isOverloaded()) throw new Error('Too many AI requests queued — please wait.');
-
-  const { key, provider } = qzGetProvider();
-  if (!provider) throw new Error('no-key');
-
-  maxTokens = maxTokens || 320;
-  let response, data;
-
-  // Per-call timeout controller (45s)
+  const { provider, endpoint } = qzGetProvider();
   const _callAbort = new AbortController();
   const _callTimeout = setTimeout(() => _callAbort.abort(), _qzRL.TIMEOUT_MS);
   _qzRL.startReq();
-
   try {
-
-  if (provider === 'server') {
-    // ── Server mode: secure backend proxy ──────────────────────
-    response = await fetch('/api/ai/call', {
+    const response = await fetch(provider === 'server' ? '/api/ai/call' : endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      credentials: 'same-origin',
+      credentials: provider === 'server' ? 'same-origin' : 'omit',
       signal: _callAbort.signal,
-      body: JSON.stringify({ systemPrompt, userMessage, maxTokens })
+      body: JSON.stringify(provider === 'server'
+        ? { systemPrompt, message: userMessage, maxTokens: Math.min(4096, maxTokens || 2048) }
+        : {
+          ...qzGroqOptions('openai/gpt-oss-20b', maxTokens), stream: false,
+          temperature: 0.6, top_p: 0.9,
+          messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userMessage }]
+        })
     });
-    if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      throw new Error(errData.error || 'api-' + response.status);
-    }
-    data = await response.json();
-    return data.text || '';
-  } else if (provider === 'groq') {
-    // ── File mode: direct Groq call ─────────────────────────────
-    response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'llama-3.1-8b-instant', max_tokens: maxTokens, stream: false,
-        temperature: 0.6, top_p: 0.9,
-        messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userMessage }]
-      })
-    });
-    if (!response.ok) throw new Error('api-' + response.status);
-    data = await response.json();
-    return data.choices?.[0]?.message?.content || '';
-  } else {
-    // ── File mode: Claude direct call ───────────────────────────
-    response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'x-api-key': key, 'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-client-side-allow-cors': 'true', 'content-type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6-20250514', max_tokens: maxTokens,
-        system: systemPrompt, messages: [{ role: 'user', content: userMessage }]
-      })
-    });
-    if (!response.ok) throw new Error('api-' + response.status);
-    data = await response.json();
-    return data.content?.[0]?.text || '';
-  }
-
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || data.error) throw new Error(qzAIErrorMessage(data, 'AI service error ' + response.status));
+    if (data.choices?.[0]?.finish_reason === 'length') throw new Error('AI response reached its length limit — please try a shorter question.');
+    // Older Worker deployments return text/content/result without choices.
+    const text = data.choices?.[0]?.message?.content || data.text || data.content || data.result;
+    if (typeof text !== 'string' || !text.trim()) throw new Error('AI returned an empty response — please try again.');
+    return text;
   } catch(e) {
     if (e.name === 'AbortError') throw new Error('AI request timed out — please try again.');
     throw e;
@@ -12721,10 +12566,16 @@ FORMAT: Use **bold** for key terms. Bullet points for lists. Max 280 words unles
     } catch(e) {
       const msgEl = document.getElementById(msgId);
       if (msgEl) {
-        const reply = (typeof getAIResponse === 'function') ? getAIResponse(msg) : 'I encountered a connection issue. Please check your network and try again.';
-        const formatted = formatResponse(typeof reply === 'string' ? reply : reply.text || '');
-        msgEl.querySelector('.chat-bubble').innerHTML = formatted + '<div class="ai-fallback-note">⚡ Local analysis mode — connect to unlock full AI</div>';
-        addToHistory('assistant', typeof reply === 'string' ? reply : (reply.text || ''));
+        const bubble = msgEl.querySelector('.chat-bubble');
+        if (e.code === 'AI_STREAM_ERROR') {
+          bubble.dataset.aiState = 'error';
+          bubble.innerHTML = '<div class="ai-fallback-note" role="status">' + escapeHtml(e.message) + '</div>';
+        } else {
+          const reply = (typeof getAIResponse === 'function') ? getAIResponse(msg) : 'I encountered a connection issue. Please check your network and try again.';
+          const formatted = formatResponse(typeof reply === 'string' ? reply : reply.text || '');
+          bubble.innerHTML = formatted + '<div class="ai-fallback-note">⚡ Local analysis mode — connect to unlock full AI</div>';
+          addToHistory('assistant', typeof reply === 'string' ? reply : (reply.text || ''));
+        }
       }
     }
 
@@ -12791,7 +12642,10 @@ FORMAT: Use **bold** for key terms. Bullet points for lists. Max 280 words unles
       }
 
     } catch(e) {
-      if (typeof _origQeHandle === 'function') {
+      if (e.code === 'AI_STREAM_ERROR') {
+        const textEl = document.getElementById(thinkId)?.querySelector('.qe-transcript-text');
+        if (textEl) textEl.textContent = e.message;
+      } else if (typeof _origQeHandle === 'function') {
         const thinkEl = document.getElementById(thinkId);
         if (thinkEl) thinkEl.remove();
         _origQeHandle(q);
@@ -15102,7 +14956,7 @@ async function cmdOrchestrate() {
   if (!aiProvider) {
     if (typeof _cmdLoadDemoMode === 'function') _cmdLoadDemoMode();
     if (input) input.value = '';
-    _cmdAddFeed('⚠ Demo Mode','#B45309','No AI key detected. Add a Groq or Claude key in Settings → AI Provider Keys, or run the backend server.');
+    _cmdAddFeed('⚠ Demo Mode','#B45309','AI is temporarily unavailable. Please try again later.');
     return;
   }
 
@@ -15383,7 +15237,7 @@ if (typeof _origSendChat === 'function') {
       }
       return;
     }
-    hudShow('🤖','AI Assistant','Processing…','Streaming response from Claude…');
+    hudShow('🤖','AI Assistant','Processing…','Streaming response from Entelloq AI…');
     await _origSendChat.apply(this, arguments);
   };
 }
@@ -15554,7 +15408,7 @@ window.showPage = function(page, navEl) {
       renderCommandCenter();
       _qzInitProviderBadge();
       const hasKey = window._QZ_SERVER_MODE ||
-        (typeof qzGetProvider === 'function' ? qzGetProvider().provider : (localStorage.getItem('qe_groq_key') || localStorage.getItem('qe_claude_key')));
+        (typeof qzGetProvider === 'function' ? qzGetProvider().provider : null);
       if (!hasKey) _cmdLoadDemoMode();
     }, 80);
   }
@@ -15567,18 +15421,7 @@ function _qzInitProviderBadge() {
   if (!badge || !label) return;
 
   if (!window._QZ_SERVER_MODE) {
-    // File mode — show whichever client key is present
-    const { provider } = (typeof qzGetProvider === 'function') ? qzGetProvider() : { provider: null };
-    if (provider === 'groq') {
-      label.textContent = 'AI · Groq (client)';
-    } else if (provider === 'claude') {
-      label.textContent = 'AI · Claude (client)';
-    } else {
-      badge.style.background = 'rgba(220,38,38,0.1)';
-      badge.style.borderColor = 'rgba(220,38,38,0.25)';
-      badge.querySelector('span').style.background = '#DC2626';
-      label.textContent = 'AI · No key set';
-    }
+    label.textContent = 'AI · Groq';
     return;
   }
 
@@ -15600,7 +15443,7 @@ setTimeout(() => {
     renderCommandCenter();
     // In server mode the backend always has a configured key — never show demo mode
     const hasKey = window._QZ_SERVER_MODE ||
-      (typeof qzGetProvider === 'function' ? qzGetProvider().provider : (localStorage.getItem('qe_groq_key') || localStorage.getItem('qe_claude_key')));
+      (typeof qzGetProvider === 'function' ? qzGetProvider().provider : null);
     if (!hasKey) _cmdLoadDemoMode();
   }
   _qzInitProviderBadge();
@@ -15660,20 +15503,13 @@ setTimeout(() => {
       var row = document.getElementById('claude-key-saved-row');
       if (row) row.style.display = 'none';
       var banner = document.getElementById('ai-key-banner');
-      if (banner) banner.style.display = '';
+      if (banner) banner.style.display = 'none';
     } else if (provider === 'groq') {
       localStorage.removeItem('qe_groq_key');
       var inpG = document.getElementById('groq-api-key-input');
       if (inpG) { inpG.value = ''; inpG.type = 'password'; }
-      // Fall back to built-in key — show it as active
-      _showSavedKey('groq', _QZ_BUILT_IN_GROQ);
       var rowG = document.getElementById('groq-key-saved-row');
-      if (rowG) rowG.style.display = 'flex';
-      // Banner stays hidden — built-in key is always available
-      if (false) {
-        var bannerG = document.getElementById('ai-key-banner');
-        if (bannerG) bannerG.style.display = '';
-      }
+      if (rowG) rowG.style.display = 'none';
     } else if (provider === 'polygon') {
       localStorage.removeItem('qe_poly_key');
       localStorage.removeItem('qe_polygon_key');
@@ -15686,41 +15522,11 @@ setTimeout(() => {
 
   // On load: restore key indicators from localStorage
   window.addEventListener('DOMContentLoaded', function() {
-    // Groq key — always active (built-in key or user-supplied)
-    var gk = localStorage.getItem('qe_groq_key') || _QZ_BUILT_IN_GROQ;
-    if (gk) {
-      _showSavedKey('groq', gk);
-      var banner = document.getElementById('ai-key-banner');
-      if (banner) banner.style.display = 'none';
-    }
-    // Claude key
-    var ck = localStorage.getItem('qe_claude_key');
-    if (ck) {
-      _showSavedKey('claude', ck);
-      if (!gk) {
-        var banner2 = document.getElementById('ai-key-banner');
-        if (banner2) banner2.style.display = 'none';
-      }
-    }
     // Polygon key
     var pk = localStorage.getItem('qe_poly_key') || localStorage.getItem('qe_polygon_key');
     if (pk) _showSavedKey('polygon', pk);
 
   });
-
-  // Patch saveClaudeKey to also show the saved indicator
-  var _origSaveClaude = window.saveClaudeKey;
-  window.saveClaudeKey = function() {
-    if (typeof _origSaveClaude === 'function') _origSaveClaude.apply(this, arguments);
-    setTimeout(function() {
-      var saved = localStorage.getItem('qe_claude_key');
-      if (saved) {
-        _showSavedKey('claude', saved);
-        var banner = document.getElementById('ai-key-banner');
-        if (banner) banner.style.display = 'none';
-      }
-    }, 200);
-  };
 
   // Patch polygonSaveKey similarly
   var _origSavePoly = window.polygonSaveKey;
@@ -15799,7 +15605,7 @@ setTimeout(() => {
   // 3. WIRE TTS TO AI CHAT (sendChat) — speak + add Read button
   // ─────────────────────────────────────────────────────────────────
   function _qzAttachReadBtn(bubble) {
-    if (!bubble || bubble.querySelector('.qz-speak-btn')) return;
+    if (!bubble || bubble.dataset.aiState === 'error' || bubble.querySelector('.qz-speak-btn')) return;
     var btn = document.createElement('button');
     btn.className = 'qz-speak-btn';
     btn.innerHTML = '🔊 Read';
@@ -15830,6 +15636,7 @@ setTimeout(() => {
       var msgs = document.querySelectorAll('#chat-messages .chat-msg.ai .chat-bubble');
       if (!msgs.length) return;
       var lastBubble = msgs[msgs.length - 1];
+      if (lastBubble.dataset.aiState === 'error') return;
       // Don't act on thinking states
       if (lastBubble.querySelector('.typing-indicator') || lastBubble.querySelector('.stream-cursor')) return;
       _qzAttachReadBtn(lastBubble);
@@ -22305,69 +22112,19 @@ async function qzCoachReview() {
 
 /* ==================================================================== *
  *  FINAL POLISH PASS                                                   *
- *    1. AI key auto-configured via secure Cloudflare Worker proxy      *
- *       — no API key ever exposed in the browser                       *
+ *    1. Managed AI requests use the shared Cloudflare Worker           *
+ *       — provider credentials stay on the server                     *
  *    2. All decorative icons removed except the brand mark (top-left)  *
  *    3. API key inputs hidden from Settings for security               *
  * ==================================================================== */
 (function() {
   'use strict';
 
-  // ─── 1. AI auto-proxy ────────────────────────────────────────────
-  // The Cloudflare Worker at groq-proxy.physicsedge.workers.dev holds
-  // the real API key server-side. The frontend uses a sentinel string
-  // and our fetch shim rewrites Groq API calls to the worker.
-  var SENTINEL = '__qz_proxy__';
-  var PROXY    = 'https://groq-proxy.physicsedge.workers.dev';
-
+  // Remove only the obsolete placeholder left by earlier versions.
+  // Real personal keys are ignored by the managed provider selector.
   try {
-    var existing = localStorage.getItem('qe_groq_key');
-    // Only set the sentinel if NO real user key is configured
-    if (!existing || existing === '' || existing === SENTINEL) {
-      localStorage.setItem('qe_groq_key', SENTINEL);
-    }
-  } catch(_) { /* private mode — fine */ }
-
-  var _origFetchPolish = window.fetch;
-  window.fetch = function(input, init) {
-    var url = typeof input === 'string' ? input : (input && input.url) || '';
-    if (url.indexOf('api.groq.com') > -1 && init && init.headers) {
-      var auth = init.headers['Authorization'] || init.headers['authorization'];
-      if (auth && (auth.indexOf(SENTINEL) > -1)) {
-        // Rewrite URL → proxy. Strip Authorization (the worker has the real key).
-        var newUrl = url.replace('https://api.groq.com', PROXY);
-        var newHeaders = {};
-        for (var k in init.headers) {
-          if (k.toLowerCase() !== 'authorization') newHeaders[k] = init.headers[k];
-        }
-        var newInit = Object.assign({}, init, { headers: newHeaders });
-        return _origFetchPolish.call(this, newUrl, newInit);
-      }
-    }
-    return _origFetchPolish.apply(this, arguments);
-  };
-
-  // Patch qzGetProvider so any UI that asks "is AI configured" sees yes
-  function patchProvider() {
-    if (window._QZ_SERVER_MODE) return;
-    var orig = window.qzGetProvider;
-    if (typeof orig !== 'function') { setTimeout(patchProvider, 200); return; }
-    if (orig._qzPolishWrapped) return;
-    var wrapped = function() {
-      try {
-        var r = orig() || {};
-        var stored;
-        try { stored = localStorage.getItem('qe_groq_key'); } catch(_) {}
-        if ((!r.provider || r.key === SENTINEL) && stored === SENTINEL) {
-          return { key: SENTINEL, provider: 'groq' };
-        }
-        return r;
-      } catch(_) { return { key: SENTINEL, provider: 'groq' }; }
-    };
-    wrapped._qzPolishWrapped = true;
-    window.qzGetProvider = wrapped;
-  }
-  patchProvider();
+    if (localStorage.getItem('qe_groq_key') === '__qz_proxy__') localStorage.removeItem('qe_groq_key');
+  } catch (_) {}
 
   // ─── 2. Icon minimalism CSS ──────────────────────────────────────
   // Single brand mark at top-left (sidebar .logo-icon) replaced with a
@@ -22453,8 +22210,8 @@ async function qzCoachReview() {
           '<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(22,163,74,0.06);border:1px solid rgba(22,163,74,0.2);border-radius:10px;">' +
             '<span style="width:9px;height:9px;border-radius:50%;background:#16A34A;box-shadow:0 0 10px rgba(22,163,74,0.7);flex-shrink:0;"></span>' +
             '<div>' +
-              '<div style="font-family:var(--font-display),sans-serif;font-size:13px;font-weight:600;color:#fff;letter-spacing:-0.01em;">AI is configured.</div>' +
-              '<div style="font-size:11.5px;color:var(--text-muted);margin-top:2px;line-height:1.5;">Queries are routed through Quant Entelloq\'s secure backend. No API keys are stored in your browser or exposed to client code.</div>' +
+              '<div style="font-family:var(--font-display),sans-serif;font-size:13px;font-weight:600;color:#fff;letter-spacing:-0.01em;">Entelloq AI</div>' +
+              '<div style="font-size:11.5px;color:var(--text-muted);margin-top:2px;line-height:1.5;">Your assistants use Entelloq\'s managed AI service. No personal API key is needed.</div>' +
             '</div>' +
           '</div>';
         firstSection.insertAdjacentElement('afterend', notice);
@@ -27800,7 +27557,7 @@ async function qzCoachReview() {
       // Use v7's generateFallback
       var fallback = (window.QEStudio && window.QEStudio.fallback)
         ? window.QEStudio.fallback(meta.id, query)
-        : '[NO RESPONSE] API unavailable. Try again or add an API key in settings.';
+        : '[NO RESPONSE] AI is temporarily unavailable. Please try again later.';
       await streamInto(bodyEl, fallback);
       collected = fallback;
     } else {

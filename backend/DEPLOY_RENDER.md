@@ -9,7 +9,7 @@
 | API + ingestion + rewriter (single process) | **Render Web Service** | Free, GitHub OAuth, no card |
 | Postgres | **Neon** | 0.5 GB, no card, instant boot |
 | Redis | **Upstash** | 10k commands/day, no card |
-| AI provider | **Groq** | Free Llama 3.3 70B with generous rate limits |
+| AI provider | **Groq** | GPT-OSS 120B for chat and GPT-OSS 20B for routine calls; usage depends on your Groq plan |
 | Keep-alive pinger | **cron-job.org** | Free, prevents 15-min sleep |
 | Error tracking (optional) | **Sentry** | 5k events/mo free |
 
@@ -39,7 +39,7 @@
 1. Go to https://console.groq.com → **Sign up with Google**
 2. Left sidebar → **API Keys** → **Create API Key** → name it `quant-entelloq`
 3. Copy the `gsk_…` token (you'll never see it again — save it now)
-4. Paste below as `GROQ_API_KEY=…`
+4. Save it as `GROQ_API_KEY` in the backend host's secret settings. Keep the key out of the repository and frontend.
 
 ---
 
@@ -84,7 +84,7 @@ COOKIE_DOMAIN=
 # ── Free tier limits ──
 FREE_TIER_DAILY_AI_LIMIT=20
 FREE_TIER_DAILY_DISCOVER_LIMIT=50
-AI_MAX_TOKENS=2000
+AI_MAX_TOKENS=4096
 LOG_LEVEL=info
 ```
 

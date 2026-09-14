@@ -19,7 +19,24 @@ A single-file financial intelligence platform built as a self-contained HTML SPA
 
 Open `index.html` directly in any modern browser. No server required.
 
-## Tech
+## Managed AI
+
+Static hosting routes AI Studio, assistants, and agent calls directly to the
+shared `groq-proxy.physicsedge.workers.dev` Worker over HTTPS. The owner's
+`GROQ_API_KEY` belongs in that Worker's secret settings. No personal key, browser
+storage entry, or global fetch rewrite is needed. Serve local previews over HTTP
+and configure the Worker's development origin allowlist when testing locally.
+
+Chat uses `openai/gpt-oss-120b`; routine calls use `openai/gpt-oss-20b`. Requests
+hide reasoning and reserve at least 2048 completion tokens because GPT-OSS
+counts reasoning in the output budget. Existing authenticated backend mode
+continues using `/api/ai/stream` and `/api/ai/call`; configure its server secrets
+as documented in `backend/README.md` when deploying that mode.
+
+Worker deployment and a configured secret are required for live AI. The local
+mocked regressions exercise request routing and response handling without keys.
+
+## Frontend stack
 
 Single-file HTML + CSS + JS (~1.7 MB). Uses:
 - TradingView Lightweight Charts v4
