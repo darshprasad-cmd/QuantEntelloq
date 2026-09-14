@@ -118,7 +118,8 @@ You can swap Railway for Render, Fly, Heroku, or bare AWS — the steps are iden
      - `REDIS_URL` → `${{Redis.REDIS_URL}}`
      - `DATABASE_SSL=require`
      - `JWT_SECRET`, `COOKIE_SECRET` → generate with `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"`
-     - `AI_PROVIDER=anthropic` + `ANTHROPIC_API_KEY=sk-ant-…` (or your chosen provider)
+     - `AI_PROVIDER=groq` and the owner's `GROQ_API_KEY` in the hosting service's secret settings.
+     - `AI_MAX_TOKENS=4096`; Groq defaults to `openai/gpt-oss-120b` for chat and `openai/gpt-oss-20b` for routine calls. GPT-OSS includes reasoning in its completion token budget.
      - `APP_URL=https://quant.entelloq.com`
      - `ALLOWED_ORIGINS=https://quant.entelloq.com`
    - **Start command:** leave blank — Dockerfile CMD runs `node server.js`.

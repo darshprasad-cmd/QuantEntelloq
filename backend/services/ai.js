@@ -15,14 +15,14 @@ import { UpstreamError, RateLimitError } from '../lib/errors.js';
 import { logger } from '../lib/logger.js';
 
 const PROVIDER = (process.env.AI_PROVIDER || 'groq').toLowerCase();
-const MAX_TOKENS = parseInt(process.env.AI_MAX_TOKENS || '2000', 10);
+const MAX_TOKENS = parseInt(process.env.AI_MAX_TOKENS || (PROVIDER === 'groq' ? '4096' : '2000'), 10);
 
 const PROVIDER_DEFAULTS = {
   groq: {
     base: 'https://api.groq.com/openai/v1/chat/completions',
     keyEnv: 'GROQ_API_KEY',
-    stream: 'llama-3.3-70b-versatile',
-    call: 'llama-3.1-8b-instant',
+    stream: 'openai/gpt-oss-120b',
+    call: 'openai/gpt-oss-20b',
   },
   openai: {
     base: 'https://api.openai.com/v1/chat/completions',
@@ -86,6 +86,17 @@ function toAnthropicBody(messages, { model, maxTokens, system, signal }) {
 
 // --------- Non-streaming JSON call -------------------------------------
 
+function completionOptions(model, tokens) {
+  if (PROVIDER !== 'groq') return { max_tokens: tokens };
+  if (!model.startsWith('openai/gpt-oss-')) return { max_completion_tokens: tokens };
+  return {
+    // GPT-OSS counts reasoning in the completion budget, including JSON calls.
+    max_completion_tokens: Math.min(MAX_TOKENS, Math.max(2048, tokens)),
+    include_reasoning: false,
+    reasoning_effort: 'low',
+  };
+}
+
 export async function callOnce(systemPrompt, userMessage, { json = false, model, maxTokens = MAX_TOKENS, signal } = {}) {
   const cfg = getConfig();
   const tokens = Math.min(maxTokens, MAX_TOKENS);
@@ -137,7 +148,7 @@ export async function callOnce(systemPrompt, userMessage, { json = false, model,
         },
         body: JSON.stringify({
           model: useModel,
-          max_tokens: tokens,
+          ...completionOptions(useModel, tokens),
           response_format: json ? { type: 'json_object' } : undefined,
           messages: [
             { role: 'system', content: systemPrompt },
@@ -147,6 +158,7 @@ export async function callOnce(systemPrompt, userMessage, { json = false, model,
       });
       if (!res.ok) throwUpstream(res, await res.text());
       data = await res.json();
+      if (data?.choices?.[0]?.finish_reason === 'length') throw new UpstreamError('AI response reached its length limit. Please try a shorter question.');
       const text = data?.choices?.[0]?.message?.content || '';
       return {
         text,
@@ -192,7 +204,7 @@ export async function* callStream(messages, { model, maxTokens = MAX_TOKENS, sig
     },
     body: JSON.stringify({
       model: useModel,
-      max_tokens: tokens,
+      ...completionOptions(useModel, tokens),
       stream: true,
       messages,
     }),
@@ -200,18 +212,25 @@ export async function* callStream(messages, { model, maxTokens = MAX_TOKENS, sig
 
   if (!res.ok || !res.body) throwUpstream(res, await res.text().catch(() => ''));
 
+  let hasText = false;
   for await (const line of readSseLines(res.body)) {
     if (!line.startsWith('data:')) continue;
     const payload = line.slice(5).trim();
-    if (payload === '[DONE]') return;
-    try {
-      const parsed = JSON.parse(payload);
-      const delta = parsed?.choices?.[0]?.delta?.content;
-      if (delta) yield delta;
-    } catch {
-      /* swallow malformed lines */
+    if (payload === '[DONE]') {
+      if (!hasText) throw new UpstreamError('AI returned an empty response. Please try again.');
+      return;
+    }
+    let parsed;
+    try { parsed = JSON.parse(payload); } catch { continue; }
+    if (parsed.error) throw new UpstreamError('AI provider stream failed. Please try again.');
+    if (parsed?.choices?.[0]?.finish_reason === 'length') throw new UpstreamError('AI response reached its length limit. Please try a shorter question.');
+    const delta = parsed?.choices?.[0]?.delta?.content;
+    if (typeof delta === 'string') {
+      hasText = hasText || Boolean(delta.trim());
+      yield delta;
     }
   }
+  throw new UpstreamError('AI response ended early. Please try again.');
 }
 
 async function* anthropicStream(messages, { model, maxTokens, signal }) {
@@ -262,6 +281,8 @@ async function* readSseLines(readable) {
       if (line.length) yield line;
     }
   }
+  buf += decoder.decode();
+  if (buf) yield buf.replace(/\r$/, '');
 }
 
 function throwUpstream(res, body) {

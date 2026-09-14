@@ -22,7 +22,8 @@ import { logger } from '../lib/logger.js';
 
 const router = Router();
 const FREE_LIMIT = parseInt(process.env.FREE_TIER_DAILY_AI_LIMIT || '20', 10);
-const MAX_TOKENS_HARD = parseInt(process.env.AI_MAX_TOKENS || '2000', 10);
+const MAX_TOKENS_HARD = parseInt(process.env.AI_MAX_TOKENS ||
+  ((process.env.AI_PROVIDER || 'groq').toLowerCase() === 'groq' ? '4096' : '2000'), 10);
 
 const aiLimiter = rateLimit({
   windowMs: 60 * 1000,
